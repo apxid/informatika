@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robot Challenge - Level 1</title>
+
+<style>
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f7fb;
+    text-align:center;
+    margin:30px;
+}
+
+h1{
+    color:#1565c0;
+}
+
+#arena{
+    display:grid;
+    grid-template-columns:repeat(4,80px);
+    gap:10px;
+    justify-content:center;
+    margin:30px auto;
+}
+
+.cell{
+    width:80px;
+    height:80px;
+    background:white;
+    border:2px solid #ccc;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:40px;
+    border-radius:10px;
+}
+
+button{
+    padding:10px 18px;
+    margin:5px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+#program{
+    width:300px;
+    margin:auto;
+    text-align:left;
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    min-height:120px;
+    border:1px solid #ccc;
+}
+
+#status{
+    font-size:22px;
+    margin-top:20px;
+    font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+<h1>🤖 Robot Challenge - Level 1</h1>
+
+<h3>Misi : Bawa Robot menuju 📦</h3>
+
+<div id="arena">
+<div class="cell" id="c0">🤖</div>
+<div class="cell" id="c1"></div>
+<div class="cell" id="c2"></div>
+<div class="cell" id="c3">📦</div>
+</div>
+
+<h3>Program</h3>
+
+<div id="program"></div>
+
+<br>
+
+<button onclick="tambah()">➕ MAJU</button>
+
+<button onclick="hapus()">❌ Hapus Terakhir</button>
+
+<button onclick="jalan()">▶ Jalankan</button>
+
+<button onclick="resetGame()">🔄 Reset</button>
+
+<div id="status"></div>
+
+<script>
+
+let program=[];
+
+function tampilkanProgram(){
+
+let html="";
+
+program.forEach((p,i)=>{
+
+html+=(i+1)+". "+p+"<br>";
+
+});
+
+document.getElementById("program").innerHTML=html;
+
+}
+
+function tambah(){
+
+program.push("MAJU");
+
+tampilkanProgram();
+
+}
+
+function hapus(){
+
+program.pop();
+
+tampilkanProgram();
+
+}
+
+function resetArena(){
+
+for(let i=0;i<4;i++){
+
+document.getElementById("c"+i).innerHTML="";
+
+}
+
+document.getElementById("c0").innerHTML="🤖";
+
+document.getElementById("c3").innerHTML="📦";
+
+}
+
+function resetGame(){
+
+program=[];
+
+tampilkanProgram();
+
+resetArena();
+
+document.getElementById("status").innerHTML="";
+
+}
+
+async function jalan(){
+
+resetArena();
+
+document.getElementById("status").innerHTML="";
+
+let posisi=0;
+
+for(let langkah of program){
+
+await new Promise(r=>setTimeout(r,700));
+
+document.getElementById("c"+posisi).innerHTML="";
+
+if(posisi<3){
+
+posisi++;
+
+}
+
+if(posisi==3){
+
+document.getElementById("c3").innerHTML="🤖📦";
+
+}else{
+
+document.getElementById("c"+posisi).innerHTML="🤖";
+
+document.getElementById("c3").innerHTML="📦";
+
+}
+
+}
+
+if(posisi==3 && program.length==3){
+
+document.getElementById("status").innerHTML="✅ BERHASIL!";
+
+document.getElementById("status").style.color="green";
+
+}else{
+
+document.getElementById("status").innerHTML="❌ GAGAL!";
+
+document.getElementById("status").style.color="red";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
