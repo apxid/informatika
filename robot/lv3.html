@@ -6,9 +6,10 @@
 
 <style>
 body{
-    font-family:Arial;
+    font-family:Arial,sans-serif;
     text-align:center;
-    background:#f2f7ff;
+    background:#eef5ff;
+    margin:20px;
 }
 
 h1{
@@ -20,7 +21,7 @@ h1{
     grid-template-columns:repeat(5,70px);
     gap:5px;
     justify-content:center;
-    margin:20px;
+    margin:20px auto;
 }
 
 .cell{
@@ -31,31 +32,32 @@ h1{
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:35px;
-    border-radius:8px;
+    font-size:34px;
+    border-radius:10px;
 }
 
 button{
-    padding:10px;
+    padding:10px 15px;
     margin:4px;
     font-size:15px;
     cursor:pointer;
 }
 
 #program{
-    background:white;
-    width:300px;
+    width:320px;
     min-height:120px;
     margin:auto;
-    padding:10px;
+    background:white;
     border:1px solid #ccc;
+    padding:10px;
     text-align:left;
+    border-radius:10px;
 }
 
 #status{
+    margin-top:20px;
     font-size:22px;
     font-weight:bold;
-    margin:20px;
 }
 </style>
 </head>
@@ -63,11 +65,13 @@ button{
 <body>
 
 <h1>🤖 Robot Challenge - Level 3</h1>
+
 <h3>Misi : Ambil 📦 tanpa menabrak 🚧</h3>
 
 <div id="arena"></div>
 
-<h3>Program</h3>
+<h3>Program Robot</h3>
+
 <div id="program"></div>
 
 <br>
@@ -77,7 +81,7 @@ button{
 <button onclick="add('KIRI')">↩ KIRI</button>
 <button onclick="add('AMBIL')">📦 AMBIL</button>
 
-<br>
+<br><br>
 
 <button onclick="jalan()">▶ JALANKAN</button>
 <button onclick="resetGame()">🔄 RESET</button>
@@ -86,21 +90,25 @@ button{
 
 <script>
 
-// MAP 5x3
+//==============================
+// MAP
 //
-// . . # . .
-// . R . . #
-// . # . . T
+// 🤖 . . 🚧 .
+// 🚧 🚧 . 🚧 .
+// . . . . 📦
+//
+//==============================
 
 let map=[
-".",".","#",".",".",
-".","R",".",".","#",
-".","#",".",".","T"
+"R",".",".","#",".",
+"#","#",".","#",".",
+".",".",".",".","T"
 ];
 
-let startRobot=6;
+const startRobot=0;
+
 let robot=startRobot;
-let arah=1;
+let arah=1; //0 atas 1 kanan 2 bawah 3 kiri
 
 let program=[];
 let ambil=false;
@@ -108,23 +116,32 @@ let ambil=false;
 function gambar(){
 
     let arena=document.getElementById("arena");
+
     arena.innerHTML="";
 
-    map.forEach((x,i)=>{
+    map.forEach((isi,index)=>{
 
-        let c=document.createElement("div");
-        c.className="cell";
+        let cell=document.createElement("div");
+        cell.className="cell";
 
-        if(x=="#") c.innerHTML="🚧";
+        if(isi=="#") cell.innerHTML="🚧";
 
-        if(x=="T") c.innerHTML="📦";
+        if(isi=="T") cell.innerHTML="📦";
 
-        if(i==robot){
-            let r=["🤖⬆","🤖➡","🤖⬇","🤖⬅"];
-            c.innerHTML=r[arah];
+        if(index==robot){
+
+            let robotIcon=[
+            "🤖⬆",
+            "🤖➡",
+            "🤖⬇",
+            "🤖⬅"
+            ];
+
+            cell.innerHTML=robotIcon[arah];
+
         }
 
-        arena.appendChild(c);
+        arena.appendChild(cell);
 
     });
 
@@ -132,12 +149,12 @@ function gambar(){
 
 gambar();
 
-function add(x){
+function add(cmd){
 
-    program.push(x);
+    program.push(cmd);
 
     document.getElementById("program").innerHTML=
-        program.map((v,i)=>(i+1)+". "+v).join("<br>");
+    program.map((x,i)=>`${i+1}. ${x}`).join("<br>");
 
 }
 
@@ -155,7 +172,7 @@ function resetGame(){
 
 }
 
-function tunggu(ms){
+function delay(ms){
     return new Promise(r=>setTimeout(r,ms));
 }
 
@@ -169,53 +186,71 @@ async function jalan(){
 
     gambar();
 
-    for(let perintah of program){
+    for(let cmd of program){
 
-        await tunggu(600);
+        await delay(600);
 
-        if(perintah=="KANAN"){
+        if(cmd=="KANAN"){
+
             arah=(arah+1)%4;
             gambar();
             continue;
+
         }
 
-        if(perintah=="KIRI"){
+        if(cmd=="KIRI"){
+
             arah=(arah+3)%4;
             gambar();
             continue;
+
         }
 
-        if(perintah=="MAJU"){
+        if(cmd=="MAJU"){
 
             let tujuan=robot;
 
-            if(arah==0) tujuan-=5;
-            if(arah==1) tujuan+=1;
-            if(arah==2) tujuan+=5;
-            if(arah==3) tujuan-=1;
+            // CEK BATAS
 
-            // keluar arena
-            if(tujuan<0 || tujuan>=15){
-                continue;
+            if(arah==0){
+
+                if(robot<5) continue;
+
+                tujuan-=5;
+
             }
 
-            // tidak boleh pindah baris
-            if(arah==1 && Math.floor(robot/5)!=Math.floor(tujuan/5)){
-                continue;
+            if(arah==1){
+
+                if(robot%5==4) continue;
+
+                tujuan+=1;
+
             }
 
-            if(arah==3 && Math.floor(robot/5)!=Math.floor(tujuan/5)){
-                continue;
+            if(arah==2){
+
+                if(robot>=10) continue;
+
+                tujuan+=5;
+
+            }
+
+            if(arah==3){
+
+                if(robot%5==0) continue;
+
+                tujuan-=1;
+
             }
 
             if(map[tujuan]=="#"){
-
-                gambar();
 
                 document.getElementById("status").innerHTML=
                 "💥 ROBOT MENABRAK RINTANGAN";
 
                 return;
+
             }
 
             robot=tujuan;
@@ -223,12 +258,15 @@ async function jalan(){
             gambar();
 
             continue;
+
         }
 
-        if(perintah=="AMBIL"){
+        if(cmd=="AMBIL"){
 
             if(map[robot]=="T"){
+
                 ambil=true;
+
             }
 
             gambar();
@@ -245,7 +283,7 @@ async function jalan(){
     }else{
 
         document.getElementById("status").innerHTML=
-        "❌ ROBOT BELUM MENGAMBIL 📦";
+        "❌ Robot belum mengambil 📦";
 
     }
 
