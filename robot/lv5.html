@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Robot Challenge Level 5</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    text-align:center;
+    background:#eef6ff;
+}
+
+h1{
+    color:#1565c0;
+}
+
+#arena{
+    display:grid;
+    grid-template-columns:repeat(5,70px);
+    gap:5px;
+    justify-content:center;
+    margin:20px;
+}
+
+.cell{
+    width:70px;
+    height:70px;
+    background:white;
+    border:2px solid #aaa;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:35px;
+    border-radius:8px;
+}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+#program{
+    background:white;
+    width:300px;
+    min-height:120px;
+    margin:auto;
+    padding:10px;
+    text-align:left;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+#status{
+    margin:20px;
+    font-size:22px;
+    font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>🤖 Robot Challenge - Level 5</h1>
+
+<h3>Misi : Ambil ⭐ dan 📦 lalu kembali ke START</h3>
+
+<div id="arena"></div>
+
+
+<h3>Program Robot</h3>
+
+<div id="program"></div>
+
+<br>
+
+<button onclick="tambah('MAJU')">⬆ MAJU</button>
+<button onclick="tambah('KANAN')">↪ KANAN</button>
+<button onclick="tambah('KIRI')">↩ KIRI</button>
+<button onclick="tambah('AMBIL')">✋ AMBIL</button>
+<button onclick="tambah('KEMBALI')">🏠 KEMBALI</button>
+
+<br>
+
+<button onclick="jalan()">▶ JALANKAN</button>
+<button onclick="resetGame()">🔄 RESET</button>
+
+
+<div id="status"></div>
+
+
+<script>
+
+let map=[
+"R",".",".","#","S",
+".",".","#",".",
+".","#",".",".",
+".",".",".",".",
+"#",".",".",".","D"
+];
+
+
+let robot=0;
+let arah=1;
+
+let program=[];
+
+let bintang=false;
+let data=false;
+let kembali=false;
+
+
+function gambar(){
+
+let arena=document.getElementById("arena");
+
+arena.innerHTML="";
+
+
+map.forEach((item,index)=>{
+
+let cell=document.createElement("div");
+
+cell.className="cell";
+
+
+if(item=="#")
+cell.innerHTML="🚧";
+
+
+if(item=="S" && !bintang)
+cell.innerHTML="⭐";
+
+
+if(item=="D" && !data)
+cell.innerHTML="📦";
+
+
+if(index==0 && kembali)
+cell.innerHTML="🏠";
+
+
+if(index==robot){
+
+let arahIcon=[
+"🤖⬆",
+"🤖➡",
+"🤖⬇",
+"🤖⬅"
+];
+
+cell.innerHTML=arahIcon[arah];
+
+}
+
+
+arena.appendChild(cell);
+
+});
+
+}
+
+
+gambar();
+
+
+
+function tambah(cmd){
+
+program.push(cmd);
+
+document.getElementById("program").innerHTML=
+
+program.map((p,i)=>
+(i+1)+". "+p
+).join("<br>");
+
+}
+
+
+
+function resetGame(){
+
+robot=0;
+arah=1;
+
+program=[];
+
+bintang=false;
+data=false;
+kembali=false;
+
+document.getElementById("program").innerHTML="";
+document.getElementById("status").innerHTML="";
+
+gambar();
+
+}
+
+
+
+function delay(ms){
+
+return new Promise(r=>setTimeout(r,ms));
+
+}
+
+
+
+async function jalan(){
+
+robot=0;
+arah=1;
+
+for(let cmd of program){
+
+await delay(700);
+
+
+if(cmd=="KANAN")
+arah=(arah+1)%4;
+
+
+if(cmd=="KIRI")
+arah=(arah+3)%4;
+
+
+
+if(cmd=="MAJU"){
+
+
+let tujuan=robot;
+
+
+if(arah==0)
+tujuan-=5;
+
+if(arah==1)
+tujuan++;
+
+if(arah==2)
+tujuan+=5;
+
+if(arah==3)
+tujuan--;
+
+
+
+if(tujuan<0 || tujuan>=map.length)
+continue;
+
+
+if(map[tujuan]=="#"){
+
+document.getElementById("status").innerHTML=
+"💥 ERROR MENABRAK RINTANGAN";
+
+return;
+
+}
+
+
+robot=tujuan;
+
+}
+
+
+
+
+if(cmd=="AMBIL"){
+
+
+if(map[robot]=="S")
+bintang=true;
+
+
+if(map[robot]=="D")
+data=true;
+
+
+}
+
+
+
+
+if(cmd=="KEMBALI"){
+
+if(robot==0)
+kembali=true;
+
+}
+
+
+
+gambar();
+
+}
+
+
+
+if(bintang && data && robot==0){
+
+document.getElementById("status").innerHTML=
+"🎉 MISI BERHASIL!";
+
+}else{
+
+document.getElementById("status").innerHTML=
+"❌ MISI BELUM SELESAI";
+
+}
+
+
+}
+
+</script>
+
+</body>
+</html>
