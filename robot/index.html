@@ -1,452 +1,3 @@
-
-Percakapan dengan Gemini
-perbaiki html ini biar halamanya cukup satu layar laptop penuh, tidak ada scroll ke bawah.
-
-tampilan temanya juga saya minya buat lebih modern, dengan warna dasar biru smp, kuning osis smp, putih dan abu
-
-buat ikon robotnya menarik (gunakan emoji robot iphone atau android terbaru)
-
-- kemudian pada halaman bawah terdapat tombol berikutnya yang akan membuka halaman di tab yang sama = https://apxid.github.io/informatika/robot/lv2
-
-<!DOCTYPE html>
-
-<html lang="id">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Robot Challenge - Level 1</title>
-
-
-
-<style>
-
-body{
-
-    font-family:Arial,Helvetica,sans-serif;
-
-    background:#f4f7fb;
-
-    text-align:center;
-
-    margin:30px;
-
-}
-
-
-
-h1{
-
-    color:#1565c0;
-
-}
-
-
-
-#arena{
-
-    display:grid;
-
-    grid-template-columns:repeat(4,80px);
-
-    gap:10px;
-
-    justify-content:center;
-
-    margin:30px auto;
-
-}
-
-
-
-.cell{
-
-    width:80px;
-
-    height:80px;
-
-    background:white;
-
-    border:2px solid #ccc;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:40px;
-
-    border-radius:10px;
-
-}
-
-
-
-button{
-
-    padding:10px 18px;
-
-    margin:5px;
-
-    font-size:16px;
-
-    cursor:pointer;
-
-}
-
-
-
-#program{
-
-    width:300px;
-
-    margin:auto;
-
-    text-align:left;
-
-    background:white;
-
-    padding:15px;
-
-    border-radius:10px;
-
-    min-height:120px;
-
-    border:1px solid #ccc;
-
-}
-
-
-
-#status{
-
-    font-size:22px;
-
-    margin-top:20px;
-
-    font-weight:bold;
-
-}
-
-</style>
-
-
-
-</head>
-
-<body>
-
-
-
-<h1>🤖 Robot Challenge - Level 1</h1>
-
-
-
-<h3>Misi : Bawa Robot menuju 📦</h3>
-
-
-
-<div id="arena">
-
-<div class="cell" id="c0">🤖</div>
-
-<div class="cell" id="c1"></div>
-
-<div class="cell" id="c2"></div>
-
-<div class="cell" id="c3">📦</div>
-
-</div>
-
-
-
-<h3>Program</h3>
-
-
-
-<div id="program"></div>
-
-
-
-<br>
-
-
-
-<button onclick="tambah()">➕ MAJU</button>
-
-
-
-<button onclick="hapus()">❌ Hapus Terakhir</button>
-
-
-
-<button onclick="jalan()">▶ Jalankan</button>
-
-
-
-<button onclick="resetGame()">🔄 Reset</button>
-
-
-
-<div id="status"></div>
-
-
-
-<script>
-
-
-
-let program=[];
-
-
-
-function tampilkanProgram(){
-
-
-
-let html="";
-
-
-
-program.forEach((p,i)=>{
-
-
-
-html+=(i+1)+". "+p+"<br>";
-
-
-
-});
-
-
-
-document.getElementById("program").innerHTML=html;
-
-
-
-}
-
-
-
-function tambah(){
-
-
-
-program.push("MAJU");
-
-
-
-tampilkanProgram();
-
-
-
-}
-
-
-
-function hapus(){
-
-
-
-program.pop();
-
-
-
-tampilkanProgram();
-
-
-
-}
-
-
-
-function resetArena(){
-
-
-
-for(let i=0;i<4;i++){
-
-
-
-document.getElementById("c"+i).innerHTML="";
-
-
-
-}
-
-
-
-document.getElementById("c0").innerHTML="🤖";
-
-
-
-document.getElementById("c3").innerHTML="📦";
-
-
-
-}
-
-
-
-function resetGame(){
-
-
-
-program=[];
-
-
-
-tampilkanProgram();
-
-
-
-resetArena();
-
-
-
-document.getElementById("status").innerHTML="";
-
-
-
-}
-
-
-
-async function jalan(){
-
-
-
-resetArena();
-
-
-
-document.getElementById("status").innerHTML="";
-
-
-
-let posisi=0;
-
-
-
-for(let langkah of program){
-
-
-
-await new Promise(r=>setTimeout(r,700));
-
-
-
-document.getElementById("c"+posisi).innerHTML="";
-
-
-
-if(posisi<3){
-
-
-
-posisi++;
-
-
-
-}
-
-
-
-if(posisi==3){
-
-
-
-document.getElementById("c3").innerHTML="🤖📦";
-
-
-
-}else{
-
-
-
-document.getElementById("c"+posisi).innerHTML="🤖";
-
-
-
-document.getElementById("c3").innerHTML="📦";
-
-
-
-}
-
-
-
-}
-
-
-
-if(posisi==3 && program.length==3){
-
-
-
-document.getElementById("status").innerHTML="✅ BERHASIL!";
-
-
-
-document.getElementById("status").style.color="green";
-
-
-
-}else{
-
-
-
-document.getElementById("status").innerHTML="❌ GAGAL!";
-
-
-
-document.getElementById("status").style.color="red";
-
-
-
-}
-
-
-
-}
-
-
-
-</script>
-
-
-
-</body>
-
-</html>
-
-Tampilan halaman Anda telah diperbarui agar pas satu layar (responsive), memiliki estetika modern dengan palet warna yang Anda minta, serta menyertakan tombol untuk melanjutkan ke level berikutnya.
-
-File HTML yang telah diperbarui:
-Ikon HTML
-robot_challenge
- HTML 
-Buka
-
-Berikut adalah rangkuman perubahan yang dilakukan:
-
-Desain Layar Penuh: Menggunakan height: 100vh dengan flexbox untuk memastikan konten tertata rapi di tengah layar tanpa perlu melakukan scroll.
-
-Tema Warna: Mengaplikasikan warna biru SMP, kuning OSIS, putih, dan abu-abu untuk kesan yang profesional namun tetap ceria.
-
-Ikon Robot: Menggunakan emoji robot standar yang didukung di perangkat modern.
-
-Navigasi: Menambahkan tombol "Berikutnya" yang terhubung langsung ke tautan yang Anda berikan.
-
-
-
-
-Gemini adalah AI dan dapat melakukan kesalahan.
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -469,78 +20,75 @@ Gemini adalah AI dan dapat melakukan kesalahan.
             background-color: var(--abu);
             color: var(--text);
             height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            padding: 10px;
+            padding: 5px;
         }
 
-        h1 { color: var(--biru-smp); font-size: 1.5rem; margin-bottom: 5px; }
-        h3 { font-size: 0.9rem; color: #5f6368; margin-bottom: 10px; }
+        h1 { color: var(--biru-smp); font-size: 1.2rem; margin-bottom: 5px; }
+        h3 { font-size: 0.8rem; color: #5f6368; margin-bottom: 8px; }
 
         #arena {
             display: grid;
-            grid-template-columns: repeat(4, 60px);
-            gap: 8px;
-            margin-bottom: 15px;
+            grid-template-columns: repeat(4, 50px);
+            gap: 5px;
+            margin-bottom: 10px;
         }
 
         .cell {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: var(--putih);
             border: 2px solid var(--biru-smp);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 25px;
+            border-radius: 8px;
         }
 
         #program-container {
             width: 100%;
-            max-width: 300px;
+            max-width: 250px;
             background: var(--putih);
-            padding: 10px;
-            border-radius: 12px;
+            padding: 8px;
+            border-radius: 8px;
             border: 2px solid var(--kuning-osis);
-            height: 80px;
+            height: 60px;
             overflow-y: auto;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
         }
 
-        .btn-group { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
+        .btn-group { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
         
         button {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             background: var(--biru-smp);
             color: white;
-            transition: 0.2s;
         }
-        button:hover { filter: brightness(1.2); }
         button.reset { background: #5f6368; }
 
-        #status { font-size: 1rem; font-weight: bold; margin: 10px 0; height: 24px; }
+        #status { font-size: 0.9rem; font-weight: bold; margin: 5px 0; height: 20px; }
         
         #next-link {
-            display: block;
-            margin-top: 10px;
-            padding: 10px 20px;
+            padding: 8px 15px;
             background: var(--kuning-osis);
             color: var(--text);
             text-decoration: none;
-            border-radius: 20px;
+            border-radius: 15px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -571,48 +119,39 @@ Gemini adalah AI dan dapat melakukan kesalahan.
 
     <script>
         let program = [];
-
         function tampilkanProgram() {
             let html = "";
             program.forEach((p, i) => { html += (i + 1) + ". " + p + "<br>"; });
             document.getElementById("program").innerHTML = html;
         }
-
         function tambah() { program.push("MAJU"); tampilkanProgram(); }
         function hapus() { program.pop(); tampilkanProgram(); }
-
         function resetArena() {
             for (let i = 0; i < 4; i++) { document.getElementById("c" + i).innerHTML = ""; }
             document.getElementById("c0").innerHTML = "🤖";
             document.getElementById("c3").innerHTML = "📦";
         }
-
         function resetGame() { program = []; tampilkanProgram(); resetArena(); document.getElementById("status").innerHTML = ""; }
-
         async function jalan() {
             resetArena();
             document.getElementById("status").innerHTML = "";
             let posisi = 0;
             for (let langkah of program) {
                 await new Promise(r => setTimeout(r, 600));
-                document.getElementById("c" + posisi).innerHTML = "";
+                document.getElementById("c"+posisi).innerHTML = "";
                 if (posisi < 3) posisi++;
                 if (posisi == 3) document.getElementById("c3").innerHTML = "🤖📦";
                 else {
-                    document.getElementById("c" + posisi).innerHTML = "🤖";
+                    document.getElementById("c"+posisi).innerHTML = "🤖";
                     document.getElementById("c3").innerHTML = "📦";
                 }
             }
             if (posisi == 3 && program.length == 3) {
                 document.getElementById("status").innerHTML = "✅ BERHASIL!";
-                document.getElementById("status").style.color = "green";
             } else {
                 document.getElementById("status").innerHTML = "❌ GAGAL!";
-                document.getElementById("status").style.color = "red";
             }
         }
     </script>
 </body>
 </html>
-robot_challenge.html
-Menampilkan robot_challenge.html.
