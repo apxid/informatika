@@ -26,69 +26,75 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            padding: 5px;
+            padding: 10px;
         }
 
-        h1 { color: var(--biru-smp); font-size: 1.2rem; margin-bottom: 5px; }
-        h3 { font-size: 0.8rem; color: #5f6368; margin-bottom: 8px; }
+        h1 { color: var(--biru-smp); font-size: 1.3rem; margin-bottom: 5px; }
+        h3 { font-size: 0.85rem; color: #5f6368; margin-bottom: 10px; }
 
         #arena {
             display: grid;
-            grid-template-columns: repeat(4, 50px);
-            gap: 5px;
-            margin-bottom: 10px;
+            grid-template-columns: repeat(4, 55px);
+            gap: 6px;
+            margin-bottom: 15px;
         }
 
         .cell {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background: var(--putih);
             border: 2px solid var(--biru-smp);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 25px;
+            font-size: 28px;
             border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        #program-container {
+        #program {
             width: 100%;
-            max-width: 250px;
+            max-width: 280px;
             background: var(--putih);
-            padding: 8px;
+            color: var(--text);
+            padding: 10px;
             border-radius: 8px;
             border: 2px solid var(--kuning-osis);
-            height: 60px;
+            height: 70px;
             overflow-y: auto;
-            margin-bottom: 10px;
-            font-size: 0.8rem;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            text-align: left;
         }
 
-        .btn-group { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+        .btn-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
         
         button {
-            padding: 6px 10px;
+            padding: 8px 12px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             background: var(--biru-smp);
             color: white;
+            transition: 0.2s;
         }
+        button:hover { filter: brightness(1.1); }
         button.reset { background: #5f6368; }
 
-        #status { font-size: 0.9rem; font-weight: bold; margin: 5px 0; height: 20px; }
+        #status { font-size: 1rem; font-weight: bold; margin: 10px 0; height: 25px; }
         
         #next-link {
-            padding: 8px 15px;
+            padding: 8px 20px;
             background: var(--kuning-osis);
             color: var(--text);
             text-decoration: none;
-            border-radius: 15px;
+            border-radius: 20px;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             margin-top: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -104,7 +110,7 @@
         <div class="cell" id="c3">📦</div>
     </div>
 
-    <div id="program-container" id="program"></div>
+    <div id="program"></div>
 
     <div class="btn-group">
         <button onclick="tambah()">➕ MAJU</button>
@@ -119,37 +125,44 @@
 
     <script>
         let program = [];
+
         function tampilkanProgram() {
             let html = "";
             program.forEach((p, i) => { html += (i + 1) + ". " + p + "<br>"; });
             document.getElementById("program").innerHTML = html;
         }
+
         function tambah() { program.push("MAJU"); tampilkanProgram(); }
         function hapus() { program.pop(); tampilkanProgram(); }
+
         function resetArena() {
             for (let i = 0; i < 4; i++) { document.getElementById("c" + i).innerHTML = ""; }
             document.getElementById("c0").innerHTML = "🤖";
             document.getElementById("c3").innerHTML = "📦";
         }
+
         function resetGame() { program = []; tampilkanProgram(); resetArena(); document.getElementById("status").innerHTML = ""; }
+
         async function jalan() {
             resetArena();
             document.getElementById("status").innerHTML = "";
             let posisi = 0;
             for (let langkah of program) {
                 await new Promise(r => setTimeout(r, 600));
-                document.getElementById("c"+posisi).innerHTML = "";
+                document.getElementById("c" + posisi).innerHTML = "";
                 if (posisi < 3) posisi++;
                 if (posisi == 3) document.getElementById("c3").innerHTML = "🤖📦";
                 else {
-                    document.getElementById("c"+posisi).innerHTML = "🤖";
+                    document.getElementById("c" + posisi).innerHTML = "🤖";
                     document.getElementById("c3").innerHTML = "📦";
                 }
             }
             if (posisi == 3 && program.length == 3) {
                 document.getElementById("status").innerHTML = "✅ BERHASIL!";
+                document.getElementById("status").style.color = "green";
             } else {
                 document.getElementById("status").innerHTML = "❌ GAGAL!";
+                document.getElementById("status").style.color = "red";
             }
         }
     </script>
