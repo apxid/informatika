@@ -52,7 +52,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Kotak program diperlebar dan diperpanjang */
+        /* Kotak program dinamis: memanjang otomatis, scroll muncul jika sudah melebihi 200px */
         #program {
             width: 90%;
             max-width: 400px;
@@ -61,7 +61,8 @@
             padding: 12px;
             border-radius: 8px;
             border: 2px solid var(--kuning-osis);
-            height: 120px;
+            min-height: 60px;
+            max-height: 200px; 
             overflow-y: auto;
             margin-bottom: 15px;
             font-size: 0.95rem;
