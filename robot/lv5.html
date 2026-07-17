@@ -20,7 +20,6 @@
             background-color: var(--abu);
             color: var(--text);
             height: 100vh;
-            width: 100vw;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -66,7 +65,6 @@
             margin-bottom: 15px;
             font-size: 0.9rem;
             text-align: left;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .btn-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; max-width: 400px; margin-bottom: 10px; }
@@ -86,27 +84,14 @@
         button.reset { background: #5f6368; }
 
         #status { font-size: 1rem; font-weight: bold; height: 25px; margin-bottom: 10px;}
-
-        .nav-group { display: flex; gap: 20px; }
-        .nav-btn {
-            padding: 8px 16px;
-            background: var(--kuning-osis);
-            color: var(--text);
-            text-decoration: none;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
     </style>
 </head>
 <body>
 
     <h1>🤖 Robot Challenge - Level 5</h1>
-    <h3>Misi: Ambil ⭐ dan 📦 lalu kembali ke START</h3>
+    <h3>Misi: Ambil ⭐ dan 📦 lalu kembali ke posisi awal (0)</h3>
 
     <div id="arena"></div>
-
     <div id="program"></div>
 
     <div class="btn-group">
@@ -122,14 +107,11 @@
 
     <div id="status"></div>
 
-    <div class="nav-group">
-        <a href="https://apxid.github.io/informatika/robot/lv4" class="nav-btn">⬅️ Sebelumnya</a>
-    </div>
-
     <script>
-        let map = ["R",".",".","#","S",".",".","#",".",".",".","#",".",".",".",".",".",".","#",".",".",".",".","D"];
+        // Array dibuat 25 elemen agar pas 5x5
+        let map = ["R",".",".","#","S", ".","!","!","#",".", ".","!","!",".",".", ".","!","!","#",".", ".",".",".",".","D"];
         let robot = 0;
-        let arah = 1;
+        let arah = 1; // 0:Atas, 1:Kanan, 2:Bawah, 3:Kiri
         let program = [];
         let bintang = false, data = false;
 
@@ -140,8 +122,9 @@
                 let cell = document.createElement("div");
                 cell.className = "cell";
                 if (item == "#") cell.innerHTML = "🚧";
-                if (item == "S" && !bintang) cell.innerHTML = "⭐";
-                if (item == "D" && !data) cell.innerHTML = "📦";
+                else if (item == "S" && !bintang) cell.innerHTML = "⭐";
+                else if (item == "D" && !data) cell.innerHTML = "📦";
+                
                 if (index == robot) {
                     let arahIcon = ["🤖⬆", "🤖➡", "🤖⬇", "🤖⬅"];
                     cell.innerHTML = arahIcon[arah];
@@ -169,8 +152,10 @@
         async function jalan() {
             robot = 0; arah = 1; bintang = false; data = false;
             document.getElementById("status").innerHTML = "";
+            
             for (let cmd of program) {
-                await new Promise(r => setTimeout(r, 700));
+                await new Promise(r => setTimeout(r, 600));
+                
                 if (cmd == "KANAN") arah = (arah + 1) % 4;
                 else if (cmd == "KIRI") arah = (arah + 3) % 4;
                 else if (cmd == "MAJU") {
@@ -180,24 +165,28 @@
                     else if (arah == 2) tujuan += 5;
                     else if (arah == 3) tujuan -= 1;
                     
-                    if (tujuan >= 0 && tujuan < map.length && map[tujuan] != "#") {
+                    if (tujuan >= 0 && tujuan < 25 && map[tujuan] != "#") {
                         robot = tujuan;
-                    } else if (map[tujuan] == "#") {
-                        document.getElementById("status").innerHTML = "💥 ERROR MENABRAK!";
+                    } else {
+                        document.getElementById("status").innerHTML = "💥 NABRAK!";
                         document.getElementById("status").style.color = "red";
                         return;
                     }
                 } else if (cmd == "AMBIL") {
                     if (map[robot] == "S") bintang = true;
                     if (map[robot] == "D") data = true;
+                } else if (cmd == "KEMBALI") {
+                    robot = 0; // Perintah teleport kembali ke titik start
+                    arah = 1;
                 }
                 gambar();
             }
+
             if (bintang && data && robot == 0) {
                 document.getElementById("status").innerHTML = "🎉 MISI BERHASIL!";
                 document.getElementById("status").style.color = "green";
             } else {
-                document.getElementById("status").innerHTML = "❌ MISI BELUM SELESAI";
+                document.getElementById("status").innerHTML = "❌ MISI GAGAL";
                 document.getElementById("status").style.color = "red";
             }
         }
