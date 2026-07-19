@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tree & Graph Quiz</title>
+
+    <meta name="theme-color" content="#0D47A1">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- Splash Screen -->
+    <!-- ========================= -->
+
+    <section id="splash">
+
+        <div class="splash-content">
+
+            <div class="logo-circle">
+
+                🌳
+
+            </div>
+
+            <h1>Tree & Graph Quiz</h1>
+
+            <p>Ice Breaking Informatika Kelas IX</p>
+
+            <div class="loading">
+
+                <div class="loading-bar"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- HOME -->
+    <!-- ========================= -->
+
+    <section id="home" class="hidden">
+
+        <div class="container">
+
+            <div class="home-card">
+
+                <div class="home-icon">
+
+                    <i class="fa-solid fa-diagram-project"></i>
+
+                </div>
+
+                <h1>
+
+                    TREE & GRAPH QUIZ
+
+                </h1>
+
+                <h3>
+
+                    Ice Breaking Informatika
+
+                </h3>
+
+                <p>
+
+                    Belajar konsep <b>Tree</b> dan <b>Graph</b>
+
+                    melalui permainan singkat yang menyenangkan.
+
+                </p>
+
+                <div class="feature-list">
+
+                    <div class="feature">
+
+                        <i class="fa-solid fa-circle-question"></i>
+
+                        <span>10 Soal</span>
+
+                    </div>
+
+                    <div class="feature">
+
+                        <i class="fa-solid fa-clock"></i>
+
+                        <span>± 5 Menit</span>
+
+                    </div>
+
+                    <div class="feature">
+
+                        <i class="fa-solid fa-trophy"></i>
+
+                        <span>Skor Otomatis</span>
+
+                    </div>
+
+                </div>
+
+                <button id="btnStart" class="btn-primary">
+
+                    <i class="fa-solid fa-play"></i>
+
+                    MULAI BERMAIN
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- QUIZ -->
+    <!-- ========================= -->
+
+    <section id="quiz" class="hidden">
+
+        <div class="container">
+
+            <!-- Header -->
+
+            <div class="quiz-header">
+
+                <div>
+
+                    <h2>
+
+                        🌳 Tree & Graph Quiz
+
+                    </h2>
+
+                    <small>
+
+                        Informatika Kelas IX
+
+                    </small>
+
+                </div>
+
+                <div class="score-box">
+
+                    ⭐
+
+                    <span id="score">
+
+                        0
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Progress -->
+
+            <div class="progress-area">
+
+                <div class="progress-text">
+
+                    <span id="questionNumber">
+
+                        Soal 1 / 10
+
+                    </span>
+
+                </div>
+
+                <div class="progress">
+
+                    <div id="progressBar"></div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Card Soal -->
+
+            <div class="question-card">
+
+                <div class="question-image">
+
+                    <img id="questionImage"
+
+                        src="assets/tree.svg"
+
+                        alt="Tree">
+
+                </div>
+
+                <div class="question-text">
+
+                    <h2 id="question">
+
+                        Pertanyaan akan muncul di sini
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Pilihan -->
+
+            <div id="answers">
+
+                <button class="answer-btn" data-answer="0">
+
+                    <span>A</span>
+
+                    <p id="answerA">
+
+                        Jawaban A
+
+                    </p>
+
+                </button>
+
+                <button class="answer-btn" data-answer="1">
+
+                    <span>B</span>
+
+                    <p id="answerB">
+
+                        Jawaban B
+
+                    </p>
+
+                </button>
+
+                <button class="answer-btn" data-answer="2">
+
+                    <span>C</span>
+
+                    <p id="answerC">
+
+                        Jawaban C
+
+                    </p>
+
+                </button>
+
+                <button class="answer-btn" data-answer="3">
+
+                    <span>D</span>
+
+                    <p id="answerD">
+
+                        Jawaban D
+
+                    </p>
+
+                </button>
+
+            </div>
+
+            <!-- ======= LANJUT BAGIAN 2 ======= -->
+                      <!-- ====================================== -->
+            <!-- Feedback Jawaban -->
+            <!-- ====================================== -->
+
+            <div id="feedback" class="hidden">
+
+                <div class="feedback-card">
+
+                    <div id="feedbackIcon">
+
+                        ✅
+
+                    </div>
+
+                    <h3 id="feedbackTitle">
+
+                        Benar!
+
+                    </h3>
+
+                    <p id="feedbackText">
+
+                        Penjelasan jawaban akan muncul di sini.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- HALAMAN HASIL -->
+    <!-- ========================= -->
+
+    <section id="result" class="hidden">
+
+        <div class="container">
+
+            <div class="result-card">
+
+                <div class="trophy">
+
+                    🏆
+
+                </div>
+
+                <h1>
+
+                    Quiz Selesai
+
+                </h1>
+
+                <p>
+
+                    Terima kasih sudah bermain.
+
+                </p>
+
+                <div class="final-score">
+
+                    <span id="finalScore">
+
+                        100
+
+                    </span>
+
+                </div>
+
+                <div class="final-grade" id="grade">
+
+                    MASTER TREE
+
+                </div>
+
+                <div class="summary">
+
+                    <div class="summary-item">
+
+                        <h3>
+
+                            Benar
+
+                        </h3>
+
+                        <span id="correctAnswer">
+
+                            10
+
+                        </span>
+
+                    </div>
+
+                    <div class="summary-item">
+
+                        <h3>
+
+                            Salah
+
+                        </h3>
+
+                        <span id="wrongAnswer">
+
+                            0
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <button id="btnRestart" class="btn-primary">
+
+                    <i class="fa-solid fa-rotate-right"></i>
+
+                    MAIN LAGI
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- FOOTER -->
+    <!-- ========================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div>
+
+                <strong>
+
+                    Tree & Graph Quiz
+
+                </strong>
+
+            </div>
+
+            <div>
+
+                Ice Breaking Informatika Kelas IX
+
+            </div>
+
+            <div>
+
+                Developer by MB
+
+            </div>
+
+            <div>
+
+                Version 1.0
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- AUDIO -->
+    <!-- ========================= -->
+
+    <audio id="soundCorrect" preload="auto">
+
+        <source src="audio/correct.mp3" type="audio/mpeg">
+
+    </audio>
+
+    <audio id="soundWrong" preload="auto">
+
+        <source src="audio/wrong.mp3" type="audio/mpeg">
+
+    </audio>
+
+    <audio id="soundFinish" preload="auto">
+
+        <source src="audio/finish.mp3" type="audio/mpeg">
+
+    </audio>
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================= -->
+
+    <script src="js/questions.js"></script>
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
