@@ -10,7 +10,7 @@ const questions = [
 
 {
     question: "Node yang berada paling atas pada Tree disebut ....",
-    image: "assets/tree.svg",
+    image: "assets/tree.png",
     options: [
         "Leaf",
         "Root",
@@ -23,7 +23,7 @@ const questions = [
 
 {
     question: "Node yang mempunyai Parent tetapi tidak mempunyai Child disebut ....",
-    image: "assets/leaf.svg",
+    image: "assets/leaf.png",
     options: [
         "Root",
         "Parent",
@@ -36,7 +36,7 @@ const questions = [
 
 {
     question: "Pada File Manager Android, 'Memori Internal' merupakan contoh ....",
-    image: "assets/folder.svg",
+    image: "assets/folder.png",
     options: [
         "Leaf",
         "Root",
@@ -49,7 +49,7 @@ const questions = [
 
 {
     question: "Folder 'Music' berada di bawah 'Memori Internal'. Folder Music merupakan ....",
-    image: "assets/folder.svg",
+    image: "assets/folder.png",
     options: [
         "Root",
         "Parent",
@@ -62,7 +62,7 @@ const questions = [
 
 {
     question: "File 'Aku.mp3' berada di dalam folder Music. Aku.mp3 merupakan ....",
-    image: "assets/music.svg",
+    image: "assets/music.png",
     options: [
         "Leaf",
         "Root",
@@ -75,7 +75,7 @@ const questions = [
 
 {
     question: "Google Maps lebih tepat menggunakan struktur ....",
-    image: "assets/graph.svg",
+    image: "assets/graph.png",
     options: [
         "Tree",
         "Graph",
@@ -88,7 +88,7 @@ const questions = [
 
 {
     question: "Hubungan pertemanan di Instagram merupakan contoh ....",
-    image: "assets/graph.svg",
+    image: "assets/graph.png",
     options: [
         "Tree",
         "Graph",
@@ -101,7 +101,7 @@ const questions = [
 
 {
     question: "Apakah semua Tree merupakan Graph?",
-    image: "assets/tree.svg",
+    image: "assets/tree.png",
     options: [
         "Ya",
         "Tidak",
@@ -114,7 +114,7 @@ const questions = [
 
 {
     question: "Mengapa tidak semua Graph disebut Tree?",
-    image: "assets/graph.svg",
+    image: "assets/graph.png",
     options: [
         "Karena memiliki lebih dari satu Root atau membentuk siklus",
         "Karena selalu mempunyai Leaf",
@@ -127,7 +127,7 @@ const questions = [
 
 {
     question: "Jika dua cucu pada sebuah Tree saling dihubungkan langsung, maka strukturnya berubah menjadi ....",
-    image: "assets/graph.svg",
+    image: "assets/graph.png",
     options: [
         "Leaf",
         "Tree",
