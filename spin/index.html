@@ -244,12 +244,10 @@ button.danger{
 <audio id="tick" src="https://actions.google.com/sounds/v1/impacts/light_knock.ogg"></audio>
 
 <script>
-// Menggunakan URL Google Apps Script (/exec) yang baru
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzsbn3bT8d9Hz3zTEgLYfMDNvmqbWuyqUp9mx07hVdPEEIJxXT-q92fnId8Fbux_Kzi/exec";
 
 let students = [];
 let history = [];
-let idxNama = 0, idxJK = 0, idxRombel = 0;
 
 const kelasSelect = document.getElementById('kelasSelect');
 const genderSelect = document.getElementById('genderSelect');
@@ -266,33 +264,14 @@ const tick = document.getElementById('tick');
 
 document.getElementById('closePopup').onclick = ()=> popup.style.display='none';
 
-function parseCSV(text){
- const rows = []; let cur='', arr=[], inQ=false;
- for(let i=0;i<text.length;i++){
-  const c=text[i];
-  if(c=='"'){ inQ=!inQ; continue; }
-  if(c==',' && !inQ){ arr.push(cur.trim()); cur=''; continue; }
-  if(c=='\n' && !inQ){ arr.push(cur.trim()); rows.push(arr); arr=[]; cur=''; continue; }
-  cur+=c;
- }
- if(cur||arr.length) arr.push(cur.trim()), rows.push(arr);
- return rows;
-}
+// Mengambil data menggunakan action getDataSiswa sesuai format JSON GAS baru
+fetch(GAS_URL + "?action=getDataSiswa", { redirect: "follow" })
+ .then(r => r.json())
+ .then(res => {
+  // Karena struktur dari GAS berupa array objek langsung [{nama, jk, rombel}, ...]
+  students = res.filter(s => s.nama);
 
-// Menambahkan redirect: 'follow' agar pengambilan data dari /exec sukses
-fetch(GAS_URL, { redirect: "follow" })
- .then(r=>r.text())
- .then(t=>{
-  const data = parseCSV(t);
-  const header = data[0];
-
-  idxNama = header.indexOf('Nama');
-  idxJK = header.indexOf('Jenis Kelamin');
-  idxRombel = header.indexOf('Rombel');
-
-  students = data.slice(1).filter(r => r[idxNama]);
-
-  const rombelSet = [...new Set(students.map(r => r[idxRombel]))]
+  const rombelSet = [...new Set(students.map(s => s.rombel))]
                       .filter(k => k)
                       .sort();
 
@@ -311,14 +290,10 @@ fetch(GAS_URL, { redirect: "follow" })
  });
 
 function getFiltered(){
-  return students.filter(r=>{
-    const nama = r[idxNama];
-    const jk = r[idxJK];
-    const rombel = r[idxRombel];
-
-    const okK = kelasSelect.value === 'ALL' || rombel === kelasSelect.value;
-    const okG = genderSelect.value === 'ALL' || jk === genderSelect.value;
-    return okK && okG && nama;
+  return students.filter(s=>{
+    const okK = kelasSelect.value === 'ALL' || s.rombel === kelasSelect.value;
+    const okG = genderSelect.value === 'ALL' || s.jk === genderSelect.value;
+    return okK && okG && s.nama;
   });
 }
 
@@ -353,7 +328,7 @@ spinBtn.onclick = ()=>{
 
   setTimeout(()=>{
     wheel.style.transform = 'rotate(0deg)';
-    const pick = pool[Math.floor(Math.random()*pool.length)][idxNama];
+    const pick = pool[Math.floor(Math.random()*pool.length)].nama;
     resultName.textContent = pick;
 
     history.push(pick);
