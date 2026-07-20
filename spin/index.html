@@ -244,8 +244,7 @@ button.danger{
 <audio id="tick" src="https://actions.google.com/sounds/v1/impacts/light_knock.ogg"></audio>
 
 <script>
-const SHEET_CSV_URL =
-"https://docs.google.com/spreadsheets/d/1AIQdkGC7LxGmNO6tGFAz7jqO_e6wCvGunyMx1b_GCaw/gviz/tq?tqx=out:csv&sheet=DATA";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzsbn3bT8d9Hz3zTEgLYfMDNvmqbWuyqUp9mx07hVdPEEIJxXT-q92fnId8Fbux_Kzi/exec";
 
 let students = [];
 let history = [];
@@ -279,7 +278,7 @@ function parseCSV(text){
  return rows;
 }
 
-fetch(SHEET_CSV_URL)
+fetch(GAS_URL)
  .then(r=>r.text())
  .then(t=>{
   const data = parseCSV(t);
@@ -303,6 +302,10 @@ fetch(SHEET_CSV_URL)
   });
 
   updateCount();
+ })
+ .catch(err => {
+  countInfo.textContent = "Gagal memuat data!";
+  console.error(err);
  });
 
 function getFiltered(){
