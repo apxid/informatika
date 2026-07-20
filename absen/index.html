@@ -6,6 +6,11 @@
 <title>Absensi Siswa</title>
 
 <style>
+/* Perbaikan: Tambahkan box-sizing border-box agar padding tidak merusak lebar */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body{
   font-family: system-ui;
   background:#eaf2ff;
@@ -13,21 +18,30 @@ body{
   justify-content:center;
   align-items:center;
   min-height:100vh;
+  margin: 0;
+  padding: 20px;
 }
 .card{
   background:#fff;
   padding:30px;
   border-radius:16px;
   width:420px;
+  max-width: 100%;
   box-shadow:0 20px 40px rgba(0,0,0,.15);
 }
-label{font-size:13px;margin-top:12px;display:block}
+label{font-size:13px;margin-top:12px;display:block;font-weight: 500;color: #334155;}
 select,input,button{
   width:100%;
   padding:10px;
   margin-top:5px;
   border-radius:8px;
   border:1px solid #cbd5e1;
+  font-family: inherit;
+  font-size: 14px;
+}
+input:read-only {
+  background-color: #f8fafc;
+  color: #64748b;
 }
 button{
   margin-top:20px;
@@ -35,6 +49,10 @@ button{
   color:#fff;
   border:none;
   cursor:pointer;
+  font-weight: 600;
+}
+button:hover {
+  background: #1d4ed8;
 }
 #msg{text-align:center;margin-top:12px}
 
@@ -57,7 +75,7 @@ table{
 }
 th,td{
   border:1px solid #e5e7eb;
-  padding:6px;
+  padding:8px;
   text-align:left;
 }
 th{
@@ -76,6 +94,7 @@ th{
   display:none;
   justify-content:center;
   align-items:center;
+  z-index: 1000;
 }
 
 .modal-box{
@@ -98,6 +117,10 @@ th{
 
 .modal-box button{
   background:#16a34a;
+  margin-top: 0;
+}
+.modal-box button:hover{
+  background:#15803d;
 }
 </style>
 </head>
@@ -116,7 +139,7 @@ th{
 
   <img src="assets/logo.png" alt="Logo Sekolah" class="logo">
 
-  <h3 style="text-align:center">Absensi Siswa</h3>
+  <h3 style="text-align:center; margin-top:0;">Absensi Siswa</h3>
 
 <label>Kelas</label>
 <select id="kelas"><option value="">-- Pilih Kelas --</option></select>
