@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin Siswa Lab 2</title>
+<style>
+html,body{
+  margin:0;
+  min-height:100vh;
+  background:#0b1220;
+  font-family:Segoe UI,Arial,sans-serif;
+}
+
+/* ===== HEADER ===== */
+.header{
+  background:linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
+  color:#fff;
+  border-radius:0 0 24px 24px;
+  padding:18px 22px;
+  margin-bottom:16px;
+  box-shadow:0 10px 30px rgba(37,99,235,.4);
+}
+
+/* LAYOUT */
+.container{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:20px;
+  padding:20px;
+  max-width:1200px;
+  margin:0 auto;
+}
+
+@media(max-width:900px){
+  .container{
+    grid-template-columns:1fr;
+  }
+}
+
+.card{
+  background:#0f172a;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 35px rgba(0,0,0,.4);
+  color:#e5e7eb;
+}
+
+/* CONTROL */
+.controls{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:16px;
+}
+
+select,button{
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid #1e293b;
+  font-size:14px;
+  background:#020617;
+  color:#e5e7eb;
+}
+
+button.primary{
+  background:#2563eb;
+  color:white;
+  border:none;
+  font-weight:600;
+}
+
+button.danger{
+  background:#ef4444;
+  color:white;
+  border:none;
+  font-weight:600;
+}
+
+/* ===== AREA SPIN ===== */
+.spin-area{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0;
+}
+
+/* PANAH (TETAP DIAM) */
+#arrow{
+  position:relative;
+  margin-bottom:-6px;
+  width:0;
+  height:0;
+  border-left:14px solid transparent;
+  border-right:14px solid transparent;
+  border-top:22px solid #facc15;
+  filter:drop-shadow(0 0 8px #facc15);
+  z-index:10;
+}
+
+/* RODA PUTAR */
+#wheelWrap{
+  position:relative;
+  width:340px;
+  height:340px;
+  border-radius:50%;
+  background:conic-gradient(
+    #ff4d4d 0deg 20deg,
+    #ffb703 20deg 40deg,
+    #fff176 40deg 60deg,
+    #7cff7c 60deg 80deg,
+    #2ee6a6 80deg 100deg,
+    #2ec9ff 100deg 120deg,
+    #2f7bff 120deg 140deg,
+    #8b5cff 140deg 160deg,
+    #ff5cff 160deg 180deg,
+    #ff4d4d 180deg 200deg,
+    #ffb703 200deg 220deg,
+    #fff176 220deg 240deg,
+    #7cff7c 240deg 260deg,
+    #2ee6a6 260deg 280deg,
+    #2ec9ff 280deg 300deg,
+    #2f7bff 300deg 320deg,
+    #8b5cff 320deg 340deg,
+    #ff5cff 340deg 360deg
+  );
+  border:6px solid #111827;
+  box-shadow:inset 0 0 25px rgba(255,255,255,.12), 0 0 20px #2563eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform 4.2s cubic-bezier(.17,.67,.32,.99);
+}
+
+/* CENTER LABEL */
+#centerLabel{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  background:#020617;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  text-align:center;
+  padding:10px;
+  box-shadow:0 6px 15px rgba(0,0,0,.4);
+  color:#e5e7eb;
+  border:2px solid #1e40af;
+}
+
+#resultName{font-size:18px;}
+
+/* HISTORY */
+.side{display:flex;flex-direction:column;gap:12px;}
+.history-header{display:flex;justify-content:space-between;align-items:center;}
+
+#historyList{list-style:none;padding:0;margin:0;}
+
+#historyList li{
+  border-radius:12px;
+  padding:10px 10px 10px 14px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:600;
+}
+
+/* POPUP */
+.popup{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.7);
+}
+
+.popup .box{
+  background:#020617;
+  color:#fff;
+  border-radius:22px;
+  padding:24px 28px;
+  text-align:center;
+  min-width:300px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h2>Spin Acak Siswa Lab 2</h2>
+</div>
+
+<div class="container">
+
+<!-- KIRI -->
+<div class="card">
+  <div class="controls">
+    <select id="kelasSelect"><option value="ALL">Semua Kelas</option></select>
+    <select id="genderSelect">
+      <option value="ALL">Semua</option>
+      <option value="L">Laki-laki</option>
+      <option value="P">Perempuan</option>
+    </select>
+    <button class="primary" id="spinBtn">SPIN SEKARANG</button>
+  </div>
+
+  <div class="spin-area">
+    <div id="arrow"></div>
+
+    <div id="wheelWrap">
+      <div id="centerLabel">
+        <div id="resultName">Klik SPIN</div>
+      </div>
+    </div>
+
+    <div id="countInfo">Memuat data…</div>
+  </div>
+</div>
+
+<!-- KANAN -->
+<div class="card side">
+  <div class="history-header">
+    <h3>5 Hasil Terakhir</h3>
+    <button class="danger" id="resetBtn">Reset Daftar</button>
+  </div>
+  <ul id="historyList"></ul>
+</div>
+
+</div>
+
+<div class="popup" id="popup">
+  <div class="box">
+    <h2>Terpilih</h2>
+    <div id="popupName" style="font-size:20px;font-weight:700;"></div>
+    <button id="closePopup">Tutup</button>
+  </div>
+</div>
+
+<audio id="drum" src="https://actions.google.com/sounds/v1/impacts/drum_roll.ogg"></audio>
+<audio id="tick" src="https://actions.google.com/sounds/v1/impacts/light_knock.ogg"></audio>
+
+<script>
+const SHEET_CSV_URL =
+"https://docs.google.com/spreadsheets/d/1qZw5EvPq3CsagpA4G4a7Wr9QaqLqFjzBsi_tYnAspQU/gviz/tq?tqx=out:csv&sheet=DATA";
+
+let students = [];
+let history = [];
+let idxNama = 0, idxJK = 0, idxRombel = 0;
+
+const kelasSelect = document.getElementById('kelasSelect');
+const genderSelect = document.getElementById('genderSelect');
+const spinBtn = document.getElementById('spinBtn');
+const wheel = document.getElementById('wheelWrap');
+const resultName = document.getElementById('resultName');
+const countInfo = document.getElementById('countInfo');
+const historyList = document.getElementById('historyList');
+const resetBtn = document.getElementById('resetBtn');
+const popup = document.getElementById('popup');
+const popupName = document.getElementById('popupName');
+const drum = document.getElementById('drum');
+const tick = document.getElementById('tick');
+
+document.getElementById('closePopup').onclick = ()=> popup.style.display='none';
+
+function parseCSV(text){
+ const rows = []; let cur='', arr=[], inQ=false;
+ for(let i=0;i<text.length;i++){
+  const c=text[i];
+  if(c=='"'){ inQ=!inQ; continue; }
+  if(c==',' && !inQ){ arr.push(cur.trim()); cur=''; continue; }
+  if(c=='\n' && !inQ){ arr.push(cur.trim()); rows.push(arr); arr=[]; cur=''; continue; }
+  cur+=c;
+ }
+ if(cur||arr.length) arr.push(cur.trim()), rows.push(arr);
+ return rows;
+}
+
+fetch(SHEET_CSV_URL)
+ .then(r=>r.text())
+ .then(t=>{
+  const data = parseCSV(t);
+  const header = data[0];
+
+  idxNama = header.indexOf('Nama');
+  idxJK = header.indexOf('Jenis Kelamin');
+  idxRombel = header.indexOf('Rombel');
+
+  students = data.slice(1).filter(r => r[idxNama]);
+
+  const rombelSet = [...new Set(students.map(r => r[idxRombel]))]
+                      .filter(k => k)
+                      .sort();
+
+  rombelSet.forEach(k =>{
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = k;
+    kelasSelect.appendChild(opt);
+  });
+
+  updateCount();
+ });
+
+function getFiltered(){
+  return students.filter(r=>{
+    const nama = r[idxNama];
+    const jk = r[idxJK];
+    const rombel = r[idxRombel];
+
+    const okK = kelasSelect.value === 'ALL' || rombel === kelasSelect.value;
+    const okG = genderSelect.value === 'ALL' || jk === genderSelect.value;
+    return okK && okG && nama;
+  });
+}
+
+function updateCount(){
+  const f = getFiltered();
+  countInfo.textContent = f.length + " siswa tersedia";
+}
+
+kelasSelect.onchange = updateCount;
+genderSelect.onchange = updateCount;
+
+function renderHistory(){
+  historyList.innerHTML='';
+  history.slice(0,5).forEach((name,i)=>{
+    const li=document.createElement('li');
+    li.textContent = (i+1)+". "+name;
+    historyList.appendChild(li);
+  });
+}
+
+resetBtn.onclick = ()=>{ history=[]; renderHistory(); };
+
+spinBtn.onclick = ()=>{
+  const pool = getFiltered();
+  if(pool.length===0){ alert('Tidak ada data untuk filter ini'); return; }
+
+  drum.currentTime = 0;
+  drum.play();
+
+  wheel.style.transform = 'rotate(1440deg)';
+  resultName.textContent = 'Berputar…';
+
+  setTimeout(()=>{
+    wheel.style.transform = 'rotate(0deg)';
+    const pick = pool[Math.floor(Math.random()*pool.length)][idxNama];
+    resultName.textContent = pick;
+
+    history.push(pick);
+    if(history.length>5) history.shift();
+    renderHistory();
+
+    popupName.textContent = pick;
+    popup.style.display = 'flex';
+  }, 4200);
+};
+</script>
+
+</body>
+</html>
