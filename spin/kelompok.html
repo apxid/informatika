@@ -172,11 +172,10 @@ button.danger{
 </div>
 
 <script>
-const SHEET_CSV_URL =
-"https://docs.google.com/spreadsheets/d/1AIQdkGC7LxGmNO6tGFAz7jqO_e6wCvGunyMx1b_GCaw/gviz/tq?tqx=out:csv&sheet=DATA";
+// Menggunakan link GAS /exec yang sama seperti halaman Spin Siswa
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzsbn3bT8d9Hz3zTEgLYfMDNvmqbWuyqUp9mx07hVdPEEIJxXT-q92fnId8Fbux_Kzi/exec";
 
 let students = [];
-let idxNama=0, idxJK=0, idxRombel=0;
 let lastGroups = []; // simpan hasil terakhir untuk Excel
 
 const kelasSelect = document.getElementById('kelasSelect');
@@ -189,41 +188,28 @@ const resetBtn = document.getElementById('resetBtn');
 const hasilArea = document.getElementById('hasilArea');
 const info = document.getElementById('info');
 
-function parseCSV(text){
- const rows=[]; let cur='', arr=[], inQ=false;
- for(let c of text){
-  if(c=='"'){inQ=!inQ; continue;}
-  if(c==',' && !inQ){arr.push(cur.trim());cur='';continue;}
-  if(c=='\n' && !inQ){arr.push(cur.trim());rows.push(arr);arr=[];cur='';continue;}
-  cur+=c;
- }
- if(cur||arr.length) arr.push(cur.trim()), rows.push(arr);
- return rows;
-}
+// Mengambil data siswa via endpoint JSON GAS yang sama
+fetch(GAS_URL + "?action=getDataSiswa", { redirect: "follow" })
+.then(r => r.json())
+.then(res => {
+  students = res.filter(s => s.nama);
 
-fetch(SHEET_CSV_URL)
-.then(r=>r.text())
-.then(t=>{
-  const data = parseCSV(t);
-  const header = data[0];
+  const kelas = [...new Set(students.map(s => s.rombel))]
+                .filter(k => k)
+                .sort();
 
-  idxNama = header.indexOf('Nama');
-  idxJK = header.indexOf('Jenis Kelamin');
-  idxRombel = header.indexOf('Rombel');
-
-  students = data.slice(1).filter(r=>r[idxNama]);
-
-  const kelas = [...new Set(students.map(r=>r[idxRombel]))]
-                .filter(k=>k).sort();
-
-  kelas.forEach(k=>{
-    const opt=document.createElement('option');
-    opt.value=k;
-    opt.textContent=k;
+  kelas.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = k;
     kelasSelect.appendChild(opt);
   });
 
-  info.textContent="Pilih kelas lalu buat kelompok.";
+  info.textContent = "Pilih kelas lalu buat kelompok.";
+})
+.catch(err => {
+  info.textContent = "Gagal memuat data!";
+  console.error(err);
 });
 
 function shuffle(arr){
@@ -235,7 +221,7 @@ function shuffle(arr){
 }
 
 function getKelasSiswa(){
-  return students.filter(r=>r[idxRombel]===kelasSelect.value);
+  return students.filter(s => s.rombel === kelasSelect.value);
 }
 
 buatBtn.onclick = ()=>{
@@ -262,8 +248,8 @@ buatBtn.onclick = ()=>{
   let groups=[];
 
   if(balanceCheck.checked){
-    let L = shuffle(pool.filter(r=>r[idxJK]=='L'));
-    let P = shuffle(pool.filter(r=>r[idxJK]=='P'));
+    let L = shuffle(pool.filter(s => s.jk === 'L'));
+    let P = shuffle(pool.filter(s => s.jk === 'P'));
 
     let groupCount = modeSelect.value==="kelompok"
       ? n
@@ -302,12 +288,12 @@ buatBtn.onclick = ()=>{
     title.textContent = "Kelompok " + (i+1) + " ("+g.length+" siswa)";
     box.appendChild(title);
 
-    g.forEach(r=>{
+    g.forEach(s=>{
       const div=document.createElement('div');
       div.className='member';
       div.innerHTML =
-      `<span>${r[idxNama]}</span>
-       <div class="badge ${r[idxJK]}">${r[idxJK]}</div>`;
+      `<span>${s.nama}</span>
+       <div class="badge ${s.jk}">${s.jk}</div>`;
       box.appendChild(div);
     });
 
@@ -332,8 +318,8 @@ excelBtn.onclick = ()=>{
     data.push([`KELOMPOK ${i+1}`,"",""]);
     data.push(["No","Nama","JK"]);
 
-    g.forEach((r,idx)=>{
-      data.push([idx+1, r[idxNama], r[idxJK]]);
+    g.forEach((s,idx)=>{
+      data.push([idx+1, s.nama, s.jk]);
     });
 
     data.push([]);
