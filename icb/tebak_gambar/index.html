@@ -41,7 +41,7 @@
                 <div class="feature-list">
                     <div class="feature">
                         <i class="fa-solid fa-circle-question"></i>
-                        <span id="totalQuestionsText">1 Soal</span>
+                        <span id="totalQuestionsText">4 Soal</span>
                     </div>
                     <div class="feature">
                         <i class="fa-solid fa-clock"></i>
@@ -76,7 +76,7 @@
             <!-- Progress -->
             <div class="progress-area">
                 <div class="progress-text">
-                    <span id="questionNumber">Soal 1 / 1</span>
+                    <span id="questionNumber">Soal 1 / 4</span>
                 </div>
                 <div class="progress">
                     <div id="progressBar"></div>
@@ -86,7 +86,7 @@
             <!-- Card Soal Gambar -->
             <div class="question-card">
                 <div class="question-image">
-                    <img id="questionImage" src="images/soal1.png" alt="Soal Tebak Gambar">
+                    <img id="questionImage" src="images/soal1.jpg" alt="Soal Tebak Gambar">
                 </div>
                 <div class="question-text">
                     <h2 id="question">Tebak arti dari susunan gambar di atas!</h2>
@@ -102,20 +102,20 @@
                     </button>
                 </div>
             </form>
-
-            <!-- Feedback Jawaban -->
-            <div id="feedback" class="hidden" style="margin-top: 20px;">
-                <div class="feedback-card">
-                    <div id="feedbackIcon">✅</div>
-                    <h3 id="feedbackTitle">Benar!</h3>
-                    <p id="feedbackText">Jawaban kamu tepat sekali!</p>
-                </div>
-                <button id="btnNext" class="btn-primary" style="margin-top: 15px; width: 100%;">
-                    Soal Berikutnya <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
         </div>
     </section>
+
+    <!-- MODAL POP-UP FEEDBACK (DI LAYER ATAS/OVERLAY) -->
+    <div id="feedbackModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div id="feedbackIcon" class="modal-icon">✅</div>
+            <h3 id="feedbackTitle">Benar!</h3>
+            <p id="feedbackText">Jawaban kamu tepat sekali!</p>
+            <button id="btnNext" class="btn-primary" style="margin-top: 20px; width: 100%;">
+                Lanjut Soal Berikutnya <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
 
     <!-- HASIL -->
     <section id="result" class="hidden">
@@ -131,7 +131,7 @@
                 <div class="summary">
                     <div class="summary-item">
                         <h3>Benar</h3>
-                        <span id="correctAnswer">1</span>
+                        <span id="correctAnswer">0</span>
                     </div>
                     <div class="summary-item">
                         <h3>Salah</h3>
@@ -162,4 +162,5 @@
     <script src="js/questions.js"></script>
     <script src="js/app.js"></script>
 </body>
+
 </html>
