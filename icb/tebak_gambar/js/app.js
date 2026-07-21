@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const scoreText = document.getElementById("score");
     const totalQuestionsText = document.getElementById("totalQuestionsText");
 
-    const feedback = document.getElementById("feedback");
+    // Pop-up Feedback Elements
+    const feedbackModal = document.getElementById("feedbackModal");
     const feedbackIcon = document.getElementById("feedbackIcon");
     const feedbackTitle = document.getElementById("feedbackTitle");
     const feedbackText = document.getElementById("feedbackText");
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const soundWrong = document.getElementById("soundWrong");
     const soundFinish = document.getElementById("soundFinish");
 
-    // Variables Game
+    // Game Variables
     let currentIndex = 0;
     let score = 0;
     let correctCount = 0;
@@ -38,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         splash.classList.add("hidden");
         home.classList.remove("hidden");
-        totalQuestionsText.textContent = `${questionsData.length} Soal`;
+        if (typeof questionsData !== "undefined") {
+            totalQuestionsText.textContent = `${questionsData.length} Soal`;
+        }
     }, 2500);
 
     // 2. Start Game
@@ -52,23 +55,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Load Soal
     function loadQuestion() {
         const currentData = questionsData[currentIndex];
-        
+
         questionImage.src = currentData.image;
         questionNumberText.textContent = `Soal ${currentIndex + 1} / ${questionsData.length}`;
         progressBar.style.width = `${((currentIndex + 1) / questionsData.length) * 100}%`;
-        
+
         userAnswerInput.value = "";
         userAnswerInput.disabled = false;
         btnSubmit.disabled = false;
-        
-        feedback.classList.add("hidden");
+
+        // Sembunyikan Pop-up Modal saat memuat soal baru
+        feedbackModal.classList.add("hidden");
         userAnswerInput.focus();
     }
 
     // 4. Submit Jawaban
     answerForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        
+
         const userInput = userAnswerInput.value.trim().toLowerCase().replace(/\s+/g, ' ');
         const correctAnswer = questionsData[currentIndex].answer.trim().toLowerCase().replace(/\s+/g, ' ');
 
@@ -84,8 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
             correctCount++;
             scoreText.textContent = Math.round(score);
 
-            feedbackIcon.textContent = "✅";
-            feedbackTitle.textContent = "Benar!";
+            feedbackIcon.textContent = "🎉";
+            feedbackTitle.textContent = "BENAR!";
             feedbackText.textContent = `Mantap! Jawabannya adalah "${questionsData[currentIndex].answer}"`;
         } else {
             // Jawaban Salah
@@ -93,24 +97,26 @@ document.addEventListener("DOMContentLoaded", () => {
             wrongCount++;
 
             feedbackIcon.textContent = "❌";
-            feedbackTitle.textContent = "Kurang Tepat!";
+            feedbackTitle.textContent = "KURANG TEPAT!";
             feedbackText.textContent = `Jawaban yang benar: "${questionsData[currentIndex].answer}"`;
         }
 
-        feedback.classList.remove("hidden");
+        // Tampilkan Modal Pop-up Feedback
+        feedbackModal.classList.remove("hidden");
     });
 
-    // 5. Tombol Soal Berikutnya
+    // 5. Tombol Lanjut Soal Berikutnya (Di dalam Pop-up)
     btnNext.addEventListener("click", () => {
         currentIndex++;
         if (currentIndex < questionsData.length) {
             loadQuestion();
         } else {
+            feedbackModal.classList.add("hidden");
             showResult();
         }
     });
 
-    // 6. Tampilkan Hasil
+    // 6. Tampilkan Hasil Akhir
     function showResult() {
         if (soundFinish) soundFinish.play();
         quiz.classList.add("hidden");
