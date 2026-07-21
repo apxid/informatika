@@ -1,141 +1,130 @@
 /*
 ==========================================
-TREE & GRAPH QUIZ
+TREE & GRAPH QUIZ (SMP Level)
 Developer : MB
-Version : 1.0
+Version : 1.1
 ==========================================
 */
 
 const questions = [
-
-{
-    question: "Node yang berada paling atas pada Tree disebut ....",
-    image: "assets/tree.png",
-    options: [
-        "Leaf",
-        "Root",
-        "Parent",
-        "Child"
-    ],
-    answer: 1,
-    explanation: "Root adalah node pertama atau node paling atas pada struktur Tree."
-},
-
-{
-    question: "Node yang mempunyai Parent tetapi tidak mempunyai Child disebut ....",
-    image: "assets/leaf.png",
-    options: [
-        "Root",
-        "Parent",
-        "Leaf",
-        "Graph"
-    ],
-    answer: 2,
-    explanation: "Leaf adalah node terakhir karena tidak mempunyai Child."
-},
-
-{
-    question: "Pada File Manager Android, 'Memori Internal' merupakan contoh ....",
-    image: "assets/folder.png",
-    options: [
-        "Leaf",
-        "Root",
-        "Child",
-        "Graph"
-    ],
-    answer: 1,
-    explanation: "Semua folder berada di bawah Memori Internal sehingga Memori Internal berperan sebagai Root."
-},
-
-{
-    question: "Folder 'Music' berada di bawah 'Memori Internal'. Folder Music merupakan ....",
-    image: "assets/folder.png",
-    options: [
-        "Root",
-        "Parent",
-        "Leaf",
-        "Graph"
-    ],
-    answer: 1,
-    explanation: "Music mempunyai Parent (Memori Internal) dan dapat memiliki Child sehingga termasuk Parent."
-},
-
-{
-    question: "File 'Aku.mp3' berada di dalam folder Music. Aku.mp3 merupakan ....",
-    image: "assets/music.png",
-    options: [
-        "Leaf",
-        "Root",
-        "Parent",
-        "Graph"
-    ],
-    answer: 0,
-    explanation: "File biasanya tidak memiliki Child sehingga termasuk Leaf."
-},
-
-{
-    question: "Google Maps lebih tepat menggunakan struktur ....",
-    image: "assets/graph.png",
-    options: [
-        "Tree",
-        "Graph",
-        "Root",
-        "Leaf"
-    ],
-    answer: 1,
-    explanation: "Jalan dapat memiliki banyak jalur sehingga lebih sesuai menggunakan Graph."
-},
-
-{
-    question: "Hubungan pertemanan di Instagram merupakan contoh ....",
-    image: "assets/graph.png",
-    options: [
-        "Tree",
-        "Graph",
-        "Leaf",
-        "Parent"
-    ],
-    answer: 1,
-    explanation: "Seseorang dapat berteman dengan banyak orang sehingga membentuk Graph."
-},
-
-{
-    question: "Apakah semua Tree merupakan Graph?",
-    image: "assets/tree.png",
-    options: [
-        "Ya",
-        "Tidak",
-        "Kadang-kadang",
-        "Tidak tahu"
-    ],
-    answer: 0,
-    explanation: "Tree merupakan salah satu jenis khusus dari Graph."
-},
-
-{
-    question: "Mengapa tidak semua Graph disebut Tree?",
-    image: "assets/graph.png",
-    options: [
-        "Karena memiliki lebih dari satu Root atau membentuk siklus",
-        "Karena selalu mempunyai Leaf",
-        "Karena semua Graph mempunyai Parent",
-        "Karena Graph tidak mempunyai Node"
-    ],
-    answer: 0,
-    explanation: "Graph dapat memiliki siklus (loop) atau lebih dari satu titik awal sehingga tidak memenuhi aturan Tree."
-},
-
-{
-    question: "Jika dua cucu pada sebuah Tree saling dihubungkan langsung, maka strukturnya berubah menjadi ....",
-    image: "assets/graph.png",
-    options: [
-        "Leaf",
-        "Tree",
-        "Graph",
-        "Parent"
-    ],
-    answer: 2,
-    explanation: "Hubungan tambahan tersebut membuat struktur tidak lagi memenuhi aturan Tree sehingga menjadi Graph."
-}
-
+    {
+        question: "Titik utama atau folder paling atas pada struktur Tree disebut ....",
+        image: "assets/tree.png",
+        options: [
+            "Leaf (Daun)",
+            "Root (Akar)",
+            "Parent (Orang Tua)",
+            "Child (Anak)"
+        ],
+        answer: 1,
+        explanation: "Root adalah titik/folder paling atas (posisi awal) pada struktur Tree."
+    },
+    {
+        question: "Bagian Tree yang berada paling ujung dan tidak punya 'anak' lagi disebut ....",
+        image: "assets/leaf.png",
+        options: [
+            "Root",
+            "Parent",
+            "Leaf",
+            "Node"
+        ],
+        answer: 2,
+        explanation: "Leaf (daun) adalah bagian paling ujung pada Tree yang tidak bercabang lagi."
+    },
+    {
+        question: "Pada File Manager HP, 'Memori Internal' berada di posisi paling atas. Memori Internal ini berperan sebagai ....",
+        image: "assets/folder.png",
+        options: [
+            "Leaf",
+            "Root",
+            "Child",
+            "File"
+        ],
+        answer: 1,
+        explanation: "Semua folder berada di dalam Memori Internal, jadi Memori Internal adalah Root (akar)-nya."
+    },
+    {
+        question: "Folder 'Musik' menyimpan banyak lagu di dalamnya. Dalam struktur Tree, folder 'Musik' disebut ....",
+        image: "assets/folder.png",
+        options: [
+            "Root",
+            "Parent",
+            "Leaf",
+            "Graph"
+        ],
+        answer: 1,
+        explanation: "Karena folder Musik membawahi/menyimpan file-file lagu, maka ia bertindak sebagai Parent (orang tua)."
+    },
+    {
+        question: "File lagu 'Lagu_Favorite.mp3' berada di dalam folder Musik dan tidak bisa diisi file lain. File tersebut merupakan ....",
+        image: "assets/music.png",
+        options: [
+            "Leaf",
+            "Root",
+            "Parent",
+            "Graph"
+        ],
+        answer: 0,
+        explanation: "File adalah ujung dari struktur folder (tidak punya anak lagi), sehingga disebut Leaf."
+    },
+    {
+        question: "Aplikasi Google Maps menampilkan peta jalan yang saling terhubung antar kota. Struktur data yang paling cocok adalah ....",
+        image: "assets/graph.png",
+        options: [
+            "Tree",
+            "Graph",
+            "Root",
+            "Leaf"
+        ],
+        answer: 1,
+        explanation: "Peta jalanan memiliki banyak jalur bolak-balik dan bercabang bebas, sehingga menggunakan Graph."
+    },
+    {
+        question: "Jaringan pertemanan di media sosial (seperti Instagram atau WhatsApp) menggunakan contoh struktur ....",
+        image: "assets/graph.png",
+        options: [
+            "Tree",
+            "Graph",
+            "Leaf",
+            "Root"
+        ],
+        answer: 1,
+        explanation: "Setiap orang bisa saling berteman dengan siapa saja secara bebas tanpa urutan atas-bawah, jadi berbentuk Graph."
+    },
+    {
+        question: "Ciri utama dari struktur Tree yang membedakannya dengan Graph adalah ....",
+        image: "assets/tree.png",
+        options: [
+            "Memiliki urutan bertingkat dari atas ke bawah (hierarki)",
+            "Bisa terhubung secara acak bebas",
+            "Tidak memiliki titik awal",
+            "Selalu berbentuk lingkaran"
+        ],
+        answer: 0,
+        explanation: "Tree memiliki struktur bertingkat (hierarki) seperti silsilah keluarga atau folder komputer."
+    },
+    {
+        question: "Dalam struktur Graph, titik yang saling terhubung (seperti kota atau akun media sosial) disebut ....",
+        image: "assets/graph.png",
+        options: [
+            "Node / Vertex",
+            "Root",
+            "Leaf",
+            "Branch"
+        ],
+        answer: 0,
+        explanation: "Titik-titik dalam Graph disebut Node atau Vertex, sedangkan garis penghubungnya disebut Edge."
+    },
+    {
+        question: "Struktur data mana yang cocok untuk menggambarkan 'Silsilah Keluarga' (Kakek -> Orang Tua -> Anak)?",
+        image: "assets/tree.png",
+        options: [
+            "Graph",
+            "Tree",
+            "Circle",
+            "Random"
+        ],
+        answer: 1,
+        explanation: "Silsilah keluarga punya urutan keturunan yang jelas dari atas ke bawah, sehingga menggunakan Tree."
+    }
 ];
