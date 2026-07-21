@@ -126,7 +126,7 @@ section {
     flex: 1;
 }
 
-.home-card, .question-card, .result-card, .feedback-card {
+.home-card, .question-card, .result-card {
     background: var(--card-bg);
     border-radius: 20px;
     padding: 30px;
@@ -249,7 +249,7 @@ section {
 .question-image img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Memastikan gambar selalu utuh & proporsional */
+    object-fit: contain; /* Gambar selalu utuh & proporsional */
     border-radius: 10px;
     padding: 8px;
 }
@@ -288,20 +288,64 @@ section {
 }
 
 /* ==========================================
-   FEEDBACK & RESULT
+   MODAL POP-UP FEEDBACK (OVERLAY)
    ========================================== */
-.feedback-card {
-    background: #f8fafc;
-    border: 2px solid var(--border-color);
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Efek gelap latar belakang */
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
     padding: 20px;
-    border-radius: 15px;
 }
 
-#feedbackIcon {
-    font-size: 32px;
-    margin-bottom: 5px;
+.modal-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: popupAnimation 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.modal-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+.modal-card h3 {
+    font-size: 22px;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.modal-card p {
+    font-size: 15px;
+    color: var(--text-muted);
+}
+
+@keyframes popupAnimation {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ==========================================
+   RESULT CARD
+   ========================================== */
 .trophy {
     font-size: 60px;
     margin-bottom: 10px;
