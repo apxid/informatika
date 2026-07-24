@@ -112,9 +112,9 @@ function startQuiz() {
 // ==========================================
 
 function loadQuestion() {
-    // Reset Feedback Card
+    // Sembunyikan Pop-up Feedback saat soal baru dimuat
     feedbackCard.classList.add('hidden');
-    feedbackCard.className = 'feedback-card hidden'; // Reset semua kelas warna
+    feedbackCard.className = 'feedback-card hidden'; 
     
     const currentQ = shuffledQuestions[currentQuestionIndex];
     
@@ -199,7 +199,7 @@ function handleWrong(explanation) {
     showFeedbackUI(false, explanation);
 }
 
-// Tampilkan Kartu Feedback (Penjelasan)
+// Tampilkan Kartu Feedback (Penjelasan Modal Pop-up)
 function showFeedbackUI(isCorrect, explanation) {
     feedbackCard.classList.remove('hidden');
     if (isCorrect) {
