@@ -1,41 +1,20 @@
 /**
- * MODUL INTERAKSI REST API GOOGLE APPS SCRIPT
+ * KONFIGURASI APLIKASI CLASS RACE
  */
-const GAS = {
-  async fetchAPI(url, options = {}) {
-    try {
-      const response = await fetch(url, options);
-      return await response.json();
-    } catch (error) {
-      console.error("API Error:", error);
-      return { success: false, message: "Gagal terhubung ke backend server." };
-    }
+const CONFIG = {
+  // URL Web App Google Apps Script Anda
+  GAS_API_URL: "https://script.google.com/macros/s/AKfycbx4zxYFR0NGmkUcDNI4appEHdCAkxH1GZEIn4EPAsWmXeOst8dScimjo6kzRla60_HJUw/exec",
+
+  THEMES: {
+    duck: { name: "Duck Race", icon: "🦆", bg: "linear-gradient(to bottom, #4facfe, #00f2fe)" },
+    robot: { name: "Robot Race", icon: "🤖", bg: "linear-gradient(to bottom, #141e30, #243b55)" },
+    car: { name: "Car Race", icon: "🏎️", bg: "linear-gradient(to bottom, #373b44, #4286f4)" },
+    rocket: { name: "Rocket Race", icon: "🚀", bg: "linear-gradient(to bottom, #0f2027, #203a43, #2c5364)" },
+    horse: { name: "Horse Race", icon: "🐎", bg: "linear-gradient(to bottom, #11998e, #38ef7d)" },
+    turtle: { name: "Turtle Race", icon: "🐢", bg: "linear-gradient(to bottom, #134e5e, #71b280)" },
+    penguin: { name: "Penguin Race", icon: "🐧", bg: "linear-gradient(to bottom, #e6dada, #274046)" },
+    dino: { name: "Dinosaur Race", icon: "🦖", bg: "linear-gradient(to bottom, #1e3c72, #2a5298)" }
   },
 
-  async getClasses() {
-    return await this.fetchAPI(`${CONFIG.GAS_API_URL}?action=getClasses`);
-  },
-
-  async getRandomStudents(className, count, category, excludePrevious) {
-    const params = new URLSearchParams({
-      action: 'randomStudents',
-      className,
-      count,
-      category,
-      excludePrevious
-    });
-    return await this.fetchAPI(`${CONFIG.GAS_API_URL}?${params.toString()}`);
-  },
-
-  async saveWinner(payload) {
-    return await this.fetchAPI(CONFIG.GAS_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Mencegah Preflight CORS pada GAS
-      body: JSON.stringify({ action: 'saveWinner', payload })
-    });
-  },
-
-  async getHistory() {
-    return await this.fetchAPI(`${CONFIG.GAS_API_URL}?action=getHistory`);
-  }
+  CATEGORIES: ["Tanya Jawab", "Kuis Harian", "Presentasi", "Kerja Kelompok", "Lainnya"]
 };
