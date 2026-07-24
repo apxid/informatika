@@ -115,6 +115,21 @@ body {
 .question-text { font-size: 1.4rem; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
 
 /* ==================================================
+   MODAL BACKDROP (LATAR BELAKANG GELAP LAYAR PENUH)
+================================================== */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 999;
+}
+
+/* ==================================================
    FEEDBACK MODAL (POP-UP TENGAH LAYAR)
 ================================================== */
 .feedback-card {
@@ -133,20 +148,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-/* Latar belakang gelap transparan layar penuh untuk fokus pop-up */
-.feedback-card::before {
-    content: '';
-    position: fixed;
-    top: 0; 
-    left: 0; 
-    width: 100vw; 
-    height: 100vh;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: -1;
 }
 
 .feedback-card.correct-feedback { 
