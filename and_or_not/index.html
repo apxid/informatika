@@ -80,17 +80,20 @@
                     <!-- Tombol Jawaban akan di-generate oleh JavaScript -->
                 </div>
             </div>
-
-            <!-- Feedback Card (Muncul setelah menjawab) -->
-            <div id="feedback-card" class="feedback-card hidden">
-                <div id="feedback-icon" class="feedback-icon"></div>
-                <h4 id="feedback-title">Benar/Salah</h4>
-                <p id="feedback-text">Penjelasan akan muncul di sini.</p>
-                <button id="btn-next" class="btn-primary">Lanjut <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
             
         </div>
     </section>
+
+    <!-- MODAL BACKDROP (Latar Belakang Gelap Terpisah untuk Pop-up) -->
+    <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+
+    <!-- Feedback Card (Muncul di tengah layar setelah menjawab) -->
+    <div id="feedback-card" class="feedback-card hidden">
+        <div id="feedback-icon" class="feedback-icon"></div>
+        <h4 id="feedback-title">Benar/Salah</h4>
+        <p id="feedback-text">Penjelasan akan muncul di sini.</p>
+        <button id="btn-next" class="btn-primary">Lanjut <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
 
     <!-- 4. RESULT SCREEN -->
     <section id="result-screen" class="screen flex-center hidden">
