@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Decision Challenge - Berpikir Seperti Komputer</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Utama -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Audio Elements (Siapkan file di dalam folder assets/audio/) -->
+    <audio id="audio-correct" src="assets/audio/correct.mp3" preload="auto"></audio>
+    <audio id="audio-wrong" src="assets/audio/wrong.mp3" preload="auto"></audio>
+    <audio id="audio-finish" src="assets/audio/finish.mp3" preload="auto"></audio>
+
+    <!-- 1. SPLASH SCREEN -->
+    <section id="splash-screen" class="screen flex-center">
+        <div class="splash-content">
+            <i class="fa-solid fa-robot fa-5x robot-icon"></i>
+            <div class="loader"></div>
+            <h1>AI DECISION CHALLENGE</h1>
+            <p>Ice Breaking Informatika Kelas IX</p>
+        </div>
+    </section>
+
+    <!-- 2. HOME SCREEN -->
+    <section id="home-screen" class="screen flex-center hidden">
+        <div class="glass-card home-card">
+            <i class="fa-solid fa-microchip fa-4x mb-20 text-primary"></i>
+            <h1 class="title">AI DECISION<br>CHALLENGE</h1>
+            <h2 class="subtitle">"Berpikir Seperti Komputer"</h2>
+            <p class="description">Bisakah kamu mengambil keputusan seperti komputer?</p>
+            
+            <div class="info-card">
+                <p><i class="fa-solid fa-list-check"></i> 10 Tantangan</p>
+                <p><i class="fa-solid fa-stopwatch"></i> ±5 Menit</p>
+                <p><i class="fa-solid fa-star"></i> Skor Otomatis</p>
+            </div>
+            
+            <button id="btn-start" class="btn-primary mt-20">
+                <i class="fa-solid fa-play"></i> MULAI
+            </button>
+        </div>
+    </section>
+
+    <!-- 3. QUIZ SCREEN -->
+    <section id="quiz-screen" class="screen hidden">
+        <div class="quiz-container glass-card">
+            
+            <!-- Header Quiz -->
+            <header class="quiz-header">
+                <div class="header-info">
+                    <h2>Tantangan Logika</h2>
+                    <div class="score-badge">Score: <span id="current-score">0</span></div>
+                </div>
+                <div class="progress-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+                <p class="question-count">Soal <span id="current-q-num">1</span> dari <span id="total-q-num">10</span></p>
+            </header>
+
+            <!-- Main Question Area -->
+            <div class="question-area">
+                <div class="illustration-container">
+                    <i id="question-icon" class="fa-solid fa-question fa-4x"></i>
+                </div>
+                <h3 id="question-text" class="question-text">Memuat pertanyaan...</h3>
+                
+                <div id="answer-buttons" class="answer-grid">
+                    <!-- Tombol Jawaban akan di-generate oleh JavaScript -->
+                </div>
+            </div>
+
+            <!-- Feedback Card (Muncul setelah menjawab) -->
+            <div id="feedback-card" class="feedback-card hidden">
+                <div id="feedback-icon" class="feedback-icon"></div>
+                <h4 id="feedback-title">Benar/Salah</h4>
+                <p id="feedback-text">Penjelasan akan muncul di sini.</p>
+                <button id="btn-next" class="btn-primary">Lanjut <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- 4. RESULT SCREEN -->
+    <section id="result-screen" class="screen flex-center hidden">
+        <div class="glass-card result-card">
+            <i class="fa-solid fa-robot fa-5x text-primary mb-20 bounce-anim"></i>
+            <h1 class="title">TANTANGAN SELESAI!</h1>
+            
+            <div class="score-display">
+                <span id="final-score" class="score-number">100</span>
+                <span class="score-label">Total Skor</span>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-box correct">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span id="correct-count">0</span> Benar
+                </div>
+                <div class="stat-box wrong">
+                    <i class="fa-solid fa-times-circle"></i>
+                    <span id="wrong-count">0</span> Salah
+                </div>
+            </div>
+
+            <div class="predikat-box">
+                <h3>Predikat Kamu:</h3>
+                <h2 id="predikat-text" class="text-primary">Computer Brain</h2>
+            </div>
+
+            <div class="closing-message">
+                <p><strong>Hebat!</strong> 🤖</p>
+                <p>Tanpa sadar kamu sudah menggunakan cara berpikir komputer.</p>
+                <p>Materi berikutnya kita akan mempelajari bagaimana komputer menggunakan operator <strong>AND</strong>, <strong>OR</strong>, dan <strong>NOT</strong> untuk mengambil keputusan.</p>
+            </div>
+
+            <button id="btn-restart" class="btn-primary mt-20">
+                <i class="fa-solid fa-rotate-right"></i> Main Lagi
+            </button>
+        </div>
+    </section>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <!-- Scripts (Pastikan urutan load benar) -->
+    <script src="js/questions.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
