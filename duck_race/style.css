@@ -1,0 +1,181 @@
+:root {
+  --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-color: #38bdf8;
+  --text-color: #f8fafc;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.glass-container {
+  width: 90%;
+  max-width: 1100px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+select, input[type="checkbox"] {
+  padding: 0.6rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  outline: none;
+}
+
+select option {
+  background: #1e293b;
+  color: #fff;
+}
+
+.form-checkbox {
+  margin: 1.5rem 0;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.5rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: #0f172a;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.2);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: #fff;
+}
+
+/* Race Track Styling */
+.track-box {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.lane {
+  position: relative;
+  height: 45px;
+  border-bottom: 1px dashed var(--glass-border);
+  display: flex;
+  align-items: center;
+}
+
+.runner {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: left 0.1s linear;
+}
+
+.avatar {
+  font-size: 1.5rem;
+}
+
+/* Countdown Overlay */
+#countdown-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 6rem;
+  font-weight: bold;
+  z-index: 10;
+  border-radius: 12px;
+}
+
+/* Podium Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.glass-card {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid var(--glass-border);
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 15px;
+  margin: 2rem 0;
+}
+
+.podium-slot {
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 100px;
+}
+
+.rank-1 { height: 120px; border: 2px solid #ffd700; }
+.rank-2 { height: 100px; border: 2px solid #c0c0c0; }
+.rank-3 { height: 80px; border: 2px solid #cd7f32; }
+
+.hidden { display: none !important; }
