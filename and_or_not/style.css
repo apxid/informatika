@@ -115,16 +115,56 @@ body {
 .question-text { font-size: 1.4rem; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
 
 /* ==================================================
-   FEEDBACK CARD
+   FEEDBACK MODAL (POP-UP TENGAH LAYAR)
 ================================================== */
-.feedback-card { margin-top: 30px; padding: 20px; border-radius: 15px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.feedback-card.correct-feedback { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--success); }
-.feedback-card.wrong-feedback { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); }
-.feedback-icon { font-size: 3rem; margin-bottom: 10px; }
+.feedback-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 450px;
+    z-index: 1000;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    animation: popModal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Latar belakang gelap transparan untuk fokus pop-up */
+.feedback-card::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: -1;
+    border-radius: 20px;
+}
+
+.feedback-card.correct-feedback { 
+    background: rgba(15, 23, 42, 0.95); 
+    border: 2px solid var(--success); 
+}
+
+.feedback-card.wrong-feedback { 
+    background: rgba(15, 23, 42, 0.95); 
+    border: 2px solid var(--danger); 
+}
+
+.feedback-icon { font-size: 3.5rem; margin-bottom: 10px; }
 .feedback-card.correct-feedback .feedback-icon { color: var(--success); }
 .feedback-card.wrong-feedback .feedback-icon { color: var(--danger); }
-.feedback-card h4 { font-size: 1.3rem; margin-bottom: 10px; }
-.feedback-card p { font-size: 1rem; margin-bottom: 15px; color: #e2e8f0; }
+
+.feedback-card h4 { font-size: 1.5rem; margin-bottom: 10px; font-weight: 700; }
+.feedback-card p { font-size: 1rem; margin-bottom: 20px; color: #cbd5e1; line-height: 1.5; }
+
+@keyframes popModal {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
 
 /* ==================================================
    RESULT SCREEN
@@ -146,7 +186,6 @@ body {
 @keyframes loading { 0% { width: 0; } 100% { width: 100%; } }
 @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
 .bounce-anim { animation: float 2s infinite; }
 
 .shake { animation: shake 0.5s; }
