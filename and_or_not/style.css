@@ -1,0 +1,184 @@
+/* ==================================================
+   VARIABEL & RESET
+================================================== */
+:root {
+    --primary: #2563EB;
+    --dark-blue: #0D47A1;
+    --bg-color: #0f172a;
+    --text-light: #ffffff;
+    --text-dark: #1e293b;
+    --gray-light: #f1f5f9;
+    --success: #10b981;
+    --danger: #ef4444;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-color), var(--dark-blue));
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ==================================================
+   UTILITY CLASSES
+================================================== */
+.hidden { display: none !important; }
+.flex-center { display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; }
+.mb-20 { margin-bottom: 20px; }
+.mt-20 { margin-top: 20px; }
+.text-primary { color: #60a5fa; }
+.screen { width: 100%; min-height: 100vh; padding: 20px; transition: opacity 0.5s ease-in-out; }
+
+/* ==================================================
+   GLASSMORPHISM & CARDS
+================================================== */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    animation: slideUp 0.6s ease-out;
+}
+
+/* ==================================================
+   TYPOGRAPHY
+================================================== */
+.title { font-size: 2.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 10px; }
+.subtitle { font-size: 1.2rem; font-weight: 400; color: #93c5fd; margin-bottom: 20px; }
+.description { font-size: 1rem; color: #cbd5e1; margin-bottom: 30px; }
+
+/* ==================================================
+   SPLASH SCREEN
+================================================== */
+.splash-content { text-align: center; animation: fadeInOut 2.5s forwards; }
+.robot-icon { color: var(--primary); margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
+.loader { width: 50px; height: 5px; background: var(--glass-bg); border-radius: 5px; margin: 20px auto; overflow: hidden; position: relative; }
+.loader::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--primary); animation: loading 2s linear forwards; }
+
+/* ==================================================
+   HOME SCREEN
+================================================== */
+.info-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; display: flex; justify-content: space-around; font-size: 0.9rem; margin-bottom: 20px; }
+.info-card i { color: #60a5fa; margin-right: 5px; }
+
+/* ==================================================
+   BUTTONS
+================================================== */
+.btn-primary {
+    background: var(--primary); color: white; border: none; padding: 12px 30px; font-size: 1.1rem;
+    font-weight: 600; border-radius: 30px; cursor: pointer; transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); display: inline-flex; align-items: center; gap: 10px;
+}
+.btn-primary:hover { background: #1d4ed8; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6); }
+
+.answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+.btn-answer {
+    background: rgba(255, 255, 255, 0.05); border: 2px solid var(--glass-border); color: white;
+    padding: 15px; font-size: 1rem; font-weight: 600; border-radius: 15px; cursor: pointer;
+    transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-answer:hover:not(:disabled) { background: rgba(255,255,255,0.15); transform: scale(1.02); }
+.btn-answer:disabled { cursor: not-allowed; opacity: 0.7; }
+.btn-answer.correct-ans { background: var(--success); border-color: var(--success); }
+.btn-answer.wrong-ans { background: var(--danger); border-color: var(--danger); }
+
+/* ==================================================
+   QUIZ SCREEN
+================================================== */
+.quiz-container { max-width: 800px; margin: 0 auto; padding: 30px; }
+.quiz-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+.header-info { display: flex; justify-content: space-between; align-items: center; }
+.header-info h2 { font-size: 1.5rem; }
+.score-badge { background: var(--primary); padding: 5px 15px; border-radius: 20px; font-weight: 600; }
+.progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+.progress-bar { height: 100%; width: 0%; background: #60a5fa; transition: width 0.4s ease; }
+.question-count { font-size: 0.9rem; color: #94a3b8; text-align: right; }
+
+.question-area { text-align: center; }
+.illustration-container { width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; border: 2px solid var(--primary); }
+.illustration-container i { color: #93c5fd; }
+.question-text { font-size: 1.4rem; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
+
+/* ==================================================
+   FEEDBACK CARD
+================================================== */
+.feedback-card { margin-top: 30px; padding: 20px; border-radius: 15px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.feedback-card.correct-feedback { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--success); }
+.feedback-card.wrong-feedback { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--danger); }
+.feedback-icon { font-size: 3rem; margin-bottom: 10px; }
+.feedback-card.correct-feedback .feedback-icon { color: var(--success); }
+.feedback-card.wrong-feedback .feedback-icon { color: var(--danger); }
+.feedback-card h4 { font-size: 1.3rem; margin-bottom: 10px; }
+.feedback-card p { font-size: 1rem; margin-bottom: 15px; color: #e2e8f0; }
+
+/* ==================================================
+   RESULT SCREEN
+================================================== */
+.score-display { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 50%; width: 150px; height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto 20px; border: 4px solid var(--primary); }
+.score-number { font-size: 3rem; font-weight: 700; color: #60a5fa; line-height: 1; }
+.score-label { font-size: 0.9rem; color: #cbd5e1; }
+.stats-row { display: flex; justify-content: space-around; margin-bottom: 20px; }
+.stat-box { padding: 10px 20px; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.stat-box.correct { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.stat-box.wrong { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.predikat-box { margin-bottom: 20px; }
+.closing-message { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.6; text-align: left; border-left: 4px solid var(--primary); }
+
+/* ==================================================
+   ANIMATIONS & CONFETTI
+================================================== */
+@keyframes fadeInOut { 0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes loading { 0% { width: 0; } 100% { width: 100%; } }
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+.bounce-anim { animation: float 2s infinite; }
+
+.shake { animation: shake 0.5s; }
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* Confetti CSS Engine */
+#confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+.confetti { position: absolute; width: 10px; height: 10px; background-color: #f00; animation: fall 3s linear forwards; }
+@keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+/* ==================================================
+   RESPONSIVE DESIGN
+================================================== */
+@media (max-width: 768px) {
+    .answer-grid { grid-template-columns: 1fr; }
+    .title { font-size: 2rem; }
+    .glass-card { padding: 25px; }
+}
+@media (max-width: 480px) {
+    .info-card { flex-direction: column; gap: 10px; align-items: center; }
+    .stats-row { flex-direction: column; gap: 10px; }
+    .illustration-container { width: 90px; height: 90px; }
+}
