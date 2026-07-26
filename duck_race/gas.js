@@ -4,7 +4,7 @@
  * Mendukung panggilan internal (google.script.run) dan external (fetch API dengan CORS bypass).
  */
 
-const GAS = {
+window.GAS = {
   /**
    * Helper internal untuk memvalidasi dan menormalisasi respon JSON dari GAS
    * @param {any} result 
@@ -18,7 +18,7 @@ const GAS = {
     if (Array.isArray(result)) {
       return { success: true, data: result };
     }
-    // Jika backend mengembalikan objek standard { success: true, data: [...] }
+    // Jika backend mengembalikan objek standar { success: true, data: [...] }
     if (typeof result === "object") {
       return {
         success: Boolean(result.success),
