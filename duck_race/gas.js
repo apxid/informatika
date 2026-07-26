@@ -1,49 +1,104 @@
 /**
  * CLASS RACE - GAS API SERVICE (gas.js)
- * Modul komunikasi antara Frontend HTML/JS dan Google Apps Script Backend
+ * Modul komunikasi hibrida antara Frontend HTML/JS dan Google Apps Script Backend.
+ * Mendukung panggilan internal (google.script.run) dan external (fetch API dengan CORS bypass).
  */
 
 const GAS = {
   /**
-   * Mengambil daftar kelas dari sheet 'Students'
+   * Mengambil daftar kelas dari Google Sheets
    * @returns {Promise<Object>} { success: boolean, data: Array }
    */
   async getClasses() {
-    try {
-      const response = await fetch(`${CONFIG.GAS_API_URL}?action=getClasses`);
-      if (!response.ok) throw new Error("Gagal terhubung ke server Apps Script");
-      return await response.json();
-    } catch (error) {
-      console.error("GAS Service Error (getClasses):", error);
-      return { success: false, message: error.message, data: [] };
+    // 1. Mode NATIVE GAS (Menggunakan google.script.run)
+    if (typeof google !== "undefined" && google.script && google.script.run) {
+      return new Promise((resolve) => {
+        google.script.run
+          .withSuccessHandler((res) => resolve(res))
+          .withFailureHandler((err) => {
+            console.error("GAS Native Error (getClasses):", err);
+            resolve({ success: false, message: String(err), data: [] });
+          })
+          .getClasses();
+      });
     }
+
+    // 2. Mode WEB API FETCH (Menggunakan URL Deployment)
+    if (window.CONFIG && CONFIG.GAS_API_URL) {
+      try {
+        const response = await fetch(`${CONFIG.GAS_API_URL}?action=getClasses`, {
+          method: "GET",
+          redirect: "follow"
+        });
+        if (!response.ok) throw new Error("Gagal terhubung ke server Apps Script");
+        return await response.json();
+      } catch (error) {
+        console.error("GAS Fetch Error (getClasses):", error);
+        return { success: false, message: error.message, data: [] };
+      }
+    }
+
+    // 3. Fallback Mode Offline / Dev Local
+    console.warn("GAS Service: Menggunakan Dummy Data untuk Latihan/Lokal");
+    return { success: true, data: ["7A", "7B", "7C", "8A", "8B", "9A"] };
   },
 
   /**
    * Mengambil daftar siswa acak berdasarkan parameter filter balapan
    * @param {string} className - Nama kelas (misal: "7A")
-   * @param {number} count - Jumlah peserta balapan
+   * @param {number} count - Jumlah peserta balapan (Maks 5)
    * @param {string} category - Kategori kegiatan (misal: "Tanya Jawab")
    * @param {boolean} excludeWinners - Status checkbox mengabaikan pemenang sebelumnya
    * @returns {Promise<Object>} { success: boolean, data: Array }
    */
   async getRandomStudents(className, count, category, excludeWinners) {
-    try {
-      const params = new URLSearchParams({
-        action: "getRandomStudents",
-        className: className,
-        count: count,
-        category: category,
-        excludeWinners: excludeWinners ? "true" : "false"
-      });
+    const targetCount = Math.min(parseInt(count) || 5, 5);
 
-      const response = await fetch(`${CONFIG.GAS_API_URL}?${params.toString()}`);
-      if (!response.ok) throw new Error("Gagal mengambil data siswa");
-      return await response.json();
-    } catch (error) {
-      console.error("GAS Service Error (getRandomStudents):", error);
-      return { success: false, message: error.message, data: [] };
+    // 1. Mode NATIVE GAS
+    if (typeof google !== "undefined" && google.script && google.script.run) {
+      return new Promise((resolve) => {
+        google.script.run
+          .withSuccessHandler((res) => resolve(res))
+          .withFailureHandler((err) => {
+            console.error("GAS Native Error (getRandomStudents):", err);
+            resolve({ success: false, message: String(err), data: [] });
+          })
+          .getRandomStudents(className, targetCount, category, excludeWinners);
+      });
     }
+
+    // 2. Mode WEB API FETCH
+    if (window.CONFIG && CONFIG.GAS_API_URL) {
+      try {
+        const params = new URLSearchParams({
+          action: "getRandomStudents",
+          className: className,
+          count: targetCount,
+          category: category || "",
+          excludeWinners: excludeWinners ? "true" : "false"
+        });
+
+        const response = await fetch(`${CONFIG.GAS_API_URL}?${params.toString()}`, {
+          method: "GET",
+          redirect: "follow"
+        });
+        if (!response.ok) throw new Error("Gagal mengambil data siswa");
+        return await response.json();
+      } catch (error) {
+        console.error("GAS Fetch Error (getRandomStudents):", error);
+        return { success: false, message: error.message, data: [] };
+      }
+    }
+
+    // 3. Fallback Mode Offline
+    const dummyStudents = [
+      { no_absen: 1, nama: "Ahmad Dahlan" },
+      { no_absen: 5, nama: "Budi Santoso" },
+      { no_absen: 12, nama: "Citra Dewi" },
+      { no_absen: 18, nama: "Doni Pratama" },
+      { no_absen: 22, nama: "Eka Rahmawati" }
+    ];
+    return { success: true, data: dummyStudents.slice(0, targetCount) };
   },
 
   /**
@@ -52,23 +107,44 @@ const GAS = {
    * @returns {Promise<Object>} { success: boolean, message: string }
    */
   async saveWinner(payload) {
-    try {
-      const response = await fetch(CONFIG.GAS_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8" // Melewati kendala CORS di Google Apps Script
-        },
-        body: JSON.stringify({
-          action: "saveWinner",
-          payload: payload
-        })
+    // 1. Mode NATIVE GAS
+    if (typeof google !== "undefined" && google.script && google.script.run) {
+      return new Promise((resolve) => {
+        google.script.run
+          .withSuccessHandler((res) => resolve(res))
+          .withFailureHandler((err) => {
+            console.error("GAS Native Error (saveWinner):", err);
+            resolve({ success: false, message: String(err) });
+          })
+          .saveWinner(payload);
       });
-
-      if (!response.ok) throw new Error("Gagal menyimpan data pemenang");
-      return await response.json();
-    } catch (error) {
-      console.error("GAS Service Error (saveWinner):", error);
-      return { success: false, message: error.message };
     }
+
+    // 2. Mode WEB API FETCH (text/plain menghindari Preflight CORS Options)
+    if (window.CONFIG && CONFIG.GAS_API_URL) {
+      try {
+        const response = await fetch(CONFIG.GAS_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            action: "saveWinner",
+            payload: payload
+          }),
+          redirect: "follow"
+        });
+
+        if (!response.ok) throw new Error("Gagal menyimpan data pemenang");
+        return await response.json();
+      } catch (error) {
+        console.error("GAS Fetch Error (saveWinner):", error);
+        return { success: false, message: error.message };
+      }
+    }
+
+    // 3. Fallback Mode Offline
+    console.log("Simpan Pemenang (Offline/Dummy Mode):", payload);
+    return { success: true, message: "Berhasil disimpan (Simulasi)" };
   }
 };
