@@ -1,6 +1,6 @@
 /**
  * CLASS RACE - FRONTEND SCRIPT (script.js)
- * Dihubungkan secara presisi ke window.GAS (gas.js)
+ * Dihubungkan secara presisi ke window.GAS (gas.js) - STRICT MODE (Tanpa Fallback/Dummy)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let raceInterval = null;
   let racePositions = [];
 
-  // Mapping Icon Tema Lengkap (Menyesuaikan Value Dropdown / Config)
+  // Mapping Icon Tema Lengkap
   const themeIcons = {
     Bebek: "🦆",
     duck: "🦆",
@@ -57,16 +57,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // Memanggil window.GAS.getClasses() dari gas.js
       const response = await window.GAS.getClasses();
 
-      if (response && response.success && response.data.length > 0) {
+      if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
         selectClass.innerHTML = response.data
           .map(cls => `<option value="${cls}">Kelas ${cls}</option>`)
           .join('');
       } else {
-        selectClass.innerHTML = `<option value="">Gagal Memuat Kelas (Cek Sheet)</option>`;
+        throw new Error("Data kelas kosong atau format respon tidak sesuai.");
       }
     } catch (err) {
-      console.error("Error loading classes:", err);
-      selectClass.innerHTML = `<option value="">Error Server</option>`;
+      console.error("[Script] Gagal memuat daftar kelas:", err);
+      selectClass.innerHTML = `<option value="">Error: Gagal Memuat Kelas</option>`;
+      alert(`Gagal mengambil data kelas dari server Google Sheets:\n${err.message}`);
     }
   }
 
@@ -98,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnStart.disabled = true;
     btnStart.innerText = "Memuat Peserta...";
 
-    const count = parseInt(selectCount.value, 10);
+    const count = parseInt(selectCount ? selectCount.value : "0", 10);
     const category = selectCategory ? selectCategory.value : "";
     const excludePrevious = chkExclude ? chkExclude.checked : false;
 
@@ -111,10 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
         excludePrevious
       );
 
-      if (!res.success || !res.data || res.data.length === 0) {
-        alert("Tidak ada data siswa yang ditemukan pada kelas ini.");
-        resetStartButton();
-        return;
+      if (!res || !res.success || !Array.isArray(res.data) || res.data.length === 0) {
+        throw new Error("Tidak ada siswa yang ditemukan atau kuota siswa habis/sudah terpilih semua.");
       }
 
       currentParticipants = res.data;
@@ -122,8 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
       startCountdown();
 
     } catch (err) {
-      console.error("Error starting race:", err);
-      alert("Gagal mengambil data siswa.");
+      console.error("[Script] Error starting race:", err);
+      alert(`Gagal memulai balapan:\n${err.message}`);
       resetStartButton();
     }
   });
@@ -255,9 +254,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      await window.GAS.saveWinner(payload);
+      const saveRes = await window.GAS.saveWinner(payload);
+      console.log("[Script] Data pemenang berhasil disimpan:", saveRes);
     } catch (err) {
-      console.error("Gagal menyimpan data pemenang:", err);
+      console.error("[Script] Gagal menyimpan data pemenang:", err);
+      alert(`Peringatan: Pemenang tidak dapat disimpan ke Google Sheets.\nDetail: ${err.message}`);
     }
 
     resetStartButton();
