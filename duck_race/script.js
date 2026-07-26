@@ -1,5 +1,6 @@
 /**
- * CLASS RACE - FRONTEND LOGIC
+ * CLASS RACE - FRONTEND SCRIPT
+ * Dihubungkan secara presisi ke window.GAS (gas.js)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -33,19 +34,22 @@ document.addEventListener("DOMContentLoaded", () => {
     Kuda: "🐎"
   };
 
-  // 1. Inisialisasi - Load Daftar Kelas
+  // 1. Inisialisasi - Load Daftar Kelas Menggunakan window.GAS
   loadClassList();
 
   async function loadClassList() {
     try {
       selectClass.innerHTML = `<option value="">Memuat Kelas...</option>`;
-      const response = await fetchGasApi('getClasses');
+      
+      // Memanggil window.GAS.getClasses() dari gas.js
+      const response = await window.GAS.getClasses();
+
       if (response && response.success && response.data.length > 0) {
         selectClass.innerHTML = response.data
           .map(cls => `<option value="${cls}">Kelas ${cls}</option>`)
           .join('');
       } else {
-        selectClass.innerHTML = `<option value="">Gagal Memuat Kelas</option>`;
+        selectClass.innerHTML = `<option value="">Gagal Memuat Kelas (Cek Sheet)</option>`;
       }
     } catch (err) {
       console.error("Error loading classes:", err);
@@ -54,15 +58,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 2. Fullscreen Toggle
-  btnFullscreen.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      if (document.exitFullscreen) document.exitFullscreen();
-    }
-  });
+  if (btnFullscreen) {
+    btnFullscreen.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    });
+  }
 
-  // 3. Mulai Balapan
+  // 3. Tombol Mulai Balapan
   btnStart.addEventListener("click", async () => {
     const selectedClass = selectClass.value;
     if (!selectedClass) {
@@ -74,19 +80,20 @@ document.addEventListener("DOMContentLoaded", () => {
     btnStart.innerText = "Memuat Peserta...";
 
     const count = parseInt(selectCount.value, 10);
-    const category = selectCategory.value;
-    const excludePrevious = chkExclude.checked;
+    const category = selectCategory ? selectCategory.value : "";
+    const excludePrevious = chkExclude ? chkExclude.checked : false;
 
     try {
-      const res = await fetchGasApi('getRandomStudents', {
-        className: selectedClass,
-        count: count,
-        category: category,
-        excludePrevious: excludePrevious
-      });
+      // Memanggil window.GAS.getRandomStudents() sesuai signature di gas.js
+      const res = await window.GAS.getRandomStudents(
+        selectedClass,
+        count,
+        category,
+        excludePrevious
+      );
 
       if (!res.success || !res.data || res.data.length === 0) {
-        alert("Tidak ada data siswa yang tersedia untuk kelas/kategori ini.");
+        alert("Tidak ada data siswa yang ditemukan pada kelas ini.");
         resetStartButton();
         return;
       }
@@ -102,13 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Render Lintasan Bebek di Kolom Kanan
+  // Render Lintasan
   function renderTracks(students) {
     trackContainer.innerHTML = "";
-    const selectedTheme = selectTheme.value;
+    const selectedTheme = selectTheme ? selectTheme.value : "Bebek";
     const icon = themeIcons[selectedTheme] || "🦆";
 
-    racePositions = students.map(() => 0); // Reset Posisi Persentase (0%)
+    racePositions = students.map(() => 0);
 
     students.forEach((student, index) => {
       const trackLine = document.createElement("div");
@@ -124,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Animasi Hitung Mundur
+  // Countdown
   function startCountdown() {
     countdownOverlay.classList.remove("hidden");
     let count = 3;
@@ -142,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }
 
-  // Simulasi Jalannya Balapan
+  // Jalannya Balapan
   function runRace() {
     const totalParticipants = currentParticipants.length;
     const finishWinners = [];
@@ -152,9 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
       let allFinished = true;
 
       for (let i = 0; i < totalParticipants; i++) {
-        if (racePositions[i] < 88) { // 88% adalah batas garis finish
+        if (racePositions[i] < 88) {
           allFinished = false;
-          // Pergerakan acak
           const speed = Math.random() * 3.5 + 0.5;
           racePositions[i] += speed;
 
@@ -180,39 +186,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 150);
   }
 
-  // Penanganan Selesai Balapan
+  // Selesai Balapan & Simpan Pemenang
   async function handleRaceFinish(winnerIndices, duration) {
     const winners = winnerIndices.map(idx => currentParticipants[idx]);
 
-    const winner1 = winners[0] ? winners[0].nama : "-";
-    const winner2 = winners[1] ? winners[1].nama : "-";
-    const winner3 = winners[2] ? winners[2].nama : "-";
+    const winner1 = winners[0] ? (winners[0].nama || winners[0].name) : "-";
+    const winner2 = winners[1] ? (winners[1].nama || winners[1].name) : "-";
+    const winner3 = winners[2] ? (winners[2].nama || winners[2].name) : "-";
 
-    // Update Tampilan Podium Kanan
-    winner1Text.innerText = winner1;
-    winner2Text.innerText = winner2;
-    winner3Text.innerText = winner3;
+    // Update Podium Side
+    if (winner1Text) winner1Text.innerText = winner1;
+    if (winner2Text) winner2Text.innerText = winner2;
+    if (winner3Text) winner3Text.innerText = winner3;
 
     // Update Modal
-    document.getElementById("modal-winner-1").innerText = winner1;
-    document.getElementById("modal-winner-2").innerText = winner2;
-    document.getElementById("modal-winner-3").innerText = winner3;
+    const modal1 = document.getElementById("modal-winner-1");
+    const modal2 = document.getElementById("modal-winner-2");
+    const modal3 = document.getElementById("modal-winner-3");
 
-    // Tampilkan Confetti
+    if (modal1) modal1.innerText = winner1;
+    if (modal2) modal2.innerText = winner2;
+    if (modal3) modal3.innerText = winner3;
+
     if (typeof confetti === "function") {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
 
     setTimeout(() => {
-      winnerModal.classList.remove("hidden");
+      if (winnerModal) winnerModal.classList.remove("hidden");
     }, 500);
 
-    // Simpan ke Spreadsheet via Backend API
+    // Simpan ke Apps Script menggunakan window.GAS.saveWinner()
     const payload = {
-      action: 'saveWinner',
       className: selectClass.value,
-      category: selectCategory.value,
-      theme: selectTheme.value,
+      category: selectCategory ? selectCategory.value : "",
+      theme: selectTheme ? selectTheme.value : "Bebek",
       winner1: winner1,
       winner2: winner2,
       winner3: winner3,
@@ -220,9 +228,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      await postGasApi(payload);
+      await window.GAS.saveWinner(payload);
     } catch (err) {
-      console.error("Gagal menyimpan data pemenang:", err);
+      console.error("Gagal menyimpan pemenang:", err);
     }
 
     resetStartButton();
@@ -233,7 +241,9 @@ document.addEventListener("DOMContentLoaded", () => {
     btnStart.innerText = "Mulai Balapan 🚀";
   }
 
-  btnReset.addEventListener("click", () => {
-    winnerModal.classList.add("hidden");
-  });
+  if (btnReset) {
+    btnReset.addEventListener("click", () => {
+      if (winnerModal) winnerModal.classList.add("hidden");
+    });
+  }
 });
