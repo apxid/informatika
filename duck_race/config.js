@@ -3,7 +3,7 @@
  */
 const CONFIG = {
   // Masukkan URL Deployment Google Apps Script Anda di sini
-  GAS_API_URL: "https://script.google.com/macros/s/AKfycbx4zxYFR0NGmkUcDNI4appEHdCAkxH1GZEIn4EPAsWmXeOst8dScimjo6kzRla60_HJUw/exec",
+  GAS_API_URL: "https://script.google.com/macros/s/AKfycbw1hTauG3dHkyjeui4WD8SGOIHi2Cpu0NNLuUW2fVQcZOoLFYKtOtAsJsJfOpYNCdcZwQ/exec",
 
   THEMES: {
     duck: { name: "Duck Race", icon: "🦆", bg: "linear-gradient(to bottom, #4facfe, #00f2fe)" },
