@@ -9,34 +9,42 @@
 </head>
 <body class="dark-mode">
 
-  <div class="glass-container">
+  <div class="app-container">
+    <!-- HEADER -->
     <header>
-      <h1>🏁 Class Race</h1>
-      <button id="btn-fullscreen" class="btn-secondary">Fullscreen ⛶</button>
+      <h1>🏁 Class <span>Race</span></h1>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="badge-smp">SMP Edition</span>
+        <button id="btn-fullscreen" class="btn-secondary">Fullscreen ⛶</button>
+      </div>
     </header>
 
-    <!-- Form Setting -->
-    <section id="setup-panel" class="panel">
-      <h2>Pengaturan Balapan</h2>
-      <div class="form-grid">
+    <!-- MAIN CONTENT (GRID 1 SCREEN) -->
+    <main>
+      <!-- PANEL KIRI: FORM PENGATURAN -->
+      <section id="setup-panel" class="setup-panel">
+        <h2>⚙️ Pengaturan Balapan</h2>
+        
         <div class="form-group">
           <label for="select-class">Pilih Kelas:</label>
-          <select id="select-class"><option value="">Loading...</option></select>
+          <select id="select-class" class="form-control">
+            <option value="">Loading...</option>
+          </select>
         </div>
 
         <div class="form-group">
           <label for="select-category">Kategori:</label>
-          <select id="select-category"></select>
+          <select id="select-category" class="form-control"></select>
         </div>
 
         <div class="form-group">
           <label for="select-theme">Tema Balapan:</label>
-          <select id="select-theme"></select>
+          <select id="select-theme" class="form-control"></select>
         </div>
 
         <div class="form-group">
           <label for="select-count">Jumlah Peserta:</label>
-          <select id="select-count">
+          <select id="select-count" class="form-control">
             <option value="0">Semua Siswa</option>
             <option value="5">5 Siswa</option>
             <option value="10" selected>10 Siswa</option>
@@ -44,40 +52,74 @@
             <option value="20">20 Siswa</option>
           </select>
         </div>
-      </div>
 
-      <div class="form-checkbox">
-        <label>
+        <div class="checkbox-group">
           <input type="checkbox" id="chk-exclude">
-          Abaikan pemenang sebelumnya pada kategori ini
-        </label>
-      </div>
+          <label for="chk-exclude">Abaikan pemenang sebelumnya pada kategori ini</label>
+        </div>
 
-      <button id="btn-start" class="btn-primary">Mulai Balapan 🚀</button>
-    </section>
+        <button id="btn-start" class="btn-start">Mulai Balapan 🚀</button>
+      </section>
 
-    <!-- Race Track Container -->
-    <section id="race-panel" class="panel hidden">
-      <div id="countdown-overlay" class="hidden">
-        <span id="countdown-text">3</span>
-      </div>
-      <div id="track-container" class="track-box"></div>
-    </section>
+      <!-- PANEL KANAN: ARENA BALAP & PODIUM PEMENANG -->
+      <section class="display-panel">
+        <!-- TRACK BALAPAN -->
+        <div id="race-panel" class="race-arena">
+          <div id="countdown-overlay" class="hidden">
+            <span id="countdown-text">3</span>
+          </div>
+          <div id="track-container" class="track-box"></div>
+        </div>
 
-    <!-- Podium Winner Modal -->
+        <!-- SEKSI PODIUM PEMENANG (LANGSUNG VISIBLE DALAM 1 SCREEN) -->
+        <div class="winner-section">
+          <h3>🥇 Hasil Pemenang Balapan</h3>
+          <div class="podium-container">
+            
+            <div class="podium-card juara-1">
+              <div class="podium-rank">🏆</div>
+              <div class="podium-info">
+                <span class="podium-label">Juara 1</span>
+                <span id="winner-1" class="podium-name">-</span>
+              </div>
+            </div>
+
+            <div class="podium-card">
+              <div class="podium-rank">🥇</div>
+              <div class="podium-info">
+                <span class="podium-label">Juara 2</span>
+                <span id="winner-2" class="podium-name">-</span>
+              </div>
+            </div>
+
+            <div class="podium-card">
+              <div class="podium-rank">🥉</div>
+              <div class="podium-info">
+                <span class="podium-label">Juara 3</span>
+                <span id="winner-3" class="podium-name">-</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- POPUP MODAL PEMENANG (TETAP DIJAGA APABILA DIPANGGUL SCRIPT.JS) -->
     <div id="winner-modal" class="modal hidden">
       <div class="modal-content glass-card">
         <h2>🎉 Pemenang Balapan 🎉</h2>
         <div class="podium">
-          <div class="podium-slot rank-2"><p>🥇 Juara 2</p><span id="winner-2">-</span></div>
-          <div class="podium-slot rank-1"><p>🏆 Juara 1</p><span id="winner-1">-</span></div>
-          <div class="podium-slot rank-3"><p>🥉 Juara 3</p><span id="winner-3">-</span></div>
+          <div class="podium-slot rank-2"><p>🥇 Juara 2</p><span>-</span></div>
+          <div class="podium-slot rank-1"><p>🏆 Juara 1</p><span>-</span></div>
+          <div class="podium-slot rank-3"><p>🥉 Juara 3</p><span>-</span></div>
         </div>
-        <button id="btn-reset" class="btn-primary">Kembali ke Pengaturan</button>
+        <button id="btn-reset" class="btn-primary" style="margin-top: 15px;">Kembali ke Pengaturan</button>
       </div>
     </div>
   </div>
 
+  <!-- JS SCRIPTS -->
   <script src="config.js"></script>
   <script src="gas.js"></script>
   <script src="script.js"></script>
