@@ -1,181 +1,347 @@
+/* =========================================================
+   CLASS RACE - TEMA BIRU SMP & KUNING OSIS
+   Layout 1 Screen (Fit Desktop Viewport) + Responsive Mobile
+   ========================================================= */
+
 :root {
-  --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --accent-color: #38bdf8;
-  --text-color: #f8fafc;
+  --biru-smp-dark: #0a2240;
+  --biru-smp-main: #133b68;
+  --biru-smp-light: #1f5089;
+  --kuning-osis: #ffc107;
+  --kuning-osis-hover: #e0a800;
+  --putih: #ffffff;
+  --abu-bg: #f4f6f9;
+  --abu-card: #e9ecef;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.25);
+  --radius: 12px;
 }
 
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-gradient);
-  color: var(--text-color);
-  min-height: 100vh;
+}
+
+/* Biarkan Halaman Pas 1 Layar di Desktop */
+html, body {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--biru-smp-dark) 0%, var(--biru-smp-main) 100%);
+  color: var(--putih);
+}
+
+/* Wrapper Utama Flex / Grid 1 Screen */
+.app-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  gap: 10px;
 }
 
-.glass-container {
-  width: 90%;
-  max-width: 1100px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
+/* --- HEADER --- */
 header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  border-left: 5px solid var(--kuning-osis);
 }
 
-.form-grid {
+header h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--putih);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+header h1 span {
+  color: var(--kuning-osis);
+}
+
+.badge-smp {
+  background: var(--kuning-osis);
+  color: var(--biru-smp-dark);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+/* --- MAIN CONTENT (DESKTOP: SIDE BY SIDE) --- */
+main {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 320px 1fr;
+  gap: 12px;
+  flex: 1;
+  min-height: 0; /* Penting agar flex-child tidak meluap */
+}
+
+/* --- PANEL PENGATURAN (KIRI) --- */
+.setup-panel {
+  background: var(--putih);
+  color: var(--text-dark);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+}
+
+.setup-panel h2 {
+  font-size: 1.05rem;
+  color: var(--biru-smp-main);
+  border-bottom: 2px solid var(--abu-card);
+  padding-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
-label {
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--biru-smp-dark);
 }
 
-select, input[type="checkbox"] {
-  padding: 0.6rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--glass-border);
-  color: #fff;
+.form-control {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.85rem;
   outline: none;
+  transition: all 0.2s;
 }
 
-select option {
-  background: #1e293b;
-  color: #fff;
+.form-control:focus {
+  border-color: var(--biru-smp-main);
+  box-shadow: 0 0 0 3px rgba(19, 59, 104, 0.2);
 }
 
-.form-checkbox {
-  margin: 1.5rem 0;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 10px;
-  padding: 0.8rem 1.5rem;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background: var(--accent-color);
-  color: #0f172a;
-  width: 100%;
-}
-
-.btn-primary:hover {
-  filter: brightness(1.2);
-}
-
-.btn-secondary {
-  background: transparent;
-  border: 1px solid var(--glass-border);
-  color: #fff;
-}
-
-/* Race Track Styling */
-.track-box {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  padding: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.lane {
-  position: relative;
-  height: 45px;
-  border-bottom: 1px dashed var(--glass-border);
+.checkbox-group {
   display: flex;
   align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  margin-top: 4px;
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--kuning-osis) 0%, var(--kuning-osis-hover) 100%);
+  color: var(--biru-smp-dark);
+  font-size: 1rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s, box-shadow 0.2s;
+  margin-top: auto; /* Dorong tombol ke paling bawah panel */
+}
+
+.btn-start:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-start:active {
+  transform: translateY(0);
+}
+
+/* --- ARENA BALAPAN & PEMENANG (KANAN) --- */
+.display-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+/* Track Balapan (Atas Kanan) */
+.race-arena {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.track-line {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-dark);
+  border-radius: 20px;
+  padding: 4px 12px;
+  position: relative;
+  height: 38px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .runner {
   position: absolute;
-  left: 0;
+  left: 10px;
+  font-size: 1.3rem;
+  transition: left 0.2s linear;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 6px;
   white-space: nowrap;
-  transition: left 0.1s linear;
 }
 
-.avatar {
-  font-size: 1.5rem;
+.runner-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--biru-smp-main);
+  color: var(--putih);
+  padding: 2px 6px;
+  border-radius: 10px;
 }
 
-/* Countdown Overlay */
-#countdown-overlay {
+.finish-line {
   position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
+  right: 15px;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: repeating-linear-gradient(
+    45deg,
+    #000,
+    #000 5px,
+    #fff 5px,
+    #fff 10px
+  );
+  border-radius: 2px;
+}
+
+/* --- SEKSI PEMENANG PODIUM (BAWAH KANAN - SELALU VISIBLE) --- */
+.winner-section {
+  height: 140px;
+  background: var(--putih);
+  color: var(--text-dark);
+  border-radius: var(--radius);
+  padding: 8px 14px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  border-top: 4px solid var(--kuning-osis);
+}
+
+.winner-section h3 {
+  font-size: 0.85rem;
+  color: var(--biru-smp-main);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: flex;
   align-items: center;
-  font-size: 6rem;
-  font-weight: bold;
-  z-index: 10;
-  border-radius: 12px;
+  gap: 6px;
 }
 
-/* Podium Modal */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 20;
+.podium-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  flex: 1;
 }
 
-.glass-card {
-  background: rgba(30, 41, 59, 0.9);
-  border: 1px solid var(--glass-border);
-  padding: 2rem;
-  border-radius: 16px;
-  text-align: center;
-}
-
-.podium {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 15px;
-  margin: 2rem 0;
-}
-
-.podium-slot {
-  background: rgba(255,255,255,0.05);
+.podium-card {
+  background: var(--abu-bg);
   border-radius: 8px;
-  padding: 1rem;
-  min-width: 100px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--abu-card);
 }
 
-.rank-1 { height: 120px; border: 2px solid #ffd700; }
-.rank-2 { height: 100px; border: 2px solid #c0c0c0; }
-.rank-3 { height: 80px; border: 2px solid #cd7f32; }
+.podium-card.juara-1 {
+  background: #fffdf0;
+  border: 1.5px solid var(--kuning-osis);
+}
 
-.hidden { display: none !important; }
+.podium-rank {
+  font-size: 1.2rem;
+}
+
+.podium-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.podium-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.podium-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--biru-smp-dark);
+}
+
+/* --- RESPONSIVE MOBILE (HP) --- */
+@media (max-width: 900px) {
+  html, body {
+    height: auto;
+    overflow-y: auto; /* Di HP diperbolehkan scroll natural */
+  }
+
+  .app-container {
+    height: auto;
+    padding: 10px;
+  }
+
+  main {
+    grid-template-columns: 1fr; /* Tumpuk vertikal di HP */
+    height: auto;
+  }
+
+  .setup-panel {
+    order: 1;
+  }
+
+  .display-panel {
+    order: 2;
+  }
+
+  .race-arena {
+    min-height: 250px;
+  }
+
+  .winner-section {
+    height: auto;
+  }
+
+  .podium-container {
+    grid-template-columns: 1fr; /* Podium baris per baris di HP */
+  }
+}
