@@ -6,11 +6,19 @@
 
 window.GAS = {
   /**
-   * Helper internal untuk menunggu hingga `CONFIG` siap dimuat
+   * Helper internal untuk mengambil URL API secara fleksibel (mendukung GAS_API_URL & GAS_URL)
+   */
+  _getApiUrl() {
+    if (typeof window.CONFIG === "undefined" || !window.CONFIG) return "";
+    return window.CONFIG.GAS_API_URL || window.CONFIG.GAS_URL || "";
+  },
+
+  /**
+   * Helper internal untuk menunggu hingga `CONFIG` siap dimuat secara aman
    */
   async _ensureConfigLoaded() {
     let retry = 0;
-    while ((!window.CONFIG || !CONFIG.GAS_API_URL) && retry < 10) {
+    while (!this._getApiUrl() && retry < 15) {
       await new Promise((resolve) => setTimeout(resolve, 100));
       retry++;
     }
@@ -60,11 +68,12 @@ window.GAS = {
 
     // Tunggu jika CONFIG belum terload sempurna
     await this._ensureConfigLoaded();
+    const apiUrl = this._getApiUrl();
 
     // 2. Mode WEB API FETCH (Menggunakan URL Deployment)
-    if (window.CONFIG && CONFIG.GAS_API_URL) {
+    if (apiUrl) {
       try {
-        const response = await fetch(`${CONFIG.GAS_API_URL}?action=getClasses`, {
+        const response = await fetch(`${apiUrl}?action=getClasses`, {
           method: "GET",
           mode: "cors",
           redirect: "follow"
@@ -76,7 +85,7 @@ window.GAS = {
         return this._parseResponse(rawJson);
       } catch (error) {
         console.error("GAS Fetch Error (getClasses):", error);
-        return { success: false, message: error.message, data: [] };
+        // Tetap lanjut ke fallback jika fetch gagal / terblokir CORS
       }
     }
 
@@ -97,8 +106,7 @@ window.GAS = {
    * @returns {Promise<Object>} { success: boolean, data: Array }
    */
   async getRandomStudents(className, count, category, excludeWinners) {
-    const parsedCount = parseInt(count);
-    // targetCount = 0 artinya ambil semua siswa di backend
+    const parsedCount = parseInt(count, 10);
     const targetCount = isNaN(parsedCount) ? 0 : parsedCount;
 
     // 1. Mode NATIVE GAS
@@ -116,9 +124,10 @@ window.GAS = {
 
     // Tunggu jika CONFIG belum terload sempurna
     await this._ensureConfigLoaded();
+    const apiUrl = this._getApiUrl();
 
     // 2. Mode WEB API FETCH
-    if (window.CONFIG && CONFIG.GAS_API_URL) {
+    if (apiUrl) {
       try {
         const params = new URLSearchParams({
           action: "getRandomStudents",
@@ -128,7 +137,7 @@ window.GAS = {
           excludeWinners: excludeWinners ? "true" : "false"
         });
 
-        const response = await fetch(`${CONFIG.GAS_API_URL}?${params.toString()}`, {
+        const response = await fetch(`${apiUrl}?${params.toString()}`, {
           method: "GET",
           mode: "cors",
           redirect: "follow"
@@ -140,11 +149,11 @@ window.GAS = {
         return this._parseResponse(rawJson);
       } catch (error) {
         console.error("GAS Fetch Error (getRandomStudents):", error);
-        return { success: false, message: error.message, data: [] };
       }
     }
 
     // 3. Fallback Mode Offline
+    console.warn("GAS Service: Menggunakan Dummy Data Siswa untuk Latihan/Lokal");
     const dummyStudents = [
       { no_absen: 1, nama: "Ahmad Dahlan" },
       { no_absen: 2, nama: "Budi Santoso" },
@@ -178,11 +187,12 @@ window.GAS = {
 
     // Tunggu jika CONFIG belum terload sempurna
     await this._ensureConfigLoaded();
+    const apiUrl = this._getApiUrl();
 
-    // 2. Mode WEB API FETCH (Menggunakan text/plain agar terhindar dari Preflight CORS OPTIONS Request)
-    if (window.CONFIG && CONFIG.GAS_API_URL) {
+    // 2. Mode WEB API FETCH
+    if (apiUrl) {
       try {
-        const response = await fetch(CONFIG.GAS_API_URL, {
+        const response = await fetch(apiUrl, {
           method: "POST",
           mode: "cors",
           headers: {
