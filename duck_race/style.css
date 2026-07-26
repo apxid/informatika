@@ -1,6 +1,6 @@
 /* =========================================================
    CLASS RACE - TEMA BIRU SMP & KUNING OSIS
-   Layout 1 Screen (Fit Desktop Viewport) + Responsive Mobile
+   Fit 1 Screen Desktop Viewport + Responsive Layout
    ========================================================= */
 
 :root {
@@ -26,7 +26,6 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Biarkan Halaman Pas 1 Layar di Desktop */
 html, body {
   width: 100%;
   height: 100vh;
@@ -35,12 +34,11 @@ html, body {
   color: var(--putih);
 }
 
-/* Wrapper Utama Flex / Grid 1 Screen */
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 12px 16px;
   gap: 10px;
@@ -62,13 +60,11 @@ header h1 {
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--putih);
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 header h1 span {
   color: var(--kuning-osis);
+  animation: glowText 2s ease-in-out infinite alternate;
 }
 
 .badge-smp {
@@ -81,13 +77,28 @@ header h1 span {
   text-transform: uppercase;
 }
 
-/* --- MAIN CONTENT (DESKTOP: SIDE BY SIDE) --- */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--putih);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* --- MAIN CONTENT (DESKTOP GRID: KIRI 320px | KANAN 1FR) --- */
 main {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 12px;
   flex: 1;
-  min-height: 0; /* Penting agar flex-child tidak meluap */
+  min-height: 0;
 }
 
 /* --- PANEL PENGATURAN (KIRI) --- */
@@ -108,7 +119,6 @@ main {
   color: var(--biru-smp-main);
   border-bottom: 2px solid var(--abu-card);
   padding-bottom: 6px;
-  margin-bottom: 4px;
 }
 
 .form-group {
@@ -129,7 +139,6 @@ main {
   border-radius: 6px;
   font-size: 0.85rem;
   outline: none;
-  transition: all 0.2s;
 }
 
 .form-control:focus {
@@ -142,7 +151,6 @@ main {
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  color: var(--text-dark);
   margin-top: 4px;
 }
 
@@ -156,8 +164,9 @@ main {
   padding: 10px;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.1s, box-shadow 0.2s;
-  margin-top: auto; /* Dorong tombol ke paling bawah panel */
+  margin-top: auto;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-start:hover {
@@ -165,55 +174,52 @@ main {
   box-shadow: var(--shadow-lg);
 }
 
-.btn-start:active {
-  transform: translateY(0);
-}
-
-/* --- ARENA BALAPAN & PEMENANG (KANAN) --- */
+/* --- DISPLAY PANEL (KANAN) --- */
 .display-panel {
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-height: 0;
+  width: 100%;
 }
 
-/* --- ARENA BALAPAN 5 BARIS --- */
+/* --- ARENA BALAPAN (MENDUKUNG HINGGA 35 BEBEK) --- */
 .race-arena {
   flex: 1;
   background: rgba(10, 34, 64, 0.4);
   border: 2px dashed rgba(255, 193, 7, 0.3);
   border-radius: var(--radius);
   padding: 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Membagi lintasan secara merata */
-  gap: 8px;
   position: relative;
   overflow: hidden;
   min-height: 0;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.race-arena:hover {
-  border-color: var(--kuning-osis);
-  box-shadow: inset 0 0 15px rgba(255, 193, 7, 0.15);
+.track-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  overflow-y: auto; /* Scroll otomatis jika peserta > 5 orang */
+  padding-right: 6px;
 }
 
-/* Setiap Baris Lintasan */
+/* Baris Lintasan */
 .track-line {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 25px;
   position: relative;
-  height: 42px;
+  height: 44px;
+  min-height: 44px;
   padding: 0 10px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
 }
 
-/* Penanda Nomor Lintasan di Sebelah Kiri */
 .lane-number {
   font-size: 0.75rem;
   font-weight: 800;
@@ -224,59 +230,43 @@ main {
   z-index: 2;
 }
 
-/* Bebek / Peserta Balapan */
+/* Peserta / Runner */
 .runner {
   position: absolute;
-  left: 40px; /* Posisi Start */
-  font-size: 1.5rem;
+  left: 45px;
+  font-size: 1.4rem;
   display: flex;
   align-items: center;
   gap: 6px;
   white-space: nowrap;
-  /* Transisi halus saat posisi maju/mundur agar efek saling mengejar kelihatan natural */
   transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   z-index: 3;
 }
 
-/* Badge Nomor Absen / Nama Siswa di Bebek */
 .runner-badge {
-  font-size: 0.7rem;
-  font-weight: 800;
+  font-size: 0.75rem;
+  font-weight: 700;
   background: var(--kuning-osis);
   color: var(--biru-smp-dark);
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Garis Finish Vertikal Beranimasi */
 .finish-line {
   position: absolute;
   right: 15px;
   top: 0;
   bottom: 0;
   width: 12px;
-  background: repeating-linear-gradient(
-    0deg,
-    #000,
-    #000 8px,
-    #fff 8px,
-    #fff 16px
-  );
-  background-size: 100% 32px;
+  background: repeating-linear-gradient(0deg, #000, #000 8px, #fff 8px, #fff 16px);
   border-left: 2px solid var(--kuning-osis);
   z-index: 1;
-  animation: moveStripes 1s linear infinite;
 }
 
-@keyframes moveStripes {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 32px; }
-}
-
-/* --- SEKSI PEMENANG PODIUM (BAWAH KANAN - SELALU VISIBLE) --- */
+/* --- PODIUM PEMENANG --- */
 .winner-section {
-  height: 140px;
+  height: 125px;
   background: var(--putih);
   color: var(--text-dark);
   border-radius: var(--radius);
@@ -290,12 +280,7 @@ main {
 .winner-section h3 {
   font-size: 0.85rem;
   color: var(--biru-smp-main);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .podium-container {
@@ -313,109 +298,19 @@ main {
   align-items: center;
   gap: 10px;
   border: 1px solid var(--abu-card);
-  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
-}
-
-.podium-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .podium-card.juara-1 {
   background: #fffdf0;
   border: 1.5px solid var(--kuning-osis);
-  animation: borderGlow 2s infinite alternate;
 }
 
-@keyframes borderGlow {
-  from {
-    box-shadow: 0 0 5px rgba(255, 193, 7, 0.3);
-  }
-  to {
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.8);
-  }
-}
+.podium-rank { font-size: 1.2rem; }
+.podium-info { display: flex; flex-direction: column; }
+.podium-label { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); }
+.podium-name { font-size: 0.85rem; font-weight: 700; color: var(--biru-smp-dark); }
 
-.podium-rank {
-  font-size: 1.2rem;
-}
-
-.podium-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.podium-label {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.podium-name {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--biru-smp-dark);
-}
-
-/* =========================================================
-   ANIMASI INTERAKTIF & OVERLAY
-   ========================================================= */
-
-/* 1. Animasi Glow pada Header & Badge */
-header h1 span {
-  animation: glowText 2s ease-in-out infinite alternate;
-}
-
-@keyframes glowText {
-  from {
-    text-shadow: 0 0 5px rgba(255, 193, 7, 0.4), 0 0 10px rgba(255, 193, 7, 0.2);
-  }
-  to {
-    text-shadow: 0 0 15px rgba(255, 193, 7, 0.9), 0 0 25px rgba(255, 193, 7, 0.6);
-  }
-}
-
-.badge-smp {
-  animation: pulseBadge 1.8s infinite;
-}
-
-@keyframes pulseBadge {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); box-shadow: 0 0 12px rgba(255, 193, 7, 0.8); }
-  100% { transform: scale(1); }
-}
-
-/* 2. Animasi Tombol 'Mulai Balapan' */
-.btn-start {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-start::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-  transform: rotate(30deg);
-  animation: shineBtn 3s infinite;
-}
-
-@keyframes shineBtn {
-  0% { left: -100%; }
-  20% { left: 100%; }
-  100% { left: 100%; }
-}
-
-/* 3. Animasi Hitung Mundur (Countdown Overlay) */
+/* --- COUNTDOWN & MODAL --- */
 #countdown-overlay {
   display: flex;
   justify-content: center;
@@ -432,8 +327,62 @@ header h1 span {
   font-size: 5rem;
   font-weight: 900;
   color: var(--kuning-osis);
-  text-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
   animation: popCount 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.glass-card {
+  background: rgba(10, 34, 64, 0.95);
+  border: 2px solid var(--kuning-osis);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  width: 90%;
+  max-width: 480px;
+}
+
+.podium {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  margin-top: 15px;
+}
+
+.podium-slot {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  width: 30%;
+}
+
+.rank-1 { height: 100px; border-top: 4px solid #ffc107; }
+.rank-2 { height: 80px; border-top: 4px solid #c0c0c0; }
+.rank-3 { height: 65px; border-top: 4px solid #cd7f32; }
+
+.btn-primary {
+  background: var(--kuning-osis);
+  color: var(--biru-smp-dark);
+  font-weight: 800;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.hidden { display: none !important; }
+
+@keyframes glowText {
+  from { text-shadow: 0 0 5px rgba(255, 193, 7, 0.4); }
+  to { text-shadow: 0 0 15px rgba(255, 193, 7, 0.9); }
 }
 
 @keyframes popCount {
@@ -442,45 +391,11 @@ header h1 span {
   100% { transform: scale(1); opacity: 0; }
 }
 
-/* Kelas Helper untuk Menyembunyikan Elemen */
-.hidden {
-  display: none !important;
-}
-
-/* --- RESPONSIVE MOBILE (HP) --- */
+/* RESPONSIVE MOBILE */
 @media (max-width: 900px) {
-  html, body {
-    height: auto;
-    overflow-y: auto; /* Di HP diperbolehkan scroll natural */
-  }
-
-  .app-container {
-    height: auto;
-    padding: 10px;
-  }
-
-  main {
-    grid-template-columns: 1fr; /* Tumpuk vertikal di HP */
-    height: auto;
-  }
-
-  .setup-panel {
-    order: 1;
-  }
-
-  .display-panel {
-    order: 2;
-  }
-
-  .race-arena {
-    min-height: 280px;
-  }
-
-  .winner-section {
-    height: auto;
-  }
-
-  .podium-container {
-    grid-template-columns: 1fr; /* Podium baris per baris di HP */
-  }
+  html, body { height: auto; overflow-y: auto; }
+  .app-container { height: auto; }
+  main { grid-template-columns: 1fr; }
+  .display-panel { order: 2; }
+  .setup-panel { order: 1; }
 }
