@@ -42,7 +42,8 @@ const currentScoreEl = document.getElementById('current-score');
 const questionIconEl = document.getElementById('question-icon');
 const questionTextEl = document.getElementById('question-text');
 
-// Feedback Elements
+// Feedback & Modal Elements
+const modalBackdrop = document.getElementById('modal-backdrop'); // <-- Ditambahkan di sini
 const feedbackCard = document.getElementById('feedback-card');
 const feedbackIcon = document.getElementById('feedback-icon');
 const feedbackTitle = document.getElementById('feedback-title');
@@ -112,9 +113,8 @@ function startQuiz() {
 // ==========================================
 
 function loadQuestion() {
-    // Sembunyikan Pop-up Feedback saat soal baru dimuat
-    feedbackCard.classList.add('hidden');
-    feedbackCard.className = 'feedback-card hidden'; 
+    // Sembunyikan Pop-up Feedback dan Modal Backdrop saat soal baru dimuat
+    hideFeedbackUI();
     
     const currentQ = shuffledQuestions[currentQuestionIndex];
     
@@ -172,7 +172,7 @@ function selectAnswer(selectedButton, selectedAnswer, correctAnswer, explanation
 
 // Logika Jika Benar
 function handleCorrect(explanation) {
-    // Mainkan Audio (Pakai try catch mencegah error jika audio belum dimuat browser)
+    // Mainkan Audio
     try { audioCorrect.currentTime = 0; audioCorrect.play(); } catch(e){}
 
     score += SCORE_PER_QUESTION;
@@ -202,16 +202,25 @@ function handleWrong(explanation) {
 // Tampilkan Kartu Feedback (Penjelasan Modal Pop-up)
 function showFeedbackUI(isCorrect, explanation) {
     feedbackCard.classList.remove('hidden');
+    if (modalBackdrop) modalBackdrop.classList.remove('hidden'); // <-- Munculkan latar belakang gelap
+
     if (isCorrect) {
-        feedbackCard.classList.add('correct-feedback');
+        feedbackCard.className = 'feedback-card correct-feedback';
         feedbackIcon.innerHTML = '<i class="fa-solid fa-check-circle"></i>';
         feedbackTitle.innerText = "TEPAT SEKALI!";
     } else {
-        feedbackCard.classList.add('wrong-feedback');
+        feedbackCard.className = 'feedback-card wrong-feedback';
         feedbackIcon.innerHTML = '<i class="fa-solid fa-times-circle"></i>';
         feedbackTitle.innerText = "KURANG TEPAT!";
     }
     feedbackText.innerText = explanation;
+}
+
+// Sembunyikan Pop-up & Overlay
+function hideFeedbackUI() {
+    feedbackCard.classList.add('hidden');
+    feedbackCard.className = 'feedback-card hidden';
+    if (modalBackdrop) modalBackdrop.classList.add('hidden'); // <-- Sembunyikan latar belakang gelap
 }
 
 function updateScoreUI() {
@@ -219,13 +228,15 @@ function updateScoreUI() {
 }
 
 function handleNextQuestion() {
+    hideFeedbackUI(); // Sembunyikan pop-up seketika saat tombol lanjut diklik
+    
     currentQuestionIndex++;
     if (currentQuestionIndex < MAX_QUESTIONS) {
         loadQuestion();
     } else {
         // Quiz Selesai, Update Progress Bar penuh dulu
         progressBarEl.style.width = '100%';
-        setTimeout(showResult, 500);
+        setTimeout(showResult, 300);
     }
 }
 
@@ -234,6 +245,7 @@ function handleNextQuestion() {
 // ==========================================
 
 function showResult() {
+    hideFeedbackUI();
     quizScreen.classList.add('hidden');
     resultScreen.classList.remove('hidden');
 
@@ -277,7 +289,6 @@ function createConfetti() {
         const confetti = document.createElement('div');
         confetti.classList.add('confetti');
         
-        // Random posisi, warna, ukuran, dan durasi
         confetti.style.left = Math.random() * 100 + 'vw';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.width = Math.random() * 10 + 5 + 'px';
@@ -286,7 +297,6 @@ function createConfetti() {
         
         container.appendChild(confetti);
         
-        // Hapus elemen setelah animasi selesai agar tidak memberatkan DOM
         setTimeout(() => {
             confetti.remove();
         }, 4000);
