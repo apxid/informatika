@@ -23,13 +23,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   let raceInterval = null;
   let currentRunners = [];
 
-  // Inisialisasi Options
+  // Inisialisasi Options & Load Data
   populateOptions();
   await loadClasses();
 
   function populateOptions() {
     // Populate Categories jika ada di CONFIG
-    if (window.CONFIG && CONFIG.CATEGORIES) {
+    if (window.CONFIG && CONFIG.CATEGORIES && selectCategory) {
+      selectCategory.innerHTML = "";
       CONFIG.CATEGORIES.forEach(cat => {
         const opt = document.createElement("option");
         opt.value = cat;
@@ -39,7 +40,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Populate Themes
-    if (window.CONFIG && CONFIG.THEMES) {
+    if (window.CONFIG && CONFIG.THEMES && selectTheme) {
+      selectTheme.innerHTML = "";
       Object.keys(CONFIG.THEMES).forEach(key => {
         const opt = document.createElement("option");
         opt.value = key;
@@ -50,50 +52,81 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function loadClasses() {
-    if (!window.GAS) return;
-    const res = await GAS.getClasses();
-    selectClass.innerHTML = "";
-    if (res.success) {
-      res.data.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c;
-        opt.textContent = `Kelas ${c}`;
-        selectClass.appendChild(opt);
-      });
-    } else {
-      selectClass.innerHTML = "<option>Gagal memuat kelas</option>";
+    if (!selectClass) return;
+    
+    selectClass.innerHTML = "<option value=''>Memuat kelas...</option>";
+    selectClass.disabled = true;
+
+    try {
+      // Cek apakah objek pemanggil GAS tersedia
+      if (!window.GAS || typeof window.GAS.getClasses !== "function") {
+        throw new Error("Objek GAS.getClasses tidak ditemukan/belum terhubung.");
+      }
+
+      const res = await GAS.getClasses();
+      selectClass.innerHTML = "";
+
+      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+        res.data.forEach(c => {
+          const opt = document.createElement("option");
+          // Handle jika res.data berupa string ["7A", "7B"] atau object [{name: "7A"}]
+          const classVal = typeof c === "object" ? (c.className || c.kelas || c.name) : c;
+          opt.value = classVal;
+          opt.textContent = `Kelas ${classVal}`;
+          selectClass.appendChild(opt);
+        });
+        selectClass.disabled = false;
+      } else {
+        selectClass.innerHTML = "<option value=''>Data kelas kosong / tidak ditemukan</option>";
+      }
+    } catch (err) {
+      console.error("Gagal memuat kelas:", err);
+      selectClass.innerHTML = "<option value=''>Gagal memuat kelas (Cek Koneksi/GAS)</option>";
     }
   }
 
   // Handle Event Klik Start
   btnStart.addEventListener("click", async () => {
     const className = selectClass.value;
-    const category = selectCategory.value;
+    const category = selectCategory ? selectCategory.value : "";
+    
+    if (!className) {
+      alert("Silakan pilih kelas terlebih dahulu!");
+      return;
+    }
+
     // Maksimal 5 peserta agar tepat 5 baris lintasan
-    const count = Math.min(parseInt(selectCount.value) || 5, 5);
-    const exclude = chkExclude.checked;
+    const count = Math.min(parseInt(selectCount ? selectCount.value : 5) || 5, 5);
+    const exclude = chkExclude ? chkExclude.checked : false;
 
     btnStart.disabled = true;
     btnStart.textContent = "Sedang Memuat Data...";
 
-    const res = await GAS.getRandomStudents(className, count, category, exclude);
-    
-    btnStart.disabled = false;
-    btnStart.textContent = "Mulai Balapan 🚀";
+    try {
+      const res = await GAS.getRandomStudents(className, count, category, exclude);
+      
+      btnStart.disabled = false;
+      btnStart.textContent = "Mulai Balapan 🚀";
 
-    if (!res.success || !res.data || res.data.length === 0) {
-      alert("Siswa tidak ditemukan atau semua siswa sudah pernah menang!");
-      return;
+      if (!res || !res.success || !res.data || res.data.length === 0) {
+        alert("Siswa tidak ditemukan atau semua siswa sudah pernah menang!");
+        return;
+      }
+
+      if (setupPanel) setupPanel.classList.add("hidden");
+      if (racePanel) racePanel.classList.remove("hidden");
+      
+      startSequence(res.data);
+    } catch (err) {
+      console.error("Error saat mengambil data siswa:", err);
+      alert("Terjadi kesalahan saat mengambil data siswa dari Spreadsheets.");
+      btnStart.disabled = false;
+      btnStart.textContent = "Mulai Balapan 🚀";
     }
-
-    if (setupPanel) setupPanel.classList.add("hidden");
-    if (racePanel) racePanel.classList.remove("hidden");
-    
-    startSequence(res.data);
   });
 
   function startSequence(students) {
-    const themeKey = selectTheme.value;
+    const themeKey = selectTheme ? selectTheme.value : "";
     const theme = (window.CONFIG && CONFIG.THEMES && CONFIG.THEMES[themeKey]) 
       ? CONFIG.THEMES[themeKey] 
       : { icon: "🦆", name: "Bebek", bg: "transparent" };
@@ -102,17 +135,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     trackContainer.style.background = theme.bg;
     trackContainer.innerHTML = "";
 
-    // Build 5 Race Lanes (Setiap siswa di jalurnya masing-masing)
+    // Build 5 Race Lanes
     currentRunners = students.slice(0, 5).map((s, index) => {
       const trackLine = document.createElement("div");
       trackLine.className = "track-line";
 
-      // Struktur HTML per Lintasan: No. Lintasan + Runner (Avatar + Badge Absen) + Garis Finish
+      const studentName = s.nama || s.name || "Siswa";
+      const studentAbsen = s.no_absen || s.noAbsen || s.absen || (index + 1);
+
       trackLine.innerHTML = `
         <span class="lane-number">L-${index + 1}</span>
-        <div class="runner" id="runner-${index}" style="left: 40px;">
+        <div class="runner" id="runner-${index}" style="left: 5%;">
           <span class="avatar">${theme.icon}</span> 
-          <span class="runner-badge">No. ${s.no_absen || s.noAbsen || (index + 1)}</span>
+          <span class="runner-badge">No. ${studentAbsen}</span>
         </div>
         <div class="finish-line"></div>
       `;
@@ -121,15 +156,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       return {
         id: index,
-        fullName: s.nama || s.name, // Simpan Nama Lengkap untuk Podium/Gas
-        noAbsen: s.no_absen || s.noAbsen || (index + 1),
-        posPercent: 5, // Menggunakan persentase (5% s.d. 85%) agar responsif
+        fullName: studentName,
+        noAbsen: studentAbsen,
+        posPercent: 5,
         element: trackLine.querySelector(`.runner`),
         finished: false
       };
     });
 
-    // Run Countdown
     runCountdown(() => runEngine());
   }
 
@@ -159,7 +193,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Engine Balapan (Efek Saling Mengejar / Overtaking)
   function runEngine() {
-    const finishPercent = 85; // Garis Finish di posisi 85% lintasan
+    const finishPercent = 85;
     const winners = [];
     const startTime = Date.now();
 
@@ -172,19 +206,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!r.finished) {
           activeRunners++;
 
-          // DINAMIKA SALING MENGEJAR (RANDOM OVERTAKE):
-          // Adanya peluang (30%) terjadinya 'speed boost' acak agar posisi terus menyalip
+          // Dinamika saling mengejar (Overtaking)
           const isBoosting = Math.random() < 0.3;
           const step = isBoosting ? (Math.random() * 2.5 + 1.2) : (Math.random() * 1.2 + 0.3);
           
           r.posPercent += step;
 
-          // Render posisi terbaru dengan CSS transition pada .runner
           if (r.element) {
             r.element.style.left = `${Math.min(r.posPercent, finishPercent)}%`;
           }
 
-          // Cek Finish
           if (r.posPercent >= finishPercent) {
             r.finished = true;
             winners.push(r.fullName);
@@ -192,22 +223,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       });
 
-      // Berhenti ketika seluruh runner telah finish atau 3 podium terisi
       if (activeRunners === 0 || winners.length >= currentRunners.length) {
         clearInterval(raceInterval);
         const duration = Math.round((Date.now() - startTime) / 1000);
         handleFinish(winners, duration);
       }
-    }, 200); // Frame rate pergerakan (200ms cocok dengan CSS transition: 0.3s)
+    }, 200);
   }
 
   async function handleFinish(winners, duration) {
-    // Tampilkan Confetti
     if (typeof confetti === "function") {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 
-    // Tampilkan Nama Lengkap di Podium / Modal Pemenang
     const w1 = winners[0] || "-";
     const w2 = winners[1] || "-";
     const w3 = winners[2] || "-";
@@ -222,13 +250,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (winnerModal) winnerModal.classList.remove("hidden");
 
-    // Kirim Data Pemenang ke Spreadsheets
     const payload = {
       className: selectClass.value,
-      category: selectCategory.value,
-      theme: (window.CONFIG && CONFIG.THEMES && CONFIG.THEMES[selectTheme.value]) 
+      category: selectCategory ? selectCategory.value : "",
+      theme: (window.CONFIG && CONFIG.THEMES && selectTheme && CONFIG.THEMES[selectTheme.value]) 
         ? CONFIG.THEMES[selectTheme.value].name 
-        : selectTheme.value,
+        : "",
       winner1: w1,
       winner2: w2,
       winner3: w3,
