@@ -1,5 +1,5 @@
 /**
- * MAIN ENGINE & GAME CONTROLLER
+ * MAIN ENGINE & GAME CONTROLLER (CLASS RACE 5 BARIS)
  */
 document.addEventListener("DOMContentLoaded", async () => {
   // DOM Elements
@@ -28,24 +28,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadClasses();
 
   function populateOptions() {
-    // Populate Categories
-    CONFIG.CATEGORIES.forEach(cat => {
-      const opt = document.createElement("option");
-      opt.value = cat;
-      opt.textContent = cat;
-      selectCategory.appendChild(opt);
-    });
+    // Populate Categories jika ada di CONFIG
+    if (window.CONFIG && CONFIG.CATEGORIES) {
+      CONFIG.CATEGORIES.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat;
+        selectCategory.appendChild(opt);
+      });
+    }
 
     // Populate Themes
-    Object.keys(CONFIG.THEMES).forEach(key => {
-      const opt = document.createElement("option");
-      opt.value = key;
-      opt.textContent = `${CONFIG.THEMES[key].icon} ${CONFIG.THEMES[key].name}`;
-      selectTheme.appendChild(opt);
-    });
+    if (window.CONFIG && CONFIG.THEMES) {
+      Object.keys(CONFIG.THEMES).forEach(key => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = `${CONFIG.THEMES[key].icon} ${CONFIG.THEMES[key].name}`;
+        selectTheme.appendChild(opt);
+      });
+    }
   }
 
   async function loadClasses() {
+    if (!window.GAS) return;
     const res = await GAS.getClasses();
     selectClass.innerHTML = "";
     if (res.success) {
@@ -64,7 +69,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnStart.addEventListener("click", async () => {
     const className = selectClass.value;
     const category = selectCategory.value;
-    const count = parseInt(selectCount.value);
+    // Maksimal 5 peserta agar tepat 5 baris lintasan
+    const count = Math.min(parseInt(selectCount.value) || 5, 5);
     const exclude = chkExclude.checked;
 
     btnStart.disabled = true;
@@ -75,42 +81,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnStart.disabled = false;
     btnStart.textContent = "Mulai Balapan 🚀";
 
-    if (!res.success || res.data.length === 0) {
+    if (!res.success || !res.data || res.data.length === 0) {
       alert("Siswa tidak ditemukan atau semua siswa sudah pernah menang!");
       return;
     }
 
-    setupPanel.classList.add("hidden");
-    racePanel.classList.remove("hidden");
+    if (setupPanel) setupPanel.classList.add("hidden");
+    if (racePanel) racePanel.classList.remove("hidden");
+    
     startSequence(res.data);
   });
 
   function startSequence(students) {
     const themeKey = selectTheme.value;
-    const theme = CONFIG.THEMES[themeKey];
+    const theme = (window.CONFIG && CONFIG.THEMES && CONFIG.THEMES[themeKey]) 
+      ? CONFIG.THEMES[themeKey] 
+      : { icon: "🦆", name: "Bebek", bg: "transparent" };
     
     // Ubah Track Background sesuai Tema
     trackContainer.style.background = theme.bg;
     trackContainer.innerHTML = "";
 
-    // Build Race Lanes
-    currentRunners = students.map((s, index) => {
-      const lane = document.createElement("div");
-      lane.className = "lane";
+    // Build 5 Race Lanes (Setiap siswa di jalurnya masing-masing)
+    currentRunners = students.slice(0, 5).map((s, index) => {
+      const trackLine = document.createElement("div");
+      trackLine.className = "track-line";
 
-      const runner = document.createElement("div");
-      runner.className = "runner";
-      runner.id = `runner-${index}`;
-      runner.innerHTML = `<span class="avatar">${theme.icon}</span> <span class="name">${s.name}</span>`;
+      // Struktur HTML per Lintasan: No. Lintasan + Runner (Avatar + Badge Absen) + Garis Finish
+      trackLine.innerHTML = `
+        <span class="lane-number">L-${index + 1}</span>
+        <div class="runner" id="runner-${index}" style="left: 40px;">
+          <span class="avatar">${theme.icon}</span> 
+          <span class="runner-badge">No. ${s.no_absen || s.noAbsen || (index + 1)}</span>
+        </div>
+        <div class="finish-line"></div>
+      `;
       
-      lane.appendChild(runner);
-      trackContainer.appendChild(lane);
+      trackContainer.appendChild(trackLine);
 
       return {
         id: index,
-        name: s.name,
-        pos: 0,
-        element: runner,
+        fullName: s.nama || s.name, // Simpan Nama Lengkap untuk Podium/Gas
+        noAbsen: s.no_absen || s.noAbsen || (index + 1),
+        posPercent: 5, // Menggunakan persentase (5% s.d. 85%) agar responsif
+        element: trackLine.querySelector(`.runner`),
         finished: false
       };
     });
@@ -120,6 +134,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function runCountdown(callback) {
+    if (!countdownOverlay) {
+      callback();
+      return;
+    }
+
     countdownOverlay.classList.remove("hidden");
     let count = 3;
     countdownText.textContent = count;
@@ -138,38 +157,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 1000);
   }
 
-  // Race Loop (Engine Engine)
+  // Engine Balapan (Efek Saling Mengejar / Overtaking)
   function runEngine() {
-    const finishLine = trackContainer.clientWidth - 150; // Dynamic Width offset
+    const finishPercent = 85; // Garis Finish di posisi 85% lintasan
     const winners = [];
     const startTime = Date.now();
+
+    if (raceInterval) clearInterval(raceInterval);
 
     raceInterval = setInterval(() => {
       let activeRunners = 0;
 
       currentRunners.forEach(r => {
         if (!r.finished) {
-          // Delta acak per tick (Simulasi dinamika kecepatan)
-          const step = Math.random() * 3 + 0.5;
-          r.pos += step;
-          r.element.style.left = `${r.pos}px`;
+          activeRunners++;
 
-          if (r.pos >= finishLine) {
+          // DINAMIKA SALING MENGEJAR (RANDOM OVERTAKE):
+          // Adanya peluang (30%) terjadinya 'speed boost' acak agar posisi terus menyalip
+          const isBoosting = Math.random() < 0.3;
+          const step = isBoosting ? (Math.random() * 2.5 + 1.2) : (Math.random() * 1.2 + 0.3);
+          
+          r.posPercent += step;
+
+          // Render posisi terbaru dengan CSS transition pada .runner
+          if (r.element) {
+            r.element.style.left = `${Math.min(r.posPercent, finishPercent)}%`;
+          }
+
+          // Cek Finish
+          if (r.posPercent >= finishPercent) {
             r.finished = true;
-            winners.push(r.name);
-          } else {
-            activeRunners++;
+            winners.push(r.fullName);
           }
         }
       });
 
-      // Jika semua sudah finish atau minimal 3 juara didapatkan
-      if (activeRunners === 0 || winners.length === currentRunners.length) {
+      // Berhenti ketika seluruh runner telah finish atau 3 podium terisi
+      if (activeRunners === 0 || winners.length >= currentRunners.length) {
         clearInterval(raceInterval);
         const duration = Math.round((Date.now() - startTime) / 1000);
         handleFinish(winners, duration);
       }
-    }, 30);
+    }, 200); // Frame rate pergerakan (200ms cocok dengan CSS transition: 0.3s)
   }
 
   async function handleFinish(winners, duration) {
@@ -178,41 +207,58 @@ document.addEventListener("DOMContentLoaded", async () => {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 
-    document.getElementById("winner-1").textContent = winners[0] || "-";
-    document.getElementById("winner-2").textContent = winners[1] || "-";
-    document.getElementById("winner-3").textContent = winners[2] || "-";
+    // Tampilkan Nama Lengkap di Podium / Modal Pemenang
+    const w1 = winners[0] || "-";
+    const w2 = winners[1] || "-";
+    const w3 = winners[2] || "-";
 
-    winnerModal.classList.remove("hidden");
+    const elW1 = document.getElementById("winner-1");
+    const elW2 = document.getElementById("winner-2");
+    const elW3 = document.getElementById("winner-3");
 
-    // Kirim Data Pemenang ke Spreadsheets (Payload JSON)
+    if (elW1) elW1.textContent = w1;
+    if (elW2) elW2.textContent = w2;
+    if (elW3) elW3.textContent = w3;
+
+    if (winnerModal) winnerModal.classList.remove("hidden");
+
+    // Kirim Data Pemenang ke Spreadsheets
     const payload = {
       className: selectClass.value,
       category: selectCategory.value,
-      theme: CONFIG.THEMES[selectTheme.value].name,
-      winner1: winners[0] || "",
-      winner2: winners[1] || "",
-      winner3: winners[2] || "",
+      theme: (window.CONFIG && CONFIG.THEMES && CONFIG.THEMES[selectTheme.value]) 
+        ? CONFIG.THEMES[selectTheme.value].name 
+        : selectTheme.value,
+      winner1: w1,
+      winner2: w2,
+      winner3: w3,
       duration: duration
     };
 
-    await GAS.saveWinner(payload);
+    if (window.GAS && typeof GAS.saveWinner === "function") {
+      await GAS.saveWinner(payload);
+    }
   }
 
   // Reset UI
-  btnReset.addEventListener("click", () => {
-    winnerModal.classList.add("hidden");
-    racePanel.classList.add("hidden");
-    setupPanel.classList.remove("hidden");
-  });
+  if (btnReset) {
+    btnReset.addEventListener("click", () => {
+      if (winnerModal) winnerModal.classList.add("hidden");
+      if (racePanel) racePanel.classList.add("hidden");
+      if (setupPanel) setupPanel.classList.remove("hidden");
+    });
+  }
 
   // Fullscreen Control
-  btnFullscreen.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
+  if (btnFullscreen) {
+    btnFullscreen.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
       }
-    }
-  });
+    });
+  }
 });
