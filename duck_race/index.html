@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Class Race - Game Pengacak Siswa Interactive</title>
+  <title>Class Race - Game Pengacak Siswa Interaktif</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body class="dark-mode">
 
   <div class="app-container">
-    <!-- HEADER -->
+    <!-- HEADER APLIKASI -->
     <header>
       <h1>🏁 Class <span>Race</span></h1>
       <div style="display: flex; align-items: center; gap: 10px;">
@@ -19,16 +19,16 @@
       </div>
     </header>
 
-    <!-- MAIN CONTENT (GRID 1 SCREEN) -->
+    <!-- MAIN CONTENT (KOLOM KIRI: FORM | KOLOM KANAN: ARENA) -->
     <main>
-      <!-- PANEL KIRI: FORM PENGATURAN -->
+      <!-- PANEL KIRI: FORM PENGATURAN BALAPAN -->
       <section id="setup-panel" class="setup-panel">
         <h2>⚙️ Pengaturan Balapan</h2>
         
         <div class="form-group">
           <label for="select-class">Pilih Kelas:</label>
           <select id="select-class" class="form-control">
-            <option value="">Loading...</option>
+            <option value="">Memuat Kelas...</option>
           </select>
         </div>
 
@@ -46,8 +46,10 @@
           <label for="select-count">Jumlah Peserta:</label>
           <select id="select-count" class="form-control">
             <option value="0">Semua Siswa</option>
-            <option value="5">5 Siswa</option>
-            <option value="10" selected>10 Siswa</option>
+            <option value="3">3 Siswa</option>
+            <option value="5" selected>5 Siswa</option>
+            <option value="8">8 Siswa</option>
+            <option value="10">10 Siswa</option>
             <option value="15">15 Siswa</option>
             <option value="20">20 Siswa</option>
           </select>
@@ -61,9 +63,9 @@
         <button id="btn-start" class="btn-start">Mulai Balapan 🚀</button>
       </section>
 
-      <!-- PANEL KANAN: ARENA BALAP & PODIUM PEMENANG -->
+      <!-- PANEL KANAN: ARENA BALAP & PODIUM HASIL -->
       <section class="display-panel">
-        <!-- TRACK BALAPAN -->
+        <!-- TRACK ARENA BALAPAN -->
         <div id="race-panel" class="race-arena">
           <div id="countdown-overlay" class="hidden">
             <span id="countdown-text">3</span>
@@ -71,7 +73,7 @@
           <div id="track-container" class="track-box"></div>
         </div>
 
-        <!-- SEKSI PODIUM PEMENANG -->
+        <!-- SEKSI PODIUM HASIL PEMENANG -->
         <div class="winner-section">
           <h3>🥇 Hasil Pemenang Balapan</h3>
           <div class="podium-container">
@@ -105,7 +107,7 @@
       </section>
     </main>
 
-    <!-- POPUP MODAL PEMENANG -->
+    <!-- POPUP MODAL SELESAI BALAPAN -->
     <div id="winner-modal" class="modal hidden">
       <div class="modal-content glass-card">
         <h2>🎉 Pemenang Balapan 🎉</h2>
@@ -119,9 +121,9 @@
     </div>
   </div>
 
-  <!-- JS SCRIPTS (DIJAGA URUTANNYA) -->
-<script src="./config.js"></script>
-  <script src="./gas.js"></script>
-  <script src="./script.js"></script>
+  <!-- URUTAN PEMANGGILAN SCRIPT WAJIB BERURUTAN -->
+  <script src="config.js"></script>
+  <script src="gas.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
