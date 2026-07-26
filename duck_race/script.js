@@ -1,5 +1,5 @@
 /**
- * CLASS RACE - FRONTEND SCRIPT
+ * CLASS RACE - FRONTEND SCRIPT (script.js)
  * Dihubungkan secara presisi ke window.GAS (gas.js)
  */
 
@@ -26,12 +26,25 @@ document.addEventListener("DOMContentLoaded", () => {
   let raceInterval = null;
   let racePositions = [];
 
-  // Mapping Icon Tema
+  // Mapping Icon Tema Lengkap (Menyesuaikan Value Dropdown / Config)
   const themeIcons = {
     Bebek: "🦆",
+    duck: "🦆",
     Mobil: "🏎️",
+    car: "🏎️",
     Kelinci: "🐇",
-    Kuda: "🐎"
+    Kuda: "🐎",
+    horse: "🐎",
+    Robot: "🤖",
+    robot: "🤖",
+    Roket: "🚀",
+    rocket: "🚀",
+    Penyu: "🐢",
+    turtle: "🐢",
+    Penguin: "🐧",
+    penguin: "🐧",
+    Dino: "🦖",
+    dino: "🦖"
   };
 
   // 1. Inisialisasi - Load Daftar Kelas Menggunakan window.GAS
@@ -76,6 +89,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Hentikan balapan lama jika sedang berjalan
+    if (raceInterval) {
+      clearInterval(raceInterval);
+      raceInterval = null;
+    }
+
     btnStart.disabled = true;
     btnStart.innerText = "Memuat Peserta...";
 
@@ -84,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const excludePrevious = chkExclude ? chkExclude.checked : false;
 
     try {
-      // Memanggil window.GAS.getRandomStudents() sesuai signature di gas.js
+      // Memanggil window.GAS.getRandomStudents() dari gas.js
       const res = await window.GAS.getRandomStudents(
         selectedClass,
         count,
@@ -109,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Render Lintasan
+  // Render Lintasan Balap
   function renderTracks(students) {
     trackContainer.innerHTML = "";
     const selectedTheme = selectTheme ? selectTheme.value : "Bebek";
@@ -120,10 +139,14 @@ document.addEventListener("DOMContentLoaded", () => {
     students.forEach((student, index) => {
       const trackLine = document.createElement("div");
       trackLine.className = "track-line";
+      
+      const noAbsen = student.no_absen || student.noAbsen || (index + 1);
+      const namaSiswa = student.nama || student.name || "Siswa";
+
       trackLine.innerHTML = `
         <span class="lane-number">L-${index + 1}</span>
         <div class="runner" id="runner-${index}" style="left: 45px;">
-          ${icon} <span class="runner-badge">No. ${student.no_absen || student.noAbsen || (index + 1)} - ${student.nama || student.name}</span>
+          ${icon} <span class="runner-badge">No. ${noAbsen} - ${namaSiswa}</span>
         </div>
         <div class="finish-line"></div>
       `;
@@ -131,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Countdown
+  // Animasi Hitung Mundur
   function startCountdown() {
     countdownOverlay.classList.remove("hidden");
     let count = 3;
@@ -149,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }
 
-  // Jalannya Balapan
+  // Simulasi Pergerakan Balapan
   function runRace() {
     const totalParticipants = currentParticipants.length;
     const finishWinners = [];
@@ -159,8 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
       let allFinished = true;
 
       for (let i = 0; i < totalParticipants; i++) {
-        if (racePositions[i] < 88) {
+        if (racePositions[i] < 88) { // 88% adalah titik batas garis finish
           allFinished = false;
+          
+          // Gerakan acak per frame
           const speed = Math.random() * 3.5 + 0.5;
           racePositions[i] += speed;
 
@@ -186,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 150);
   }
 
-  // Selesai Balapan & Simpan Pemenang
+  // Penanganan Saat Balapan Selesai
   async function handleRaceFinish(winnerIndices, duration) {
     const winners = winnerIndices.map(idx => currentParticipants[idx]);
 
@@ -194,12 +219,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const winner2 = winners[1] ? (winners[1].nama || winners[1].name) : "-";
     const winner3 = winners[2] ? (winners[2].nama || winners[2].name) : "-";
 
-    // Update Podium Side
+    // Update Tampilan Podium Samping
     if (winner1Text) winner1Text.innerText = winner1;
     if (winner2Text) winner2Text.innerText = winner2;
     if (winner3Text) winner3Text.innerText = winner3;
 
-    // Update Modal
+    // Update Pop-up Modal Pemenang
     const modal1 = document.getElementById("modal-winner-1");
     const modal2 = document.getElementById("modal-winner-2");
     const modal3 = document.getElementById("modal-winner-3");
@@ -208,15 +233,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modal2) modal2.innerText = winner2;
     if (modal3) modal3.innerText = winner3;
 
+    // Efek Konfeti
     if (typeof confetti === "function") {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
 
+    // Tampilkan Modal Pemenang
     setTimeout(() => {
       if (winnerModal) winnerModal.classList.remove("hidden");
     }, 500);
 
-    // Simpan ke Apps Script menggunakan window.GAS.saveWinner()
+    // Simpan data pemenang ke Google Sheets via window.GAS
     const payload = {
       className: selectClass.value,
       category: selectCategory ? selectCategory.value : "",
@@ -230,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       await window.GAS.saveWinner(payload);
     } catch (err) {
-      console.error("Gagal menyimpan pemenang:", err);
+      console.error("Gagal menyimpan data pemenang:", err);
     }
 
     resetStartButton();
