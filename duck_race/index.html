@@ -22,7 +22,7 @@
     <!-- MAIN CONTENT (KOLOM KIRI: FORM | KOLOM KANAN: ARENA) -->
     <main>
       <!-- PANEL KIRI: FORM PENGATURAN BALAPAN -->
-      <section id="setup-panel" class="setup-panel">
+      <aside id="setup-panel" class="setup-panel">
         <h2>⚙️ Pengaturan Balapan</h2>
         
         <div class="form-group">
@@ -34,24 +34,37 @@
 
         <div class="form-group">
           <label for="select-category">Kategori:</label>
-          <select id="select-category" class="form-control"></select>
+          <select id="select-category" class="form-control">
+            <option value="Umum">Umum</option>
+            <option value="Kuis">Kuis / Pertanyaan</option>
+            <option value="Presentasi">Presentasi</option>
+            <option value="Tugas Kelompok">Tugas Kelompok</option>
+          </select>
         </div>
 
         <div class="form-group">
           <label for="select-theme">Tema Balapan:</label>
-          <select id="select-theme" class="form-control"></select>
+          <select id="select-theme" class="form-control">
+            <option value="Bebek">🦆 Bebek Balap</option>
+            <option value="Mobil">🏎️ Mobil Balap</option>
+            <option value="Kelinci">🐇 Kelinci Cepat</option>
+            <option value="Kuda">🐎 Kuda Pacu</option>
+          </select>
         </div>
 
         <div class="form-group">
           <label for="select-count">Jumlah Peserta:</label>
           <select id="select-count" class="form-control">
-            <option value="0">Semua Siswa</option>
+            <option value="0">Semua Siswa (Maks. 35)</option>
             <option value="3">3 Siswa</option>
             <option value="5" selected>5 Siswa</option>
             <option value="8">8 Siswa</option>
             <option value="10">10 Siswa</option>
             <option value="15">15 Siswa</option>
             <option value="20">20 Siswa</option>
+            <option value="25">25 Siswa</option>
+            <option value="30">30 Siswa</option>
+            <option value="35">35 Siswa</option>
           </select>
         </div>
 
@@ -61,7 +74,7 @@
         </div>
 
         <button id="btn-start" class="btn-start">Mulai Balapan 🚀</button>
-      </section>
+      </aside>
 
       <!-- PANEL KANAN: ARENA BALAP & PODIUM HASIL -->
       <section class="display-panel">
@@ -112,16 +125,16 @@
       <div class="modal-content glass-card">
         <h2>🎉 Pemenang Balapan 🎉</h2>
         <div class="podium">
-          <div class="podium-slot rank-2"><p>🥈 Juara 2</p><span>-</span></div>
-          <div class="podium-slot rank-1"><p>🏆 Juara 1</p><span>-</span></div>
-          <div class="podium-slot rank-3"><p>🥉 Juara 3</p><span>-</span></div>
+          <div class="podium-slot rank-2"><p>🥈 Juara 2</p><span id="modal-winner-2">-</span></div>
+          <div class="podium-slot rank-1"><p>🏆 Juara 1</p><span id="modal-winner-1">-</span></div>
+          <div class="podium-slot rank-3"><p>🥉 Juara 3</p><span id="modal-winner-3">-</span></div>
         </div>
         <button id="btn-reset" class="btn-primary" style="margin-top: 15px;">Kembali ke Pengaturan</button>
       </div>
     </div>
   </div>
 
-  <!-- URUTAN PEMANGGILAN SCRIPT WAJIB BERURUTAN -->
+  <!-- URUTAN PEMANGGILAN SCRIPT -->
   <script src="config.js"></script>
   <script src="gas.js"></script>
   <script src="script.js"></script>
