@@ -1,328 +1,239 @@
 /**
- * MAIN ENGINE & GAME CONTROLLER (CLASS RACE)
+ * CLASS RACE - FRONTEND LOGIC
  */
-document.addEventListener("DOMContentLoaded", async () => {
+
+document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
   const selectClass = document.getElementById("select-class");
   const selectCategory = document.getElementById("select-category");
   const selectTheme = document.getElementById("select-theme");
   const selectCount = document.getElementById("select-count");
   const chkExclude = document.getElementById("chk-exclude");
-  
-  const setupPanel = document.getElementById("setup-panel");
-  const racePanel = document.getElementById("race-panel");
+  const btnStart = document.getElementById("btn-start");
+  const btnFullscreen = document.getElementById("btn-fullscreen");
   const trackContainer = document.getElementById("track-container");
   const countdownOverlay = document.getElementById("countdown-overlay");
   const countdownText = document.getElementById("countdown-text");
-  
   const winnerModal = document.getElementById("winner-modal");
-  const btnStart = document.getElementById("btn-start");
   const btnReset = document.getElementById("btn-reset");
-  const btnFullscreen = document.getElementById("btn-fullscreen");
 
+  const winner1Text = document.getElementById("winner-1");
+  const winner2Text = document.getElementById("winner-2");
+  const winner3Text = document.getElementById("winner-3");
+
+  let currentParticipants = [];
   let raceInterval = null;
-  let currentRunners = [];
+  let racePositions = [];
 
-  // Inisialisasi Pilihan Opsi & Pemuatan Kelas
-  populateOptions();
-  await loadClasses();
+  // Mapping Icon Tema
+  const themeIcons = {
+    Bebek: "🦆",
+    Mobil: "🏎️",
+    Kelinci: "🐇",
+    Kuda: "🐎"
+  };
 
-  function populateOptions() {
-    // Populate Categories
-    if (selectCategory) {
-      selectCategory.innerHTML = "";
-      const categories = (window.CONFIG && Array.isArray(CONFIG.CATEGORIES)) 
-        ? CONFIG.CATEGORIES 
-        : ["Tanya Jawab", "Kuis Singkat", "Presentasi", "Keaktifan"];
+  // 1. Inisialisasi - Load Daftar Kelas
+  loadClassList();
 
-      categories.forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat;
-        selectCategory.appendChild(opt);
-      });
-    }
-
-    // Populate Themes
-    if (selectTheme) {
-      selectTheme.innerHTML = "";
-      const themes = (window.CONFIG && CONFIG.THEMES) ? CONFIG.THEMES : {
-        bebek: { icon: "🦆", name: "Balap Bebek", bg: "transparent" },
-        mobil: { icon: "🏎️", name: "Balap Mobil", bg: "transparent" },
-        roket: { icon: "🚀", name: "Balap Roket", bg: "transparent" }
-      };
-
-      Object.keys(themes).forEach(key => {
-        const opt = document.createElement("option");
-        opt.value = key;
-        opt.textContent = `${themes[key].icon} ${themes[key].name}`;
-        selectTheme.appendChild(opt);
-      });
-    }
-  }
-
-  async function loadClasses() {
-    if (!selectClass) return;
-    
-    selectClass.innerHTML = "<option value=''>Memuat kelas...</option>";
-    selectClass.disabled = true;
-
-    // Tunggu hingga objek GAS siap dimuat oleh browser (Maksimal 3 detik)
-    let retryCount = 0;
-    while ((typeof window.GAS === "undefined" || typeof window.GAS.getClasses !== "function") && retryCount < 30) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-      retryCount++;
-    }
-
+  async function loadClassList() {
     try {
-      if (!window.GAS || typeof window.GAS.getClasses !== "function") {
-        throw new Error("Objek GAS.getClasses tidak ditemukan atau belum terhubung.");
-      }
-
-      const res = await GAS.getClasses();
-      selectClass.innerHTML = "";
-
-      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
-        const defaultOpt = document.createElement("option");
-        defaultOpt.value = "";
-        defaultOpt.textContent = "-- Pilih Kelas --";
-        selectClass.appendChild(defaultOpt);
-
-        res.data.forEach(c => {
-          const opt = document.createElement("option");
-          const classVal = typeof c === "object" ? (c.className || c.kelas || c.name) : c;
-          opt.value = classVal;
-          opt.textContent = `Kelas ${classVal}`;
-          selectClass.appendChild(opt);
-        });
-        selectClass.disabled = false;
+      selectClass.innerHTML = `<option value="">Memuat Kelas...</option>`;
+      const response = await fetchGasApi('getClasses');
+      if (response && response.success && response.data.length > 0) {
+        selectClass.innerHTML = response.data
+          .map(cls => `<option value="${cls}">Kelas ${cls}</option>`)
+          .join('');
       } else {
-        selectClass.innerHTML = "<option value=''>Data kelas kosong / tidak ditemukan</option>";
+        selectClass.innerHTML = `<option value="">Gagal Memuat Kelas</option>`;
       }
     } catch (err) {
-      console.error("Gagal memuat kelas:", err);
-      selectClass.innerHTML = "<option value=''>Gagal memuat kelas (Cek Koneksi/GAS)</option>";
+      console.error("Error loading classes:", err);
+      selectClass.innerHTML = `<option value="">Error Server</option>`;
     }
   }
 
-  // Handle Event Klik Start
-  if (btnStart) {
-    btnStart.addEventListener("click", async () => {
-      const className = selectClass ? selectClass.value : "";
-      const category = selectCategory ? selectCategory.value : "";
-      
-      if (!className) {
-        alert("Silakan pilih kelas terlebih dahulu!");
-        return;
-      }
-
-      const count = Math.min(parseInt(selectCount ? selectCount.value : 5) || 5, 5);
-      const exclude = chkExclude ? chkExclude.checked : false;
-
-      btnStart.disabled = true;
-      btnStart.textContent = "Sedang Memuat Data...";
-
-      try {
-        const res = await GAS.getRandomStudents(className, count, category, exclude);
-        
-        btnStart.disabled = false;
-        btnStart.textContent = "Mulai Balapan 🚀";
-
-        if (!res || !res.success || !res.data || res.data.length === 0) {
-          alert("Siswa tidak ditemukan atau semua siswa sudah pernah menang!");
-          return;
-        }
-
-        if (setupPanel) setupPanel.classList.add("hidden");
-        if (racePanel) racePanel.classList.remove("hidden");
-        
-        startSequence(res.data);
-      } catch (err) {
-        console.error("Error saat mengambil data siswa:", err);
-        alert("Terjadi kesalahan saat mengambil data siswa dari Spreadsheets.");
-        btnStart.disabled = false;
-        btnStart.textContent = "Mulai Balapan 🚀";
-      }
-    });
-  }
-
-  function startSequence(students) {
-    const themeKey = selectTheme ? selectTheme.value : "";
-    const theme = (window.CONFIG && CONFIG.THEMES && CONFIG.THEMES[themeKey]) 
-      ? CONFIG.THEMES[themeKey] 
-      : { icon: "🦆", name: "Bebek", bg: "transparent" };
-    
-    if (trackContainer) {
-      trackContainer.style.background = theme.bg;
-      trackContainer.innerHTML = "";
+  // 2. Fullscreen Toggle
+  btnFullscreen.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
     }
+  });
 
-    // Buat maksimal 5 lintasan balap
-    currentRunners = students.slice(0, 5).map((s, index) => {
-      const trackLine = document.createElement("div");
-      trackLine.className = "track-line";
-
-      const studentName = s.nama || s.name || "Siswa";
-      const studentAbsen = s.no_absen || s.noAbsen || s.absen || (index + 1);
-
-      trackLine.innerHTML = `
-        <span class="lane-number">L-${index + 1}</span>
-        <div class="runner" id="runner-${index}" style="left: 5%;">
-          <span class="avatar">${theme.icon}</span> 
-          <span class="runner-badge">No. ${studentAbsen} - ${studentName}</span>
-        </div>
-        <div class="finish-line"></div>
-      `;
-      
-      if (trackContainer) trackContainer.appendChild(trackLine);
-
-      return {
-        id: index,
-        fullName: studentName,
-        noAbsen: studentAbsen,
-        posPercent: 5,
-        element: trackLine.querySelector(`.runner`),
-        finished: false
-      };
-    });
-
-    runCountdown(() => runEngine());
-  }
-
-  function runCountdown(callback) {
-    if (!countdownOverlay) {
-      callback();
+  // 3. Mulai Balapan
+  btnStart.addEventListener("click", async () => {
+    const selectedClass = selectClass.value;
+    if (!selectedClass) {
+      alert("Silakan pilih kelas terlebih dahulu!");
       return;
     }
 
+    btnStart.disabled = true;
+    btnStart.innerText = "Memuat Peserta...";
+
+    const count = parseInt(selectCount.value, 10);
+    const category = selectCategory.value;
+    const excludePrevious = chkExclude.checked;
+
+    try {
+      const res = await fetchGasApi('getRandomStudents', {
+        className: selectedClass,
+        count: count,
+        category: category,
+        excludePrevious: excludePrevious
+      });
+
+      if (!res.success || !res.data || res.data.length === 0) {
+        alert("Tidak ada data siswa yang tersedia untuk kelas/kategori ini.");
+        resetStartButton();
+        return;
+      }
+
+      currentParticipants = res.data;
+      renderTracks(currentParticipants);
+      startCountdown();
+
+    } catch (err) {
+      console.error("Error starting race:", err);
+      alert("Gagal mengambil data siswa.");
+      resetStartButton();
+    }
+  });
+
+  // Render Lintasan Bebek di Kolom Kanan
+  function renderTracks(students) {
+    trackContainer.innerHTML = "";
+    const selectedTheme = selectTheme.value;
+    const icon = themeIcons[selectedTheme] || "🦆";
+
+    racePositions = students.map(() => 0); // Reset Posisi Persentase (0%)
+
+    students.forEach((student, index) => {
+      const trackLine = document.createElement("div");
+      trackLine.className = "track-line";
+      trackLine.innerHTML = `
+        <span class="lane-number">L-${index + 1}</span>
+        <div class="runner" id="runner-${index}" style="left: 45px;">
+          ${icon} <span class="runner-badge">No. ${student.no_absen || student.noAbsen || (index + 1)} - ${student.nama || student.name}</span>
+        </div>
+        <div class="finish-line"></div>
+      `;
+      trackContainer.appendChild(trackLine);
+    });
+  }
+
+  // Animasi Hitung Mundur
+  function startCountdown() {
     countdownOverlay.classList.remove("hidden");
     let count = 3;
-    if (countdownText) countdownText.textContent = count;
+    countdownText.innerText = count;
 
     const timer = setInterval(() => {
       count--;
       if (count > 0) {
-        if (countdownText) countdownText.textContent = count;
-      } else if (count === 0) {
-        if (countdownText) countdownText.textContent = "GO!";
+        countdownText.innerText = count;
       } else {
         clearInterval(timer);
         countdownOverlay.classList.add("hidden");
-        callback();
+        runRace();
       }
-    }, 1000);
+    }, 800);
   }
 
-  // Engine Balapan
-  function runEngine() {
-    const finishPercent = 85;
-    const winners = [];
+  // Simulasi Jalannya Balapan
+  function runRace() {
+    const totalParticipants = currentParticipants.length;
+    const finishWinners = [];
     const startTime = Date.now();
 
-    if (raceInterval) clearInterval(raceInterval);
-
     raceInterval = setInterval(() => {
-      let activeRunners = 0;
+      let allFinished = true;
 
-      currentRunners.forEach(r => {
-        if (!r.finished) {
-          activeRunners++;
+      for (let i = 0; i < totalParticipants; i++) {
+        if (racePositions[i] < 88) { // 88% adalah batas garis finish
+          allFinished = false;
+          // Pergerakan acak
+          const speed = Math.random() * 3.5 + 0.5;
+          racePositions[i] += speed;
 
-          // Dinamika kecepatan acak
-          const isBoosting = Math.random() < 0.3;
-          const step = isBoosting ? (Math.random() * 2.5 + 1.2) : (Math.random() * 1.2 + 0.3);
-          
-          r.posPercent += step;
-
-          if (r.element) {
-            r.element.style.left = `${Math.min(r.posPercent, finishPercent)}%`;
+          if (racePositions[i] >= 88) {
+            racePositions[i] = 88;
+            if (!finishWinners.includes(i)) {
+              finishWinners.push(i);
+            }
           }
 
-          if (r.posPercent >= finishPercent) {
-            r.finished = true;
-            winners.push(r.fullName);
+          const runnerEl = document.getElementById(`runner-${i}`);
+          if (runnerEl) {
+            runnerEl.style.left = `calc(${racePositions[i]}% + 10px)`;
           }
         }
-      });
+      }
 
-      if (activeRunners === 0 || winners.length >= currentRunners.length) {
+      if (allFinished || finishWinners.length === totalParticipants) {
         clearInterval(raceInterval);
         const duration = Math.round((Date.now() - startTime) / 1000);
-        handleFinish(winners, duration);
+        handleRaceFinish(finishWinners, duration);
       }
-    }, 200);
+    }, 150);
   }
 
-  async function handleFinish(winners, duration) {
+  // Penanganan Selesai Balapan
+  async function handleRaceFinish(winnerIndices, duration) {
+    const winners = winnerIndices.map(idx => currentParticipants[idx]);
+
+    const winner1 = winners[0] ? winners[0].nama : "-";
+    const winner2 = winners[1] ? winners[1].nama : "-";
+    const winner3 = winners[2] ? winners[2].nama : "-";
+
+    // Update Tampilan Podium Kanan
+    winner1Text.innerText = winner1;
+    winner2Text.innerText = winner2;
+    winner3Text.innerText = winner3;
+
+    // Update Modal
+    document.getElementById("modal-winner-1").innerText = winner1;
+    document.getElementById("modal-winner-2").innerText = winner2;
+    document.getElementById("modal-winner-3").innerText = winner3;
+
+    // Tampilkan Confetti
     if (typeof confetti === "function") {
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
 
-    const w1 = winners[0] || "-";
-    const w2 = winners[1] || "-";
-    const w3 = winners[2] || "-";
-
-    // Update Panel Podium
-    const elW1 = document.getElementById("winner-1");
-    const elW2 = document.getElementById("winner-2");
-    const elW3 = document.getElementById("winner-3");
-
-    if (elW1) elW1.textContent = w1;
-    if (elW2) elW2.textContent = w2;
-    if (elW3) elW3.textContent = w3;
-
-    // Update Modal Pemenang jika ada
-    if (winnerModal) {
-      const modalR1 = winnerModal.querySelector(".rank-1 span");
-      const modalR2 = winnerModal.querySelector(".rank-2 span");
-      const modalR3 = winnerModal.querySelector(".rank-3 span");
-
-      if (modalR1) modalR1.textContent = w1;
-      if (modalR2) modalR2.textContent = w2;
-      if (modalR3) modalR3.textContent = w3;
-
+    setTimeout(() => {
       winnerModal.classList.remove("hidden");
-    }
+    }, 500);
 
-    // Payload Penyimpanan ke Google Sheets
+    // Simpan ke Spreadsheet via Backend API
     const payload = {
-      className: selectClass ? selectClass.value : "",
-      category: selectCategory ? selectCategory.value : "",
-      theme: (window.CONFIG && CONFIG.THEMES && selectTheme && CONFIG.THEMES[selectTheme.value]) 
-        ? CONFIG.THEMES[selectTheme.value].name 
-        : "",
-      winner1: w1,
-      winner2: w2,
-      winner3: w3,
+      action: 'saveWinner',
+      className: selectClass.value,
+      category: selectCategory.value,
+      theme: selectTheme.value,
+      winner1: winner1,
+      winner2: winner2,
+      winner3: winner3,
       duration: duration
     };
 
-    if (window.GAS && typeof GAS.saveWinner === "function") {
-      await GAS.saveWinner(payload);
+    try {
+      await postGasApi(payload);
+    } catch (err) {
+      console.error("Gagal menyimpan data pemenang:", err);
     }
+
+    resetStartButton();
   }
 
-  // Reset UI
-  if (btnReset) {
-    btnReset.addEventListener("click", () => {
-      if (winnerModal) winnerModal.classList.add("hidden");
-      if (racePanel) racePanel.classList.add("hidden");
-      if (setupPanel) setupPanel.classList.remove("hidden");
-    });
+  function resetStartButton() {
+    btnStart.disabled = false;
+    btnStart.innerText = "Mulai Balapan 🚀";
   }
 
-  // Fullscreen Control
-  if (btnFullscreen) {
-    btnFullscreen.addEventListener("click", () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-          console.warn("Fullscreen tidak diizinkan oleh browser:", err);
-        });
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-    });
-  }
+  btnReset.addEventListener("click", () => {
+    winnerModal.classList.add("hidden");
+  });
 });
