@@ -2,7 +2,8 @@
  * KONFIGURASI APLIKASI CLASS RACE
  */
 const CONFIG = {
-  // URL Deployment Google Apps Script (Web App)
+  // Ditambahkan dua-duanya agar tidak miskomunikasi variabel
+  GAS_URL: "https://script.google.com/macros/s/AKfycbw1hTauG3dHkyjeui4WD8SGOIHi2Cpu0NNLuUW2fVQcZOoLFYKtOtAsJsJfOpYNCdcZwQ/exec",
   GAS_API_URL: "https://script.google.com/macros/s/AKfycbw1hTauG3dHkyjeui4WD8SGOIHi2Cpu0NNLuUW2fVQcZOoLFYKtOtAsJsJfOpYNCdcZwQ/exec",
 
   // Pilihan Kategori Kegiatan
