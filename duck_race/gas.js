@@ -6,6 +6,17 @@
 
 window.GAS = {
   /**
+   * Helper internal untuk menunggu hingga `CONFIG` siap dimuat
+   */
+  async _ensureConfigLoaded() {
+    let retry = 0;
+    while ((!window.CONFIG || !CONFIG.GAS_API_URL) && retry < 10) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      retry++;
+    }
+  },
+
+  /**
    * Helper internal untuk memvalidasi dan menormalisasi respon JSON dari GAS
    * @param {any} result 
    * @returns {Object} { success: boolean, data?: Array, message?: string }
@@ -47,6 +58,9 @@ window.GAS = {
       });
     }
 
+    // Tunggu jika CONFIG belum terload sempurna
+    await this._ensureConfigLoaded();
+
     // 2. Mode WEB API FETCH (Menggunakan URL Deployment)
     if (window.CONFIG && CONFIG.GAS_API_URL) {
       try {
@@ -68,19 +82,24 @@ window.GAS = {
 
     // 3. Fallback Mode Offline / Dev Local
     console.warn("GAS Service: Menggunakan Dummy Data untuk Latihan/Lokal");
-    return { success: true, data: ["7A", "7B", "7C", "8A", "8B", "9A"] };
+    return { 
+      success: true, 
+      data: ["9A", "9B", "9C", "9D", "9E", "9F", "9G", "9H", "9I", "Kelompok"] 
+    };
   },
 
   /**
    * Mengambil daftar siswa acak berdasarkan parameter filter balapan
-   * @param {string} className - Nama kelas (misal: "7A")
-   * @param {number} count - Jumlah peserta balapan (Maks 5)
+   * @param {string} className - Nama kelas (misal: "9A")
+   * @param {number|string} count - Jumlah peserta balapan (0 = Semua Siswa)
    * @param {string} category - Kategori kegiatan (misal: "Tanya Jawab")
    * @param {boolean} excludeWinners - Status checkbox mengabaikan pemenang sebelumnya
    * @returns {Promise<Object>} { success: boolean, data: Array }
    */
   async getRandomStudents(className, count, category, excludeWinners) {
-    const targetCount = Math.min(parseInt(count) || 5, 5);
+    const parsedCount = parseInt(count);
+    // targetCount = 0 artinya ambil semua siswa di backend
+    const targetCount = isNaN(parsedCount) ? 0 : parsedCount;
 
     // 1. Mode NATIVE GAS
     if (typeof google !== "undefined" && google.script && google.script.run) {
@@ -94,6 +113,9 @@ window.GAS = {
           .getRandomStudents(className, targetCount, category, excludeWinners);
       });
     }
+
+    // Tunggu jika CONFIG belum terload sempurna
+    await this._ensureConfigLoaded();
 
     // 2. Mode WEB API FETCH
     if (window.CONFIG && CONFIG.GAS_API_URL) {
@@ -125,12 +147,14 @@ window.GAS = {
     // 3. Fallback Mode Offline
     const dummyStudents = [
       { no_absen: 1, nama: "Ahmad Dahlan" },
-      { no_absen: 5, nama: "Budi Santoso" },
-      { no_absen: 12, nama: "Citra Dewi" },
-      { no_absen: 18, nama: "Doni Pratama" },
-      { no_absen: 22, nama: "Eka Rahmawati" }
+      { no_absen: 2, nama: "Budi Santoso" },
+      { no_absen: 3, nama: "Citra Dewi" },
+      { no_absen: 4, nama: "Doni Pratama" },
+      { no_absen: 5, nama: "Eka Rahmawati" }
     ];
-    return { success: true, data: dummyStudents.slice(0, targetCount) };
+
+    const resultData = targetCount === 0 ? dummyStudents : dummyStudents.slice(0, targetCount);
+    return { success: true, data: resultData };
   },
 
   /**
@@ -151,6 +175,9 @@ window.GAS = {
           .saveWinner(payload);
       });
     }
+
+    // Tunggu jika CONFIG belum terload sempurna
+    await this._ensureConfigLoaded();
 
     // 2. Mode WEB API FETCH (Menggunakan text/plain agar terhindar dari Preflight CORS OPTIONS Request)
     if (window.CONFIG && CONFIG.GAS_API_URL) {
