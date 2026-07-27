@@ -5,11 +5,11 @@ html_content = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jaringan Media Sosial - Simulasi Struktur Data Graph</title>
+    <title>Peta Denah Sekolah - Simulasi Struktur Data Graph</title>
     <style>
         :root {
-            --app-purple: #6d28d9;
-            --sidebar-bg: #f5f3ff;
+            --app-purple: #0d9488;
+            --sidebar-bg: #f0fdf4;
             --main-bg: #ffffff;
             --border-color: #e5e7eb;
             
@@ -73,7 +73,7 @@ html_content = """<!DOCTYPE html>
         /* Canvas Area for Graph Visualization */
         .graph-area {
             flex: 1.5;
-            background-color: #fafafa;
+            background-color: #f8fafc;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -136,12 +136,12 @@ html_content = """<!DOCTYPE html>
         }
 
         .note-banner {
-            background-color: #f3f0ff;
-            border: 2px solid #ddd6fe;
+            background-color: #ccfbf1;
+            border: 2px solid #99f6e4;
             border-radius: 12px;
             padding: 16px 20px;
             font-size: 15px;
-            color: #5b21b6;
+            color: #115e59;
             display: flex;
             align-items: flex-start;
             gap: 14px;
@@ -150,28 +150,28 @@ html_content = """<!DOCTYPE html>
 
         /* Node Styling inside SVG */
         .node-circle {
-            fill: #3b82f6;
-            stroke: #1d4ed8;
+            fill: #0284c7;
+            stroke: #0369a1;
             stroke-width: 3px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .node-circle:hover {
-            fill: #60a5fa;
-            r: 32;
+            fill: #38bdf8;
+            r: 34;
         }
 
         .node-label {
-            fill: #1e293b;
+            fill: #ffffff;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
             text-anchor: middle;
             pointer-events: none;
         }
 
         .node-subtext {
-            fill: #2563eb;
+            fill: #0284c7;
             font-size: 12px;
             font-weight: bold;
             text-anchor: middle;
@@ -185,8 +185,7 @@ html_content = """<!DOCTYPE html>
         }
 
         .edge-label {
-            fill: #059669;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             text-anchor: middle;
             background: white;
@@ -199,7 +198,7 @@ html_content = """<!DOCTYPE html>
         <!-- Header -->
         <div class="app-header">
             <div class="header-left">
-                <span>🌐 Simulasi Struktur Data Graph (Jaringan Pertemanan)</span>
+                <span>🏫 Simulasi Graph - Denah & Jalur Sekolah</span>
             </div>
         </div>
 
@@ -210,7 +209,7 @@ html_content = """<!DOCTYPE html>
                 <svg id="graph-svg">
                     <!-- Marker Panah untuk Directed Edge -->
                     <defs>
-                        <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <marker id="arrow" viewBox="0 0 10 10" refX="32" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
                         </marker>
                     </defs>
@@ -222,37 +221,37 @@ html_content = """<!DOCTYPE html>
             <!-- Theory / Concept Explanations -->
             <div class="info-panel">
                 <div class="concept-card card-vertex">
-                    <div class="card-title">VERTEX / NODE (SIMPUL)</div>
-                    <div class="card-desc">Objek atau entitas utama dalam Graph. Tidak hierarkis seperti Tree.</div>
-                    <div class="card-example"><b>Contoh di Graf:</b> Budi, Siti, Andi, Rani, Doni <span style="color:var(--vertex-color); font-weight:bold;">(Vertex Node)</span></div>
+                    <div class="card-title">VERTEX / NODE (LOKASI)</div>
+                    <div class="card-desc">Setiap titik/lokasi di sekolah direpresentasikan sebagai Vertex.</div>
+                    <div class="card-example"><b>Contoh:</b> Gerbang, Halaman, Ruang Guru, Perpustakaan, Mushola, Kantin <span style="color:var(--vertex-color); font-weight:bold;">(Vertex Node)</span></div>
                 </div>
 
                 <div class="concept-card card-edge">
-                    <div class="card-title">EDGE (SISI / HUBUNGAN)</div>
-                    <div class="card-desc">Garis yang menghubungkan dua Vertex untuk menunjukkan adanya relasi.</div>
-                    <div class="card-example"><b>Contoh:</b> Garis pertemanan antara Budi dan Siti <span style="color:var(--edge-color); font-weight:bold;">(Undirected Edge)</span></div>
+                    <div class="card-title">EDGE (JALUR / JALAN)</div>
+                    <div class="card-desc">Garis penghubung antar lokasi yang menunjukkan adanya akses jalan.</div>
+                    <div class="card-example"><b>Contoh:</b> Jalan dua arah dari Gerbang ke Halaman Sekolah <span style="color:var(--edge-color); font-weight:bold;">(Undirected Edge)</span></div>
                 </div>
 
                 <div class="concept-card card-directed">
                     <div class="card-title">DIRECTED vs UNDIRECTED EDGE</div>
                     <div class="card-desc">
-                        <b>Undirected:</b> Hubungan 2 arah (misal: Saling Berteman di Facebook).<br>
-                        <b>Directed:</b> Hubungan 1 arah (misal: Follower di Instagram/TikTok).
+                        <b>Undirected:</b> Jalur 2 arah (bisa bolak-balik).<br>
+                        <b>Directed:</b> Jalur 1 arah (misal: koridor khusus/jalur evakuasi).
                     </div>
-                    <div class="card-example"><b>Contoh Panah:</b> Rani mengikuti (follow) Doni <span style="color:var(--directed-color); font-weight:bold;">(Directed Edge)</span></div>
+                    <div class="card-example"><b>Contoh Panah:</b> Jalur 1 arah dari Kantin menuju Mushola <span style="color:var(--directed-color); font-weight:bold;">(Directed Edge)</span></div>
                 </div>
 
                 <div class="concept-card card-degree">
-                    <div class="card-title">DEGREE (DERAJAT NODE)</div>
-                    <div class="card-desc">Jumlah hubungan/garis yang terhubung ke satu Vertex tertentu.</div>
-                    <div class="card-example"><b>Contoh:</b> Budi memiliki 3 koneksi <span style="color:var(--degree-color); font-weight:bold;">(Degree Node = 3)</span></div>
+                    <div class="card-title">DEGREE (JUMLAH AKSES LOKASI)</div>
+                    <div class="card-desc">Banyaknya jalur jalan yang terhubung langsung ke satu lokasi.</div>
+                    <div class="card-example"><b>Contoh:</b> Halaman Sekolah terhubung ke 4 tempat <span style="color:var(--degree-color); font-weight:bold;">(Degree Node = 4)</span></div>
                 </div>
 
                 <div class="note-banner">
                     <span style="font-size: 24px;">💡</span>
                     <div>
-                        <b>Beda Tree & Graph:</b><br>
-                        Tree tidak boleh memiliki siklus/loop dan memiliki satu Root. Sedangkan Graph bisa saling terhubung membentuk siklus dan <b>tidak memiliki Root</b>.
+                        <b>Penerapan Nyata:</b><br>
+                        Sistem navigasi seperti Google Maps menggunakan struktur data Graph untuk mencari rute terpendek dari satu lokasi ke lokasi lain.
                     </div>
                 </div>
             </div>
@@ -260,25 +259,28 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Data Graph Media Sosial
+        // Data Lokasi Sekolah (Graph Vertices)
         const nodes = [
-            { id: 1, name: "Budi", tag: "(Vertex Node)", x: 220, y: 150 },
-            { id: 2, name: "Siti", tag: "(Vertex Node)", x: 480, y: 120 },
-            { id: 3, name: "Andi", tag: "(Vertex Node)", x: 180, y: 380 },
-            { id: 4, name: "Rani", tag: "(Vertex Node)", x: 450, y: 360 },
-            { id: 5, name: "Doni", tag: "(Vertex Node)", x: 340, y: 250 }
+            { id: 1, name: "Gerbang", tag: "(Vertex Node)", x: 150, y: 250 },
+            { id: 2, name: "Halaman", tag: "(Vertex Node)", x: 350, y: 250 },
+            { id: 3, name: "Ruang Guru", tag: "(Vertex Node)", x: 350, y: 100 },
+            { id: 4, name: "Perpus", tag: "(Vertex Node)", x: 550, y: 120 },
+            { id: 5, name: "Kantin", tag: "(Vertex Node)", x: 350, y: 400 },
+            { id: 6, name: "Mushola", tag: "(Vertex Node)", x: 550, y: 380 }
         ];
 
+        // Data Jalur Penghubung (Graph Edges)
         const edges = [
-            // Undirected (Pertemanan 2 Arah)
+            // Jalur 2 arah (Undirected)
             { from: 1, to: 2, label: "(Undirected Edge)", type: "undirected" },
-            { from: 1, to: 3, label: "(Undirected Edge)", type: "undirected" },
-            { from: 1, to: 5, label: "(Undirected Edge)", type: "undirected" },
+            { from: 2, to: 3, label: "(Undirected Edge)", type: "undirected" },
+            { from: 2, to: 4, label: "(Undirected Edge)", type: "undirected" },
             { from: 2, to: 5, label: "(Undirected Edge)", type: "undirected" },
-            { from: 3, to: 5, label: "(Undirected Edge)", type: "undirected" },
+            { from: 3, to: 4, label: "(Undirected Edge)", type: "undirected" },
+            { from: 4, to: 6, label: "(Undirected Edge)", type: "undirected" },
             
-            // Directed (Follow 1 Arah dengan Panah)
-            { from: 4, to: 5, label: "(Directed Edge)", type: "directed" }
+            // Jalur 1 arah (Directed dengan Panah)
+            { from: 5, to: 6, label: "(Directed Edge)", type: "directed" }
         ];
 
         function renderGraph() {
@@ -328,19 +330,18 @@ html_content = """<!DOCTYPE html>
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", node.x);
                 circle.setAttribute("cy", node.y);
-                circle.setAttribute("r", 28);
+                circle.setAttribute("r", 30);
                 circle.setAttribute("class", "node-circle");
 
                 const textName = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 textName.setAttribute("x", node.x);
-                textName.setAttribute("y", node.y + 5);
+                textName.setAttribute("y", node.y + 4);
                 textName.setAttribute("class", "node-label");
-                textName.setAttribute("fill", "white");
                 textName.textContent = node.name;
 
                 const textTag = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 textTag.setAttribute("x", node.x);
-                textTag.setAttribute("y", node.y + 46);
+                textTag.setAttribute("y", node.y + 48);
                 textTag.setAttribute("class", "node-subtext");
                 textTag.textContent = node.tag;
 
@@ -361,4 +362,4 @@ html_content = """<!DOCTYPE html>
 with open('graph.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File graph.html berhasil dibuat.")
+print("File graph.html dengan denah sekolah berhasil diperbarui.")
