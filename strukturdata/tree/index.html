@@ -1,0 +1,819 @@
+import os
+
+html_content = """<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Struktur Data Tree - Windows Explorer Style</title>
+    <style>
+        :root {
+            --win-bg: #f0f0f0;
+            --win-border: #a0a0a0;
+            --win-blue: #0078d7;
+            --win-hover: #e5f3ff;
+            --win-selected: #cce8ff;
+            --sidebar-bg: #ffffff;
+            --accent-root: #e74c3c;
+            --accent-parent: #f39c12;
+            --accent-child: #3498db;
+            --accent-leaf: #2ecc71;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 15px;
+            background-color: #1e1e2e;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* App Window Frame */
+        .window {
+            background-color: var(--win-bg);
+            border: 1px solid var(--win-border);
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Titlebar */
+        .titlebar {
+            background-color: #ffffff;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9d9d9;
+        }
+
+        .titlebar .title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Toolbar / Address bar */
+        .toolbar {
+            background-color: #ffffff;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #d9d9d9;
+        }
+
+        .btn-nav {
+            background: none;
+            border: 1px solid transparent;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-nav:hover {
+            background: var(--win-hover);
+            border-color: #cce8ff;
+        }
+
+        .address-bar {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid #7a7a7a;
+            padding: 4px 10px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-action {
+            background: #fff;
+            border: 1px solid #adadad;
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-action:hover {
+            background: var(--win-hover);
+            border-color: var(--win-blue);
+        }
+
+        .btn-danger {
+            color: #d9534f;
+        }
+
+        /* Main Workspace split */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Left Pane: Tree View */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid #d9d9d9;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        /* Explorer Tree Lines (Windows Classic Style) */
+        .tree-view, .tree-view ul {
+            list-style: none;
+            padding-left: 18px;
+            margin: 0;
+            position: relative;
+        }
+
+        .tree-view {
+            padding-left: 5px;
+        }
+
+        .tree-view li {
+            margin: 2px 0;
+            position: relative;
+            line-height: 22px;
+        }
+
+        /* Vertical and Horizontal Connecting Lines */
+        .tree-view ul::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 12px;
+            left: 7px;
+            border-left: 1px dotted #888;
+        }
+
+        .tree-view li::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: -11px;
+            width: 10px;
+            border-top: 1px dotted #888;
+        }
+
+        .tree-node-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tree-node-item:hover {
+            background-color: var(--win-hover);
+        }
+
+        .tree-node-item.selected {
+            background-color: var(--win-selected);
+            border: 1px solid #99d1ff;
+        }
+
+        .toggle-btn {
+            width: 12px;
+            height: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            border: 1px solid #888;
+            background: #fff;
+            cursor: pointer;
+            line-height: 1;
+            margin-right: 2px;
+            z-index: 2;
+        }
+
+        /* Center Pane: Graph View & Files */
+        .content-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .view-header {
+            padding: 8px 12px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #e5e5e5;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .graph-container {
+            flex: 1;
+            overflow: auto;
+            position: relative;
+            background-color: #fafafa;
+            background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 15px 15px;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* SVG Line Canvas for Diagram */
+        #svg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Tree Graph Visualization */
+        .graph-node {
+            position: absolute;
+            padding: 8px 14px;
+            background: #ffffff;
+            border: 2px solid #0078d7;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            z-index: 2;
+        }
+
+        .graph-node:hover {
+            transform: scale(1.08);
+        }
+
+        .graph-node.selected {
+            box-shadow: 0 0 0 4px rgba(0, 120, 215, 0.3);
+            border-color: #004578;
+        }
+
+        /* Badge Indicators */
+        .badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-root { background-color: var(--accent-root); }
+        .badge-parent { background-color: var(--accent-parent); }
+        .badge-child { background-color: var(--accent-child); }
+        .badge-leaf { background-color: var(--accent-leaf); }
+
+        /* Right Inspector Panel */
+        .inspector {
+            width: 280px;
+            background: #fbfbfb;
+            border-left: 1px solid #d9d9d9;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .card-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #777;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .prop-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .prop-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .prop-label {
+            color: #666;
+        }
+
+        .prop-value {
+            font-weight: 600;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        .status-bar {
+            background: #f0f0f0;
+            border-top: 1px solid #d9d9d9;
+            padding: 4px 12px;
+            font-size: 11px;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <!-- Title Bar -->
+        <div class="titlebar">
+            <div class="title">
+                📁 Simulasi Struktur Data Tree (Windows Explorer Mode)
+            </div>
+            <div style="font-size: 11px; color: #666;">
+                Media Pembelajaran Informatika SMP
+            </div>
+        </div>
+
+        <!-- Toolbar & Path -->
+        <div class="toolbar">
+            <button class="btn-nav" title="Kembali">⬅️</button>
+            <button class="btn-nav" title="Maju">➡️</button>
+            <div class="address-bar">
+                <span>💻</span>
+                <span id="current-path" style="font-weight: 500;">C:\\Memori Internal</span>
+            </div>
+            <div class="action-btns">
+                <button class="btn-action" onclick="promptAddNode()">➕ Tambah Child Node</button>
+                <button class="btn-action btn-danger" onclick="deleteSelectedNode()">🗑️ Hapus Node</button>
+                <button class="btn-action" onclick="resetTree()">🔄 Reset Tree</button>
+            </div>
+        </div>
+
+        <!-- Main Workspace -->
+        <div class="workspace">
+            <!-- Left Pane: Windows Explorer Hierarchy -->
+            <div class="sidebar">
+                <div style="font-weight: 600; margin-bottom: 8px; color: #555;">Directory Tree</div>
+                <div id="tree-container"></div>
+            </div>
+
+            <!-- Center Pane: Mathematical Tree Graph -->
+            <div class="content-pane">
+                <div class="view-header">
+                    <span>Visualisasi Diagram Pohon (Tree Graph)</span>
+                    <span style="font-size: 11px; font-weight: normal; color: #777;">Garis menghubungkan Parent ke Child Node</span>
+                </div>
+                <div class="graph-container" id="graph-container">
+                    <svg id="svg-canvas"></svg>
+                    <!-- Graph nodes dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Right Pane: Node Inspector & Theory -->
+            <div class="inspector">
+                <div class="card">
+                    <div class="card-title">Informasi Node Terpilih</div>
+                    <div class="prop-row">
+                        <span class="prop-label">Nama Node:</span>
+                        <span class="prop-value" id="info-name">-</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Kategori Node:</span>
+                        <span class="prop-value" id="info-type">-</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Parent Node:</span>
+                        <span class="prop-value" id="info-parent">-</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Jumlah Child:</span>
+                        <span class="prop-value" id="info-children">-</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Kedalaman (Level):</span>
+                        <span class="prop-value" id="info-level">-</span>
+                    </div>
+                </div>
+
+                <div class="card" style="flex: 1;">
+                    <div class="card-title">Keterangan Istilah Tree</div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <span class="badge badge-root">Root</span>
+                            <span><b>Root Node:</b> Node paling atas (Akar). Tidak punya Parent.</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="badge badge-parent">Parent</span>
+                            <span><b>Parent Node:</b> Node yang memiliki cabang/anak di bawahnya.</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="badge badge-child">Child</span>
+                            <span><b>Child Node:</b> Node turunan yang berada di bawah Parent.</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="badge badge-leaf">Leaf</span>
+                            <span><b>Leaf Node:</b> Node paling ujung (Daun). Tidak punya Child.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span id="status-items">Total Node: 0</span>
+            <span>Konsep Dasar Struktur Data Non-Linier (Hierarkis)</span>
+        </div>
+    </div>
+
+    <script>
+        // Initial Tree Data Structure representing Android Storage
+        const initialData = {
+            id: 'root',
+            name: 'Memori Internal (C:)',
+            type: 'folder',
+            expanded: true,
+            children: [
+                {
+                    id: 'dcim',
+                    name: 'DCIM',
+                    type: 'folder',
+                    expanded: true,
+                    children: [
+                        {
+                            id: 'camera',
+                            name: 'Camera',
+                            type: 'folder',
+                            expanded: true,
+                            children: [
+                                { id: 'img1', name: 'IMG_2026.jpg', type: 'file' }
+                            ]
+                        },
+                        { id: 'screenshots', name: 'Screenshots', type: 'folder', children: [] }
+                    ]
+                },
+                {
+                    id: 'documents',
+                    name: 'Documents',
+                    type: 'folder',
+                    expanded: true,
+                    children: [
+                        { id: 'tugas', name: 'Tugas_Informatika.docx', type: 'file' }
+                    ]
+                },
+                {
+                    id: 'download',
+                    name: 'Download',
+                    type: 'folder',
+                    expanded: true,
+                    children: [
+                        { id: 'materi', name: 'Materi_Tree.pdf', type: 'file' }
+                    ]
+                }
+            ]
+        };
+
+        let treeData = JSON.parse(JSON.stringify(initialData));
+        let selectedNodeId = 'root';
+
+        // Helper to find node by ID
+        function findNode(id, node = treeData, parent = null) {
+            if (node.id === id) return { node, parent };
+            if (node.children) {
+                for (let child of node.children) {
+                    const result = findNode(id, child, node);
+                    if (result) return result;
+                }
+            }
+            return null;
+        }
+
+        // Determine node classification
+        function getNodeCategory(node, parent) {
+            const isRoot = parent === null;
+            const hasChildren = node.children && node.children.length > 0;
+
+            if (isRoot) return { text: 'Root Node', badge: 'badge-root' };
+            if (hasChildren) return { text: 'Parent & Child', badge: 'badge-parent' };
+            return { text: 'Leaf Node', badge: 'badge-leaf' };
+        }
+
+        // Get node level/depth
+        function getNodeLevel(id, node = treeData, level = 0) {
+            if (node.id === id) return level;
+            if (node.children) {
+                for (let child of node.children) {
+                    const res = getNodeLevel(id, child, level + 1);
+                    if (res !== -1) return res;
+                }
+            }
+            return -1;
+        }
+
+        // Select Node Handler
+        function selectNode(id) {
+            selectedNodeId = id;
+            renderExplorerTree();
+            renderGraphTree();
+            updateInspector();
+        }
+
+        // Render Left Pane (Windows Explorer Style Directory Tree)
+        function renderExplorerTree() {
+            const container = document.getElementById('tree-container');
+            container.innerHTML = '';
+            
+            function buildHTML(node) {
+                const li = document.createElement('li');
+                const isSelected = node.id === selectedNodeId;
+                const hasChildren = node.children && node.children.length > 0;
+                const icon = node.type === 'folder' ? (node.expanded ? '📂' : '📁') : '📄';
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `tree-node-item ${isSelected ? 'selected' : ''}`;
+                itemDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    selectNode(node.id);
+                };
+
+                // Toggle expand/collapse button
+                if (node.type === 'folder' && hasChildren) {
+                    const toggle = document.createElement('span');
+                    toggle.className = 'toggle-btn';
+                    toggle.innerText = node.expanded ? '-' : '+';
+                    toggle.onclick = (e) => {
+                        e.stopPropagation();
+                        node.expanded = !node.expanded;
+                        renderExplorerTree();
+                    };
+                    itemDiv.appendChild(toggle);
+                } else {
+                    const spacer = document.createElement('span');
+                    spacer.style.width = '14px';
+                    itemDiv.appendChild(spacer);
+                }
+
+                const iconSpan = document.createElement('span');
+                iconSpan.innerText = icon;
+                const nameSpan = document.createElement('span');
+                nameSpan.innerText = node.name;
+
+                itemDiv.appendChild(iconSpan);
+                itemDiv.appendChild(nameSpan);
+                li.appendChild(itemDiv);
+
+                if (hasChildren && node.expanded) {
+                    const ul = document.createElement('ul');
+                    node.children.forEach(child => {
+                        ul.appendChild(buildHTML(child));
+                    });
+                    li.appendChild(ul);
+                }
+
+                return li;
+            }
+
+            const rootUl = document.createElement('ul');
+            rootUl.className = 'tree-view';
+            rootUl.appendChild(buildHTML(treeData));
+            container.appendChild(rootUl);
+        }
+
+        // Render Center Pane (Tree Graph Canvas Layout)
+        function renderGraphTree() {
+            const container = document.getElementById('graph-container');
+            const svg = document.getElementById('svg-canvas');
+            
+            // Clear existing nodes
+            const oldNodes = container.querySelectorAll('.graph-node');
+            oldNodes.forEach(n => n.remove());
+            svg.innerHTML = '';
+
+            // Calculate tree depth and layout positions
+            const levels = [];
+            
+            function traverse(node, depth = 0) {
+                if (!levels[depth]) levels[depth] = [];
+                levels[depth].push(node);
+                if (node.children && node.expanded) {
+                    node.children.forEach(c => traverse(c, depth + 1));
+                }
+            }
+
+            traverse(treeData);
+
+            const containerWidth = container.clientWidth || 600;
+            const positions = new Map();
+
+            // Calculate Positions for each node
+            levels.forEach((levelNodes, depth) => {
+                const y = 40 + depth * 70;
+                const step = containerWidth / (levelNodes.length + 1);
+
+                levelNodes.forEach((node, index) => {
+                    const x = step * (index + 1);
+                    positions.set(node.id, { x, y });
+
+                    // Create Node Element
+                    const nodeEl = document.createElement('div');
+                    const isSelected = node.id === selectedNodeId;
+                    const { parent } = findNode(node.id);
+                    const cat = getNodeCategory(node, parent);
+
+                    nodeEl.className = `graph-node ${isSelected ? 'selected' : ''}`;
+                    nodeEl.style.left = `${x - 60}px`;
+                    nodeEl.style.top = `${y - 18}px`;
+                    nodeEl.onclick = () => selectNode(node.id);
+
+                    const icon = node.type === 'folder' ? '📁' : '📄';
+                    nodeEl.innerHTML = `
+                        <span>${icon}</span>
+                        <span>${node.name}</span>
+                        <span class="badge ${cat.badge}">${cat.text.split(' ')[0]}</span>
+                    `;
+
+                    container.appendChild(nodeEl);
+                });
+            });
+
+            // Draw SVG Connecting Branch Lines
+            function drawLines(node) {
+                if (node.children && node.expanded) {
+                    const parentPos = positions.get(node.id);
+                    node.children.forEach(child => {
+                        const childPos = positions.get(child.id);
+                        if (parentPos && childPos) {
+                            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                            line.setAttribute('x1', parentPos.x);
+                            line.setAttribute('y1', parentPos.y + 15);
+                            line.setAttribute('x2', childPos.x);
+                            line.setAttribute('y2', childPos.y - 15);
+                            line.setAttribute('stroke', '#a0a0a0');
+                            line.setAttribute('stroke-width', '2');
+                            line.setAttribute('stroke-dasharray', '4 2');
+                            svg.appendChild(line);
+
+                            drawLines(child);
+                        }
+                    });
+                }
+            }
+
+            drawLines(treeData);
+        }
+
+        // Update Right Inspector Panel & Path
+        function updateInspector() {
+            const found = findNode(selectedNodeId);
+            if (!found) return;
+
+            const { node, parent } = found;
+            const category = getNodeCategory(node, parent);
+            const level = getNodeLevel(node.id);
+
+            document.getElementById('info-name').innerText = node.name;
+            document.getElementById('info-type').innerText = category.text;
+            document.getElementById('info-parent').innerText = parent ? parent.name : 'None (Root)';
+            document.getElementById('info-children').innerText = node.children ? node.children.length : 0;
+            document.getElementById('info-level').innerText = `Level ${level}`;
+
+            // Build current path string
+            let path = [];
+            let curr = found;
+            while (curr) {
+                path.unshift(curr.node.name);
+                if (curr.parent) {
+                    curr = findNode(curr.parent.id);
+                } else {
+                    curr = null;
+                }
+            }
+            document.getElementById('current-path').innerText = path.join(' \\ ');
+
+            // Count total nodes
+            let count = 0;
+            function countNodes(n) {
+                count++;
+                if (n.children) n.children.forEach(countNodes);
+            }
+            countNodes(treeData);
+            document.getElementById('status-items').innerText = `Total Node dalam Tree: ${count}`;
+        }
+
+        // User Action: Add Child Node
+        function promptAddNode() {
+            const found = findNode(selectedNodeId);
+            if (!found) return;
+
+            if (found.node.type === 'file') {
+                alert('File (Leaf Node) tidak dapat memiliki child node! Silakan pilih Folder.');
+                return;
+            }
+
+            const name = prompt('Masukkan nama folder/file baru:');
+            if (!name) return;
+
+            const isFolder = confirm('Klik OK untuk "Folder", atau Cancel untuk "File" (.txt/.jpg):');
+
+            const newNode = {
+                id: 'node_' + Date.now(),
+                name: name,
+                type: isFolder ? 'folder' : 'file',
+                children: isFolder ? [] : undefined,
+                expanded: true
+            };
+
+            if (!found.node.children) found.node.children = [];
+            found.node.children.push(newNode);
+            found.node.expanded = true;
+
+            selectNode(newNode.id);
+        }
+
+        // User Action: Delete Node
+        function deleteSelectedNode() {
+            if (selectedNodeId === 'root') {
+                alert('Root Node (Akar Utama) tidak boleh dihapus!');
+                return;
+            }
+
+            const found = findNode(selectedNodeId);
+            if (!found || !found.parent) return;
+
+            if (confirm(`Hapus node "${found.node.name}" beserta seluruh cabangnya?`)) {
+                const parentChildren = found.parent.children;
+                const index = parentChildren.findIndex(n => n.id === selectedNodeId);
+                if (index !== -1) {
+                    parentChildren.splice(index, 1);
+                }
+                selectNode(found.parent.id);
+            }
+        }
+
+        // Reset Tree to default state
+        function resetTree() {
+            treeData = JSON.parse(JSON.stringify(initialData));
+            selectNode('root');
+        }
+
+        // Initialize UI on load
+        window.onload = () => {
+            selectNode('root');
+            window.onresize = renderGraphTree;
+        };
+    </script>
+</body>
+</html>
+"""
+
+# Execute python script to generate index.html file
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("index.html created successfully.")
