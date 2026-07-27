@@ -140,7 +140,7 @@ html_content = """<!DOCTYPE html>
 
         .tree-root li {
             position: relative;
-            margin: 14px 0;
+            margin: 12px 0;
             line-height: 36px;
         }
 
@@ -167,10 +167,10 @@ html_content = """<!DOCTYPE html>
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 600;
             color: #1f2937;
         }
@@ -180,7 +180,7 @@ html_content = """<!DOCTYPE html>
         }
 
         .node-icon {
-            font-size: 32px;
+            font-size: 30px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -299,32 +299,32 @@ html_content = """<!DOCTYPE html>
                 <div class="info-panel">
                     <div class="concept-card card-root">
                         <div class="card-title">ROOT NODE (AKAR)</div>
-                        <div class="card-desc">Puncak dari struktur tree. Tidak memiliki parent.</div>
+                        <div class="card-desc">Puncak paling atas dari struktur tree. Tidak memiliki parent node.</div>
                     </div>
 
                     <div class="concept-card card-parent">
                         <div class="card-title">PARENT NODE (NODE INDUK)</div>
-                        <div class="card-desc">Memiliki child (anak).</div>
-                        <div class="card-example"><b>Contoh:</b> DCIM, Camera, Download, Documents</div>
+                        <div class="card-desc">Node yang memiliki cabang/anak di bawahnya.</div>
+                        <div class="card-example"><b>Contoh:</b> DCIM, Download, Documents, Music, Movies, Pictures</div>
                     </div>
 
                     <div class="concept-card card-child">
                         <div class="card-title">CHILD NODE (NODE ANAK)</div>
-                        <div class="card-desc">Merupakan turunan dari parent.</div>
-                        <div class="card-example"><b>Contoh:</b> Camera (anak dari DCIM), materi_belajar.pdf (anak dari Download)</div>
+                        <div class="card-desc">Node turunan yang berada tepat di bawah parent node.</div>
+                        <div class="card-example"><b>Contoh:</b> Camera (anak dari DCIM), lagu_favorit.mp3 (anak dari Music)</div>
                     </div>
 
                     <div class="concept-card card-leaf">
                         <div class="card-title">LEAF NODE (NODE DAUN)</div>
-                        <div class="card-desc">Node yang tidak memiliki child (anak). Berada di paling bawah struktur tree.</div>
-                        <div class="card-example"><b>Contoh:</b> IMG_20240601.jpg, IMG_20240602.jpg, materi_belajar.pdf, contoh_soal.docx, catatan.txt</div>
+                        <div class="card-desc">Node paling ujung yang tidak memiliki child lagi di bawahnya (biasanya berupa file).</div>
+                        <div class="card-example"><b>Contoh:</b> .jpg, .mp3, .mp4, .pdf, .docx</div>
                     </div>
 
                     <div class="note-banner">
                         <span style="font-size: 24px;">💡</span>
                         <div>
                             <b>Inti Konsep:</b><br>
-                            Tree adalah struktur data hierarkis yang memiliki tingkatan dari atas (root) hingga ke bawah (leaf).
+                            Sistem penyimpanan Android menggunakan struktur data Tree secara hierarkis dari Penyimpanan Internal (Root) hingga ke berkas individual (Leaf).
                         </div>
                     </div>
                 </div>
@@ -333,7 +333,7 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Tree Structure dengan Keterangan Peran Node
+        // Tree Data dengan Struktur Folder Bawaan (Default) Android
         const treeData = {
             name: "Penyimpanan Internal",
             tag: "(Root Node)",
@@ -341,6 +341,17 @@ html_content = """<!DOCTYPE html>
             type: "drive",
             expanded: true,
             children: [
+                {
+                    name: "Android",
+                    tag: "(Parent Node)",
+                    tagClass: "tag-parent",
+                    type: "folder",
+                    expanded: false,
+                    children: [
+                        { name: "data", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "folder" },
+                        { name: "media", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "folder" }
+                    ]
+                },
                 {
                     name: "DCIM",
                     tag: "(Parent Node)",
@@ -358,7 +369,18 @@ html_content = """<!DOCTYPE html>
                                 { name: "IMG_20240601.jpg", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" },
                                 { name: "IMG_20240602.jpg", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" }
                             ]
-                        }
+                        },
+                        { name: "Screenshots", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "folder" }
+                    ]
+                },
+                {
+                    name: "Documents",
+                    tag: "(Parent Node)",
+                    tagClass: "tag-parent",
+                    type: "folder",
+                    expanded: true,
+                    children: [
+                        { name: "catatan.txt", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "text" }
                     ]
                 },
                 {
@@ -373,13 +395,33 @@ html_content = """<!DOCTYPE html>
                     ]
                 },
                 {
-                    name: "Documents",
+                    name: "Movies",
                     tag: "(Parent Node)",
                     tagClass: "tag-parent",
                     type: "folder",
                     expanded: true,
                     children: [
-                        { name: "catatan.txt", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "text" }
+                        { name: "video_praktikum.mp4", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "video" }
+                    ]
+                },
+                {
+                    name: "Music",
+                    tag: "(Parent Node)",
+                    tagClass: "tag-parent",
+                    type: "folder",
+                    expanded: true,
+                    children: [
+                        { name: "lagu_favorit.mp3", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "audio" }
+                    ]
+                },
+                {
+                    name: "Pictures",
+                    tag: "(Parent Node)",
+                    tagClass: "tag-parent",
+                    type: "folder",
+                    expanded: false,
+                    children: [
+                        { name: "desain_poster.png", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" }
                     ]
                 }
             ]
@@ -393,6 +435,8 @@ html_content = """<!DOCTYPE html>
                 case 'pdf': return '📕';
                 case 'doc': return '📘';
                 case 'text': return '📄';
+                case 'audio': return '🎵';
+                case 'video': return '🎬';
                 default: return '📄';
             }
         }
@@ -458,4 +502,4 @@ html_content = """<!DOCTYPE html>
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File index.html berhasil diperbarui dengan keterangan dalam kurung (Root Node, Parent Node, Leaf Node).")
+print("File index.html berhasil diperbarui dengan folder default Android lengkap (Music, Movies, Pictures, Android, dll).")
