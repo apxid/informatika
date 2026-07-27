@@ -159,13 +159,13 @@ html_content = """<!DOCTYPE html>
 
         .node-circle:hover {
             fill: #38bdf8;
-            r: 60;
+            r: 58;
         }
 
         .node-label {
             fill: #ffffff;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
             text-anchor: middle;
             pointer-events: none;
         }
@@ -206,16 +206,13 @@ html_content = """<!DOCTYPE html>
             <div class="graph-area">
                 <svg id="graph-svg" viewBox="0 0 1000 700">
                     <defs>
-                        <!-- Marker Panah Hijau (Dua Arah / Undirected) -->
-                        <marker id="arrow-green-end" viewBox="0 0 10 10" refX="58" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <!-- Panah Hijau Presisi (Dua Arah) -->
+                        <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
                         </marker>
-                        <marker id="arrow-green-start" viewBox="0 0 10 10" refX="-48" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                            <path d="M 10 0 L 0 5 L 10 10 z" fill="#059669" />
-                        </marker>
 
-                        <!-- Marker Panah Merah (Satu Arah / Directed) -->
-                        <marker id="arrow-red-end" viewBox="0 0 10 10" refX="58" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <!-- Panah Merah Presisi (Satu Arah) -->
+                        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
                         </marker>
                     </defs>
@@ -234,13 +231,13 @@ html_content = """<!DOCTYPE html>
 
                 <div class="concept-card card-edge">
                     <div class="card-title">UNDIRECTED EDGE (JALUR 2 ARAH)</div>
-                    <div class="card-desc">Jalur dengan panah di kedua ujungnya. Siswa/guru bisa berjalan bolak-balik antar kedua lokasi.</div>
+                    <div class="card-desc">Jalur berwarna <b>hijau</b> dengan panah di dua ujungnya (depan & belakang). Bisa dilalui bolak-balik.</div>
                     <div class="card-example"><b>Contoh:</b> Gerbang ↔ Halaman Sekolah <span style="color:var(--edge-color); font-weight:bold;">(Undirected Edge)</span></div>
                 </div>
 
                 <div class="concept-card card-directed">
                     <div class="card-title">DIRECTED EDGE (JALUR 1 ARAH)</div>
-                    <div class="card-desc">Jalur dengan satu panah penunjuk arah. Hanya bisa dilalui searah (misal: alur evakuasi/koridor khusus).</div>
+                    <div class="card-desc">Jalur berwarna <b>merah</b> dengan panah satu arah ke depan. Hanya bisa dilalui searah.</div>
                     <div class="card-example"><b>Contoh Panah:</b> Kantin → Mushola <span style="color:var(--directed-color); font-weight:bold;">(Directed Edge)</span></div>
                 </div>
 
@@ -254,7 +251,7 @@ html_content = """<!DOCTYPE html>
                     <span style="font-size: 24px;">💡</span>
                     <div>
                         <b>Penerapan Nyata:</b><br>
-                        Sistem navigasi menggunakan panah dua arah untuk jalan umum dan panah satu arah untuk jalan <i>one-way</i>.
+                        Sistem navigasi menggunakan panah dua arah (hijau) untuk jalan umum dan panah satu arah (merah) untuk jalan <i>one-way</i>.
                     </div>
                 </div>
             </div>
@@ -262,9 +259,11 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Data Lokasi Sekolah dengan Ukuran Lingkaran yang Cukup Besar (Radius 55)
+        const NODE_RADIUS = 52; // Radius Vertex
+
+        // Data Lokasi Sekolah
         const nodes = [
-            { id: 1, name: "Gerbang", tag: "(Vertex Node)", x: 130, y: 350 },
+            { id: 1, name: "Gerbang", tag: "(Vertex Node)", x: 140, y: 350 },
             { id: 2, name: "Halaman", tag: "(Vertex Node)", x: 450, y: 350 },
             { id: 3, name: "Ruang Guru", tag: "(Vertex Node)", x: 450, y: 110 },
             { id: 4, name: "Perpus", tag: "(Vertex Node)", x: 820, y: 130 },
@@ -291,36 +290,53 @@ html_content = """<!DOCTYPE html>
             edgesLayer.innerHTML = '';
             nodesLayer.innerHTML = '';
 
-            // Render Edges
+            // Render Edges dengan perhitungan titik potong tepi lingkaran
             edges.forEach(edge => {
                 const nodeFrom = nodes.find(n => n.id === edge.from);
                 const nodeTo = nodes.find(n => n.id === edge.to);
 
+                // Hitung sudut dan jarak antar pusat lingkaran
+                const dx = nodeTo.x - nodeFrom.x;
+                const dy = nodeTo.y - nodeFrom.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Vektor satuan
+                const ux = dx / dist;
+                const uy = dy / dist;
+
+                // Titik awal dan akhir garis di TEPI lingkaran (bukan di pusat)
+                const x1 = nodeFrom.x + ux * NODE_RADIUS;
+                const y1 = nodeFrom.y + uy * NODE_RADIUS;
+                const x2 = nodeTo.x - ux * NODE_RADIUS;
+                const y2 = nodeTo.y - uy * NODE_RADIUS;
+
                 const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", nodeFrom.x);
-                line.setAttribute("y1", nodeFrom.y);
-                line.setAttribute("x2", nodeTo.x);
-                line.setAttribute("y2", nodeTo.y);
+                line.setAttribute("x1", x1);
+                line.setAttribute("y1", y1);
+                line.setAttribute("x2", x2);
+                line.setAttribute("y2", y2);
                 line.setAttribute("class", "edge-line");
 
                 if (edge.type === "directed") {
+                    // Directed = Merah, Panah Depan saja, Putus-putus
                     line.setAttribute("stroke", "#dc2626");
                     line.setAttribute("stroke-dasharray", "6,6");
-                    line.setAttribute("marker-end", "url(#arrow-red-end)");
+                    line.setAttribute("marker-end", "url(#arrow-red)");
                 } else {
+                    // Undirected = Hijau, Panah Depan & Belakang, Utuh
                     line.setAttribute("stroke", "#059669");
-                    line.setAttribute("marker-start", "url(#arrow-green-start)");
-                    line.setAttribute("marker-end", "url(#arrow-green-end)");
+                    line.setAttribute("marker-start", "url(#arrow-green)");
+                    line.setAttribute("marker-end", "url(#arrow-green)");
                 }
 
                 edgesLayer.appendChild(line);
 
-                // Edge Text Label
+                // Label Teks Edge
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 const midX = (nodeFrom.x + nodeTo.x) / 2;
                 const midY = (nodeFrom.y + nodeTo.y) / 2;
                 text.setAttribute("x", midX);
-                text.setAttribute("y", midY - 12);
+                text.setAttribute("y", midY - 10);
                 text.setAttribute("class", "edge-label");
                 text.setAttribute("fill", edge.type === "directed" ? "#dc2626" : "#059669");
                 text.textContent = edge.label;
@@ -331,22 +347,41 @@ html_content = """<!DOCTYPE html>
             nodes.forEach(node => {
                 const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-                // Lingkaran Vertex diperbesar menjadi r=55
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", node.x);
                 circle.setAttribute("cy", node.y);
-                circle.setAttribute("r", 55);
+                circle.setAttribute("r", NODE_RADIUS);
                 circle.setAttribute("class", "node-circle");
 
                 const textName = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 textName.setAttribute("x", node.x);
-                textName.setAttribute("y", node.y + 5);
                 textName.setAttribute("class", "node-label");
-                textName.textContent = node.name;
+
+                // Jika nama mengandung spasi (misal "Ruang Guru"), dipecah 2 baris agar fit
+                if (node.name.includes(" ")) {
+                    const parts = node.name.split(" ");
+                    textName.setAttribute("y", node.y - 4);
+                    
+                    const tspan1 = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    tspan1.setAttribute("x", node.x);
+                    tspan1.setAttribute("dy", "0");
+                    tspan1.textContent = parts[0];
+
+                    const tspan2 = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    tspan2.setAttribute("x", node.x);
+                    tspan2.setAttribute("dy", "16");
+                    tspan2.textContent = parts[1];
+
+                    textName.appendChild(tspan1);
+                    textName.appendChild(tspan2);
+                } else {
+                    textName.setAttribute("y", node.y + 5);
+                    textName.textContent = node.name;
+                }
 
                 const textTag = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 textTag.setAttribute("x", node.x);
-                textTag.setAttribute("y", node.y + 78);
+                textTag.setAttribute("y", node.y + NODE_RADIUS + 22);
                 textTag.setAttribute("class", "node-subtext");
                 textTag.textContent = node.tag;
 
@@ -367,4 +402,4 @@ html_content = """<!DOCTYPE html>
 with open('graph.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File graph.html berhasil diperbarui dengan lingkaran vertex yang jauh lebih besar.")
+print("File graph.html berhasil diperbarui dengan panah presisi dan teks rapi.")
