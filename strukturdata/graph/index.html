@@ -206,13 +206,18 @@ html_content = """<!DOCTYPE html>
             <div class="graph-area">
                 <svg id="graph-svg" viewBox="0 0 1000 700">
                     <defs>
-                        <!-- Panah Hijau Presisi (Dua Arah) -->
-                        <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <!-- Marker Panah Hijau Ujung (End) -->
+                        <marker id="green-arrow-end" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
                         </marker>
 
-                        <!-- Panah Merah Presisi (Satu Arah) -->
-                        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <!-- Marker Panah Hijau Pangkal (Start) -->
+                        <marker id="green-arrow-start" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                            <path d="M 10 0 L 0 5 L 10 10 z" fill="#059669" />
+                        </marker>
+
+                        <!-- Marker Panah Merah Ujung (End) -->
+                        <marker id="red-arrow-end" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
                         </marker>
                     </defs>
@@ -231,13 +236,13 @@ html_content = """<!DOCTYPE html>
 
                 <div class="concept-card card-edge">
                     <div class="card-title">UNDIRECTED EDGE (JALUR 2 ARAH)</div>
-                    <div class="card-desc">Jalur berwarna <b>hijau</b> dengan panah di dua ujungnya (depan & belakang). Bisa dilalui bolak-balik.</div>
+                    <div class="card-desc">Jalur <b>HIJAU UTUH</b> dengan panah di dua ujung vertex. Bisa dilalui bolak-balik.</div>
                     <div class="card-example"><b>Contoh:</b> Gerbang ↔ Halaman Sekolah <span style="color:var(--edge-color); font-weight:bold;">(Undirected Edge)</span></div>
                 </div>
 
                 <div class="concept-card card-directed">
                     <div class="card-title">DIRECTED EDGE (JALUR 1 ARAH)</div>
-                    <div class="card-desc">Jalur berwarna <b>merah</b> dengan panah satu arah ke depan. Hanya bisa dilalui searah.</div>
+                    <div class="card-desc">Jalur <b>MERAH PUTUS-PUTUS</b> dengan satu panah ke depan. Hanya bisa dilalui searah.</div>
                     <div class="card-example"><b>Contoh Panah:</b> Kantin → Mushola <span style="color:var(--directed-color); font-weight:bold;">(Directed Edge)</span></div>
                 </div>
 
@@ -290,21 +295,20 @@ html_content = """<!DOCTYPE html>
             edgesLayer.innerHTML = '';
             nodesLayer.innerHTML = '';
 
-            // Render Edges dengan perhitungan titik potong tepi lingkaran
+            // Render Edges
             edges.forEach(edge => {
                 const nodeFrom = nodes.find(n => n.id === edge.from);
                 const nodeTo = nodes.find(n => n.id === edge.to);
 
-                // Hitung sudut dan jarak antar pusat lingkaran
+                // Hitung vektor dan jarak
                 const dx = nodeTo.x - nodeFrom.x;
                 const dy = nodeTo.y - nodeFrom.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
-                // Vektor satuan
                 const ux = dx / dist;
                 const uy = dy / dist;
 
-                // Titik awal dan akhir garis di TEPI lingkaran (bukan di pusat)
+                // Titik presisi di pinggir tepi lingkaran vertex
                 const x1 = nodeFrom.x + ux * NODE_RADIUS;
                 const y1 = nodeFrom.y + uy * NODE_RADIUS;
                 const x2 = nodeTo.x - ux * NODE_RADIUS;
@@ -318,15 +322,15 @@ html_content = """<!DOCTYPE html>
                 line.setAttribute("class", "edge-line");
 
                 if (edge.type === "directed") {
-                    // Directed = Merah, Panah Depan saja, Putus-putus
+                    // DIRECTED: Merah, Putus-putus, Panah hanya di Ujung (Depan)
                     line.setAttribute("stroke", "#dc2626");
                     line.setAttribute("stroke-dasharray", "6,6");
-                    line.setAttribute("marker-end", "url(#arrow-red)");
+                    line.setAttribute("marker-end", "url(#red-arrow-end)");
                 } else {
-                    // Undirected = Hijau, Panah Depan & Belakang, Utuh
+                    // UNDIRECTED: Hijau, Utuh, Panah di Pangkal dan Ujung (2 Arah)
                     line.setAttribute("stroke", "#059669");
-                    line.setAttribute("marker-start", "url(#arrow-green)");
-                    line.setAttribute("marker-end", "url(#arrow-green)");
+                    line.setAttribute("marker-start", "url(#green-arrow-start)");
+                    line.setAttribute("marker-end", "url(#green-arrow-end)");
                 }
 
                 edgesLayer.appendChild(line);
@@ -336,7 +340,7 @@ html_content = """<!DOCTYPE html>
                 const midX = (nodeFrom.x + nodeTo.x) / 2;
                 const midY = (nodeFrom.y + nodeTo.y) / 2;
                 text.setAttribute("x", midX);
-                text.setAttribute("y", midY - 10);
+                text.setAttribute("y", midY - 12);
                 text.setAttribute("class", "edge-label");
                 text.setAttribute("fill", edge.type === "directed" ? "#dc2626" : "#059669");
                 text.textContent = edge.label;
@@ -357,7 +361,6 @@ html_content = """<!DOCTYPE html>
                 textName.setAttribute("x", node.x);
                 textName.setAttribute("class", "node-label");
 
-                // Jika nama mengandung spasi (misal "Ruang Guru"), dipecah 2 baris agar fit
                 if (node.name.includes(" ")) {
                     const parts = node.name.split(" ");
                     textName.setAttribute("y", node.y - 4);
@@ -402,4 +405,4 @@ html_content = """<!DOCTYPE html>
 with open('graph.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File graph.html berhasil diperbarui dengan panah presisi dan teks rapi.")
+print("File graph.html berhasil diperbarui dengan posisi panah presisi di tepi vertex.")
