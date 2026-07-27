@@ -193,10 +193,10 @@ html_content = """<!DOCTYPE html>
             cursor: pointer;
         }
 
-        /* Styling Keterangan dalam Kurung */
+        /* Styling Keterangan Peran Node */
         .tag-root { color: var(--root-color); font-weight: 700; margin-left: 6px; }
-        .tag-parent { color: var(--parent-color); font-weight: 700; margin-left: 6px; }
-        .tag-leaf { color: var(--leaf-color); font-weight: 700; margin-left: 6px; }
+        .tag-child-parent { color: var(--child-color); font-weight: 700; margin-left: 6px; }
+        .tag-child-leaf { color: var(--leaf-color); font-weight: 700; margin-left: 6px; }
 
         /* Educational Concept Info Panel (Right Side) */
         .info-panel {
@@ -302,21 +302,21 @@ html_content = """<!DOCTYPE html>
                         <div class="card-desc">Puncak paling atas dari struktur tree. Tidak memiliki parent node.</div>
                     </div>
 
+                    <div class="concept-card card-child">
+                        <div class="card-title">CHILD NODE (NODE ANAK)</div>
+                        <div class="card-desc">Semua node yang berada di bawah node lain. Merupakan turunan dari parent.</div>
+                        <div class="card-example"><b>Contoh:</b> DCIM, Camera, Download, lagu_favorit.mp3, dll.</div>
+                    </div>
+
                     <div class="concept-card card-parent">
                         <div class="card-title">PARENT NODE (NODE INDUK)</div>
                         <div class="card-desc">Node yang memiliki cabang/anak di bawahnya.</div>
-                        <div class="card-example"><b>Contoh:</b> DCIM, Download, Documents, Music, Movies, Pictures</div>
-                    </div>
-
-                    <div class="concept-card card-child">
-                        <div class="card-title">CHILD NODE (NODE ANAK)</div>
-                        <div class="card-desc">Node turunan yang berada tepat di bawah parent node.</div>
-                        <div class="card-example"><b>Contoh:</b> Camera (anak dari DCIM), lagu_favorit.mp3 (anak dari Music)</div>
+                        <div class="card-example"><b>Contoh:</b> DCIM, Camera, Download, Documents, Music, Movies</div>
                     </div>
 
                     <div class="concept-card card-leaf">
                         <div class="card-title">LEAF NODE (NODE DAUN)</div>
-                        <div class="card-desc">Node paling ujung yang tidak memiliki child lagi di bawahnya (biasanya berupa file).</div>
+                        <div class="card-desc">Node paling ujung yang tidak memiliki child lagi di bawahnya (file/berkas).</div>
                         <div class="card-example"><b>Contoh:</b> .jpg, .mp3, .mp4, .pdf, .docx</div>
                     </div>
 
@@ -324,7 +324,7 @@ html_content = """<!DOCTYPE html>
                         <span style="font-size: 24px;">💡</span>
                         <div>
                             <b>Inti Konsep:</b><br>
-                            Sistem penyimpanan Android menggunakan struktur data Tree secara hierarkis dari Penyimpanan Internal (Root) hingga ke berkas individual (Leaf).
+                            Sebuah folder bisa berperan ganda sebagai <b>Child Node</b> (anak dari folder di atasnya) sekaligus <b>Parent Node</b> (induk bagi berkas di dalamnya).
                         </div>
                     </div>
                 </div>
@@ -333,7 +333,7 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Tree Data dengan Struktur Folder Bawaan (Default) Android
+        // Tree Data dengan Keterangan Eksplisit Child Node
         const treeData = {
             name: "Penyimpanan Internal",
             tag: "(Root Node)",
@@ -343,85 +343,85 @@ html_content = """<!DOCTYPE html>
             children: [
                 {
                     name: "Android",
-                    tag: "(Parent Node)",
-                    tagClass: "tag-parent",
+                    tag: "(Child & Parent Node)",
+                    tagClass: "tag-child-parent",
                     type: "folder",
                     expanded: false,
                     children: [
-                        { name: "data", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "folder" },
-                        { name: "media", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "folder" }
+                        { name: "data", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "folder" },
+                        { name: "media", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "folder" }
                     ]
                 },
                 {
                     name: "DCIM",
-                    tag: "(Parent Node)",
-                    tagClass: "tag-parent",
+                    tag: "(Child & Parent Node)",
+                    tagClass: "tag-child-parent",
                     type: "folder",
                     expanded: true,
                     children: [
                         {
                             name: "Camera",
-                            tag: "(Parent Node)",
-                            tagClass: "tag-parent",
+                            tag: "(Child & Parent Node)",
+                            tagClass: "tag-child-parent",
                             type: "folder",
                             expanded: true,
                             children: [
-                                { name: "IMG_20240601.jpg", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" },
-                                { name: "IMG_20240602.jpg", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" }
+                                { name: "IMG_20240601.jpg", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "image" },
+                                { name: "IMG_20240602.jpg", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "image" }
                             ]
                         },
-                        { name: "Screenshots", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "folder" }
+                        { name: "Screenshots", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "folder" }
                     ]
                 },
                 {
                     name: "Documents",
-                    tag: "(Parent Node)",
-                    tagClass: "tag-parent",
+                    tag: "(Child & Parent Node)",
+                    tagClass: "tag-child-parent",
                     type: "folder",
                     expanded: true,
                     children: [
-                        { name: "catatan.txt", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "text" }
+                        { name: "catatan.txt", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "text" }
                     ]
                 },
                 {
                     name: "Download",
-                    tag: "(Parent Node)",
-                    tagClass: "tag-parent",
+                    tag: "(Child & Parent Node)",
+                    tagClass: "tag-child-parent",
                     type: "folder",
                     expanded: true,
                     children: [
-                        { name: "materi_belajar.pdf", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "pdf" },
-                        { name: "contoh_soal.docx", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "doc" }
+                        { name: "materi_belajar.pdf", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "pdf" },
+                        { name: "contoh_soal.docx", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "doc" }
                     ]
                 },
                 {
                     name: "Movies",
-                    tag: "(Parent Node)",
-                    tagClass: "tag-parent",
+                    tag: "(Child & Parent Node)",
+                    tagClass: "tag-child-parent",
                     type: "folder",
                     expanded: true,
                     children: [
-                        { name: "video_praktikum.mp4", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "video" }
+                        { name: "video_praktikum.mp4", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "video" }
                     ]
                 },
                 {
                     name: "Music",
-                    tag: "(Parent Node)",
-                    tagClass: "tag-parent",
+                    tag: "(Child & Parent Node)",
+                    tagClass: "tag-child-parent",
                     type: "folder",
                     expanded: true,
                     children: [
-                        { name: "lagu_favorit.mp3", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "audio" }
+                        { name: "lagu_favorit.mp3", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "audio" }
                     ]
                 },
                 {
                     name: "Pictures",
-                    tag: "(Parent Node)",
-                    tagClass: "tag-parent",
+                    tag: "(Child & Parent Node)",
+                    tagClass: "tag-child-parent",
                     type: "folder",
                     expanded: false,
                     children: [
-                        { name: "desain_poster.png", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" }
+                        { name: "desain_poster.png", tag: "(Child & Leaf Node)", tagClass: "tag-child-leaf", type: "image" }
                     ]
                 }
             ]
@@ -466,7 +466,7 @@ html_content = """<!DOCTYPE html>
             const label = document.createElement('span');
             label.innerText = node.name;
 
-            // Elemen Keterangan dalam Kurung
+            // Elemen Keterangan Peran Node dalam Kurung
             const tagSpan = document.createElement('span');
             tagSpan.className = node.tagClass || '';
             tagSpan.innerText = node.tag || '';
@@ -502,4 +502,4 @@ html_content = """<!DOCTYPE html>
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File index.html berhasil diperbarui dengan folder default Android lengkap (Music, Movies, Pictures, Android, dll).")
+print("File index.html berhasil diperbarui dengan penanda Child Node secara eksplisit.")
