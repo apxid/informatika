@@ -159,13 +159,13 @@ html_content = """<!DOCTYPE html>
 
         .node-circle:hover {
             fill: #38bdf8;
-            r: 44;
+            r: 60;
         }
 
         .node-label {
             fill: #ffffff;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             text-anchor: middle;
             pointer-events: none;
         }
@@ -204,18 +204,18 @@ html_content = """<!DOCTYPE html>
         <div class="app-body">
             <!-- Graph Visualizer Area -->
             <div class="graph-area">
-                <svg id="graph-svg" viewBox="0 0 900 650">
+                <svg id="graph-svg" viewBox="0 0 1000 700">
                     <defs>
                         <!-- Marker Panah Hijau (Dua Arah / Undirected) -->
-                        <marker id="arrow-green-end" viewBox="0 0 10 10" refX="42" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <marker id="arrow-green-end" viewBox="0 0 10 10" refX="58" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
                         </marker>
-                        <marker id="arrow-green-start" viewBox="0 0 10 10" refX="-32" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <marker id="arrow-green-start" viewBox="0 0 10 10" refX="-48" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                             <path d="M 10 0 L 0 5 L 10 10 z" fill="#059669" />
                         </marker>
 
                         <!-- Marker Panah Merah (Satu Arah / Directed) -->
-                        <marker id="arrow-red-end" viewBox="0 0 10 10" refX="42" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                        <marker id="arrow-red-end" viewBox="0 0 10 10" refX="58" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
                         </marker>
                     </defs>
@@ -262,27 +262,24 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Data Lokasi Sekolah dengan Skala Jarak yang Lebih Luas & Besar
+        // Data Lokasi Sekolah dengan Ukuran Lingkaran yang Cukup Besar (Radius 55)
         const nodes = [
-            { id: 1, name: "Gerbang", tag: "(Vertex Node)", x: 120, y: 325 },
-            { id: 2, name: "Halaman", tag: "(Vertex Node)", x: 400, y: 325 },
-            { id: 3, name: "Ruang Guru", tag: "(Vertex Node)", x: 400, y: 100 },
-            { id: 4, name: "Perpus", tag: "(Vertex Node)", x: 750, y: 120 },
-            { id: 5, name: "Kantin", tag: "(Vertex Node)", x: 400, y: 550 },
-            { id: 6, name: "Mushola", tag: "(Vertex Node)", x: 750, y: 530 }
+            { id: 1, name: "Gerbang", tag: "(Vertex Node)", x: 130, y: 350 },
+            { id: 2, name: "Halaman", tag: "(Vertex Node)", x: 450, y: 350 },
+            { id: 3, name: "Ruang Guru", tag: "(Vertex Node)", x: 450, y: 110 },
+            { id: 4, name: "Perpus", tag: "(Vertex Node)", x: 820, y: 130 },
+            { id: 5, name: "Kantin", tag: "(Vertex Node)", x: 450, y: 590 },
+            { id: 6, name: "Mushola", tag: "(Vertex Node)", x: 820, y: 570 }
         ];
 
         // Data Jalur Penghubung
         const edges = [
-            // Jalur 2 Arah (Dua Panah)
             { from: 1, to: 2, label: "(Undirected Edge)", type: "undirected" },
             { from: 2, to: 3, label: "(Undirected Edge)", type: "undirected" },
             { from: 2, to: 4, label: "(Undirected Edge)", type: "undirected" },
             { from: 2, to: 5, label: "(Undirected Edge)", type: "undirected" },
             { from: 3, to: 4, label: "(Undirected Edge)", type: "undirected" },
             { from: 4, to: 6, label: "(Undirected Edge)", type: "undirected" },
-            
-            // Jalur 1 Arah (Satu Panah)
             { from: 5, to: 6, label: "(Directed Edge)", type: "directed" }
         ];
 
@@ -323,7 +320,7 @@ html_content = """<!DOCTYPE html>
                 const midX = (nodeFrom.x + nodeTo.x) / 2;
                 const midY = (nodeFrom.y + nodeTo.y) / 2;
                 text.setAttribute("x", midX);
-                text.setAttribute("y", midY - 10);
+                text.setAttribute("y", midY - 12);
                 text.setAttribute("class", "edge-label");
                 text.setAttribute("fill", edge.type === "directed" ? "#dc2626" : "#059669");
                 text.textContent = edge.label;
@@ -334,10 +331,11 @@ html_content = """<!DOCTYPE html>
             nodes.forEach(node => {
                 const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
+                // Lingkaran Vertex diperbesar menjadi r=55
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", node.x);
                 circle.setAttribute("cy", node.y);
-                circle.setAttribute("r", 38);
+                circle.setAttribute("r", 55);
                 circle.setAttribute("class", "node-circle");
 
                 const textName = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -348,7 +346,7 @@ html_content = """<!DOCTYPE html>
 
                 const textTag = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 textTag.setAttribute("x", node.x);
-                textTag.setAttribute("y", node.y + 58);
+                textTag.setAttribute("y", node.y + 78);
                 textTag.setAttribute("class", "node-subtext");
                 textTag.textContent = node.tag;
 
@@ -369,4 +367,4 @@ html_content = """<!DOCTYPE html>
 with open('graph.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File graph.html berhasil diperbarui dengan ukuran denah lebih besar dan panah dua arah.")
+print("File graph.html berhasil diperbarui dengan lingkaran vertex yang jauh lebih besar.")
