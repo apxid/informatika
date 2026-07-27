@@ -72,7 +72,7 @@ html_content = """<!DOCTYPE html>
 
         /* Canvas Area for Graph Visualization */
         .graph-area {
-            flex: 1.5;
+            flex: 1.8;
             background-color: #f8fafc;
             position: relative;
             overflow: hidden;
@@ -152,43 +152,41 @@ html_content = """<!DOCTYPE html>
         .node-circle {
             fill: #0284c7;
             stroke: #0369a1;
-            stroke-width: 3px;
+            stroke-width: 4px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .node-circle:hover {
             fill: #38bdf8;
-            r: 34;
+            r: 44;
         }
 
         .node-label {
             fill: #ffffff;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
             text-anchor: middle;
             pointer-events: none;
         }
 
         .node-subtext {
             fill: #0284c7;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             text-anchor: middle;
             pointer-events: none;
         }
 
         .edge-line {
-            stroke: #94a3b8;
             stroke-width: 3px;
             transition: stroke 0.2s;
         }
 
         .edge-label {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             text-anchor: middle;
-            background: white;
         }
     </style>
 </head>
@@ -206,10 +204,18 @@ html_content = """<!DOCTYPE html>
         <div class="app-body">
             <!-- Graph Visualizer Area -->
             <div class="graph-area">
-                <svg id="graph-svg">
-                    <!-- Marker Panah untuk Directed Edge -->
+                <svg id="graph-svg" viewBox="0 0 900 650">
                     <defs>
-                        <marker id="arrow" viewBox="0 0 10 10" refX="32" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <!-- Marker Panah Hijau (Dua Arah / Undirected) -->
+                        <marker id="arrow-green-end" viewBox="0 0 10 10" refX="42" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+                        </marker>
+                        <marker id="arrow-green-start" viewBox="0 0 10 10" refX="-32" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M 10 0 L 0 5 L 10 10 z" fill="#059669" />
+                        </marker>
+
+                        <!-- Marker Panah Merah (Satu Arah / Directed) -->
+                        <marker id="arrow-red-end" viewBox="0 0 10 10" refX="42" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
                         </marker>
                     </defs>
@@ -227,18 +233,15 @@ html_content = """<!DOCTYPE html>
                 </div>
 
                 <div class="concept-card card-edge">
-                    <div class="card-title">EDGE (JALUR / JALAN)</div>
-                    <div class="card-desc">Garis penghubung antar lokasi yang menunjukkan adanya akses jalan.</div>
-                    <div class="card-example"><b>Contoh:</b> Jalan dua arah dari Gerbang ke Halaman Sekolah <span style="color:var(--edge-color); font-weight:bold;">(Undirected Edge)</span></div>
+                    <div class="card-title">UNDIRECTED EDGE (JALUR 2 ARAH)</div>
+                    <div class="card-desc">Jalur dengan panah di kedua ujungnya. Siswa/guru bisa berjalan bolak-balik antar kedua lokasi.</div>
+                    <div class="card-example"><b>Contoh:</b> Gerbang ↔ Halaman Sekolah <span style="color:var(--edge-color); font-weight:bold;">(Undirected Edge)</span></div>
                 </div>
 
                 <div class="concept-card card-directed">
-                    <div class="card-title">DIRECTED vs UNDIRECTED EDGE</div>
-                    <div class="card-desc">
-                        <b>Undirected:</b> Jalur 2 arah (bisa bolak-balik).<br>
-                        <b>Directed:</b> Jalur 1 arah (misal: koridor khusus/jalur evakuasi).
-                    </div>
-                    <div class="card-example"><b>Contoh Panah:</b> Jalur 1 arah dari Kantin menuju Mushola <span style="color:var(--directed-color); font-weight:bold;">(Directed Edge)</span></div>
+                    <div class="card-title">DIRECTED EDGE (JALUR 1 ARAH)</div>
+                    <div class="card-desc">Jalur dengan satu panah penunjuk arah. Hanya bisa dilalui searah (misal: alur evakuasi/koridor khusus).</div>
+                    <div class="card-example"><b>Contoh Panah:</b> Kantin → Mushola <span style="color:var(--directed-color); font-weight:bold;">(Directed Edge)</span></div>
                 </div>
 
                 <div class="concept-card card-degree">
@@ -251,7 +254,7 @@ html_content = """<!DOCTYPE html>
                     <span style="font-size: 24px;">💡</span>
                     <div>
                         <b>Penerapan Nyata:</b><br>
-                        Sistem navigasi seperti Google Maps menggunakan struktur data Graph untuk mencari rute terpendek dari satu lokasi ke lokasi lain.
+                        Sistem navigasi menggunakan panah dua arah untuk jalan umum dan panah satu arah untuk jalan <i>one-way</i>.
                     </div>
                 </div>
             </div>
@@ -259,19 +262,19 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Data Lokasi Sekolah (Graph Vertices)
+        // Data Lokasi Sekolah dengan Skala Jarak yang Lebih Luas & Besar
         const nodes = [
-            { id: 1, name: "Gerbang", tag: "(Vertex Node)", x: 150, y: 250 },
-            { id: 2, name: "Halaman", tag: "(Vertex Node)", x: 350, y: 250 },
-            { id: 3, name: "Ruang Guru", tag: "(Vertex Node)", x: 350, y: 100 },
-            { id: 4, name: "Perpus", tag: "(Vertex Node)", x: 550, y: 120 },
-            { id: 5, name: "Kantin", tag: "(Vertex Node)", x: 350, y: 400 },
-            { id: 6, name: "Mushola", tag: "(Vertex Node)", x: 550, y: 380 }
+            { id: 1, name: "Gerbang", tag: "(Vertex Node)", x: 120, y: 325 },
+            { id: 2, name: "Halaman", tag: "(Vertex Node)", x: 400, y: 325 },
+            { id: 3, name: "Ruang Guru", tag: "(Vertex Node)", x: 400, y: 100 },
+            { id: 4, name: "Perpus", tag: "(Vertex Node)", x: 750, y: 120 },
+            { id: 5, name: "Kantin", tag: "(Vertex Node)", x: 400, y: 550 },
+            { id: 6, name: "Mushola", tag: "(Vertex Node)", x: 750, y: 530 }
         ];
 
-        // Data Jalur Penghubung (Graph Edges)
+        // Data Jalur Penghubung
         const edges = [
-            // Jalur 2 arah (Undirected)
+            // Jalur 2 Arah (Dua Panah)
             { from: 1, to: 2, label: "(Undirected Edge)", type: "undirected" },
             { from: 2, to: 3, label: "(Undirected Edge)", type: "undirected" },
             { from: 2, to: 4, label: "(Undirected Edge)", type: "undirected" },
@@ -279,7 +282,7 @@ html_content = """<!DOCTYPE html>
             { from: 3, to: 4, label: "(Undirected Edge)", type: "undirected" },
             { from: 4, to: 6, label: "(Undirected Edge)", type: "undirected" },
             
-            // Jalur 1 arah (Directed dengan Panah)
+            // Jalur 1 Arah (Satu Panah)
             { from: 5, to: 6, label: "(Directed Edge)", type: "directed" }
         ];
 
@@ -306,7 +309,11 @@ html_content = """<!DOCTYPE html>
                 if (edge.type === "directed") {
                     line.setAttribute("stroke", "#dc2626");
                     line.setAttribute("stroke-dasharray", "6,6");
-                    line.setAttribute("marker-end", "url(#arrow)");
+                    line.setAttribute("marker-end", "url(#arrow-red-end)");
+                } else {
+                    line.setAttribute("stroke", "#059669");
+                    line.setAttribute("marker-start", "url(#arrow-green-start)");
+                    line.setAttribute("marker-end", "url(#arrow-green-end)");
                 }
 
                 edgesLayer.appendChild(line);
@@ -316,7 +323,7 @@ html_content = """<!DOCTYPE html>
                 const midX = (nodeFrom.x + nodeTo.x) / 2;
                 const midY = (nodeFrom.y + nodeTo.y) / 2;
                 text.setAttribute("x", midX);
-                text.setAttribute("y", midY - 8);
+                text.setAttribute("y", midY - 10);
                 text.setAttribute("class", "edge-label");
                 text.setAttribute("fill", edge.type === "directed" ? "#dc2626" : "#059669");
                 text.textContent = edge.label;
@@ -330,18 +337,18 @@ html_content = """<!DOCTYPE html>
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", node.x);
                 circle.setAttribute("cy", node.y);
-                circle.setAttribute("r", 30);
+                circle.setAttribute("r", 38);
                 circle.setAttribute("class", "node-circle");
 
                 const textName = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 textName.setAttribute("x", node.x);
-                textName.setAttribute("y", node.y + 4);
+                textName.setAttribute("y", node.y + 5);
                 textName.setAttribute("class", "node-label");
                 textName.textContent = node.name;
 
                 const textTag = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 textTag.setAttribute("x", node.x);
-                textTag.setAttribute("y", node.y + 48);
+                textTag.setAttribute("y", node.y + 58);
                 textTag.setAttribute("class", "node-subtext");
                 textTag.textContent = node.tag;
 
@@ -362,4 +369,4 @@ html_content = """<!DOCTYPE html>
 with open('graph.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File graph.html dengan denah sekolah berhasil diperbarui.")
+print("File graph.html berhasil diperbarui dengan ukuran denah lebih besar dan panah dua arah.")
