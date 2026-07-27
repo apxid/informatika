@@ -14,7 +14,7 @@ html_content = """<!DOCTYPE html>
             --text-main: #1f2937;
             --border-color: #e5e7eb;
             
-            /* Accent Colors for Tree Concepts */
+            /* Color Codes for Tags */
             --root-color: #2563eb;
             --parent-color: #16a34a;
             --child-color: #ea580c;
@@ -121,16 +121,16 @@ html_content = """<!DOCTYPE html>
 
         /* File Explorer Tree View Area */
         .tree-area {
-            flex: 1.3;
+            flex: 1.4;
             padding: 36px 40px;
             overflow-y: auto;
             position: relative;
         }
 
-        /* Directory Tree Stylings with Bigger Icons & Text */
+        /* Directory Tree Stylings */
         .tree-root, .tree-root ul {
             list-style: none;
-            padding-left: 36px;
+            padding-left: 38px;
             position: relative;
         }
 
@@ -158,15 +158,15 @@ html_content = """<!DOCTYPE html>
             content: "";
             position: absolute;
             top: 20px;
-            left: -22px;
-            width: 22px;
+            left: -24px;
+            width: 24px;
             border-top: 3px solid #9ca3af;
         }
 
         .tree-node-row {
             display: inline-flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
@@ -192,6 +192,11 @@ html_content = """<!DOCTYPE html>
             width: 18px;
             cursor: pointer;
         }
+
+        /* Styling Keterangan dalam Kurung */
+        .tag-root { color: var(--root-color); font-weight: 700; margin-left: 6px; }
+        .tag-parent { color: var(--parent-color); font-weight: 700; margin-left: 6px; }
+        .tag-leaf { color: var(--leaf-color); font-weight: 700; margin-left: 6px; }
 
         /* Educational Concept Info Panel (Right Side) */
         .info-panel {
@@ -328,43 +333,53 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Tree Structure
+        // Tree Structure dengan Keterangan Peran Node
         const treeData = {
             name: "Penyimpanan Internal",
+            tag: "(Root Node)",
+            tagClass: "tag-root",
             type: "drive",
             expanded: true,
             children: [
                 {
                     name: "DCIM",
+                    tag: "(Parent Node)",
+                    tagClass: "tag-parent",
                     type: "folder",
                     expanded: true,
                     children: [
                         {
                             name: "Camera",
+                            tag: "(Parent Node)",
+                            tagClass: "tag-parent",
                             type: "folder",
                             expanded: true,
                             children: [
-                                { name: "IMG_20240601.jpg", type: "image" },
-                                { name: "IMG_20240602.jpg", type: "image" }
+                                { name: "IMG_20240601.jpg", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" },
+                                { name: "IMG_20240602.jpg", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "image" }
                             ]
                         }
                     ]
                 },
                 {
                     name: "Download",
+                    tag: "(Parent Node)",
+                    tagClass: "tag-parent",
                     type: "folder",
                     expanded: true,
                     children: [
-                        { name: "materi_belajar.pdf", type: "pdf" },
-                        { name: "contoh_soal.docx", type: "doc" }
+                        { name: "materi_belajar.pdf", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "pdf" },
+                        { name: "contoh_soal.docx", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "doc" }
                     ]
                 },
                 {
                     name: "Documents",
+                    tag: "(Parent Node)",
+                    tagClass: "tag-parent",
                     type: "folder",
                     expanded: true,
                     children: [
-                        { name: "catatan.txt", type: "text" }
+                        { name: "catatan.txt", tag: "(Leaf Node)", tagClass: "tag-leaf", type: "text" }
                     ]
                 }
             ]
@@ -390,7 +405,7 @@ html_content = """<!DOCTYPE html>
 
             const hasChildren = node.children && node.children.length > 0;
             
-            // Toggle Arrow / Chevron
+            // Chevron Toggle
             const chevron = document.createElement('span');
             chevron.className = 'chevron';
             chevron.innerText = hasChildren ? (node.expanded ? '▼' : '▶') : '';
@@ -407,9 +422,15 @@ html_content = """<!DOCTYPE html>
             const label = document.createElement('span');
             label.innerText = node.name;
 
+            // Elemen Keterangan dalam Kurung
+            const tagSpan = document.createElement('span');
+            tagSpan.className = node.tagClass || '';
+            tagSpan.innerText = node.tag || '';
+
             nodeRow.appendChild(chevron);
             nodeRow.appendChild(icon);
             nodeRow.appendChild(label);
+            nodeRow.appendChild(tagSpan);
             li.appendChild(nodeRow);
 
             if (hasChildren && node.expanded) {
@@ -437,4 +458,4 @@ html_content = """<!DOCTYPE html>
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("File index.html berhasil diperbarui dengan tampilan layar penuh dan ikon yang lebih besar.")
+print("File index.html berhasil diperbarui dengan keterangan dalam kurung (Root Node, Parent Node, Leaf Node).")
