@@ -31,7 +31,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Utilitas Tampilan */
 .hidden {
     display: none !important;
 }
@@ -195,7 +194,6 @@ body {
     color: var(--primary-light);
 }
 
-/* Styling Clue Badge Logika */
 .clue-badge {
     display: inline-block;
     background: rgba(245, 158, 11, 0.15);
@@ -385,7 +383,7 @@ body {
 }
 
 /* ==========================================
-   7. ANIMATIONS & RESPONSIVE DESIGN (HP & TABLET)
+   7. ANIMATIONS & RESPONSIVE DESIGN (HP)
    ========================================== */
 @keyframes rotation {
     0% { transform: rotate(0deg); }
@@ -401,7 +399,6 @@ body {
     animation: float 2.5s ease-in-out infinite;
 }
 
-/* Media Query untuk Perangkat HP (Mobile Layout) */
 @media screen and (max-width: 480px) {
     .screen {
         padding: 12px;
