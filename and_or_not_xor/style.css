@@ -1,0 +1,453 @@
+/* ==========================================
+   1. RESET & VARIABLE SETTINGS
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --primary-color: #4f46e5;
+    --primary-light: #818cf8;
+    --bg-dark: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --border-glass: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Utilitas Tampilan */
+.hidden {
+    display: none !important;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-primary {
+    color: var(--primary-light);
+}
+
+.mb-20 { margin-bottom: 20px; }
+.mt-20 { margin-top: 20px; }
+
+/* ==========================================
+   2. GLASSMORPHISM & CONTAINER SYSTEM
+   ========================================== */
+.screen {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass);
+    border-radius: 24px;
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+/* ==========================================
+   3. SPLASH & HOME SCREEN
+   ========================================== */
+.splash-content {
+    text-align: center;
+}
+
+.robot-icon {
+    color: var(--primary-light);
+    animation: float 3s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid var(--border-glass);
+    border-bottom-color: var(--primary-light);
+    border-radius: 50%;
+    display: inline-block;
+    animation: rotation 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--primary-light);
+    font-weight: 400;
+    margin-bottom: 12px;
+}
+
+.description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+}
+
+.info-card {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-around;
+    border: 1px solid var(--border-glass);
+}
+
+.info-card p {
+    font-size: 0.85rem;
+    color: var(--text-main);
+}
+
+.info-card i {
+    color: var(--primary-light);
+    margin-right: 6px;
+}
+
+/* ==========================================
+   4. QUIZ SCREEN & CLUE BADGE
+   ========================================== */
+.quiz-container {
+    padding: 24px;
+}
+
+.quiz-header {
+    margin-bottom: 20px;
+}
+
+.header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.header-info h2 {
+    font-size: 1.1rem;
+}
+
+.score-badge {
+    background: rgba(79, 70, 229, 0.2);
+    border: 1px solid var(--primary-light);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    transition: width 0.3s ease;
+}
+
+.question-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: right;
+}
+
+.illustration-container {
+    margin: 15px 0;
+    color: var(--primary-light);
+}
+
+/* Styling Clue Badge Logika */
+.clue-badge {
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid var(--warning);
+    color: #fde047;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
+    word-break: break-word;
+}
+
+.clue-badge i {
+    margin-right: 6px;
+    color: var(--warning);
+}
+
+.question-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.answer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.btn-answer {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-glass);
+    color: var(--text-main);
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.btn-answer:hover {
+    background: rgba(79, 70, 229, 0.3);
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   5. BUTTONS & FEEDBACK MODAL
+   ========================================== */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+}
+
+.feedback-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 420px;
+    background: #1e293b;
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    z-index: 100;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.feedback-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.feedback-card h4 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.feedback-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* ==========================================
+   6. RESULT SCREEN
+   ========================================== */
+.score-display {
+    margin: 20px 0;
+}
+
+.score-number {
+    display: block;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--primary-light);
+    line-height: 1;
+}
+
+.score-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.stat-box.correct {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--success);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.stat-box.wrong {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.predikat-box {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.predikat-box h3 {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.closing-message {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+/* ==========================================
+   7. ANIMATIONS & RESPONSIVE DESIGN (HP & TABLET)
+   ========================================== */
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.bounce-anim {
+    animation: float 2.5s ease-in-out infinite;
+}
+
+/* Media Query untuk Perangkat HP (Mobile Layout) */
+@media screen and (max-width: 480px) {
+    .screen {
+        padding: 12px;
+    }
+
+    .glass-card {
+        padding: 20px 16px;
+        border-radius: 18px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+    }
+
+    .info-card {
+        flex-direction: column;
+        gap: 8px;
+        text-align: left;
+        padding: 12px;
+    }
+
+    .question-text {
+        font-size: 0.95rem;
+    }
+
+    .clue-badge {
+        font-size: 0.75rem;
+        padding: 5px 12px;
+        width: 100%;
+    }
+
+    .btn-answer {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+
+    .score-number {
+        font-size: 2.8rem;
+    }
+
+    .feedback-card {
+        width: 92%;
+        padding: 20px 16px;
+    }
+}
