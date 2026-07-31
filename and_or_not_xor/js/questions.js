@@ -8,7 +8,7 @@ const questions = [
             { text: "Ya, Lampu Menyala (TRUE)", correct: false },
             { text: "Tidak Menyala (FALSE)", correct: true }
         ],
-        explanation: "Operator **AND** butuh kedua kondisi Bernilai TRUE. Karena tidak ada orang (FALSE), maka lampu tidak menyala."
+        explanation: "Operator **AND** butuh kedua kondisi bernilai TRUE. Karena tidak ada orang (FALSE), maka lampu tidak menyala."
     },
     {
         id: 2,
@@ -17,13 +17,13 @@ const questions = [
         clue: "LOGIKA: OR (Cukup salah satu TRUE agar hasil TRUE)",
         answers: [
             { text: "Terbuka (TRUE)", correct: true },
-            { text: "Tersumbat / Terkunci (FALSE)", correct: false }
+            { text: "Terkunci (FALSE)", correct: false }
         ],
         explanation: "Operator **OR** cukup butuh salah satu syarat terpenuhi (TRUE). Karena sidik jari cocok, pintu terbuka!"
     },
     {
         id: 3,
-        question: "Sistem Sensor Kebakaran akan membunyikan alarm jika Detect_Smoke = TRUE. Jika kita memasang logika **NOT (Tidak/Pembalik)** pada sensor, apa keluaran logika dari NOT(TRUE)?",
+        question: "Sistem Sensor Kebakaran akan membunyikan alarm jika Detect_Smoke = TRUE. Jika kita memasang logika **NOT (Pembalik)** pada sensor, apa keluaran logika dari NOT(TRUE)?",
         icon: "fa-solid fa-bell",
         clue: "LOGIKA: NOT (Membalikkan nilai: TRUE jadi FALSE, FALSE jadi TRUE)",
         answers: [
@@ -45,7 +45,7 @@ const questions = [
     },
     {
         id: 5,
-        question: "Lampu Saklar Dua arah di tangga menggunakan logika **XOR (Exclusive OR)**. Lampu menyala hanya jika kondisi saklar **BERBEDA**. Jika Saklar Atas = ON (TRUE) dan Saklar Bawah = ON (TRUE), apakah lampu menyala?",
+        question: "Lampu Saklar Dua Arah di tangga menggunakan logika **XOR (Exclusive OR)**. Lampu menyala hanya jika posisi saklar **BERBEDA**. Jika Saklar Atas = ON (TRUE) dan Saklar Bawah = ON (TRUE), apakah lampu menyala?",
         icon: "fa-solid fa-toggle-on",
         clue: "LOGIKA: XOR (TRUE jika beda kondisi, FALSE jika sama)",
         answers: [
@@ -67,14 +67,14 @@ const questions = [
     },
     {
         id: 7,
-        question: "Alarm Mobil Darurat menggunakan logika **NOR (NOT OR)**. Alarm mati (FALSE) jika Pintu Tertutup (TRUE) ATAU Kunci Terpasang (TRUE). Jika Pintu Terbuka (FALSE) dan Kunci Lepas (FALSE), berapakah hasil NOR(FALSE, FALSE)?",
-        icon: "fa-solid fa-car-burst",
-        clue: "LOGIKA: NOR = NOT (A OR B). Kebalikan dari OR!",
+        question: "Aplikasi Sekolah Pintar akan mengirim notifikasi jika **Siswa Tidak Hadir** ATAU **Tugas Belum Dikumpul**. Jika Siswa Hadir (FALSE) tapi Tugas Belum Dikumpul (TRUE), apakah notifikasi dikirim?",
+        icon: "fa-solid fa-bell-concierge",
+        clue: "LOGIKA: OR (Cukup salah satu TRUE agar hasil TRUE)",
         answers: [
-            { text: "Alarm Bunyi / TRUE", correct: true },
-            { text: "Alarm Diam / FALSE", correct: false }
+            { text: "Notifikasi Terkirim (TRUE)", correct: true },
+            { text: "Tidak Dikirim (FALSE)", correct: false }
         ],
-        explanation: "FALSE OR FALSE = FALSE. Karena ada NOT di depannya, hasilnya dibalik menjadi **TRUE** (Alarm berbunyi)."
+        explanation: "Operator **OR** bernilai TRUE jika salah satu kondisi bernilai TRUE. Karena tugas belum dikumpul (TRUE), notifikasi tetap dikirim."
     },
     {
         id: 8,
@@ -89,20 +89,20 @@ const questions = [
     },
     {
         id: 9,
-        question: "Sistem Brankas Bank menggunakan **NAND (NOT AND)**. Pintu Brankas Terkunci (FALSE) hanya jika **Kunci A = TRUE** DAN **Kunci B = TRUE**. Jika Kunci A = TRUE tetapi Kunci B = FALSE, berapakah hasil NAND(TRUE, FALSE)?",
-        icon: "fa-solid fa-vault",
-        clue: "LOGIKA: NAND = NOT (A AND B). Kebalikan dari AND!",
+        question: "Sebuah Mesin Pabrik memiliki dua saklar keamanan A dan B menggunakan logika **AND**. Mesin beroperasi jika **Saklar A = ON** DAN **Saklar B = ON**. Jika Saklar A = ON (TRUE) dan Saklar B = OFF (FALSE), apakah mesin berjalan?",
+        icon: "fa-solid fa-industry",
+        clue: "LOGIKA: AND (Semua saklar wajib ON / TRUE)",
         answers: [
-            { text: "Brankas Terbuka / TRUE", correct: true },
-            { text: "Brankas Terkunci / FALSE", correct: false }
+            { text: "Mesin Berjalan (TRUE)", correct: false },
+            { text: "Mesin Mati (FALSE)", correct: true }
         ],
-        explanation: "TRUE AND FALSE = FALSE. Kebalikan dari FALSE (NOT) adalah **TRUE**."
+        explanation: "Pada **AND**, satu saja syarat bernilai FALSE membuat hasil akhirnya menjadi **FALSE** (Mesin Mati)."
     },
     {
         id: 10,
         question: "Komputer mengecek sensor kipas: NOT (Suhu Panas). Jika Suhu Panas = FALSE (Ruangan Dingin), maka output logika NOT(FALSE) adalah...",
         icon: "fa-solid fa-fan",
-        clue: "LOGIKA: NOT (Pembalik)",
+        clue: "LOGIKA: NOT (Pembalik nilai)",
         answers: [
             { text: "TRUE (Kipas/Indikator Aktif)", correct: true },
             { text: "FALSE", correct: false }
