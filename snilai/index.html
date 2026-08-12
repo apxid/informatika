@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
 
 <meta charset="UTF-8">
@@ -12,11 +13,6 @@
 <title>
     SIMPATIK - Pengolah Nilai Siswa
 </title>
-
-
-<!-- =====================================================
-     SHEETJS
-===================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
@@ -45,11 +41,9 @@ body {
         Helvetica,
         sans-serif;
 
-    background:
-        #f1f5f9;
+    background: #f1f5f9;
 
-    color:
-        #1e293b;
+    color: #1e293b;
 
 }
 
@@ -67,14 +61,11 @@ body {
             #2563eb
         );
 
-    color:
-        white;
+    color: white;
 
-    padding:
-        30px 20px;
+    padding: 30px 20px;
 
-    text-align:
-        center;
+    text-align: center;
 
     box-shadow:
         0 4px 15px
@@ -84,27 +75,21 @@ body {
 
 .header h1 {
 
-    margin:
-        0;
+    margin: 0;
 
-    font-size:
-        30px;
+    font-size: 30px;
 
-    font-weight:
-        800;
+    font-weight: 800;
 
 }
 
 .header p {
 
-    margin:
-        8px 0 0;
+    margin: 8px 0 0;
 
-    opacity:
-        .92;
+    opacity: .92;
 
-    font-size:
-        15px;
+    font-size: 15px;
 
 }
 
@@ -115,17 +100,13 @@ body {
 
 .container {
 
-    width:
-        100%;
+    width: 100%;
 
-    max-width:
-        1250px;
+    max-width: 1250px;
 
-    margin:
-        25px auto;
+    margin: 25px auto;
 
-    padding:
-        0 15px;
+    padding: 0 15px;
 
 }
 
@@ -136,17 +117,13 @@ body {
 
 .card {
 
-    background:
-        white;
+    background: white;
 
-    border-radius:
-        16px;
+    border-radius: 16px;
 
-    padding:
-        22px;
+    padding: 22px;
 
-    margin-bottom:
-        20px;
+    margin-bottom: 20px;
 
     box-shadow:
         0 4px 15px
@@ -156,87 +133,69 @@ body {
 
 
 /* =====================================================
-   UPLOAD BOX
+   UPLOAD
 ===================================================== */
 
 .upload-box {
 
-    display:
-        block;
+    display: block;
 
     border:
         2px dashed #2563eb;
 
-    border-radius:
-        14px;
+    border-radius: 14px;
 
-    padding:
-        38px 20px;
+    padding: 38px 20px;
 
-    text-align:
-        center;
+    text-align: center;
 
-    background:
-        #eff6ff;
+    background: #eff6ff;
 
-    cursor:
-        pointer;
+    cursor: pointer;
 
-    transition:
-        .2s;
+    transition: .2s;
 
 }
 
 .upload-box:hover {
 
-    background:
-        #dbeafe;
+    background: #dbeafe;
 
-    transform:
-        translateY(-1px);
+    transform: translateY(-1px);
 
 }
 
 .upload-icon {
 
-    font-size:
-        50px;
+    font-size: 50px;
 
-    margin-bottom:
-        10px;
+    margin-bottom: 10px;
 
 }
 
 .upload-box h2 {
 
-    margin:
-        5px 0;
+    margin: 5px 0;
 
-    color:
-        #1d4ed8;
+    color: #1d4ed8;
 
-    font-size:
-        22px;
+    font-size: 22px;
 
 }
 
 .upload-box p {
 
-    color:
-        #64748b;
+    color: #64748b;
 
-    margin:
-        7px 0;
+    margin: 7px 0;
 
-    font-size:
-        14px;
+    font-size: 14px;
 
 }
 
 #fileInput {
 
-    display:
-        none;
+    display: none;
 
 }
 
@@ -247,75 +206,57 @@ body {
 
 .message {
 
-    display:
-        none;
+    display: none;
 
-    padding:
-        13px 16px;
+    padding: 13px 16px;
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
-    margin-bottom:
-        15px;
+    margin-bottom: 15px;
 
-    font-size:
-        14px;
+    font-size: 14px;
 
-    line-height:
-        1.5;
+    line-height: 1.5;
 
 }
 
 .message.success {
 
-    display:
-        block;
+    display: block;
 
-    background:
-        #dcfce7;
+    background: #dcfce7;
 
-    color:
-        #166534;
+    color: #166534;
 
 }
 
 .message.error {
 
-    display:
-        block;
+    display: block;
 
-    background:
-        #fee2e2;
+    background: #fee2e2;
 
-    color:
-        #991b1b;
+    color: #991b1b;
 
 }
 
 .message.warning {
 
-    display:
-        block;
+    display: block;
 
-    background:
-        #fef3c7;
+    background: #fef3c7;
 
-    color:
-        #92400e;
+    color: #92400e;
 
 }
 
 .message.info {
 
-    display:
-        block;
+    display: block;
 
-    background:
-        #dbeafe;
+    background: #dbeafe;
 
-    color:
-        #1e40af;
+    color: #1e40af;
 
 }
 
@@ -326,78 +267,60 @@ body {
 
 .controls {
 
-    display:
-        flex;
+    display: flex;
 
-    gap:
-        10px;
+    gap: 10px;
 
-    flex-wrap:
-        wrap;
+    flex-wrap: wrap;
 
-    align-items:
-        end;
+    align-items: end;
 
 }
 
 .control-group {
 
-    display:
-        flex;
+    display: flex;
 
-    flex-direction:
-        column;
+    flex-direction: column;
 
-    gap:
-        6px;
+    gap: 6px;
 
 }
 
 .control-label {
 
-    font-size:
-        13px;
+    font-size: 13px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    color:
-        #475569;
+    color: #475569;
 
 }
 
 select {
 
-    min-width:
-        190px;
+    min-width: 190px;
 
-    padding:
-        11px 13px;
+    padding: 11px 13px;
 
     border:
         1px solid #cbd5e1;
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
-    background:
-        white;
+    background: white;
 
-    font-size:
-        14px;
+    font-size: 14px;
 
-    color:
-        #1e293b;
+    color: #1e293b;
 
-    outline:
-        none;
+    outline: none;
 
 }
 
 select:focus {
 
-    border-color:
-        #2563eb;
+    border-color: #2563eb;
 
     box-shadow:
         0 0 0 3px
@@ -412,134 +335,93 @@ select:focus {
 
 button {
 
-    border:
-        none;
+    border: none;
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
-    padding:
-        11px 18px;
+    padding: 11px 18px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    cursor:
-        pointer;
+    cursor: pointer;
 
-    transition:
-        .2s;
+    transition: .2s;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
 }
 
 button:hover {
 
-    transform:
-        translateY(-1px);
-
-}
-
-button:active {
-
-    transform:
-        translateY(0);
+    transform: translateY(-1px);
 
 }
 
 button:disabled {
 
-    opacity:
-        .5;
+    opacity: .5;
 
-    cursor:
-        not-allowed;
+    cursor: not-allowed;
 
-    transform:
-        none;
+    transform: none;
 
 }
 
 .btn-primary {
 
-    background:
-        #2563eb;
+    background: #2563eb;
 
-    color:
-        white;
+    color: white;
 
 }
 
 .btn-success {
 
-    background:
-        #16a34a;
+    background: #16a34a;
 
-    color:
-        white;
+    color: white;
 
 }
 
 .btn-secondary {
 
-    background:
-        #64748b;
+    background: #64748b;
 
-    color:
-        white;
-
-}
-
-.btn-danger {
-
-    background:
-        #dc2626;
-
-    color:
-        white;
+    color: white;
 
 }
 
 .btn-wa {
 
-    background:
-        #16a34a;
+    background: #16a34a;
 
-    color:
-        white;
+    color: white;
 
 }
 
 
 /* =====================================================
-   INFO GRID
+   INFO
 ===================================================== */
 
 .info-grid {
 
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
         repeat(4, 1fr);
 
-    gap:
-        15px;
+    gap: 15px;
 
 }
 
 .info {
 
-    padding:
-        17px;
+    padding: 17px;
 
-    border-radius:
-        12px;
+    border-radius: 12px;
 
-    background:
-        #f8fafc;
+    background: #f8fafc;
 
     border:
         1px solid #e2e8f0;
@@ -548,27 +430,21 @@ button:disabled {
 
 .info-title {
 
-    font-size:
-        12px;
+    font-size: 12px;
 
-    color:
-        #64748b;
+    color: #64748b;
 
-    margin-bottom:
-        7px;
+    margin-bottom: 7px;
 
 }
 
 .info-value {
 
-    font-size:
-        25px;
+    font-size: 25px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    color:
-        #1e3a8a;
+    color: #1e3a8a;
 
 }
 
@@ -579,11 +455,9 @@ button:disabled {
 
 .table-wrapper {
 
-    overflow-x:
-        auto;
+    overflow-x: auto;
 
-    border-radius:
-        10px;
+    border-radius: 10px;
 
     border:
         1px solid #e2e8f0;
@@ -592,72 +466,56 @@ button:disabled {
 
 table {
 
-    width:
-        100%;
+    width: 100%;
 
-    border-collapse:
-        collapse;
+    border-collapse: collapse;
 
-    min-width:
-        850px;
+    min-width: 850px;
 
 }
 
 th {
 
-    background:
-        #0f4c81;
+    background: #0f4c81;
 
-    color:
-        white;
+    color: white;
 
-    padding:
-        12px 10px;
+    padding: 12px 10px;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
-    white-space:
-        nowrap;
+    white-space: nowrap;
 
-    position:
-        sticky;
+    position: sticky;
 
-    top:
-        0;
+    top: 0;
 
-    z-index:
-        2;
+    z-index: 2;
 
 }
 
 td {
 
-    padding:
-        10px;
+    padding: 10px;
 
     border-bottom:
         1px solid #e2e8f0;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
-    text-align:
-        center;
+    text-align: center;
 
 }
 
 td:nth-child(2) {
 
-    text-align:
-        left;
+    text-align: left;
 
 }
 
 tbody tr:hover {
 
-    background:
-        #f8fafc;
+    background: #f8fafc;
 
 }
 
@@ -668,40 +526,31 @@ tbody tr:hover {
 
 .nilai-merah {
 
-    background:
-        #fecaca !important;
+    background: #fecaca !important;
 
-    color:
-        #991b1b;
+    color: #991b1b;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
 }
 
 .nilai-kuning {
 
-    background:
-        #fef08a !important;
+    background: #fef08a !important;
 
-    color:
-        #854d0e;
+    color: #854d0e;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
 }
 
 .nilai-hijau {
 
-    background:
-        #bbf7d0 !important;
+    background: #bbf7d0 !important;
 
-    color:
-        #166534;
+    color: #166534;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
 }
 
@@ -712,31 +561,25 @@ tbody tr:hover {
 
 .status-tuntas {
 
-    color:
-        #166534;
+    color: #166534;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
 }
 
 .status-belum {
 
-    color:
-        #991b1b;
+    color: #991b1b;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
 }
 
 .kosong {
 
-    color:
-        #94a3b8;
+    color: #94a3b8;
 
-    font-style:
-        italic;
+    font-style: italic;
 
 }
 
@@ -747,49 +590,37 @@ tbody tr:hover {
 
 .legend {
 
-    display:
-        flex;
+    display: flex;
 
-    gap:
-        15px;
+    gap: 15px;
 
-    flex-wrap:
-        wrap;
+    flex-wrap: wrap;
 
-    margin-top:
-        12px;
+    margin-top: 12px;
 
-    margin-bottom:
-        15px;
+    margin-bottom: 15px;
 
 }
 
 .legend-item {
 
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    gap:
-        7px;
+    gap: 7px;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
 }
 
 .legend-color {
 
-    width:
-        20px;
+    width: 20px;
 
-    height:
-        20px;
+    height: 20px;
 
-    border-radius:
-        4px;
+    border-radius: 4px;
 
     border:
         1px solid
@@ -799,22 +630,19 @@ tbody tr:hover {
 
 .red {
 
-    background:
-        #fecaca;
+    background: #fecaca;
 
 }
 
 .yellow {
 
-    background:
-        #fef08a;
+    background: #fef08a;
 
 }
 
 .green {
 
-    background:
-        #bbf7d0;
+    background: #bbf7d0;
 
 }
 
@@ -825,45 +653,33 @@ tbody tr:hover {
 
 .remidi-description {
 
-    color:
-        #64748b;
+    color: #64748b;
 
-    font-size:
-        14px;
+    font-size: 14px;
 
-    line-height:
-        1.5;
+    line-height: 1.5;
 
-    margin:
-        8px 0 12px;
+    margin: 8px 0 12px;
 
 }
 
 .jumlah-terpilih {
 
-    display:
-        inline-block;
+    display: inline-block;
 
-    background:
-        #dbeafe;
+    background: #dbeafe;
 
-    color:
-        #1d4ed8;
+    color: #1d4ed8;
 
-    padding:
-        8px 12px;
+    padding: 8px 12px;
 
-    border-radius:
-        8px;
+    border-radius: 8px;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    margin:
-        5px 0 12px;
+    margin: 5px 0 12px;
 
 }
 
@@ -874,124 +690,95 @@ tbody tr:hover {
 
 .siswa-check-item {
 
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    gap:
-        11px;
+    gap: 11px;
 
-    padding:
-        12px 13px;
+    padding: 12px 13px;
 
-    margin-bottom:
-        7px;
+    margin-bottom: 7px;
 
     border:
         1px solid #fecaca;
 
-    border-radius:
-        9px;
+    border-radius: 9px;
 
-    background:
-        #fff7f7;
+    background: #fff7f7;
 
-    cursor:
-        pointer;
+    cursor: pointer;
 
-    transition:
-        .15s;
+    transition: .15s;
 
 }
 
 .siswa-check-item:hover {
 
-    background:
-        #fee2e2;
+    background: #fee2e2;
 
 }
 
 .siswa-check-item input {
 
-    width:
-        18px;
+    width: 18px;
 
-    height:
-        18px;
+    height: 18px;
 
-    cursor:
-        pointer;
+    cursor: pointer;
 
-    accent-color:
-        #16a34a;
+    accent-color: #16a34a;
 
 }
 
 .siswa-check-name {
 
-    font-size:
-        14px;
+    font-size: 14px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
-    color:
-        #334155;
+    color: #334155;
 
 }
 
 .siswa-check-status {
 
-    margin-left:
-        auto;
+    margin-left: auto;
 
-    font-size:
-        11px;
+    font-size: 11px;
 
-    background:
-        #fee2e2;
+    background: #fee2e2;
 
-    color:
-        #991b1b;
+    color: #991b1b;
 
-    padding:
-        4px 7px;
+    padding: 4px 7px;
 
-    border-radius:
-        5px;
+    border-radius: 5px;
 
-    font-weight:
-        bold;
+    font-weight: bold;
 
 }
 
 
 /* =====================================================
-   EMPTY STATE
+   EMPTY
 ===================================================== */
 
 .empty-state {
 
-    text-align:
-        center;
+    text-align: center;
 
-    padding:
-        30px 15px;
+    padding: 30px 15px;
 
-    color:
-        #64748b;
+    color: #64748b;
 
 }
 
 .empty-state-icon {
 
-    font-size:
-        38px;
+    font-size: 38px;
 
-    margin-bottom:
-        8px;
+    margin-bottom: 8px;
 
 }
 
@@ -1002,17 +789,13 @@ tbody tr:hover {
 
 .footer {
 
-    text-align:
-        center;
+    text-align: center;
 
-    padding:
-        25px;
+    padding: 25px;
 
-    color:
-        #64748b;
+    color: #64748b;
 
-    font-size:
-        13px;
+    font-size: 13px;
 
 }
 
@@ -1023,8 +806,7 @@ tbody tr:hover {
 
 .hidden {
 
-    display:
-        none !important;
+    display: none !important;
 
 }
 
@@ -1044,8 +826,7 @@ tbody tr:hover {
 
     .header h1 {
 
-        font-size:
-            23px;
+        font-size: 23px;
 
     }
 
@@ -1055,15 +836,13 @@ tbody tr:hover {
 
     .container {
 
-        padding:
-            0 10px;
+        padding: 0 10px;
 
     }
 
     .card {
 
-        padding:
-            16px;
+        padding: 16px;
 
     }
 
@@ -1072,40 +851,34 @@ tbody tr:hover {
         grid-template-columns:
             repeat(2,1fr);
 
-        gap:
-            8px;
+        gap: 8px;
 
     }
 
     .info-value {
 
-        font-size:
-            21px;
+        font-size: 21px;
 
     }
 
     .controls {
 
-        flex-direction:
-            column;
+        flex-direction: column;
 
-        align-items:
-            stretch;
+        align-items: stretch;
 
     }
 
     select,
     button {
 
-        width:
-            100%;
+        width: 100%;
 
     }
 
     .siswa-check-status {
 
-        display:
-            none;
+        display: none;
 
     }
 
@@ -1202,21 +975,15 @@ tbody tr:hover {
 
         <div class="control-group">
 
-            <label
-                class="control-label">
-
+            <label class="control-label">
                 Pilih Kelas
-
             </label>
 
 
-            <select
-                id="kelasSelect">
+            <select id="kelasSelect">
 
                 <option value="SEMUA">
-
                     Semua Kelas
-
                 </option>
 
             </select>
@@ -1288,7 +1055,7 @@ tbody tr:hover {
         <div class="info">
 
             <div class="info-title">
-                Sudah Ada Nilai
+                Sudah Ada Data Nilai
             </div>
 
             <div
@@ -1357,7 +1124,6 @@ tbody tr:hover {
 
     <div class="legend">
 
-
         <div class="legend-item">
 
             <span
@@ -1390,7 +1156,6 @@ tbody tr:hover {
 
         </div>
 
-
     </div>
 
 
@@ -1402,47 +1167,31 @@ tbody tr:hover {
 
                 <tr>
 
-                    <th>
-                        NO
-                    </th>
+                    <th>NO</th>
 
-                    <th>
-                        NAMA
-                    </th>
+                    <th>NAMA</th>
 
-                    <th>
-                        KELAS
-                    </th>
+                    <th>KELAS</th>
 
-                    <th>
-                        NILAI AKHIR
-                    </th>
+                    <th>NILAI AKHIR</th>
 
-                    <th>
-                        NILAI AWAL
-                    </th>
+                    <th>NILAI AWAL</th>
 
-                    <th>
-                        NILAI REMIDI
-                    </th>
+                    <th>NILAI REMIDI</th>
 
-                    <th>
-                        STATUS KETUNTASAN
-                    </th>
+                    <th>STATUS KETUNTASAN</th>
 
                 </tr>
 
             </thead>
 
 
-            <tbody
-                id="resultBody">
+            <tbody id="resultBody">
             </tbody>
 
         </table>
 
     </div>
-
 
 </div>
 
@@ -1463,10 +1212,10 @@ tbody tr:hover {
 
     <div class="remidi-description">
 
-        Daftar di bawah ini dihitung otomatis.
-        Jika <b>Nilai Remidi ≥ 78</b>, siswa
-        otomatis dianggap <b>TUNTAS</b> dan
-        tidak akan muncul di daftar ini.
+        Daftar ini dihitung berdasarkan
+        <b>Nilai Akhir hasil perhitungan remidi</b>.
+        Jika hasil Nilai Akhir sudah ≥ 78,
+        siswa otomatis tidak masuk daftar perbaikan.
 
     </div>
 
@@ -1516,9 +1265,7 @@ tbody tr:hover {
     <br>
 
 
-    <div
-        id="daftarBelumTuntas">
-
+    <div id="daftarBelumTuntas">
     </div>
 
 
@@ -1528,10 +1275,6 @@ tbody tr:hover {
 </div>
 
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
 <div class="footer">
 
     SIMPATIK • Pengolah Nilai Siswa
@@ -1540,7 +1283,6 @@ tbody tr:hover {
 
 
 <script>
-
 
 /* =====================================================
    VARIABEL GLOBAL
@@ -1570,7 +1312,6 @@ function normalisasi(value) {
 
     }
 
-
     return String(value)
         .trim()
         .replace(/\s+/g, " ")
@@ -1580,7 +1321,7 @@ function normalisasi(value) {
 
 
 /* =====================================================
-   KONVERSI NILAI KE ANGKA
+   KONVERSI NILAI
 ===================================================== */
 
 function angkaNilai(value) {
@@ -1595,17 +1336,10 @@ function angkaNilai(value) {
 
     }
 
-
     let text =
         String(value)
             .trim()
             .replace(",", ".");
-
-
-    /*
-     * Hilangkan karakter selain angka,
-     * titik dan minus.
-     */
 
     text =
         text.replace(
@@ -1613,46 +1347,175 @@ function angkaNilai(value) {
             ""
         );
 
-
-    const number =
-        parseFloat(text);
-
-
-    return number;
+    return parseFloat(text);
 
 }
 
 
 /* =====================================================
-   HITUNG STATUS OTOMATIS
+   LOGIKA NILAI AKHIR
 =====================================================
 
-   PRIORITAS:
+   ATURAN:
 
-   1. Nilai Remidi tersedia
-      → Remidi >= 78 = TUNTAS
-      → Remidi < 78 = BELUM TUNTAS
+   Nilai Awal < 78:
 
-   2. Nilai Remidi kosong
-      → Nilai Akhir >= 78 = TUNTAS
-      → Nilai Akhir < 78 = BELUM TUNTAS
-
-   3. Keduanya kosong
-      → BELUM TUNTAS
+   Remidi 78–80  → 78
+   Remidi 81–89  → 79
+   Remidi 90–95  → 80
+   Remidi 96–100 → 82
 
 ===================================================== */
 
-function hitungStatusKetuntasan(
-    nilaiAkhir,
-    nilaiRemidi
+function hitungNilaiAkhir(
+    nilaiAwal,
+    nilaiRemidi,
+    nilaiAkhirLama
 ) {
 
+    const awal =
+        angkaNilai(
+            nilaiAwal
+        );
 
     const remidi =
         angkaNilai(
             nilaiRemidi
         );
 
+    const akhirLama =
+        angkaNilai(
+            nilaiAkhirLama
+        );
+
+
+    /*
+     * Jika Nilai Awal sudah >= 78,
+     * Nilai Akhir mengikuti Nilai Awal.
+     */
+
+    if (
+        !Number.isNaN(awal) &&
+        awal >= 78
+    ) {
+
+        return awal;
+
+    }
+
+
+    /*
+     * ATURAN REMIDI
+     *
+     * Hanya berlaku jika
+     * Nilai Awal < 78.
+     */
+
+    if (
+        !Number.isNaN(awal) &&
+        awal < 78 &&
+        !Number.isNaN(remidi)
+    ) {
+
+
+        /*
+         * 78–80 → 78
+         */
+
+        if (
+            remidi >= 78 &&
+            remidi <= 80
+        ) {
+
+            return 78;
+
+        }
+
+
+        /*
+         * 81–89 → 79
+         */
+
+        if (
+            remidi >= 81 &&
+            remidi <= 89
+        ) {
+
+            return 79;
+
+        }
+
+
+        /*
+         * 90–95 → 80
+         */
+
+        if (
+            remidi >= 90 &&
+            remidi <= 95
+        ) {
+
+            return 80;
+
+        }
+
+
+        /*
+         * 96–100 → 82
+         */
+
+        if (
+            remidi >= 96 &&
+            remidi <= 100
+        ) {
+
+            return 82;
+
+        }
+
+    }
+
+
+    /*
+     * Jika tidak masuk aturan remidi,
+     * gunakan Nilai Akhir lama jika tersedia.
+     */
+
+    if (
+        !Number.isNaN(akhirLama)
+    ) {
+
+        return akhirLama;
+
+    }
+
+
+    /*
+     * Jika Nilai Akhir lama kosong,
+     * gunakan Nilai Awal.
+     */
+
+    if (
+        !Number.isNaN(awal)
+    ) {
+
+        return awal;
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =====================================================
+   STATUS KETUNTASAN
+===================================================== */
+
+function hitungStatusKetuntasan(
+    nilaiAkhir
+) {
 
     const akhir =
         angkaNilai(
@@ -1660,53 +1523,23 @@ function hitungStatusKetuntasan(
         );
 
 
-    /*
-     * REMIDI MENJADI ACUAN UTAMA
-     */
-
     if (
-        !Number.isNaN(remidi)
+        Number.isNaN(akhir)
     ) {
-
-        if (
-            remidi >= 78
-        ) {
-
-            return "TUNTAS";
-
-        }
-
 
         return "BELUM TUNTAS";
 
     }
 
 
-    /*
-     * JIKA BELUM ADA REMIDI
-     */
-
     if (
-        !Number.isNaN(akhir)
+        akhir >= 78
     ) {
 
-        if (
-            akhir >= 78
-        ) {
-
-            return "TUNTAS";
-
-        }
-
-
-        return "BELUM TUNTAS";
+        return "TUNTAS";
 
     }
 
-
-    /*
-     * BELUM ADA NILAI
-     */
 
     return "BELUM TUNTAS";
 
@@ -1714,13 +1547,12 @@ function hitungStatusKetuntasan(
 
 
 /* =====================================================
-   CARI HEADER
+   HEADER
 ===================================================== */
 
 function buatHeaderObject(row) {
 
     const obj = {};
-
 
     row.forEach(
         (value, index) => {
@@ -1740,7 +1572,6 @@ function buatHeaderObject(row) {
         }
     );
 
-
     return obj;
 
 }
@@ -1750,7 +1581,6 @@ function cariKolom(
     header,
     nama
 ) {
-
 
     const target =
         normalisasi(
@@ -1789,7 +1619,6 @@ function tampilkanPesan(
     type
 ) {
 
-
     const el =
         document.getElementById(
             "message"
@@ -1807,7 +1636,7 @@ function tampilkanPesan(
 
 
 /* =====================================================
-   UPLOAD FILE
+   UPLOAD EXCEL
 ===================================================== */
 
 document
@@ -1837,9 +1666,7 @@ document
             reader.onload =
                 function(e) {
 
-
                     try {
-
 
                         const data =
                             new Uint8Array(
@@ -1851,18 +1678,15 @@ document
                             XLSX.read(
                                 data,
                                 {
-                                    type:
-                                        "array"
+                                    type: "array"
                                 }
                             );
 
 
                         bacaData();
 
-
                     }
                     catch(error) {
-
 
                         console.error(
                             error
@@ -1870,11 +1694,8 @@ document
 
 
                         tampilkanPesan(
-
                             "File Excel tidak dapat dibaca.",
-
                             "error"
-
                         );
 
                     }
@@ -1891,26 +1712,19 @@ document
 
 
 /* =====================================================
-   BACA DATA EXCEL
+   BACA DATA
 ===================================================== */
 
 function bacaData() {
 
-
-    /*
-     * CEK SHEET
-     */
 
     if (
         !workbook.Sheets["Siswa"]
     ) {
 
         tampilkanPesan(
-
             "Sheet 'Siswa' tidak ditemukan.",
-
             "error"
-
         );
 
         return;
@@ -1923,21 +1737,14 @@ function bacaData() {
     ) {
 
         tampilkanPesan(
-
             "Sheet 'Jawaban' tidak ditemukan.",
-
             "error"
-
         );
 
         return;
 
     }
 
-
-    /*
-     * SHEET
-     */
 
     const siswaSheet =
         workbook.Sheets["Siswa"];
@@ -1946,10 +1753,6 @@ function bacaData() {
     const jawabanSheet =
         workbook.Sheets["Jawaban"];
 
-
-    /*
-     * ARRAY
-     */
 
     const siswaRows =
         XLSX.utils.sheet_to_json(
@@ -1971,10 +1774,6 @@ function bacaData() {
         );
 
 
-    /*
-     * HEADER
-     */
-
     const siswaHeader =
         buatHeaderObject(
             siswaRows[0]
@@ -1988,7 +1787,7 @@ function bacaData() {
 
 
     /*
-     * HEADER SISWA
+     * HEADER SHEET SISWA
      */
 
     const sNama =
@@ -2006,7 +1805,7 @@ function bacaData() {
 
 
     /*
-     * HEADER JAWABAN
+     * HEADER SHEET JAWABAN
      */
 
     const jNama =
@@ -2045,10 +1844,7 @@ function bacaData() {
 
 
     /*
-     * STATUS TIDAK WAJIB DIBACA
-     *
-     * Karena status akan dihitung
-     * otomatis oleh aplikasi.
+     * VALIDASI SHEET SISWA
      */
 
     if (
@@ -2057,17 +1853,18 @@ function bacaData() {
     ) {
 
         tampilkanPesan(
-
             "Sheet Siswa harus memiliki header: Nama dan Kelas.",
-
             "error"
-
         );
 
         return;
 
     }
 
+
+    /*
+     * VALIDASI SHEET JAWABAN
+     */
 
     if (
         jNama < 0 ||
@@ -2078,11 +1875,8 @@ function bacaData() {
     ) {
 
         tampilkanPesan(
-
             "Sheet Jawaban harus memiliki header: Nama, Kelas, Nilai Akhir, Nilai Awal, dan Nilai Remidi.",
-
             "error"
-
         );
 
         return;
@@ -2090,12 +1884,10 @@ function bacaData() {
     }
 
 
-    /*
-     * DATA SISWA
-     *
-     * URUTAN ARRAY INI SAMA PERSIS
-     * DENGAN URUTAN DI SHEET SISWA
-     */
+    /* =================================================
+       SISWA
+       URUTAN TIDAK DIUBAH
+    ================================================= */
 
     siswaData = [];
 
@@ -2105,7 +1897,6 @@ function bacaData() {
         i < siswaRows.length;
         i++
     ) {
-
 
         const nama =
             siswaRows[i][sNama];
@@ -2128,16 +1919,13 @@ function bacaData() {
 
         siswaData.push({
 
-            /*
-             * Nomor urut mengikuti
-             * posisi pada Sheet Siswa
-             */
-
             no:
                 siswaData.length + 1,
 
             nama:
-                String(nama).trim(),
+                String(
+                    nama
+                ).trim(),
 
             kelas:
                 String(
@@ -2149,9 +1937,9 @@ function bacaData() {
     }
 
 
-    /*
-     * DATA JAWABAN
-     */
+    /* =================================================
+       JAWABAN
+    ================================================= */
 
     jawabanData = [];
 
@@ -2161,7 +1949,6 @@ function bacaData() {
         i < jawabanRows.length;
         i++
     ) {
-
 
         const nama =
             jawabanRows[i][jNama];
@@ -2208,9 +1995,9 @@ function bacaData() {
     }
 
 
-    /*
-     * KELAS
-     */
+    /* =================================================
+       DAFTAR KELAS
+    ================================================= */
 
     const kelasSet =
         new Set();
@@ -2239,12 +2026,13 @@ function bacaData() {
         );
 
 
-    kelasSelect.innerHTML =
-        `
+    kelasSelect.innerHTML = `
+
         <option value="SEMUA">
             Semua Kelas
         </option>
-        `;
+
+    `;
 
 
     Array.from(kelasSet)
@@ -2254,14 +2042,12 @@ function bacaData() {
                     b,
                     undefined,
                     {
-                        numeric:
-                            true
+                        numeric: true
                     }
                 )
         )
         .forEach(
             kelas => {
-
 
                 const option =
                     document.createElement(
@@ -2332,18 +2118,15 @@ function bacaData() {
 
 
     tampilkanPesan(
-
         `File berhasil dibaca. ${siswaData.length} siswa ditemukan.`,
-
         "success"
-
     );
 
 }
 
 
 /* =====================================================
-   PROSES DATA
+   PROSES
 ===================================================== */
 
 document
@@ -2374,7 +2157,6 @@ function prosesData() {
     const daftarSiswa =
         siswaData.filter(
             siswa => {
-
 
                 if (
                     kelas === "SEMUA"
@@ -2409,7 +2191,6 @@ function prosesData() {
 
     jawabanData.forEach(
         data => {
-
 
             const key =
                 normalisasi(
@@ -2461,12 +2242,6 @@ function prosesData() {
                     );
 
 
-                const nilaiAkhir =
-                    jawaban
-                        ? jawaban.nilaiAkhir
-                        : "";
-
-
                 const nilaiAwal =
                     jawaban
                         ? jawaban.nilaiAwal
@@ -2479,17 +2254,19 @@ function prosesData() {
                         : "";
 
 
-                /*
-                 * STATUS DIHITUNG ULANG
-                 */
+                const nilaiAkhir =
+                    jawaban
+                        ? hitungNilaiAkhir(
+                            nilaiAwal,
+                            nilaiRemidi,
+                            jawaban.nilaiAkhir
+                        )
+                        : "";
+
 
                 const status =
                     hitungStatusKetuntasan(
-
-                        nilaiAkhir,
-
-                        nilaiRemidi
-
+                        nilaiAkhir
                     );
 
 
@@ -2528,13 +2305,12 @@ function prosesData() {
 
 
 /* =====================================================
-   WARNA NILAI
+   KELAS WARNA NILAI
 ===================================================== */
 
 function kelasNilai(
     nilai
 ) {
-
 
     const angka =
         angkaNilai(
@@ -2583,7 +2359,6 @@ function kelasNilai(
 function buatCellNilai(
     nilai
 ) {
-
 
     const td =
         document.createElement(
@@ -2669,10 +2444,6 @@ function renderTable() {
                 );
 
 
-            /*
-             * NO
-             */
-
             const tdNo =
                 document.createElement(
                     "td"
@@ -2682,10 +2453,6 @@ function renderTable() {
             tdNo.textContent =
                 data.no;
 
-
-            /*
-             * NAMA
-             */
 
             const tdNama =
                 document.createElement(
@@ -2697,10 +2464,6 @@ function renderTable() {
                 data.nama;
 
 
-            /*
-             * KELAS
-             */
-
             const tdKelas =
                 document.createElement(
                     "td"
@@ -2710,10 +2473,6 @@ function renderTable() {
             tdKelas.textContent =
                 data.kelas;
 
-
-            /*
-             * NILAI
-             */
 
             const tdAkhir =
                 buatCellNilai(
@@ -2733,10 +2492,6 @@ function renderTable() {
                 );
 
 
-            /*
-             * STATUS
-             */
-
             const tdStatus =
                 document.createElement(
                     "td"
@@ -2748,8 +2503,7 @@ function renderTable() {
 
 
             if (
-                data.status ===
-                "TUNTAS"
+                data.status === "TUNTAS"
             ) {
 
                 tdStatus.className =
@@ -2764,12 +2518,7 @@ function renderTable() {
             }
 
 
-            /*
-             * HITUNG
-             */
-
             if (
-                data.nilaiAkhir !== "" ||
                 data.nilaiAwal !== "" ||
                 data.nilaiRemidi !== ""
             ) {
@@ -2789,50 +2538,26 @@ function renderTable() {
             }
 
 
-            /*
-             * APPEND
-             */
+            tr.appendChild(tdNo);
 
-            tr.appendChild(
-                tdNo
-            );
+            tr.appendChild(tdNama);
 
-            tr.appendChild(
-                tdNama
-            );
+            tr.appendChild(tdKelas);
 
-            tr.appendChild(
-                tdKelas
-            );
+            tr.appendChild(tdAkhir);
 
-            tr.appendChild(
-                tdAkhir
-            );
+            tr.appendChild(tdAwal);
 
-            tr.appendChild(
-                tdAwal
-            );
+            tr.appendChild(tdRemidi);
 
-            tr.appendChild(
-                tdRemidi
-            );
-
-            tr.appendChild(
-                tdStatus
-            );
+            tr.appendChild(tdStatus);
 
 
-            tbody.appendChild(
-                tr
-            );
+            tbody.appendChild(tr);
 
         }
     );
 
-
-    /*
-     * UPDATE INFO
-     */
 
     document
         .getElementById(
@@ -2875,26 +2600,19 @@ function renderTable() {
             false;
 
 
-    /*
-     * TAMPILKAN DAFTAR BELUM TUNTAS
-     */
-
     tampilkanBelumTuntas();
 
 
     tampilkanPesan(
-
         `Berhasil mengurutkan ${hasilData.length} siswa sesuai urutan pada Sheet Siswa.`,
-
         "success"
-
     );
 
 }
 
 
 /* =====================================================
-   DAFTAR BELUM TUNTAS
+   BELUM TUNTAS
 ===================================================== */
 
 function tampilkanBelumTuntas() {
@@ -2924,14 +2642,9 @@ function tampilkanBelumTuntas() {
         );
 
 
-    /*
-     * SEMUA TUNTAS
-     */
-
     if (
         belumTuntas.length === 0
     ) {
-
 
         card.classList.remove(
             "hidden"
@@ -2961,7 +2674,6 @@ function tampilkanBelumTuntas() {
 
         updateJumlahTerpilih();
 
-
         return;
 
     }
@@ -2971,10 +2683,6 @@ function tampilkanBelumTuntas() {
         "hidden"
     );
 
-
-    /*
-     * BUAT CHECKLIST
-     */
 
     belumTuntas.forEach(
         data => {
@@ -2989,10 +2697,6 @@ function tampilkanBelumTuntas() {
             label.className =
                 "siswa-check-item";
 
-
-            /*
-             * CHECKBOX
-             */
 
             const checkbox =
                 document.createElement(
@@ -3026,10 +2730,6 @@ function tampilkanBelumTuntas() {
             );
 
 
-            /*
-             * NAMA
-             */
-
             const nama =
                 document.createElement(
                     "span"
@@ -3043,10 +2743,6 @@ function tampilkanBelumTuntas() {
             nama.textContent =
                 `${data.no}. ${data.nama} — ${data.kelas}`;
 
-
-            /*
-             * STATUS
-             */
 
             const status =
                 document.createElement(
@@ -3091,7 +2787,7 @@ function tampilkanBelumTuntas() {
 
 
 /* =====================================================
-   JUMLAH PILIHAN
+   JUMLAH CHECKLIST
 ===================================================== */
 
 function updateJumlahTerpilih() {
@@ -3180,7 +2876,7 @@ document
 
 
 /* =====================================================
-   COPY WHATSAPP
+   COPY WA
 ===================================================== */
 
 document
@@ -3209,11 +2905,8 @@ async function copyDaftarWA() {
     ) {
 
         tampilkanPesan(
-
             "Silakan pilih minimal satu siswa terlebih dahulu.",
-
             "warning"
-
         );
 
         return;
@@ -3254,7 +2947,6 @@ async function copyDaftarWA() {
     checked.forEach(
         (checkbox, index) => {
 
-
             text +=
                 `${index + 1}. ${checkbox.dataset.nama}\n`;
 
@@ -3264,13 +2956,12 @@ async function copyDaftarWA() {
 
     text +=
 `
-Mohon segera melakukan perbaikan nilai klik => https://look.short.gy/simpatik_bab2
+Mohon segera melakukan perbaikan nilai sesuai arahan guru.
 
 Terima kasih. 🙏`;
 
 
     try {
-
 
         await navigator
             .clipboard
@@ -3280,16 +2971,12 @@ Terima kasih. 🙏`;
 
 
         tampilkanPesan(
-
             `Berhasil menyalin ${checked.length} nama. Silakan paste ke grup WhatsApp.`,
-
             "success"
-
         );
 
     }
     catch(error) {
-
 
         const textarea =
             document.createElement(
@@ -3329,11 +3016,8 @@ Terima kasih. 🙏`;
 
 
         tampilkanPesan(
-
             `Berhasil menyalin ${checked.length} nama.`,
-
             "success"
-
         );
 
     }
@@ -3363,11 +3047,8 @@ function downloadExcel() {
     ) {
 
         tampilkanPesan(
-
             "Belum ada hasil yang dapat di-download.",
-
             "warning"
-
         );
 
         return;
@@ -3375,16 +3056,12 @@ function downloadExcel() {
     }
 
 
-    /*
-     * WORKBOOK BARU
-     */
-
     const wb =
         XLSX.utils.book_new();
 
 
     /*
-     * DATA
+     * HEADER
      */
 
     const rows = [
@@ -3424,10 +3101,6 @@ function downloadExcel() {
     );
 
 
-    /*
-     * SHEET
-     */
-
     const ws =
         XLSX.utils.aoa_to_sheet(
             rows
@@ -3440,80 +3113,52 @@ function downloadExcel() {
 
     ws["!cols"] = [
 
-        {
-            wch:
-                35
-        },
+        { wch: 35 },
 
-        {
-            wch:
-                12
-        },
+        { wch: 12 },
 
-        {
-            wch:
-                15
-        },
+        { wch: 15 },
 
-        {
-            wch:
-                15
-        },
+        { wch: 15 },
 
-        {
-            wch:
-                15
-        },
+        { wch: 15 },
 
-        {
-            wch:
-                23
-        }
+        { wch: 23 }
 
     ];
 
 
     /*
-     * HEADER STYLE
+     * STYLE HEADER
      */
 
     const headerStyle = {
 
         fill: {
 
-            patternType:
-                "solid",
+            patternType: "solid",
 
             fgColor: {
-
-                rgb:
-                    "0F4C81"
-
+                rgb: "0F4C81"
             }
 
         },
 
         font: {
 
-            bold:
-                true,
+            bold: true,
 
             color: {
-
-                rgb:
-                    "FFFFFF"
-
+                rgb: "FFFFFF"
             }
 
         },
 
         alignment: {
 
-            horizontal:
-                "center",
+            horizontal: "center",
 
-            vertical:
-                "center"
+            vertical: "center"
 
         }
 
@@ -3526,15 +3171,12 @@ function downloadExcel() {
         col++
     ) {
 
-
         const address =
             XLSX.utils.encode_cell({
 
-                r:
-                    0,
+                r: 0,
 
-                c:
-                    col
+                c: col
 
             });
 
@@ -3563,8 +3205,6 @@ function downloadExcel() {
 
 
         /*
-         * Kolom:
-         *
          * C = Nilai Akhir
          * D = Nilai Awal
          * E = Nilai Remidi
@@ -3577,11 +3217,9 @@ function downloadExcel() {
                 const address =
                     XLSX.utils.encode_cell({
 
-                        r:
-                            row,
+                        r: row,
 
-                        c:
-                            col
+                        c: col
 
                     });
 
@@ -3659,8 +3297,7 @@ function downloadExcel() {
 
                     font: {
 
-                        bold:
-                            true
+                        bold: true
 
                     },
 
@@ -3679,18 +3316,14 @@ function downloadExcel() {
 
         /*
          * STATUS
-         *
-         * Kolom F
          */
 
         const statusAddress =
             XLSX.utils.encode_cell({
 
-                r:
-                    row,
+                r: row,
 
-                c:
-                    5
+                c: 5
 
             });
 
@@ -3699,7 +3332,6 @@ function downloadExcel() {
             ws[statusAddress]
         ) {
 
-
             const status =
                 hasilData[
                     row - 1
@@ -3707,8 +3339,7 @@ function downloadExcel() {
 
 
             if (
-                status ===
-                "TUNTAS"
+                status === "TUNTAS"
             ) {
 
                 ws[statusAddress].s = {
@@ -3729,8 +3360,7 @@ function downloadExcel() {
 
                     font: {
 
-                        bold:
-                            true,
+                        bold: true,
 
                         color: {
 
@@ -3764,8 +3394,7 @@ function downloadExcel() {
 
                     font: {
 
-                        bold:
-                            true,
+                        bold: true,
 
                         color: {
 
@@ -3785,10 +3414,6 @@ function downloadExcel() {
     }
 
 
-    /*
-     * APPEND
-     */
-
     XLSX.utils.book_append_sheet(
 
         wb,
@@ -3799,10 +3424,6 @@ function downloadExcel() {
 
     );
 
-
-    /*
-     * NAMA FILE
-     */
 
     const kelas =
         document
@@ -3820,10 +3441,6 @@ function downloadExcel() {
             : `HASIL_URUT_NILAI_${kelas}.xlsx`;
 
 
-    /*
-     * DOWNLOAD
-     */
-
     XLSX.writeFile(
 
         wb,
@@ -3834,11 +3451,8 @@ function downloadExcel() {
 
 
     tampilkanPesan(
-
         `File ${namaFile} berhasil dibuat.`,
-
         "success"
-
     );
 
 }
@@ -3861,37 +3475,21 @@ document
 function resetAplikasi() {
 
 
-    workbook =
-        null;
+    workbook = null;
 
+    siswaData = [];
 
-    siswaData =
-        [];
+    jawabanData = [];
 
+    hasilData = [];
 
-    jawabanData =
-        [];
-
-
-    hasilData =
-        [];
-
-
-    /*
-     * INPUT
-     */
 
     document
         .getElementById(
             "fileInput"
         )
-        .value =
-            "";
+        .value = "";
 
-
-    /*
-     * HIDE
-     */
 
     [
         "controlCard",
@@ -3915,10 +3513,6 @@ function resetAplikasi() {
     );
 
 
-    /*
-     * DOWNLOAD
-     */
-
     document
         .getElementById(
             "downloadBtn"
@@ -3926,10 +3520,6 @@ function resetAplikasi() {
         .disabled =
             true;
 
-
-    /*
-     * TABLE
-     */
 
     document
         .getElementById(
@@ -3939,10 +3529,6 @@ function resetAplikasi() {
             "";
 
 
-    /*
-     * REMIDI
-     */
-
     document
         .getElementById(
             "daftarBelumTuntas"
@@ -3950,10 +3536,6 @@ function resetAplikasi() {
         .innerHTML =
             "";
 
-
-    /*
-     * MESSAGE
-     */
 
     const message =
         document.getElementById(
@@ -3973,4 +3555,5 @@ function resetAplikasi() {
 </script>
 
 </body>
+
 </html>
