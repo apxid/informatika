@@ -6,534 +6,1234 @@
 
 <title>SIMPATIK - Pengurut Nilai Siswa</title>
 
-<!-- SheetJS untuk membaca dan membuat Excel -->
+<!-- =========================================================
+     SHEETJS
+     Digunakan untuk membaca dan membuat file Excel
+========================================================= -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
 
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f1f5f9;
-        color: #1e293b;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .header {
-        background: linear-gradient(135deg, #0f4c81, #2563eb);
-        color: white;
-        padding: 28px 20px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,.15);
+body {
+    margin: 0;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+    background:
+        linear-gradient(
+            135deg,
+            #0f4c81,
+            #2563eb
+        );
+
+    color: white;
+
+    padding: 30px 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.15);
+}
+
+.header h1 {
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 800;
+}
+
+.header p {
+    margin: 8px 0 0;
+
+    opacity: .92;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+    width: 100%;
+    max-width: 1250px;
+
+    margin: 25px auto;
+
+    padding: 0 15px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 22px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 4px 15px rgba(15,23,42,.08);
+}
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+.upload-box {
+    display: block;
+
+    border: 2px dashed #2563eb;
+
+    border-radius: 14px;
+
+    padding: 38px 20px;
+
+    text-align: center;
+
+    background: #eff6ff;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.upload-box:hover {
+    background: #dbeafe;
+
+    transform: translateY(-1px);
+}
+
+.upload-icon {
+    font-size: 50px;
+
+    margin-bottom: 10px;
+}
+
+.upload-box h2 {
+    margin: 5px 0;
+
+    color: #1d4ed8;
+
+    font-size: 22px;
+}
+
+.upload-box p {
+    color: #64748b;
+
+    margin: 7px 0;
+
+    font-size: 14px;
+}
+
+#fileInput {
+    display: none;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message {
+    display: none;
+
+    padding: 13px 16px;
+
+    border-radius: 9px;
+
+    margin-bottom: 15px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.message.success {
+    display: block;
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+.message.error {
+    display: block;
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+.message.warning {
+    display: block;
+
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+.message.info {
+    display: block;
+
+    background: #dbeafe;
+
+    color: #1e40af;
+}
+
+
+/* =========================================================
+   CONTROL
+========================================================= */
+
+.controls {
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    align-items: end;
+}
+
+.control-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+label.control-label {
+    font-size: 13px;
+
+    font-weight: bold;
+
+    color: #475569;
+}
+
+select {
+    min-width: 190px;
+
+    padding: 11px 13px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 9px;
+
+    background: white;
+
+    font-size: 14px;
+
+    color: #1e293b;
+
+    outline: none;
+}
+
+select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,.12);
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+button {
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 11px 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+    font-size: 13px;
+}
+
+button:hover {
+    transform: translateY(-1px);
+
+    filter: brightness(.98);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: .5;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    filter: none;
+}
+
+.btn-primary {
+    background: #2563eb;
+
+    color: white;
+}
+
+.btn-success {
+    background: #16a34a;
+
+    color: white;
+}
+
+.btn-secondary {
+    background: #64748b;
+
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+
+    color: white;
+}
+
+.btn-wa {
+    background: #16a34a;
+
+    color: white;
+
+    font-size: 14px;
+
+    padding: 12px 20px;
+}
+
+
+/* =========================================================
+   INFO GRID
+========================================================= */
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.info {
+    padding: 17px;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    border:
+        1px solid #e2e8f0;
+}
+
+.info-title {
+    font-size: 12px;
+
+    color: #64748b;
+
+    margin-bottom: 7px;
+}
+
+.info-value {
+    font-size: 25px;
+
+    font-weight: bold;
+
+    color: #1e3a8a;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrapper {
+    overflow-x: auto;
+
+    border-radius: 10px;
+
+    border:
+        1px solid #e2e8f0;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 850px;
+}
+
+th {
+    background: #0f4c81;
+
+    color: white;
+
+    padding: 12px 10px;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 2;
+}
+
+td {
+    padding: 10px;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+td:nth-child(2) {
+    text-align: left;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   WARNA NILAI
+========================================================= */
+
+.nilai-merah {
+    background: #fecaca !important;
+
+    color: #991b1b;
+
+    font-weight: bold;
+}
+
+.nilai-kuning {
+    background: #fef08a !important;
+
+    color: #854d0e;
+
+    font-weight: bold;
+}
+
+.nilai-hijau {
+    background: #bbf7d0 !important;
+
+    color: #166534;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-tuntas {
+    color: #166534;
+
+    font-weight: bold;
+}
+
+.status-belum {
+    color: #991b1b;
+
+    font-weight: bold;
+}
+
+.kosong {
+    color: #94a3b8;
+
+    font-style: italic;
+}
+
+
+/* =========================================================
+   LEGEND
+========================================================= */
+
+.legend {
+    display: flex;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+    margin-top: 12px;
+
+    margin-bottom: 15px;
+}
+
+.legend-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    font-size: 13px;
+}
+
+.legend-color {
+    width: 20px;
+
+    height: 20px;
+
+    border-radius: 4px;
+
+    border:
+        1px solid rgba(0,0,0,.08);
+}
+
+.red {
+    background: #fecaca;
+}
+
+.yellow {
+    background: #fef08a;
+}
+
+.green {
+    background: #bbf7d0;
+}
+
+
+/* =========================================================
+   REMIDI
+========================================================= */
+
+.remidi-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+}
+
+.remidi-header h3 {
+    margin: 0;
+}
+
+.remidi-description {
+    color: #64748b;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    margin-top: 8px;
+}
+
+.jumlah-terpilih {
+    display: inline-block;
+
+    background: #dbeafe;
+
+    color: #1d4ed8;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    margin: 12px 0;
+}
+
+
+/* =========================================================
+   CHECKLIST SISWA
+========================================================= */
+
+.siswa-check-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 12px 13px;
+
+    margin-bottom: 7px;
+
+    border:
+        1px solid #fecaca;
+
+    border-radius: 9px;
+
+    background: #fff7f7;
+
+    cursor: pointer;
+
+    transition: .15s;
+}
+
+.siswa-check-item:hover {
+    background: #fee2e2;
+
+    border-color: #fca5a5;
+}
+
+.siswa-check-item input {
+    width: 18px;
+
+    height: 18px;
+
+    cursor: pointer;
+
+    accent-color: #16a34a;
+}
+
+.siswa-check-name {
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: #334155;
+}
+
+.siswa-check-status {
+    margin-left: auto;
+
+    font-size: 11px;
+
+    background: #fee2e2;
+
+    color: #991b1b;
+
+    padding: 4px 7px;
+
+    border-radius: 5px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state {
+    text-align: center;
+
+    padding: 30px 15px;
+
+    color: #64748b;
+}
+
+.empty-state-icon {
+    font-size: 38px;
+
+    margin-bottom: 8px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+    text-align: center;
+
+    padding: 25px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width: 800px) {
+
+    .info-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
     .header h1 {
-        margin: 0;
-        font-size: 28px;
+        font-size: 23px;
     }
 
     .header p {
-        margin: 8px 0 0;
-        opacity: .9;
+        font-size: 13px;
     }
 
+}
+
+@media(max-width: 550px) {
+
     .container {
-        max-width: 1250px;
-        margin: 25px auto;
-        padding: 0 15px;
+        padding: 0 10px;
     }
 
     .card {
-        background: white;
-        border-radius: 16px;
-        padding: 22px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(15,23,42,.08);
-    }
+        padding: 16px;
 
-    .upload-box {
-        border: 2px dashed #2563eb;
-        border-radius: 14px;
-        padding: 35px 20px;
-        text-align: center;
-        background: #eff6ff;
-        cursor: pointer;
-        transition: .2s;
-    }
-
-    .upload-box:hover {
-        background: #dbeafe;
-    }
-
-    .upload-icon {
-        font-size: 48px;
-        margin-bottom: 10px;
-    }
-
-    .upload-box h2 {
-        margin: 5px 0;
-        color: #1d4ed8;
-    }
-
-    .upload-box p {
-        color: #64748b;
-    }
-
-    #fileInput {
-        display: none;
-    }
-
-    .controls {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: end;
-    }
-
-    .control-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    label {
-        font-size: 13px;
-        font-weight: bold;
-        color: #475569;
-    }
-
-    select {
-        min-width: 180px;
-        padding: 11px 13px;
-        border: 1px solid #cbd5e1;
-        border-radius: 9px;
-        background: white;
-        font-size: 14px;
-    }
-
-    button {
-        border: none;
-        border-radius: 9px;
-        padding: 11px 18px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: .2s;
-    }
-
-    button:hover {
-        transform: translateY(-1px);
-    }
-
-    .btn-primary {
-        background: #2563eb;
-        color: white;
-    }
-
-    .btn-success {
-        background: #16a34a;
-        color: white;
-    }
-
-    .btn-secondary {
-        background: #64748b;
-        color: white;
-    }
-
-    button:disabled {
-        opacity: .5;
-        cursor: not-allowed;
-        transform: none;
+        border-radius: 13px;
     }
 
     .info-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 8px;
     }
 
     .info {
-        padding: 17px;
-        border-radius: 12px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-    }
-
-    .info-title {
-        font-size: 12px;
-        color: #64748b;
-        margin-bottom: 7px;
+        padding: 13px;
     }
 
     .info-value {
-        font-size: 25px;
-        font-weight: bold;
-        color: #1e3a8a;
+        font-size: 21px;
     }
 
-    .table-wrapper {
-        overflow-x: auto;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
+    .controls {
+        flex-direction: column;
+
+        align-items: stretch;
     }
 
-    table {
+    .control-group {
         width: 100%;
-        border-collapse: collapse;
-        min-width: 850px;
     }
 
-    th {
-        background: #0f4c81;
-        color: white;
-        padding: 12px 10px;
-        font-size: 13px;
-        white-space: nowrap;
+    select,
+    button {
+        width: 100%;
     }
 
-    td {
-        padding: 10px;
-        border-bottom: 1px solid #e2e8f0;
-        font-size: 13px;
-        text-align: center;
+    .remidi-header {
+        align-items: flex-start;
     }
 
-    td:nth-child(2) {
-        text-align: left;
-    }
-
-    tbody tr:hover {
-        background: #f8fafc;
-    }
-
-    .nilai-merah {
-        background: #fecaca !important;
-        color: #991b1b;
-        font-weight: bold;
-    }
-
-    .nilai-kuning {
-        background: #fef08a !important;
-        color: #854d0e;
-        font-weight: bold;
-    }
-
-    .nilai-hijau {
-        background: #bbf7d0 !important;
-        color: #166534;
-        font-weight: bold;
-    }
-
-    .status-tuntas {
-        color: #166534;
-        font-weight: bold;
-    }
-
-    .status-belum {
-        color: #991b1b;
-        font-weight: bold;
-    }
-
-    .kosong {
-        color: #94a3b8;
-        font-style: italic;
-    }
-
-    .legend {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-top: 15px;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 13px;
-    }
-
-    .legend-color {
-        width: 20px;
-        height: 20px;
-        border-radius: 4px;
-    }
-
-    .red {
-        background: #fecaca;
-    }
-
-    .yellow {
-        background: #fef08a;
-    }
-
-    .green {
-        background: #bbf7d0;
-    }
-
-    .message {
+    .siswa-check-status {
         display: none;
-        padding: 13px 16px;
-        border-radius: 9px;
-        margin-bottom: 15px;
-        font-size: 14px;
     }
 
-    .message.success {
-        display: block;
-        background: #dcfce7;
-        color: #166534;
-    }
+}
 
-    .message.error {
-        display: block;
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .message.warning {
-        display: block;
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .hidden {
-        display: none !important;
-    }
-
-    .footer {
-        text-align: center;
-        padding: 25px;
-        color: #64748b;
-        font-size: 13px;
-    }
-
-    @media(max-width: 800px) {
-        .info-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .header h1 {
-            font-size: 22px;
-        }
-    }
-
-    @media(max-width: 500px) {
-        .info-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .controls {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        select,
-        button {
-            width: 100%;
-        }
-    }
 </style>
 </head>
 
+
 <body>
 
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
 <div class="header">
-    <h1>📊 SIMPATIK</h1>
-    <p>Pengurutan Nilai Siswa Berdasarkan Nomor Absensi</p>
+
+    <h1>
+        📊 SIMPATIK
+    </h1>
+
+    <p>
+        Pengurutan Nilai Siswa Berdasarkan Nomor Absensi
+    </p>
+
 </div>
+
 
 <div class="container">
 
-    <!-- UPLOAD -->
-    <div class="card">
-        <div id="message" class="message"></div>
 
-        <label for="fileInput" class="upload-box">
-            <div class="upload-icon">📁</div>
+<!-- =========================================================
+     UPLOAD FILE
+========================================================= -->
 
-            <h2>Pilih File Excel</h2>
+<div class="card">
 
-            <p>
-                Upload file <b>SIMPATIK V 1.0.xlsx</b>
-            </p>
-
-            <p>
-                Sheet yang dibutuhkan:
-                <b>Siswa</b> dan <b>Jawaban</b>
-            </p>
-        </label>
-
-        <input
-            type="file"
-            id="fileInput"
-            accept=".xlsx,.xls"
-        >
+    <div
+        id="message"
+        class="message">
     </div>
 
-    <!-- CONTROL -->
-    <div id="controlCard" class="card hidden">
 
-        <h3>⚙️ Pengaturan</h3>
+    <label
+        for="fileInput"
+        class="upload-box">
 
-        <div class="controls">
+        <div class="upload-icon">
+            📁
+        </div>
 
-            <div class="control-group">
-                <label>Pilih Kelas</label>
+        <h2>
+            Pilih File Excel
+        </h2>
 
-                <select id="kelasSelect">
-                    <option value="SEMUA">Semua Kelas</option>
-                </select>
-            </div>
+        <p>
+            Upload file
+            <b>SIMPATIK V 1.0.xlsx</b>
+        </p>
 
-            <button
-                class="btn-primary"
-                id="processBtn"
-            >
-                🔄 PROSES & URUTKAN
-            </button>
+        <p>
+            Sistem membutuhkan sheet
+            <b>Siswa</b>
+            dan
+            <b>Jawaban</b>
+        </p>
 
-            <button
-                class="btn-success"
-                id="downloadBtn"
-                disabled
-            >
-                📥 DOWNLOAD EXCEL
-            </button>
+    </label>
 
-            <button
-                class="btn-secondary"
-                id="resetBtn"
-            >
-                🔄 RESET
-            </button>
+
+    <input
+        type="file"
+        id="fileInput"
+        accept=".xlsx,.xls">
+
+</div>
+
+
+<!-- =========================================================
+     CONTROL
+========================================================= -->
+
+<div
+    id="controlCard"
+    class="card hidden">
+
+    <h3>
+        ⚙️ Pengaturan
+    </h3>
+
+
+    <div class="controls">
+
+
+        <div class="control-group">
+
+            <label
+                class="control-label"
+                for="kelasSelect">
+
+                Pilih Kelas
+
+            </label>
+
+
+            <select
+                id="kelasSelect">
+
+                <option value="SEMUA">
+                    Semua Kelas
+                </option>
+
+            </select>
 
         </div>
 
-    </div>
 
-    <!-- INFO -->
-    <div id="infoCard" class="card hidden">
+        <button
+            class="btn-primary"
+            id="processBtn">
 
-        <div class="info-grid">
+            🔄 PROSES & URUTKAN
 
-            <div class="info">
-                <div class="info-title">
-                    Total Siswa
-                </div>
+        </button>
 
-                <div class="info-value" id="totalSiswa">
-                    0
-                </div>
-            </div>
 
-            <div class="info">
-                <div class="info-title">
-                    Data Nilai
-                </div>
+        <button
+            class="btn-success"
+            id="downloadBtn"
+            disabled>
 
-                <div class="info-value" id="totalNilai">
-                    0
-                </div>
-            </div>
+            📥 DOWNLOAD EXCEL
 
-            <div class="info">
-                <div class="info-title">
-                    Belum Ada Nilai
-                </div>
+        </button>
 
-                <div class="info-value" id="belumNilai">
-                    0
-                </div>
-            </div>
 
-            <div class="info">
-                <div class="info-title">
-                    Kelas
-                </div>
+        <button
+            class="btn-secondary"
+            id="resetBtn">
 
-                <div class="info-value" id="jumlahKelas">
-                    0
-                </div>
-            </div>
+            🔄 RESET
 
-        </div>
+        </button>
 
-    </div>
-
-    <!-- HASIL -->
-    <div id="resultCard" class="card hidden">
-
-        <h3>📋 Hasil Pengurutan Nilai</h3>
-
-        <div class="legend">
-
-            <div class="legend-item">
-                <span class="legend-color red"></span>
-                Nilai &lt; 78
-            </div>
-
-            <div class="legend-item">
-                <span class="legend-color yellow"></span>
-                Nilai = 78
-            </div>
-
-            <div class="legend-item">
-                <span class="legend-color green"></span>
-                Nilai &gt; 78
-            </div>
-
-        </div>
-
-        <br>
-
-        <div class="table-wrapper">
-
-            <table id="resultTable">
-
-                <thead>
-                    <tr>
-                        <th>NO</th>
-                        <th>NAMA</th>
-                        <th>KELAS</th>
-                        <th>NILAI AKHIR</th>
-                        <th>NILAI AWAL</th>
-                        <th>NILAI REMIDI</th>
-                        <th>STATUS KETUNTASAN</th>
-                    </tr>
-                </thead>
-
-                <tbody id="resultBody"></tbody>
-
-            </table>
-
-        </div>
 
     </div>
 
 </div>
+
+
+<!-- =========================================================
+     INFO
+========================================================= -->
+
+<div
+    id="infoCard"
+    class="card hidden">
+
+    <div class="info-grid">
+
+
+        <div class="info">
+
+            <div class="info-title">
+                Total Siswa
+            </div>
+
+            <div
+                class="info-value"
+                id="totalSiswa">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-title">
+                Data Nilai
+            </div>
+
+            <div
+                class="info-value"
+                id="totalNilai">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-title">
+                Belum Ada Nilai
+            </div>
+
+            <div
+                class="info-value"
+                id="belumNilai">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-title">
+                Jumlah Kelas
+            </div>
+
+            <div
+                class="info-value"
+                id="jumlahKelas">
+
+                0
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     HASIL
+========================================================= -->
+
+<div
+    id="resultCard"
+    class="card hidden">
+
+
+    <h3>
+        📋 Hasil Pengurutan Nilai
+    </h3>
+
+
+    <div class="legend">
+
+
+        <div class="legend-item">
+
+            <span
+                class="legend-color red">
+            </span>
+
+            Nilai &lt; 78
+
+        </div>
+
+
+        <div class="legend-item">
+
+            <span
+                class="legend-color yellow">
+            </span>
+
+            Nilai = 78
+
+        </div>
+
+
+        <div class="legend-item">
+
+            <span
+                class="legend-color green">
+            </span>
+
+            Nilai &gt; 78
+
+        </div>
+
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table id="resultTable">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        NO
+                    </th>
+
+                    <th>
+                        NAMA
+                    </th>
+
+                    <th>
+                        KELAS
+                    </th>
+
+                    <th>
+                        NILAI AKHIR
+                    </th>
+
+                    <th>
+                        NILAI AWAL
+                    </th>
+
+                    <th>
+                        NILAI REMIDI
+                    </th>
+
+                    <th>
+                        STATUS KETUNTASAN
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="resultBody">
+            </tbody>
+
+
+        </table>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================================
+     DAFTAR BELUM TUNTAS
+========================================================= -->
+
+<div
+    id="remidiCard"
+    class="card hidden">
+
+
+    <div class="remidi-header">
+
+        <h3>
+            📝 Daftar Siswa Belum Tuntas
+        </h3>
+
+    </div>
+
+
+    <div class="remidi-description">
+
+        Centang siswa yang ingin Bapak kirimkan
+        pemberitahuan perbaikan nilai melalui
+        grup WhatsApp kelas.
+
+    </div>
+
+
+    <div
+        id="jumlahTerpilih"
+        class="jumlah-terpilih">
+
+        0 siswa dipilih
+
+    </div>
+
+
+    <div class="controls">
+
+
+        <button
+            class="btn-primary"
+            id="selectAllBtn">
+
+            ☑️ PILIH SEMUA
+
+        </button>
+
+
+        <button
+            class="btn-secondary"
+            id="clearAllBtn">
+
+            ⬜ HAPUS PILIHAN
+
+        </button>
+
+
+        <button
+            class="btn-wa"
+            id="copyWaBtn">
+
+            📋 COPY UNTUK WA
+
+        </button>
+
+
+    </div>
+
+
+    <br>
+
+
+    <div
+        id="daftarBelumTuntas">
+
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
 
 <div class="footer">
+
     SIMPATIK • Sistem Pengolahan Nilai Siswa
+
 </div>
+
 
 
 <script>
 
-let workbook;
+
+/* =========================================================
+   VARIABEL GLOBAL
+========================================================= */
+
+let workbook = null;
+
 let siswaData = [];
+
 let jawabanData = [];
+
 let hasilData = [];
 
 
-/* ==========================================
-   UTILITAS
-========================================== */
+/* =========================================================
+   NORMALISASI TEXT
+========================================================= */
 
 function normalisasi(value) {
 
-    if (value === null || value === undefined) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
         return "";
     }
 
@@ -541,203 +1241,377 @@ function normalisasi(value) {
         .trim()
         .replace(/\s+/g, " ")
         .toUpperCase();
+
 }
 
 
-function tampilkanPesan(text, type) {
+/* =========================================================
+   PESAN
+========================================================= */
 
-    const el = document.getElementById("message");
+function tampilkanPesan(
+    text,
+    type
+) {
+
+    const el =
+        document.getElementById(
+            "message"
+        );
+
 
     el.textContent = text;
-    el.className = "message " + type;
+
+
+    el.className =
+        "message " + type;
+
 }
 
 
-function cariKolom(header, nama) {
+/* =========================================================
+   BUAT HEADER OBJECT
+========================================================= */
 
-    const target = normalisasi(nama);
+function buatHeaderObject(row) {
 
-    for (const key in header) {
+    const obj = {};
 
-        if (normalisasi(key) === target) {
+
+    if (!row) {
+        return obj;
+    }
+
+
+    row.forEach(
+        (value, index) => {
+
+            if (
+                value !== null &&
+                value !== undefined &&
+                String(value).trim() !== ""
+            ) {
+
+                obj[
+                    String(value).trim()
+                ] = index;
+
+            }
+
+        }
+    );
+
+
+    return obj;
+
+}
+
+
+/* =========================================================
+   CARI KOLOM
+========================================================= */
+
+function cariKolom(
+    header,
+    nama
+) {
+
+    const target =
+        normalisasi(nama);
+
+
+    for (
+        const key in header
+    ) {
+
+        if (
+            normalisasi(key)
+            === target
+        ) {
+
             return header[key];
+
         }
 
     }
+
 
     return -1;
+
 }
 
 
-function ambilHeader(sheet) {
-
-    const rows = XLSX.utils.sheet_to_json(sheet, {
-        header: 1,
-        defval: ""
-    });
-
-    if (rows.length === 0) {
-        return {};
-    }
-
-    const header = {};
-
-    rows[0].forEach((value, index) => {
-
-        if (value !== "") {
-            header[String(value).trim()] = index;
-        }
-
-    });
-
-    return header;
-}
-
-
-/* ==========================================
-   BACA FILE
-========================================== */
+/* =========================================================
+   FILE INPUT
+========================================================= */
 
 document
-.getElementById("fileInput")
-.addEventListener("change", function(event) {
+    .getElementById("fileInput")
+    .addEventListener(
+        "change",
+        function(event) {
 
-    const file = event.target.files[0];
 
-    if (!file) return;
+            const file =
+                event.target.files[0];
 
-    const reader = new FileReader();
 
-    reader.onload = function(e) {
+            if (!file) {
+                return;
+            }
 
-        try {
 
-            const data = new Uint8Array(e.target.result);
+            const reader =
+                new FileReader();
 
-            workbook = XLSX.read(data, {
-                type: "array"
-            });
 
-            bacaData();
+            reader.onload =
+                function(e) {
 
-        } catch (error) {
 
-            console.error(error);
+                    try {
 
-            tampilkanPesan(
-                "File Excel tidak dapat dibaca.",
-                "error"
+
+                        const data =
+                            new Uint8Array(
+                                e.target.result
+                            );
+
+
+                        workbook =
+                            XLSX.read(
+                                data,
+                                {
+                                    type: "array"
+                                }
+                            );
+
+
+                        bacaData();
+
+
+                    }
+                    catch(error) {
+
+
+                        console.error(
+                            error
+                        );
+
+
+                        tampilkanPesan(
+
+                            "File Excel tidak dapat dibaca. Pastikan file berformat XLSX/XLS.",
+
+                            "error"
+
+                        );
+
+                    }
+
+                };
+
+
+            reader.readAsArrayBuffer(
+                file
             );
 
         }
-
-    };
-
-    reader.readAsArrayBuffer(file);
-
-});
+    );
 
 
-/* ==========================================
-   BACA SHEET SISWA & JAWABAN
-========================================== */
+/* =========================================================
+   BACA DATA EXCEL
+========================================================= */
 
 function bacaData() {
 
-    if (!workbook.Sheets["Siswa"]) {
+
+    /* -----------------------------------------------------
+       CEK SHEET
+    ----------------------------------------------------- */
+
+    if (
+        !workbook.Sheets["Siswa"]
+    ) {
 
         tampilkanPesan(
+
             "Sheet 'Siswa' tidak ditemukan.",
+
             "error"
+
         );
 
         return;
+
     }
 
-    if (!workbook.Sheets["Jawaban"]) {
+
+    if (
+        !workbook.Sheets["Jawaban"]
+    ) {
 
         tampilkanPesan(
+
             "Sheet 'Jawaban' tidak ditemukan.",
+
+            "error"
+
+        );
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       AMBIL SHEET
+    ----------------------------------------------------- */
+
+    const siswaSheet =
+        workbook.Sheets["Siswa"];
+
+
+    const jawabanSheet =
+        workbook.Sheets["Jawaban"];
+
+
+    /* -----------------------------------------------------
+       UBAH MENJADI ARRAY
+    ----------------------------------------------------- */
+
+    const siswaRows =
+        XLSX.utils.sheet_to_json(
+            siswaSheet,
+            {
+                header: 1,
+                defval: ""
+            }
+        );
+
+
+    const jawabanRows =
+        XLSX.utils.sheet_to_json(
+            jawabanSheet,
+            {
+                header: 1,
+                defval: ""
+            }
+        );
+
+
+    if (
+        siswaRows.length < 1
+    ) {
+
+        tampilkanPesan(
+            "Sheet Siswa kosong.",
             "error"
         );
 
         return;
+
     }
 
 
-    const siswaSheet = workbook.Sheets["Siswa"];
+    if (
+        jawabanRows.length < 1
+    ) {
 
-    const jawabanSheet = workbook.Sheets["Jawaban"];
+        tampilkanPesan(
+            "Sheet Jawaban kosong.",
+            "error"
+        );
 
+        return;
 
-    const siswaRows = XLSX.utils.sheet_to_json(
-        siswaSheet,
-        {
-            header: 1,
-            defval: ""
-        }
-    );
-
-
-    const jawabanRows = XLSX.utils.sheet_to_json(
-        jawabanSheet,
-        {
-            header: 1,
-            defval: ""
-        }
-    );
+    }
 
 
-    const siswaHeader = siswaRows[0];
+    /* -----------------------------------------------------
+       HEADER
+    ----------------------------------------------------- */
 
-    const jawabanHeader = jawabanRows[0];
-
-
-    /* Cari posisi kolom */
-
-    const sNama = cariKolom(
-        buatHeaderObject(siswaHeader),
-        "Nama"
-    );
-
-    const sKelas = cariKolom(
-        buatHeaderObject(siswaHeader),
-        "Kelas"
-    );
+    const siswaHeader =
+        buatHeaderObject(
+            siswaRows[0]
+        );
 
 
-    const jNama = cariKolom(
-        buatHeaderObject(jawabanHeader),
-        "Nama"
-    );
-
-    const jKelas = cariKolom(
-        buatHeaderObject(jawabanHeader),
-        "Kelas"
-    );
-
-    const jNilaiAkhir = cariKolom(
-        buatHeaderObject(jawabanHeader),
-        "Nilai Akhir"
-    );
-
-    const jNilaiAwal = cariKolom(
-        buatHeaderObject(jawabanHeader),
-        "Nilai Awal"
-    );
-
-    const jNilaiRemidi = cariKolom(
-        buatHeaderObject(jawabanHeader),
-        "Nilai Remidi"
-    );
-
-    const jStatus = cariKolom(
-        buatHeaderObject(jawabanHeader),
-        "Status Ketuntasan"
-    );
+    const jawabanHeader =
+        buatHeaderObject(
+            jawabanRows[0]
+        );
 
 
-    /* Validasi */
+    /* -----------------------------------------------------
+       KOLOM SISWA
+    ----------------------------------------------------- */
+
+    const sNama =
+        cariKolom(
+            siswaHeader,
+            "Nama"
+        );
+
+
+    const sKelas =
+        cariKolom(
+            siswaHeader,
+            "Kelas"
+        );
+
+
+    /* -----------------------------------------------------
+       KOLOM JAWABAN
+    ----------------------------------------------------- */
+
+    const jNama =
+        cariKolom(
+            jawabanHeader,
+            "Nama"
+        );
+
+
+    const jKelas =
+        cariKolom(
+            jawabanHeader,
+            "Kelas"
+        );
+
+
+    const jNilaiAkhir =
+        cariKolom(
+            jawabanHeader,
+            "Nilai Akhir"
+        );
+
+
+    const jNilaiAwal =
+        cariKolom(
+            jawabanHeader,
+            "Nilai Awal"
+        );
+
+
+    const jNilaiRemidi =
+        cariKolom(
+            jawabanHeader,
+            "Nilai Remidi"
+        );
+
+
+    const jStatus =
+        cariKolom(
+            jawabanHeader,
+            "Status Ketuntasan"
+        );
+
+
+    /* -----------------------------------------------------
+       VALIDASI
+    ----------------------------------------------------- */
 
     if (
         sNama < 0 ||
@@ -745,11 +1619,15 @@ function bacaData() {
     ) {
 
         tampilkanPesan(
+
             "Header 'Nama' atau 'Kelas' pada sheet Siswa tidak ditemukan.",
+
             "error"
+
         );
 
         return;
+
     }
 
 
@@ -763,19 +1641,24 @@ function bacaData() {
     ) {
 
         tampilkanPesan(
-            "Ada header yang dibutuhkan pada sheet Jawaban yang tidak ditemukan.",
+
+            "Header yang dibutuhkan pada sheet Jawaban tidak lengkap.",
+
             "error"
+
         );
 
         return;
+
     }
 
 
-    /* =====================================
+    /* =====================================================
        DATA SISWA
-    ===================================== */
+    ===================================================== */
 
     siswaData = [];
+
 
     for (
         let i = 1;
@@ -783,29 +1666,54 @@ function bacaData() {
         i++
     ) {
 
-        const nama = siswaRows[i][sNama];
-        const kelas = siswaRows[i][sKelas];
 
-        if (!nama) continue;
+        const nama =
+            siswaRows[i][sNama];
+
+
+        const kelas =
+            siswaRows[i][sKelas];
+
+
+        if (
+            nama === null ||
+            nama === undefined ||
+            String(nama).trim() === ""
+        ) {
+
+            continue;
+
+        }
+
 
         siswaData.push({
 
-            no: siswaData.length + 1,
+            /*
+             * NOMOR ABSENSI
+             * mengikuti posisi siswa
+             * pada sheet Siswa
+             */
 
-            nama: String(nama).trim(),
+            no:
+                siswaData.length + 1,
 
-            kelas: String(kelas).trim()
+            nama:
+                String(nama).trim(),
+
+            kelas:
+                String(kelas ?? "").trim()
 
         });
 
     }
 
 
-    /* =====================================
+    /* =====================================================
        DATA JAWABAN
-    ===================================== */
+    ===================================================== */
 
     jawabanData = [];
+
 
     for (
         let i = 1;
@@ -813,18 +1721,33 @@ function bacaData() {
         i++
     ) {
 
-        const nama = jawabanRows[i][jNama];
 
-        const kelas = jawabanRows[i][jKelas];
+        const nama =
+            jawabanRows[i][jNama];
 
-        if (!nama) continue;
+
+        const kelas =
+            jawabanRows[i][jKelas];
+
+
+        if (
+            nama === null ||
+            nama === undefined ||
+            String(nama).trim() === ""
+        ) {
+
+            continue;
+
+        }
 
 
         jawabanData.push({
 
-            nama: String(nama).trim(),
+            nama:
+                String(nama).trim(),
 
-            kelas: String(kelas).trim(),
+            kelas:
+                String(kelas ?? "").trim(),
 
             nilaiAkhir:
                 jawabanRows[i][jNilaiAkhir],
@@ -843,203 +1766,309 @@ function bacaData() {
     }
 
 
-    /* =====================================
-       ISI FILTER KELAS
-    ===================================== */
+    /* =====================================================
+       DAFTAR KELAS
+    ===================================================== */
 
-    const kelasSet = new Set();
+    const kelasSet =
+        new Set();
 
-    siswaData.forEach(siswa => {
 
-        if (siswa.kelas) {
-            kelasSet.add(siswa.kelas);
+    siswaData.forEach(
+        siswa => {
+
+            if (
+                siswa.kelas
+            ) {
+
+                kelasSet.add(
+                    siswa.kelas
+                );
+
+            }
+
         }
-
-    });
-
-
-    const select =
-        document.getElementById("kelasSelect");
+    );
 
 
-    select.innerHTML =
-        `<option value="SEMUA">Semua Kelas</option>`;
+    const kelasSelect =
+        document.getElementById(
+            "kelasSelect"
+        );
 
 
-    [...kelasSet]
-        .sort()
-        .forEach(kelas => {
-
-            const option =
-                document.createElement("option");
-
-            option.value = kelas;
-
-            option.textContent = kelas;
-
-            select.appendChild(option);
-
-        });
+    kelasSelect.innerHTML =
+        `<option value="SEMUA">
+            Semua Kelas
+        </option>`;
 
 
-    /* Tampilkan panel */
+    Array.from(kelasSet)
+        .sort(
+            (a,b) =>
+                a.localeCompare(
+                    b,
+                    undefined,
+                    {
+                        numeric: true
+                    }
+                )
+        )
+        .forEach(
+            kelas => {
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    kelas;
+
+
+                option.textContent =
+                    kelas;
+
+
+                kelasSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       TAMPILKAN PANEL
+    ===================================================== */
 
     document
-        .getElementById("controlCard")
-        .classList.remove("hidden");
+        .getElementById(
+            "controlCard"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
 
     document
-        .getElementById("infoCard")
-        .classList.remove("hidden");
+        .getElementById(
+            "infoCard"
+        )
+        .classList.remove(
+            "hidden"
+        );
 
 
-    document.getElementById("totalSiswa")
-        .textContent = siswaData.length;
+    document
+        .getElementById(
+            "totalSiswa"
+        )
+        .textContent =
+            siswaData.length;
 
-    document.getElementById("totalNilai")
-        .textContent = jawabanData.length;
 
-    document.getElementById("belumNilai")
-        .textContent = "-";
+    document
+        .getElementById(
+            "totalNilai"
+        )
+        .textContent =
+            jawabanData.length;
 
-    document.getElementById("jumlahKelas")
-        .textContent = kelasSet.size;
+
+    document
+        .getElementById(
+            "belumNilai"
+        )
+        .textContent =
+            "-";
+
+
+    document
+        .getElementById(
+            "jumlahKelas"
+        )
+        .textContent =
+            kelasSet.size;
 
 
     tampilkanPesan(
-        "File berhasil dibaca. Sheet Siswa dan Jawaban ditemukan.",
+
+        `File berhasil dibaca. ${siswaData.length} siswa ditemukan dan ${jawabanData.length} data jawaban ditemukan.`,
+
         "success"
+
     );
 
 }
 
 
-/* ==========================================
-   BUAT HEADER OBJECT
-========================================== */
-
-function buatHeaderObject(row) {
-
-    const obj = {};
-
-    row.forEach((value, index) => {
-
-        if (value !== "") {
-
-            obj[String(value).trim()] = index;
-
-        }
-
-    });
-
-    return obj;
-
-}
-
-
-/* ==========================================
-   PROSES PENGURUTAN
-========================================== */
+/* =========================================================
+   PROSES DATA
+========================================================= */
 
 document
-.getElementById("processBtn")
-.addEventListener("click", prosesData);
+    .getElementById(
+        "processBtn"
+    )
+    .addEventListener(
+        "click",
+        prosesData
+    );
 
 
 function prosesData() {
 
+
     const kelas =
-        document.getElementById("kelasSelect").value;
+        document
+            .getElementById(
+                "kelasSelect"
+            )
+            .value;
 
 
-    /* Filter siswa */
+    /* -----------------------------------------------------
+       FILTER SISWA
+    ----------------------------------------------------- */
 
     let daftarSiswa =
-        siswaData.filter(siswa => {
+        siswaData.filter(
+            siswa => {
 
-            if (kelas === "SEMUA") {
-                return true;
+
+                if (
+                    kelas === "SEMUA"
+                ) {
+
+                    return true;
+
+                }
+
+
+                return (
+                    normalisasi(
+                        siswa.kelas
+                    )
+                    ===
+                    normalisasi(
+                        kelas
+                    )
+                );
+
             }
-
-            return normalisasi(siswa.kelas)
-                === normalisasi(kelas);
-
-        });
+        );
 
 
-    /* Buat Map Jawaban */
+    /* -----------------------------------------------------
+       MAP JAWABAN
+    ----------------------------------------------------- */
 
-    const jawabanMap = new Map();
-
-
-    jawabanData.forEach(data => {
-
-        const key =
-            normalisasi(data.nama)
-            + "||"
-            + normalisasi(data.kelas);
+    const jawabanMap =
+        new Map();
 
 
-        /*
-         Jika terdapat beberapa pengerjaan
-         dengan nama + kelas yang sama,
-         data terakhir akan digunakan.
-        */
+    jawabanData.forEach(
+        data => {
 
-        jawabanMap.set(key, data);
-
-    });
-
-
-    /* =====================================
-       URUT SESUAI SHEET SISWA
-    ===================================== */
-
-    hasilData = daftarSiswa.map(
-        (siswa, index) => {
 
             const key =
-                normalisasi(siswa.nama)
-                + "||"
-                + normalisasi(siswa.kelas);
+                normalisasi(
+                    data.nama
+                )
+                +
+                "||"
+                +
+                normalisasi(
+                    data.kelas
+                );
 
 
-            const jawaban =
-                jawabanMap.get(key);
+            /*
+             * Jika ada beberapa data
+             * pengerjaan dengan nama
+             * dan kelas yang sama,
+             * data terakhir digunakan.
+             */
 
-
-            return {
-
-                no: index + 1,
-
-                nama: siswa.nama,
-
-                kelas: siswa.kelas,
-
-                nilaiAkhir:
-                    jawaban
-                        ? jawaban.nilaiAkhir
-                        : "",
-
-                nilaiAwal:
-                    jawaban
-                        ? jawaban.nilaiAwal
-                        : "",
-
-                nilaiRemidi:
-                    jawaban
-                        ? jawaban.nilaiRemidi
-                        : "",
-
-                status:
-                    jawaban
-                        ? jawaban.status
-                        : ""
-
-            };
+            jawabanMap.set(
+                key,
+                data
+            );
 
         }
     );
+
+
+    /* -----------------------------------------------------
+       URUT SESUAI SHEET SISWA
+    ----------------------------------------------------- */
+
+    hasilData =
+        daftarSiswa.map(
+            (siswa, index) => {
+
+
+                const key =
+                    normalisasi(
+                        siswa.nama
+                    )
+                    +
+                    "||"
+                    +
+                    normalisasi(
+                        siswa.kelas
+                    );
+
+
+                const jawaban =
+                    jawabanMap.get(
+                        key
+                    );
+
+
+                return {
+
+                    /*
+                     * Nomor tetap mengikuti
+                     * urutan Sheet Siswa
+                     */
+
+                    no:
+                        index + 1,
+
+                    nama:
+                        siswa.nama,
+
+                    kelas:
+                        siswa.kelas,
+
+                    nilaiAkhir:
+                        jawaban
+                            ? jawaban.nilaiAkhir
+                            : "",
+
+                    nilaiAwal:
+                        jawaban
+                            ? jawaban.nilaiAwal
+                            : "",
+
+                    nilaiRemidi:
+                        jawaban
+                            ? jawaban.nilaiRemidi
+                            : "",
+
+                    status:
+                        jawaban
+                            ? jawaban.status
+                            : ""
+
+                };
+
+            }
+        );
 
 
     renderTable();
@@ -1047,18 +2076,23 @@ function prosesData() {
 }
 
 
-/* ==========================================
-   WARNA NILAI
-========================================== */
+/* =========================================================
+   TENTUKAN WARNA NILAI
+========================================================= */
 
-function kelasNilai(nilai) {
+function kelasNilai(
+    nilai
+) {
+
 
     if (
         nilai === null ||
         nilai === undefined ||
         nilai === ""
     ) {
+
         return "";
+
     }
 
 
@@ -1066,182 +2100,66 @@ function kelasNilai(nilai) {
         Number(
             String(nilai)
                 .replace(",", ".")
+                .trim()
         );
 
 
-    if (isNaN(angka)) {
+    if (
+        Number.isNaN(
+            angka
+        )
+    ) {
+
         return "";
+
     }
 
 
-    if (angka < 78) {
+    if (
+        angka < 78
+    ) {
+
         return "nilai-merah";
+
     }
 
-    if (angka === 78) {
+
+    if (
+        angka === 78
+    ) {
+
         return "nilai-kuning";
+
     }
 
-    if (angka > 78) {
+
+    if (
+        angka > 78
+    ) {
+
         return "nilai-hijau";
+
     }
+
 
     return "";
 
 }
 
 
-/* ==========================================
-   RENDER TABLE
-========================================== */
-
-function renderTable() {
-
-    const tbody =
-        document.getElementById("resultBody");
-
-
-    tbody.innerHTML = "";
-
-
-    let belum = 0;
-
-    let adaNilai = 0;
-
-
-    hasilData.forEach(data => {
-
-        const tr =
-            document.createElement("tr");
-
-
-        const tdNo =
-            document.createElement("td");
-
-        tdNo.textContent = data.no;
-
-
-        const tdNama =
-            document.createElement("td");
-
-        tdNama.textContent = data.nama;
-
-
-        const tdKelas =
-            document.createElement("td");
-
-        tdKelas.textContent = data.kelas;
-
-
-        const tdAkhir =
-            buatCellNilai(data.nilaiAkhir);
-
-        const tdAwal =
-            buatCellNilai(data.nilaiAwal);
-
-        const tdRemidi =
-            buatCellNilai(data.nilaiRemidi);
-
-
-        const tdStatus =
-            document.createElement("td");
-
-        tdStatus.textContent =
-            data.status || "—";
-
-
-        if (!data.nilaiAkhir &&
-            !data.nilaiAwal &&
-            !data.nilaiRemidi) {
-
-            belum++;
-
-        } else {
-
-            adaNilai++;
-
-        }
-
-
-        const status =
-            normalisasi(data.status);
-
-
-        if (
-            status.includes("TUNTAS")
-            &&
-            !status.includes("BELUM")
-        ) {
-
-            tdStatus.className =
-                "status-tuntas";
-
-        } else if (
-            status.includes("BELUM")
-        ) {
-
-            tdStatus.className =
-                "status-belum";
-
-        }
-
-
-        tr.appendChild(tdNo);
-
-        tr.appendChild(tdNama);
-
-        tr.appendChild(tdKelas);
-
-        tr.appendChild(tdAkhir);
-
-        tr.appendChild(tdAwal);
-
-        tr.appendChild(tdRemidi);
-
-        tr.appendChild(tdStatus);
-
-
-        tbody.appendChild(tr);
-
-    });
-
-
-    document.getElementById("totalSiswa")
-        .textContent = hasilData.length;
-
-    document.getElementById("totalNilai")
-        .textContent = adaNilai;
-
-    document.getElementById("belumNilai")
-        .textContent = belum;
-
-
-    document
-        .getElementById("resultCard")
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("downloadBtn")
-        .disabled = false;
-
-
-    tampilkanPesan(
-        `Berhasil mengurutkan ${hasilData.length} siswa sesuai urutan pada sheet Siswa.`,
-        "success"
-    );
-
-}
-
-
-/* ==========================================
+/* =========================================================
    CELL NILAI
-========================================== */
+========================================================= */
 
-function buatCellNilai(nilai) {
+function buatCellNilai(
+    nilai
+) {
+
 
     const td =
-        document.createElement("td");
+        document.createElement(
+            "td"
+        );
 
 
     if (
@@ -1250,23 +2168,33 @@ function buatCellNilai(nilai) {
         nilai === ""
     ) {
 
-        td.textContent = "—";
+        td.textContent =
+            "—";
 
-        td.className = "kosong";
+        td.className =
+            "kosong";
 
         return td;
 
     }
 
 
-    td.textContent = nilai;
+    td.textContent =
+        nilai;
+
 
     const kelas =
-        kelasNilai(nilai);
+        kelasNilai(
+            nilai
+        );
 
 
     if (kelas) {
-        td.classList.add(kelas);
+
+        td.classList.add(
+            kelas
+        );
+
     }
 
 
@@ -1275,22 +2203,639 @@ function buatCellNilai(nilai) {
 }
 
 
-/* ==========================================
-   DOWNLOAD EXCEL
-========================================== */
+/* =========================================================
+   RENDER TABLE
+========================================================= */
+
+function renderTable() {
+
+
+    const tbody =
+        document.getElementById(
+            "resultBody"
+        );
+
+
+    tbody.innerHTML =
+        "";
+
+
+    let belum =
+        0;
+
+
+    let adaNilai =
+        0;
+
+
+    hasilData.forEach(
+        data => {
+
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            /* NO */
+
+            const tdNo =
+                document.createElement(
+                    "td"
+                );
+
+            tdNo.textContent =
+                data.no;
+
+
+            /* NAMA */
+
+            const tdNama =
+                document.createElement(
+                    "td"
+                );
+
+            tdNama.textContent =
+                data.nama;
+
+
+            /* KELAS */
+
+            const tdKelas =
+                document.createElement(
+                    "td"
+                );
+
+            tdKelas.textContent =
+                data.kelas;
+
+
+            /* NILAI AKHIR */
+
+            const tdAkhir =
+                buatCellNilai(
+                    data.nilaiAkhir
+                );
+
+
+            /* NILAI AWAL */
+
+            const tdAwal =
+                buatCellNilai(
+                    data.nilaiAwal
+                );
+
+
+            /* NILAI REMIDI */
+
+            const tdRemidi =
+                buatCellNilai(
+                    data.nilaiRemidi
+                );
+
+
+            /* STATUS */
+
+            const tdStatus =
+                document.createElement(
+                    "td"
+                );
+
+
+            tdStatus.textContent =
+                data.status || "—";
+
+
+            const status =
+                normalisasi(
+                    data.status
+                );
+
+
+            if (
+                status.includes(
+                    "BELUM TUNTAS"
+                )
+                ||
+                status === "BELUM"
+                ||
+                status.includes(
+                    "BELUM"
+                )
+            ) {
+
+                tdStatus.className =
+                    "status-belum";
+
+            }
+
+            else if (
+                status.includes(
+                    "TUNTAS"
+                )
+            ) {
+
+                tdStatus.className =
+                    "status-tuntas";
+
+            }
+
+
+            /* HITUNG */
+
+            if (
+                !data.nilaiAkhir &&
+                !data.nilaiAwal &&
+                !data.nilaiRemidi
+            ) {
+
+                belum++;
+
+            }
+            else {
+
+                adaNilai++;
+
+            }
+
+
+            /* MASUKKAN */
+
+            tr.appendChild(tdNo);
+
+            tr.appendChild(tdNama);
+
+            tr.appendChild(tdKelas);
+
+            tr.appendChild(tdAkhir);
+
+            tr.appendChild(tdAwal);
+
+            tr.appendChild(tdRemidi);
+
+            tr.appendChild(tdStatus);
+
+
+            tbody.appendChild(tr);
+
+        }
+    );
+
+
+    /* INFO */
+
+    document
+        .getElementById(
+            "totalSiswa"
+        )
+        .textContent =
+            hasilData.length;
+
+
+    document
+        .getElementById(
+            "totalNilai"
+        )
+        .textContent =
+            adaNilai;
+
+
+    document
+        .getElementById(
+            "belumNilai"
+        )
+        .textContent =
+            belum;
+
+
+    /* TAMPILKAN HASIL */
+
+    document
+        .getElementById(
+            "resultCard"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+
+    /* AKTIFKAN DOWNLOAD */
+
+    document
+        .getElementById(
+            "downloadBtn"
+        )
+        .disabled =
+            false;
+
+
+    /* TAMPILKAN DAFTAR BELUM TUNTAS */
+
+    tampilkanBelumTuntas();
+
+
+    tampilkanPesan(
+
+        `Berhasil mengurutkan ${hasilData.length} siswa sesuai urutan pada sheet Siswa.`,
+
+        "success"
+
+    );
+
+}
+
+
+/* =========================================================
+   DETEKSI STATUS BELUM TUNTAS
+========================================================= */
+
+function isBelumTuntas(
+    status
+) {
+
+
+    const value =
+        normalisasi(
+            status
+        );
+
+
+    /*
+     * Mendukung beberapa kemungkinan
+     * penulisan status.
+     */
+
+    if (
+        value === "BELUM TUNTAS"
+        ||
+        value === "BELUM"
+        ||
+        value.includes(
+            "BELUM TUNTAS"
+        )
+        ||
+        value.includes(
+            "BELUM"
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   TAMPILKAN DAFTAR BELUM TUNTAS
+========================================================= */
+
+function tampilkanBelumTuntas() {
+
+
+    const container =
+        document.getElementById(
+            "daftarBelumTuntas"
+        );
+
+
+    const card =
+        document.getElementById(
+            "remidiCard"
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    /*
+     * Cari siswa yang statusnya
+     * BELUM TUNTAS
+     */
+
+    const belumTuntas =
+        hasilData.filter(
+            data =>
+                isBelumTuntas(
+                    data.status
+                )
+        );
+
+
+    /*
+     * Tidak ada siswa
+     */
+
+    if (
+        belumTuntas.length === 0
+    ) {
+
+
+        card.classList.remove(
+            "hidden"
+        );
+
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+                    🎉
+                </div>
+
+                <strong>
+                    Semua siswa sudah tuntas!
+                </strong>
+
+                <div style="margin-top:6px;">
+                    Tidak ada siswa yang perlu melakukan perbaikan nilai.
+                </div>
+
+            </div>
+
+        `;
+
+
+        document
+            .getElementById(
+                "jumlahTerpilih"
+            )
+            .textContent =
+                "0 siswa dipilih";
+
+
+        return;
+
+    }
+
+
+    /*
+     * Tampilkan checklist
+     */
+
+    card.classList.remove(
+        "hidden"
+    );
+
+
+    belumTuntas.forEach(
+        data => {
+
+
+            const label =
+                document.createElement(
+                    "label"
+                );
+
+
+            label.className =
+                "siswa-check-item";
+
+
+            /*
+             * CHECKBOX
+             */
+
+            const checkbox =
+                document.createElement(
+                    "input"
+                );
+
+
+            checkbox.type =
+                "checkbox";
+
+
+            checkbox.className =
+                "checkbox-belum-tuntas";
+
+
+            checkbox.value =
+                data.nama;
+
+
+            checkbox.dataset.nama =
+                data.nama;
+
+
+            checkbox.dataset.kelas =
+                data.kelas;
+
+
+            checkbox.addEventListener(
+                "change",
+                updateJumlahTerpilih
+            );
+
+
+            /*
+             * NAMA
+             */
+
+            const nama =
+                document.createElement(
+                    "span"
+                );
+
+
+            nama.className =
+                "siswa-check-name";
+
+
+            nama.textContent =
+                `${data.no}. ${data.nama} — ${data.kelas}`;
+
+
+            /*
+             * STATUS
+             */
+
+            const status =
+                document.createElement(
+                    "span"
+                );
+
+
+            status.className =
+                "siswa-check-status";
+
+
+            status.textContent =
+                "BELUM TUNTAS";
+
+
+            /*
+             * SUSUN
+             */
+
+            label.appendChild(
+                checkbox
+            );
+
+
+            label.appendChild(
+                nama
+            );
+
+
+            label.appendChild(
+                status
+            );
+
+
+            container.appendChild(
+                label
+            );
+
+        }
+    );
+
+
+    updateJumlahTerpilih();
+
+}
+
+
+/* =========================================================
+   UPDATE JUMLAH CHECKLIST
+========================================================= */
+
+function updateJumlahTerpilih() {
+
+
+    const checked =
+        document.querySelectorAll(
+            ".checkbox-belum-tuntas:checked"
+        );
+
+
+    document
+        .getElementById(
+            "jumlahTerpilih"
+        )
+        .textContent =
+            `${checked.length} siswa dipilih`;
+
+}
+
+
+/* =========================================================
+   PILIH SEMUA
+========================================================= */
 
 document
-.getElementById("downloadBtn")
-.addEventListener("click", downloadExcel);
+    .getElementById(
+        "selectAllBtn"
+    )
+    .addEventListener(
+        "click",
+        pilihSemuaBelumTuntas
+    );
 
 
-function downloadExcel() {
+function pilihSemuaBelumTuntas() {
 
-    if (!hasilData.length) {
+
+    document
+        .querySelectorAll(
+            ".checkbox-belum-tuntas"
+        )
+        .forEach(
+            checkbox => {
+
+                checkbox.checked =
+                    true;
+
+            }
+        );
+
+
+    updateJumlahTerpilih();
+
+}
+
+
+/* =========================================================
+   HAPUS SEMUA PILIHAN
+========================================================= */
+
+document
+    .getElementById(
+        "clearAllBtn"
+    )
+    .addEventListener(
+        "click",
+        hapusSemuaPilihan
+    );
+
+
+function hapusSemuaPilihan() {
+
+
+    document
+        .querySelectorAll(
+            ".checkbox-belum-tuntas"
+        )
+        .forEach(
+            checkbox => {
+
+                checkbox.checked =
+                    false;
+
+            }
+        );
+
+
+    updateJumlahTerpilih();
+
+}
+
+
+/* =========================================================
+   COPY UNTUK WHATSAPP
+========================================================= */
+
+document
+    .getElementById(
+        "copyWaBtn"
+    )
+    .addEventListener(
+        "click",
+        copyDaftarWA
+    );
+
+
+async function copyDaftarWA() {
+
+
+    const checked =
+        Array.from(
+            document.querySelectorAll(
+                ".checkbox-belum-tuntas:checked"
+            )
+        );
+
+
+    /*
+     * BELUM MEMILIH
+     */
+
+    if (
+        checked.length === 0
+    ) {
 
         tampilkanPesan(
-            "Belum ada data untuk di-download.",
+
+            "Silakan centang minimal satu siswa yang akan diberi pemberitahuan.",
+
             "warning"
+
         );
 
         return;
@@ -1299,7 +2844,206 @@ function downloadExcel() {
 
 
     /*
-     * Membuat workbook baru
+     * KELAS
+     */
+
+    const kelas =
+        document
+            .getElementById(
+                "kelasSelect"
+            )
+            .value;
+
+
+    /*
+     * JUDUL
+     */
+
+    let text =
+`📢 *PERBAIKAN NILAI INFORMATIKA*
+
+`;
+
+
+    if (
+        kelas !== "SEMUA"
+    ) {
+
+        text +=
+            `Kelas: *${kelas}*\n\n`;
+
+    }
+
+
+    text +=
+`Siswa yang perlu segera melakukan perbaikan nilai:
+
+`;
+
+
+    /*
+     * DAFTAR NAMA
+     */
+
+    checked.forEach(
+        (checkbox, index) => {
+
+
+            const nama =
+                checkbox.dataset.nama;
+
+
+            text +=
+                `${index + 1}. ${nama}\n`;
+
+        }
+    );
+
+
+    /*
+     * PENUTUP
+     */
+
+    text +=
+`
+Mohon segera melakukan perbaikan nilai sesuai arahan guru.
+
+Terima kasih. 🙏`;
+
+
+    /*
+     * COPY CLIPBOARD
+     */
+
+    try {
+
+
+        await navigator
+            .clipboard
+            .writeText(
+                text
+            );
+
+
+        tampilkanPesan(
+
+            `Berhasil menyalin ${checked.length} nama. Sekarang tinggal paste (Ctrl+V) ke grup WhatsApp.`,
+
+            "success"
+
+        );
+
+    }
+    catch(error) {
+
+
+        /*
+         * FALLBACK BROWSER
+         */
+
+        const textarea =
+            document.createElement(
+                "textarea"
+            );
+
+
+        textarea.value =
+            text;
+
+
+        textarea.style.position =
+            "fixed";
+
+
+        textarea.style.left =
+            "-9999px";
+
+
+        document.body.appendChild(
+            textarea
+        );
+
+
+        textarea.focus();
+
+
+        textarea.select();
+
+
+        try {
+
+            document.execCommand(
+                "copy"
+            );
+
+
+            tampilkanPesan(
+
+                `Berhasil menyalin ${checked.length} nama.`,
+
+                "success"
+
+            );
+
+        }
+        catch(e) {
+
+            tampilkanPesan(
+
+                "Gagal menyalin otomatis. Silakan coba kembali.",
+
+                "error"
+
+            );
+
+        }
+
+
+        document.body.removeChild(
+            textarea
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DOWNLOAD EXCEL
+========================================================= */
+
+document
+    .getElementById(
+        "downloadBtn"
+    )
+    .addEventListener(
+        "click",
+        downloadExcel
+    );
+
+
+function downloadExcel() {
+
+
+    if (
+        !hasilData.length
+    ) {
+
+        tampilkanPesan(
+
+            "Belum ada data yang dapat di-download.",
+
+            "warning"
+
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * BUAT WORKBOOK
      */
 
     const wbOut =
@@ -1307,7 +3051,7 @@ function downloadExcel() {
 
 
     /*
-     * Data Excel
+     * DATA
      */
 
     const rows = [
@@ -1325,77 +3069,128 @@ function downloadExcel() {
     ];
 
 
-    hasilData.forEach(data => {
+    hasilData.forEach(
+        data => {
 
-        rows.push([
+            rows.push([
 
-            data.no,
+                data.no,
 
-            data.nama,
+                data.nama,
 
-            data.kelas,
+                data.kelas,
 
-            data.nilaiAkhir,
+                data.nilaiAkhir,
 
-            data.nilaiAwal,
+                data.nilaiAwal,
 
-            data.nilaiRemidi,
+                data.nilaiRemidi,
 
-            data.status
+                data.status
 
-        ]);
+            ]);
 
-    });
-
-
-    const ws =
-        XLSX.utils.aoa_to_sheet(rows);
+        }
+    );
 
 
     /*
-     * Lebar kolom
+     * BUAT SHEET
+     */
+
+    const ws =
+        XLSX.utils.aoa_to_sheet(
+            rows
+        );
+
+
+    /*
+     * LEBAR KOLOM
      */
 
     ws["!cols"] = [
 
-        { wch: 7 },
-        { wch: 35 },
-        { wch: 12 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 23 }
+        {
+            wch: 7
+        },
+
+        {
+            wch: 35
+        },
+
+        {
+            wch: 12
+        },
+
+        {
+            wch: 15
+        },
+
+        {
+            wch: 15
+        },
+
+        {
+            wch: 15
+        },
+
+        {
+            wch: 23
+        }
 
     ];
 
 
     /*
-     * Style Header
+     * HEADER STYLE
      */
 
     const headerStyle = {
 
         fill: {
-            patternType: "solid",
+
+            patternType:
+                "solid",
+
             fgColor: {
-                rgb: "0F4C81"
+
+                rgb:
+                    "0F4C81"
+
             }
+
         },
 
         font: {
-            bold: true,
+
+            bold:
+                true,
+
             color: {
-                rgb: "FFFFFF"
+
+                rgb:
+                    "FFFFFF"
+
             }
+
         },
 
         alignment: {
-            horizontal: "center",
-            vertical: "center"
+
+            horizontal:
+                "center",
+
+            vertical:
+                "center"
+
         }
 
     };
 
+
+    /*
+     * STYLE HEADER
+     */
 
     for (
         let col = 0;
@@ -1403,16 +3198,22 @@ function downloadExcel() {
         col++
     ) {
 
-        const cell =
+
+        const address =
             XLSX.utils.encode_cell({
+
                 r: 0,
+
                 c: col
+
             });
 
 
-        if (ws[cell]) {
+        if (
+            ws[address]
+        ) {
 
-            ws[cell].s =
+            ws[address].s =
                 headerStyle;
 
         }
@@ -1421,7 +3222,7 @@ function downloadExcel() {
 
 
     /*
-     * Warna nilai
+     * STYLE NILAI
      */
 
     for (
@@ -1430,137 +3231,215 @@ function downloadExcel() {
         row++
     ) {
 
+
         /*
-         * Kolom nilai:
-         *
-         * D = 3
-         * E = 4
-         * F = 5
+         * D = Nilai Akhir
+         * E = Nilai Awal
+         * F = Nilai Remidi
          */
 
-        [3, 4, 5].forEach(col => {
-
-            const cellAddress =
-                XLSX.utils.encode_cell({
-                    r: row,
-                    c: col
-                });
+        [3,4,5].forEach(
+            col => {
 
 
-            const cell =
-                ws[cellAddress];
+                const address =
+                    XLSX.utils.encode_cell({
+
+                        r: row,
+
+                        c: col
+
+                    });
 
 
-            if (!cell) return;
+                const cell =
+                    ws[address];
 
 
-            const nilai =
-                Number(cell.v);
+                if (!cell) {
+                    return;
+                }
 
 
-            let warna = "";
+                const nilai =
+                    Number(
+                        String(
+                            cell.v
+                        )
+                        .replace(
+                            ",",
+                            "."
+                        )
+                    );
 
 
-            if (nilai < 78) {
+                if (
+                    Number.isNaN(
+                        nilai
+                    )
+                ) {
 
-                warna = "FECACA";
+                    return;
 
-            } else if (nilai === 78) {
-
-                warna = "FEF08A";
-
-            } else if (nilai > 78) {
-
-                warna = "BBF7D0";
-
-            }
+                }
 
 
-            if (warna) {
+                let warna;
+
+
+                if (
+                    nilai < 78
+                ) {
+
+                    warna =
+                        "FECACA";
+
+                }
+
+                else if (
+                    nilai === 78
+                ) {
+
+                    warna =
+                        "FEF08A";
+
+                }
+
+                else {
+
+                    warna =
+                        "BBF7D0";
+
+                }
+
 
                 cell.s = {
 
                     fill: {
 
-                        patternType: "solid",
+                        patternType:
+                            "solid",
 
                         fgColor: {
-                            rgb: warna
+
+                            rgb:
+                                warna
+
                         }
 
                     },
 
                     font: {
-                        bold: true
+
+                        bold:
+                            true
+
                     },
 
                     alignment: {
-                        horizontal: "center"
+
+                        horizontal:
+                            "center",
+
+                        vertical:
+                            "center"
+
                     }
 
                 };
 
             }
-
-        });
+        );
 
     }
 
 
     /*
-     * Freeze header
+     * APPEND SHEET
      */
 
-    ws["!freeze"] = {
-        xSplit: 0,
-        ySplit: 1
-    };
-
-
     XLSX.utils.book_append_sheet(
+
         wbOut,
+
         ws,
+
         "Hasil Urut"
+
     );
 
 
     /*
-     * Nama file
+     * NAMA FILE
      */
 
     const kelas =
         document
-            .getElementById("kelasSelect")
+            .getElementById(
+                "kelasSelect"
+            )
             .value;
 
 
-    const namaFile =
-        kelas === "SEMUA"
-            ? "HASIL_URUT_NILAI_SEMUA_KELAS.xlsx"
-            : `HASIL_URUT_NILAI_${kelas}.xlsx`;
+    let namaFile;
 
+
+    if (
+        kelas === "SEMUA"
+    ) {
+
+        namaFile =
+            "HASIL_URUT_NILAI_SEMUA_KELAS.xlsx";
+
+    }
+    else {
+
+        namaFile =
+            `HASIL_URUT_NILAI_${kelas}.xlsx`;
+
+    }
+
+
+    /*
+     * DOWNLOAD
+     */
 
     XLSX.writeFile(
+
         wbOut,
+
         namaFile
+
     );
 
 
     tampilkanPesan(
+
         `File ${namaFile} berhasil dibuat.`,
+
         "success"
+
     );
 
 }
 
 
-/* ==========================================
+/* =========================================================
    RESET
-========================================== */
+========================================================= */
 
 document
-.getElementById("resetBtn")
-.addEventListener("click", function() {
+    .getElementById(
+        "resetBtn"
+    )
+    .addEventListener(
+        "click",
+        resetAplikasi
+    );
+
+
+function resetAplikasi() {
+
 
     workbook = null;
 
@@ -1571,41 +3450,117 @@ document
     hasilData = [];
 
 
-    document
-        .getElementById("fileInput")
-        .value = "";
-
-
-    document
-        .getElementById("controlCard")
-        .classList.add("hidden");
-
+    /*
+     * RESET INPUT
+     */
 
     document
-        .getElementById("infoCard")
-        .classList.add("hidden");
+        .getElementById(
+            "fileInput"
+        )
+        .value =
+            "";
 
 
-    document
-        .getElementById("resultCard")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("downloadBtn")
-        .disabled = true;
-
+    /*
+     * SEMBUNYIKAN PANEL
+     */
 
     document
-        .getElementById("message")
-        .className = "message";
+        .getElementById(
+            "controlCard"
+        )
+        .classList.add(
+            "hidden"
+        );
 
 
     document
-        .getElementById("resultBody")
-        .innerHTML = "";
+        .getElementById(
+            "infoCard"
+        )
+        .classList.add(
+            "hidden"
+        );
 
-});
+
+    document
+        .getElementById(
+            "resultCard"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .getElementById(
+            "remidiCard"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    /*
+     * RESET DOWNLOAD
+     */
+
+    document
+        .getElementById(
+            "downloadBtn"
+        )
+        .disabled =
+            true;
+
+
+    /*
+     * RESET TABLE
+     */
+
+    document
+        .getElementById(
+            "resultBody"
+        )
+        .innerHTML =
+            "";
+
+
+    /*
+     * RESET REMIDI
+     */
+
+    document
+        .getElementById(
+            "daftarBelumTuntas"
+        )
+        .innerHTML =
+            "";
+
+
+    /*
+     * RESET MESSAGE
+     */
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.className =
+        "message";
+
+
+    message.textContent =
+        "";
+
+}
+
+
+/* =========================================================
+   SELESAI
+========================================================= */
 
 </script>
 
