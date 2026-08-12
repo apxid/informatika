@@ -1,40 +1,65 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SIMPATIK - Pengurut Nilai Siswa</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<!-- =========================================================
+<title>
+    SIMPATIK - Pengolah Nilai Siswa
+</title>
+
+
+<!-- =====================================================
      SHEETJS
-     Digunakan untuk membaca dan membuat file Excel
-========================================================= -->
+===================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+
 <style>
+
+/* =====================================================
+   RESET
+===================================================== */
 
 * {
     box-sizing: border-box;
 }
 
+
+/* =====================================================
+   BODY
+===================================================== */
+
 body {
+
     margin: 0;
+
     font-family:
         Arial,
         Helvetica,
         sans-serif;
 
-    background: #f1f5f9;
-    color: #1e293b;
+    background:
+        #f1f5f9;
+
+    color:
+        #1e293b;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    HEADER
-========================================================= */
+===================================================== */
 
 .header {
+
     background:
         linear-gradient(
             135deg,
@@ -42,748 +67,1061 @@ body {
             #2563eb
         );
 
-    color: white;
+    color:
+        white;
 
-    padding: 30px 20px;
+    padding:
+        30px 20px;
 
-    text-align: center;
+    text-align:
+        center;
 
     box-shadow:
-        0 4px 15px rgba(0,0,0,.15);
+        0 4px 15px
+        rgba(0,0,0,.15);
+
 }
 
 .header h1 {
-    margin: 0;
 
-    font-size: 30px;
+    margin:
+        0;
 
-    font-weight: 800;
+    font-size:
+        30px;
+
+    font-weight:
+        800;
+
 }
 
 .header p {
-    margin: 8px 0 0;
 
-    opacity: .92;
+    margin:
+        8px 0 0;
 
-    font-size: 15px;
+    opacity:
+        .92;
+
+    font-size:
+        15px;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    CONTAINER
-========================================================= */
+===================================================== */
 
 .container {
-    width: 100%;
-    max-width: 1250px;
 
-    margin: 25px auto;
+    width:
+        100%;
 
-    padding: 0 15px;
+    max-width:
+        1250px;
+
+    margin:
+        25px auto;
+
+    padding:
+        0 15px;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    CARD
-========================================================= */
+===================================================== */
 
 .card {
-    background: white;
 
-    border-radius: 16px;
+    background:
+        white;
 
-    padding: 22px;
+    border-radius:
+        16px;
 
-    margin-bottom: 20px;
+    padding:
+        22px;
+
+    margin-bottom:
+        20px;
 
     box-shadow:
-        0 4px 15px rgba(15,23,42,.08);
+        0 4px 15px
+        rgba(15,23,42,.08);
+
 }
 
 
-/* =========================================================
-   UPLOAD
-========================================================= */
+/* =====================================================
+   UPLOAD BOX
+===================================================== */
 
 .upload-box {
-    display: block;
 
-    border: 2px dashed #2563eb;
+    display:
+        block;
 
-    border-radius: 14px;
+    border:
+        2px dashed #2563eb;
 
-    padding: 38px 20px;
+    border-radius:
+        14px;
 
-    text-align: center;
+    padding:
+        38px 20px;
 
-    background: #eff6ff;
+    text-align:
+        center;
 
-    cursor: pointer;
+    background:
+        #eff6ff;
 
-    transition: .2s;
+    cursor:
+        pointer;
+
+    transition:
+        .2s;
+
 }
 
 .upload-box:hover {
-    background: #dbeafe;
 
-    transform: translateY(-1px);
+    background:
+        #dbeafe;
+
+    transform:
+        translateY(-1px);
+
 }
 
 .upload-icon {
-    font-size: 50px;
 
-    margin-bottom: 10px;
+    font-size:
+        50px;
+
+    margin-bottom:
+        10px;
+
 }
 
 .upload-box h2 {
-    margin: 5px 0;
 
-    color: #1d4ed8;
+    margin:
+        5px 0;
 
-    font-size: 22px;
+    color:
+        #1d4ed8;
+
+    font-size:
+        22px;
+
 }
 
 .upload-box p {
-    color: #64748b;
 
-    margin: 7px 0;
+    color:
+        #64748b;
 
-    font-size: 14px;
+    margin:
+        7px 0;
+
+    font-size:
+        14px;
+
 }
 
 #fileInput {
-    display: none;
+
+    display:
+        none;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    MESSAGE
-========================================================= */
+===================================================== */
 
 .message {
-    display: none;
 
-    padding: 13px 16px;
+    display:
+        none;
 
-    border-radius: 9px;
+    padding:
+        13px 16px;
 
-    margin-bottom: 15px;
+    border-radius:
+        9px;
 
-    font-size: 14px;
+    margin-bottom:
+        15px;
 
-    line-height: 1.5;
+    font-size:
+        14px;
+
+    line-height:
+        1.5;
+
 }
 
 .message.success {
-    display: block;
 
-    background: #dcfce7;
+    display:
+        block;
 
-    color: #166534;
+    background:
+        #dcfce7;
+
+    color:
+        #166534;
+
 }
 
 .message.error {
-    display: block;
 
-    background: #fee2e2;
+    display:
+        block;
 
-    color: #991b1b;
+    background:
+        #fee2e2;
+
+    color:
+        #991b1b;
+
 }
 
 .message.warning {
-    display: block;
 
-    background: #fef3c7;
+    display:
+        block;
 
-    color: #92400e;
+    background:
+        #fef3c7;
+
+    color:
+        #92400e;
+
 }
 
 .message.info {
-    display: block;
 
-    background: #dbeafe;
+    display:
+        block;
 
-    color: #1e40af;
+    background:
+        #dbeafe;
+
+    color:
+        #1e40af;
+
 }
 
 
-/* =========================================================
-   CONTROL
-========================================================= */
+/* =====================================================
+   CONTROLS
+===================================================== */
 
 .controls {
-    display: flex;
 
-    gap: 10px;
+    display:
+        flex;
 
-    flex-wrap: wrap;
+    gap:
+        10px;
 
-    align-items: end;
+    flex-wrap:
+        wrap;
+
+    align-items:
+        end;
+
 }
 
 .control-group {
-    display: flex;
 
-    flex-direction: column;
+    display:
+        flex;
 
-    gap: 6px;
+    flex-direction:
+        column;
+
+    gap:
+        6px;
+
 }
 
-label.control-label {
-    font-size: 13px;
+.control-label {
 
-    font-weight: bold;
+    font-size:
+        13px;
 
-    color: #475569;
+    font-weight:
+        bold;
+
+    color:
+        #475569;
+
 }
 
 select {
-    min-width: 190px;
 
-    padding: 11px 13px;
+    min-width:
+        190px;
+
+    padding:
+        11px 13px;
 
     border:
         1px solid #cbd5e1;
 
-    border-radius: 9px;
+    border-radius:
+        9px;
 
-    background: white;
+    background:
+        white;
 
-    font-size: 14px;
+    font-size:
+        14px;
 
-    color: #1e293b;
+    color:
+        #1e293b;
 
-    outline: none;
+    outline:
+        none;
+
 }
 
 select:focus {
-    border-color: #2563eb;
+
+    border-color:
+        #2563eb;
 
     box-shadow:
-        0 0 0 3px rgba(37,99,235,.12);
+        0 0 0 3px
+        rgba(37,99,235,.12);
+
 }
 
 
-/* =========================================================
+/* =====================================================
    BUTTON
-========================================================= */
+===================================================== */
 
 button {
-    border: none;
 
-    border-radius: 9px;
+    border:
+        none;
 
-    padding: 11px 18px;
+    border-radius:
+        9px;
 
-    font-weight: bold;
+    padding:
+        11px 18px;
 
-    cursor: pointer;
+    font-weight:
+        bold;
 
-    transition: .2s;
+    cursor:
+        pointer;
 
-    font-size: 13px;
+    transition:
+        .2s;
+
+    font-size:
+        13px;
+
 }
 
 button:hover {
-    transform: translateY(-1px);
 
-    filter: brightness(.98);
+    transform:
+        translateY(-1px);
+
 }
 
 button:active {
-    transform: translateY(0);
+
+    transform:
+        translateY(0);
+
 }
 
 button:disabled {
-    opacity: .5;
 
-    cursor: not-allowed;
+    opacity:
+        .5;
 
-    transform: none;
+    cursor:
+        not-allowed;
 
-    filter: none;
+    transform:
+        none;
+
 }
 
 .btn-primary {
-    background: #2563eb;
 
-    color: white;
+    background:
+        #2563eb;
+
+    color:
+        white;
+
 }
 
 .btn-success {
-    background: #16a34a;
 
-    color: white;
+    background:
+        #16a34a;
+
+    color:
+        white;
+
 }
 
 .btn-secondary {
-    background: #64748b;
 
-    color: white;
+    background:
+        #64748b;
+
+    color:
+        white;
+
 }
 
 .btn-danger {
-    background: #dc2626;
 
-    color: white;
+    background:
+        #dc2626;
+
+    color:
+        white;
+
 }
 
 .btn-wa {
-    background: #16a34a;
 
-    color: white;
+    background:
+        #16a34a;
 
-    font-size: 14px;
+    color:
+        white;
 
-    padding: 12px 20px;
 }
 
 
-/* =========================================================
+/* =====================================================
    INFO GRID
-========================================================= */
+===================================================== */
 
 .info-grid {
-    display: grid;
+
+    display:
+        grid;
 
     grid-template-columns:
         repeat(4, 1fr);
 
-    gap: 15px;
+    gap:
+        15px;
+
 }
 
 .info {
-    padding: 17px;
 
-    border-radius: 12px;
+    padding:
+        17px;
 
-    background: #f8fafc;
+    border-radius:
+        12px;
+
+    background:
+        #f8fafc;
 
     border:
         1px solid #e2e8f0;
+
 }
 
 .info-title {
-    font-size: 12px;
 
-    color: #64748b;
+    font-size:
+        12px;
 
-    margin-bottom: 7px;
+    color:
+        #64748b;
+
+    margin-bottom:
+        7px;
+
 }
 
 .info-value {
-    font-size: 25px;
 
-    font-weight: bold;
+    font-size:
+        25px;
 
-    color: #1e3a8a;
+    font-weight:
+        bold;
+
+    color:
+        #1e3a8a;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    TABLE
-========================================================= */
+===================================================== */
 
 .table-wrapper {
-    overflow-x: auto;
 
-    border-radius: 10px;
+    overflow-x:
+        auto;
+
+    border-radius:
+        10px;
 
     border:
         1px solid #e2e8f0;
+
 }
 
 table {
-    width: 100%;
 
-    border-collapse: collapse;
+    width:
+        100%;
 
-    min-width: 850px;
+    border-collapse:
+        collapse;
+
+    min-width:
+        850px;
+
 }
 
 th {
-    background: #0f4c81;
 
-    color: white;
+    background:
+        #0f4c81;
 
-    padding: 12px 10px;
+    color:
+        white;
 
-    font-size: 13px;
+    padding:
+        12px 10px;
 
-    white-space: nowrap;
+    font-size:
+        13px;
 
-    position: sticky;
+    white-space:
+        nowrap;
 
-    top: 0;
+    position:
+        sticky;
 
-    z-index: 2;
+    top:
+        0;
+
+    z-index:
+        2;
+
 }
 
 td {
-    padding: 10px;
+
+    padding:
+        10px;
 
     border-bottom:
         1px solid #e2e8f0;
 
-    font-size: 13px;
+    font-size:
+        13px;
 
-    text-align: center;
+    text-align:
+        center;
+
 }
 
 td:nth-child(2) {
-    text-align: left;
+
+    text-align:
+        left;
+
 }
 
 tbody tr:hover {
-    background: #f8fafc;
+
+    background:
+        #f8fafc;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    WARNA NILAI
-========================================================= */
+===================================================== */
 
 .nilai-merah {
-    background: #fecaca !important;
 
-    color: #991b1b;
+    background:
+        #fecaca !important;
 
-    font-weight: bold;
+    color:
+        #991b1b;
+
+    font-weight:
+        bold;
+
 }
 
 .nilai-kuning {
-    background: #fef08a !important;
 
-    color: #854d0e;
+    background:
+        #fef08a !important;
 
-    font-weight: bold;
+    color:
+        #854d0e;
+
+    font-weight:
+        bold;
+
 }
 
 .nilai-hijau {
-    background: #bbf7d0 !important;
 
-    color: #166534;
+    background:
+        #bbf7d0 !important;
 
-    font-weight: bold;
+    color:
+        #166534;
+
+    font-weight:
+        bold;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    STATUS
-========================================================= */
+===================================================== */
 
 .status-tuntas {
-    color: #166534;
 
-    font-weight: bold;
+    color:
+        #166534;
+
+    font-weight:
+        bold;
+
 }
 
 .status-belum {
-    color: #991b1b;
 
-    font-weight: bold;
+    color:
+        #991b1b;
+
+    font-weight:
+        bold;
+
 }
 
 .kosong {
-    color: #94a3b8;
 
-    font-style: italic;
+    color:
+        #94a3b8;
+
+    font-style:
+        italic;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    LEGEND
-========================================================= */
+===================================================== */
 
 .legend {
-    display: flex;
 
-    gap: 15px;
+    display:
+        flex;
 
-    flex-wrap: wrap;
+    gap:
+        15px;
 
-    margin-top: 12px;
+    flex-wrap:
+        wrap;
 
-    margin-bottom: 15px;
+    margin-top:
+        12px;
+
+    margin-bottom:
+        15px;
+
 }
 
 .legend-item {
-    display: flex;
 
-    align-items: center;
+    display:
+        flex;
 
-    gap: 7px;
+    align-items:
+        center;
 
-    font-size: 13px;
+    gap:
+        7px;
+
+    font-size:
+        13px;
+
 }
 
 .legend-color {
-    width: 20px;
 
-    height: 20px;
+    width:
+        20px;
 
-    border-radius: 4px;
+    height:
+        20px;
+
+    border-radius:
+        4px;
 
     border:
-        1px solid rgba(0,0,0,.08);
+        1px solid
+        rgba(0,0,0,.08);
+
 }
 
 .red {
-    background: #fecaca;
+
+    background:
+        #fecaca;
+
 }
 
 .yellow {
-    background: #fef08a;
+
+    background:
+        #fef08a;
+
 }
 
 .green {
-    background: #bbf7d0;
+
+    background:
+        #bbf7d0;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    REMIDI
-========================================================= */
-
-.remidi-header {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 15px;
-
-    flex-wrap: wrap;
-}
-
-.remidi-header h3 {
-    margin: 0;
-}
+===================================================== */
 
 .remidi-description {
-    color: #64748b;
 
-    font-size: 14px;
+    color:
+        #64748b;
 
-    line-height: 1.5;
+    font-size:
+        14px;
 
-    margin-top: 8px;
+    line-height:
+        1.5;
+
+    margin:
+        8px 0 12px;
+
 }
 
 .jumlah-terpilih {
-    display: inline-block;
 
-    background: #dbeafe;
+    display:
+        inline-block;
 
-    color: #1d4ed8;
+    background:
+        #dbeafe;
 
-    padding: 8px 12px;
+    color:
+        #1d4ed8;
 
-    border-radius: 8px;
+    padding:
+        8px 12px;
 
-    font-size: 13px;
+    border-radius:
+        8px;
 
-    font-weight: bold;
+    font-size:
+        13px;
 
-    margin: 12px 0;
+    font-weight:
+        bold;
+
+    margin:
+        5px 0 12px;
+
 }
 
 
-/* =========================================================
-   CHECKLIST SISWA
-========================================================= */
+/* =====================================================
+   CHECKLIST
+===================================================== */
 
 .siswa-check-item {
-    display: flex;
 
-    align-items: center;
+    display:
+        flex;
 
-    gap: 11px;
+    align-items:
+        center;
 
-    padding: 12px 13px;
+    gap:
+        11px;
 
-    margin-bottom: 7px;
+    padding:
+        12px 13px;
+
+    margin-bottom:
+        7px;
 
     border:
         1px solid #fecaca;
 
-    border-radius: 9px;
+    border-radius:
+        9px;
 
-    background: #fff7f7;
+    background:
+        #fff7f7;
 
-    cursor: pointer;
+    cursor:
+        pointer;
 
-    transition: .15s;
+    transition:
+        .15s;
+
 }
 
 .siswa-check-item:hover {
-    background: #fee2e2;
 
-    border-color: #fca5a5;
+    background:
+        #fee2e2;
+
 }
 
 .siswa-check-item input {
-    width: 18px;
 
-    height: 18px;
+    width:
+        18px;
 
-    cursor: pointer;
+    height:
+        18px;
 
-    accent-color: #16a34a;
+    cursor:
+        pointer;
+
+    accent-color:
+        #16a34a;
+
 }
 
 .siswa-check-name {
-    font-size: 14px;
 
-    font-weight: bold;
+    font-size:
+        14px;
 
-    color: #334155;
+    font-weight:
+        bold;
+
+    color:
+        #334155;
+
 }
 
 .siswa-check-status {
-    margin-left: auto;
 
-    font-size: 11px;
+    margin-left:
+        auto;
 
-    background: #fee2e2;
+    font-size:
+        11px;
 
-    color: #991b1b;
+    background:
+        #fee2e2;
 
-    padding: 4px 7px;
+    color:
+        #991b1b;
 
-    border-radius: 5px;
+    padding:
+        4px 7px;
 
-    font-weight: bold;
+    border-radius:
+        5px;
+
+    font-weight:
+        bold;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    EMPTY STATE
-========================================================= */
+===================================================== */
 
 .empty-state {
-    text-align: center;
 
-    padding: 30px 15px;
+    text-align:
+        center;
 
-    color: #64748b;
+    padding:
+        30px 15px;
+
+    color:
+        #64748b;
+
 }
 
 .empty-state-icon {
-    font-size: 38px;
 
-    margin-bottom: 8px;
+    font-size:
+        38px;
+
+    margin-bottom:
+        8px;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    FOOTER
-========================================================= */
+===================================================== */
 
 .footer {
-    text-align: center;
 
-    padding: 25px;
+    text-align:
+        center;
 
-    color: #64748b;
+    padding:
+        25px;
 
-    font-size: 13px;
+    color:
+        #64748b;
+
+    font-size:
+        13px;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    HIDDEN
-========================================================= */
+===================================================== */
 
 .hidden {
-    display: none !important;
+
+    display:
+        none !important;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    RESPONSIVE
-========================================================= */
+===================================================== */
 
-@media(max-width: 800px) {
+@media(max-width:800px) {
 
     .info-grid {
+
         grid-template-columns:
-            repeat(2, 1fr);
+            repeat(2,1fr);
+
     }
 
     .header h1 {
-        font-size: 23px;
-    }
 
-    .header p {
-        font-size: 13px;
+        font-size:
+            23px;
+
     }
 
 }
 
-@media(max-width: 550px) {
+@media(max-width:550px) {
 
     .container {
-        padding: 0 10px;
+
+        padding:
+            0 10px;
+
     }
 
     .card {
-        padding: 16px;
 
-        border-radius: 13px;
+        padding:
+            16px;
+
     }
 
     .info-grid {
+
         grid-template-columns:
-            repeat(2, 1fr);
+            repeat(2,1fr);
 
-        gap: 8px;
-    }
+        gap:
+            8px;
 
-    .info {
-        padding: 13px;
     }
 
     .info-value {
-        font-size: 21px;
+
+        font-size:
+            21px;
+
     }
 
     .controls {
-        flex-direction: column;
 
-        align-items: stretch;
-    }
+        flex-direction:
+            column;
 
-    .control-group {
-        width: 100%;
+        align-items:
+            stretch;
+
     }
 
     select,
     button {
-        width: 100%;
-    }
 
-    .remidi-header {
-        align-items: flex-start;
+        width:
+            100%;
+
     }
 
     .siswa-check-status {
-        display: none;
+
+        display:
+            none;
+
     }
 
 }
 
 </style>
+
 </head>
 
 
 <body>
 
 
-<!-- =========================================================
+<!-- =====================================================
      HEADER
-========================================================= -->
+===================================================== -->
 
 <div class="header">
 
@@ -792,7 +1130,7 @@ tbody tr:hover {
     </h1>
 
     <p>
-        Pengurutan Nilai Siswa Berdasarkan Nomor Absensi
+        Sistem Pengolahan & Pengurutan Nilai Siswa
     </p>
 
 </div>
@@ -801,9 +1139,9 @@ tbody tr:hover {
 <div class="container">
 
 
-<!-- =========================================================
-     UPLOAD FILE
-========================================================= -->
+<!-- =====================================================
+     UPLOAD
+===================================================== -->
 
 <div class="card">
 
@@ -826,15 +1164,13 @@ tbody tr:hover {
         </h2>
 
         <p>
-            Upload file
-            <b>SIMPATIK V 1.0.xlsx</b>
+            Upload file Excel yang memiliki
+            sheet <b>Siswa</b> dan <b>Jawaban</b>
         </p>
 
         <p>
-            Sistem membutuhkan sheet
-            <b>Siswa</b>
-            dan
-            <b>Jawaban</b>
+            Sistem akan mengurutkan siswa
+            mengikuti urutan pada Sheet Siswa.
         </p>
 
     </label>
@@ -848,9 +1184,9 @@ tbody tr:hover {
 </div>
 
 
-<!-- =========================================================
+<!-- =====================================================
      CONTROL
-========================================================= -->
+===================================================== -->
 
 <div
     id="controlCard"
@@ -867,8 +1203,7 @@ tbody tr:hover {
         <div class="control-group">
 
             <label
-                class="control-label"
-                for="kelasSelect">
+                class="control-label">
 
                 Pilih Kelas
 
@@ -879,7 +1214,9 @@ tbody tr:hover {
                 id="kelasSelect">
 
                 <option value="SEMUA">
+
                     Semua Kelas
+
                 </option>
 
             </select>
@@ -920,9 +1257,9 @@ tbody tr:hover {
 </div>
 
 
-<!-- =========================================================
+<!-- =====================================================
      INFO
-========================================================= -->
+===================================================== -->
 
 <div
     id="infoCard"
@@ -951,7 +1288,7 @@ tbody tr:hover {
         <div class="info">
 
             <div class="info-title">
-                Data Nilai
+                Sudah Ada Nilai
             </div>
 
             <div
@@ -968,7 +1305,7 @@ tbody tr:hover {
         <div class="info">
 
             <div class="info-title">
-                Belum Ada Nilai
+                Belum Tuntas
             </div>
 
             <div
@@ -1004,9 +1341,9 @@ tbody tr:hover {
 </div>
 
 
-<!-- =========================================================
+<!-- =====================================================
      HASIL
-========================================================= -->
+===================================================== -->
 
 <div
     id="resultCard"
@@ -1061,7 +1398,6 @@ tbody tr:hover {
 
         <table id="resultTable">
 
-
             <thead>
 
                 <tr>
@@ -1103,7 +1439,6 @@ tbody tr:hover {
                 id="resultBody">
             </tbody>
 
-
         </table>
 
     </div>
@@ -1112,29 +1447,26 @@ tbody tr:hover {
 </div>
 
 
-<!-- =========================================================
-     DAFTAR BELUM TUNTAS
-========================================================= -->
+<!-- =====================================================
+     BELUM TUNTAS
+===================================================== -->
 
 <div
     id="remidiCard"
     class="card hidden">
 
 
-    <div class="remidi-header">
-
-        <h3>
-            📝 Daftar Siswa Belum Tuntas
-        </h3>
-
-    </div>
+    <h3>
+        📝 Daftar Siswa Belum Tuntas
+    </h3>
 
 
     <div class="remidi-description">
 
-        Centang siswa yang ingin Bapak kirimkan
-        pemberitahuan perbaikan nilai melalui
-        grup WhatsApp kelas.
+        Daftar di bawah ini dihitung otomatis.
+        Jika <b>Nilai Remidi ≥ 78</b>, siswa
+        otomatis dianggap <b>TUNTAS</b> dan
+        tidak akan muncul di daftar ini.
 
     </div>
 
@@ -1196,24 +1528,23 @@ tbody tr:hover {
 </div>
 
 
-<!-- =========================================================
+<!-- =====================================================
      FOOTER
-========================================================= -->
+===================================================== -->
 
 <div class="footer">
 
-    SIMPATIK • Sistem Pengolahan Nilai Siswa
+    SIMPATIK • Pengolah Nilai Siswa
 
 </div>
-
 
 
 <script>
 
 
-/* =========================================================
+/* =====================================================
    VARIABEL GLOBAL
-========================================================= */
+===================================================== */
 
 let workbook = null;
 
@@ -1224,9 +1555,9 @@ let jawabanData = [];
 let hasilData = [];
 
 
-/* =========================================================
-   NORMALISASI TEXT
-========================================================= */
+/* =====================================================
+   NORMALISASI
+===================================================== */
 
 function normalisasi(value) {
 
@@ -1234,8 +1565,11 @@ function normalisasi(value) {
         value === null ||
         value === undefined
     ) {
+
         return "";
+
     }
+
 
     return String(value)
         .trim()
@@ -1245,42 +1579,147 @@ function normalisasi(value) {
 }
 
 
-/* =========================================================
-   PESAN
-========================================================= */
+/* =====================================================
+   KONVERSI NILAI KE ANGKA
+===================================================== */
 
-function tampilkanPesan(
-    text,
-    type
-) {
+function angkaNilai(value) {
 
-    const el =
-        document.getElementById(
-            "message"
+    if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+    ) {
+
+        return NaN;
+
+    }
+
+
+    let text =
+        String(value)
+            .trim()
+            .replace(",", ".");
+
+
+    /*
+     * Hilangkan karakter selain angka,
+     * titik dan minus.
+     */
+
+    text =
+        text.replace(
+            /[^0-9.\-]/g,
+            ""
         );
 
 
-    el.textContent = text;
+    const number =
+        parseFloat(text);
 
 
-    el.className =
-        "message " + type;
+    return number;
 
 }
 
 
-/* =========================================================
-   BUAT HEADER OBJECT
-========================================================= */
+/* =====================================================
+   HITUNG STATUS OTOMATIS
+=====================================================
+
+   PRIORITAS:
+
+   1. Nilai Remidi tersedia
+      → Remidi >= 78 = TUNTAS
+      → Remidi < 78 = BELUM TUNTAS
+
+   2. Nilai Remidi kosong
+      → Nilai Akhir >= 78 = TUNTAS
+      → Nilai Akhir < 78 = BELUM TUNTAS
+
+   3. Keduanya kosong
+      → BELUM TUNTAS
+
+===================================================== */
+
+function hitungStatusKetuntasan(
+    nilaiAkhir,
+    nilaiRemidi
+) {
+
+
+    const remidi =
+        angkaNilai(
+            nilaiRemidi
+        );
+
+
+    const akhir =
+        angkaNilai(
+            nilaiAkhir
+        );
+
+
+    /*
+     * REMIDI MENJADI ACUAN UTAMA
+     */
+
+    if (
+        !Number.isNaN(remidi)
+    ) {
+
+        if (
+            remidi >= 78
+        ) {
+
+            return "TUNTAS";
+
+        }
+
+
+        return "BELUM TUNTAS";
+
+    }
+
+
+    /*
+     * JIKA BELUM ADA REMIDI
+     */
+
+    if (
+        !Number.isNaN(akhir)
+    ) {
+
+        if (
+            akhir >= 78
+        ) {
+
+            return "TUNTAS";
+
+        }
+
+
+        return "BELUM TUNTAS";
+
+    }
+
+
+    /*
+     * BELUM ADA NILAI
+     */
+
+    return "BELUM TUNTAS";
+
+}
+
+
+/* =====================================================
+   CARI HEADER
+===================================================== */
 
 function buatHeaderObject(row) {
 
     const obj = {};
-
-
-    if (!row) {
-        return obj;
-    }
 
 
     row.forEach(
@@ -1307,17 +1746,16 @@ function buatHeaderObject(row) {
 }
 
 
-/* =========================================================
-   CARI KOLOM
-========================================================= */
-
 function cariKolom(
     header,
     nama
 ) {
 
+
     const target =
-        normalisasi(nama);
+        normalisasi(
+            nama
+        );
 
 
     for (
@@ -1326,7 +1764,8 @@ function cariKolom(
 
         if (
             normalisasi(key)
-            === target
+            ===
+            target
         ) {
 
             return header[key];
@@ -1341,12 +1780,40 @@ function cariKolom(
 }
 
 
-/* =========================================================
-   FILE INPUT
-========================================================= */
+/* =====================================================
+   PESAN
+===================================================== */
+
+function tampilkanPesan(
+    text,
+    type
+) {
+
+
+    const el =
+        document.getElementById(
+            "message"
+        );
+
+
+    el.textContent =
+        text;
+
+
+    el.className =
+        "message " + type;
+
+}
+
+
+/* =====================================================
+   UPLOAD FILE
+===================================================== */
 
 document
-    .getElementById("fileInput")
+    .getElementById(
+        "fileInput"
+    )
     .addEventListener(
         "change",
         function(event) {
@@ -1357,7 +1824,9 @@ document
 
 
             if (!file) {
+
                 return;
+
             }
 
 
@@ -1382,7 +1851,8 @@ document
                             XLSX.read(
                                 data,
                                 {
-                                    type: "array"
+                                    type:
+                                        "array"
                                 }
                             );
 
@@ -1401,7 +1871,7 @@ document
 
                         tampilkanPesan(
 
-                            "File Excel tidak dapat dibaca. Pastikan file berformat XLSX/XLS.",
+                            "File Excel tidak dapat dibaca.",
 
                             "error"
 
@@ -1420,16 +1890,16 @@ document
     );
 
 
-/* =========================================================
+/* =====================================================
    BACA DATA EXCEL
-========================================================= */
+===================================================== */
 
 function bacaData() {
 
 
-    /* -----------------------------------------------------
-       CEK SHEET
-    ----------------------------------------------------- */
+    /*
+     * CEK SHEET
+     */
 
     if (
         !workbook.Sheets["Siswa"]
@@ -1465,9 +1935,9 @@ function bacaData() {
     }
 
 
-    /* -----------------------------------------------------
-       AMBIL SHEET
-    ----------------------------------------------------- */
+    /*
+     * SHEET
+     */
 
     const siswaSheet =
         workbook.Sheets["Siswa"];
@@ -1477,9 +1947,9 @@ function bacaData() {
         workbook.Sheets["Jawaban"];
 
 
-    /* -----------------------------------------------------
-       UBAH MENJADI ARRAY
-    ----------------------------------------------------- */
+    /*
+     * ARRAY
+     */
 
     const siswaRows =
         XLSX.utils.sheet_to_json(
@@ -1501,37 +1971,9 @@ function bacaData() {
         );
 
 
-    if (
-        siswaRows.length < 1
-    ) {
-
-        tampilkanPesan(
-            "Sheet Siswa kosong.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if (
-        jawabanRows.length < 1
-    ) {
-
-        tampilkanPesan(
-            "Sheet Jawaban kosong.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    /* -----------------------------------------------------
-       HEADER
-    ----------------------------------------------------- */
+    /*
+     * HEADER
+     */
 
     const siswaHeader =
         buatHeaderObject(
@@ -1545,9 +1987,9 @@ function bacaData() {
         );
 
 
-    /* -----------------------------------------------------
-       KOLOM SISWA
-    ----------------------------------------------------- */
+    /*
+     * HEADER SISWA
+     */
 
     const sNama =
         cariKolom(
@@ -1563,9 +2005,9 @@ function bacaData() {
         );
 
 
-    /* -----------------------------------------------------
-       KOLOM JAWABAN
-    ----------------------------------------------------- */
+    /*
+     * HEADER JAWABAN
+     */
 
     const jNama =
         cariKolom(
@@ -1602,16 +2044,12 @@ function bacaData() {
         );
 
 
-    const jStatus =
-        cariKolom(
-            jawabanHeader,
-            "Status Ketuntasan"
-        );
-
-
-    /* -----------------------------------------------------
-       VALIDASI
-    ----------------------------------------------------- */
+    /*
+     * STATUS TIDAK WAJIB DIBACA
+     *
+     * Karena status akan dihitung
+     * otomatis oleh aplikasi.
+     */
 
     if (
         sNama < 0 ||
@@ -1620,7 +2058,7 @@ function bacaData() {
 
         tampilkanPesan(
 
-            "Header 'Nama' atau 'Kelas' pada sheet Siswa tidak ditemukan.",
+            "Sheet Siswa harus memiliki header: Nama dan Kelas.",
 
             "error"
 
@@ -1636,13 +2074,12 @@ function bacaData() {
         jKelas < 0 ||
         jNilaiAkhir < 0 ||
         jNilaiAwal < 0 ||
-        jNilaiRemidi < 0 ||
-        jStatus < 0
+        jNilaiRemidi < 0
     ) {
 
         tampilkanPesan(
 
-            "Header yang dibutuhkan pada sheet Jawaban tidak lengkap.",
+            "Sheet Jawaban harus memiliki header: Nama, Kelas, Nilai Akhir, Nilai Awal, dan Nilai Remidi.",
 
             "error"
 
@@ -1653,9 +2090,12 @@ function bacaData() {
     }
 
 
-    /* =====================================================
-       DATA SISWA
-    ===================================================== */
+    /*
+     * DATA SISWA
+     *
+     * URUTAN ARRAY INI SAMA PERSIS
+     * DENGAN URUTAN DI SHEET SISWA
+     */
 
     siswaData = [];
 
@@ -1689,9 +2129,8 @@ function bacaData() {
         siswaData.push({
 
             /*
-             * NOMOR ABSENSI
-             * mengikuti posisi siswa
-             * pada sheet Siswa
+             * Nomor urut mengikuti
+             * posisi pada Sheet Siswa
              */
 
             no:
@@ -1701,16 +2140,18 @@ function bacaData() {
                 String(nama).trim(),
 
             kelas:
-                String(kelas ?? "").trim()
+                String(
+                    kelas ?? ""
+                ).trim()
 
         });
 
     }
 
 
-    /* =====================================================
-       DATA JAWABAN
-    ===================================================== */
+    /*
+     * DATA JAWABAN
+     */
 
     jawabanData = [];
 
@@ -1744,10 +2185,14 @@ function bacaData() {
         jawabanData.push({
 
             nama:
-                String(nama).trim(),
+                String(
+                    nama
+                ).trim(),
 
             kelas:
-                String(kelas ?? "").trim(),
+                String(
+                    kelas ?? ""
+                ).trim(),
 
             nilaiAkhir:
                 jawabanRows[i][jNilaiAkhir],
@@ -1756,19 +2201,16 @@ function bacaData() {
                 jawabanRows[i][jNilaiAwal],
 
             nilaiRemidi:
-                jawabanRows[i][jNilaiRemidi],
-
-            status:
-                jawabanRows[i][jStatus]
+                jawabanRows[i][jNilaiRemidi]
 
         });
 
     }
 
 
-    /* =====================================================
-       DAFTAR KELAS
-    ===================================================== */
+    /*
+     * KELAS
+     */
 
     const kelasSet =
         new Set();
@@ -1798,9 +2240,11 @@ function bacaData() {
 
 
     kelasSelect.innerHTML =
-        `<option value="SEMUA">
+        `
+        <option value="SEMUA">
             Semua Kelas
-        </option>`;
+        </option>
+        `;
 
 
     Array.from(kelasSet)
@@ -1810,7 +2254,8 @@ function bacaData() {
                     b,
                     undefined,
                     {
-                        numeric: true
+                        numeric:
+                            true
                     }
                 )
         )
@@ -1840,9 +2285,9 @@ function bacaData() {
         );
 
 
-    /* =====================================================
-       TAMPILKAN PANEL
-    ===================================================== */
+    /*
+     * TAMPILKAN PANEL
+     */
 
     document
         .getElementById(
@@ -1880,14 +2325,6 @@ function bacaData() {
 
     document
         .getElementById(
-            "belumNilai"
-        )
-        .textContent =
-            "-";
-
-
-    document
-        .getElementById(
             "jumlahKelas"
         )
         .textContent =
@@ -1896,7 +2333,7 @@ function bacaData() {
 
     tampilkanPesan(
 
-        `File berhasil dibaca. ${siswaData.length} siswa ditemukan dan ${jawabanData.length} data jawaban ditemukan.`,
+        `File berhasil dibaca. ${siswaData.length} siswa ditemukan.`,
 
         "success"
 
@@ -1905,9 +2342,9 @@ function bacaData() {
 }
 
 
-/* =========================================================
+/* =====================================================
    PROSES DATA
-========================================================= */
+===================================================== */
 
 document
     .getElementById(
@@ -1930,11 +2367,11 @@ function prosesData() {
             .value;
 
 
-    /* -----------------------------------------------------
-       FILTER SISWA
-    ----------------------------------------------------- */
+    /*
+     * FILTER SISWA
+     */
 
-    let daftarSiswa =
+    const daftarSiswa =
         siswaData.filter(
             siswa => {
 
@@ -1962,9 +2399,9 @@ function prosesData() {
         );
 
 
-    /* -----------------------------------------------------
-       MAP JAWABAN
-    ----------------------------------------------------- */
+    /*
+     * MAP JAWABAN
+     */
 
     const jawabanMap =
         new Map();
@@ -1986,13 +2423,6 @@ function prosesData() {
                 );
 
 
-            /*
-             * Jika ada beberapa data
-             * pengerjaan dengan nama
-             * dan kelas yang sama,
-             * data terakhir digunakan.
-             */
-
             jawabanMap.set(
                 key,
                 data
@@ -2002,9 +2432,11 @@ function prosesData() {
     );
 
 
-    /* -----------------------------------------------------
-       URUT SESUAI SHEET SISWA
-    ----------------------------------------------------- */
+    /*
+     * HASIL
+     *
+     * URUTAN MENGIKUTI SHEET SISWA
+     */
 
     hasilData =
         daftarSiswa.map(
@@ -2029,12 +2461,39 @@ function prosesData() {
                     );
 
 
-                return {
+                const nilaiAkhir =
+                    jawaban
+                        ? jawaban.nilaiAkhir
+                        : "";
 
-                    /*
-                     * Nomor tetap mengikuti
-                     * urutan Sheet Siswa
-                     */
+
+                const nilaiAwal =
+                    jawaban
+                        ? jawaban.nilaiAwal
+                        : "";
+
+
+                const nilaiRemidi =
+                    jawaban
+                        ? jawaban.nilaiRemidi
+                        : "";
+
+
+                /*
+                 * STATUS DIHITUNG ULANG
+                 */
+
+                const status =
+                    hitungStatusKetuntasan(
+
+                        nilaiAkhir,
+
+                        nilaiRemidi
+
+                    );
+
+
+                return {
 
                     no:
                         index + 1,
@@ -2046,24 +2505,16 @@ function prosesData() {
                         siswa.kelas,
 
                     nilaiAkhir:
-                        jawaban
-                            ? jawaban.nilaiAkhir
-                            : "",
+                        nilaiAkhir,
 
                     nilaiAwal:
-                        jawaban
-                            ? jawaban.nilaiAwal
-                            : "",
+                        nilaiAwal,
 
                     nilaiRemidi:
-                        jawaban
-                            ? jawaban.nilaiRemidi
-                            : "",
+                        nilaiRemidi,
 
                     status:
-                        jawaban
-                            ? jawaban.status
-                            : ""
+                        status
 
                 };
 
@@ -2076,31 +2527,18 @@ function prosesData() {
 }
 
 
-/* =========================================================
-   TENTUKAN WARNA NILAI
-========================================================= */
+/* =====================================================
+   WARNA NILAI
+===================================================== */
 
 function kelasNilai(
     nilai
 ) {
 
 
-    if (
-        nilai === null ||
-        nilai === undefined ||
-        nilai === ""
-    ) {
-
-        return "";
-
-    }
-
-
     const angka =
-        Number(
-            String(nilai)
-                .replace(",", ".")
-                .trim()
+        angkaNilai(
+            nilai
         );
 
 
@@ -2133,23 +2571,14 @@ function kelasNilai(
     }
 
 
-    if (
-        angka > 78
-    ) {
-
-        return "nilai-hijau";
-
-    }
-
-
-    return "";
+    return "nilai-hijau";
 
 }
 
 
-/* =========================================================
+/* =====================================================
    CELL NILAI
-========================================================= */
+===================================================== */
 
 function buatCellNilai(
     nilai
@@ -2165,7 +2594,7 @@ function buatCellNilai(
     if (
         nilai === null ||
         nilai === undefined ||
-        nilai === ""
+        String(nilai).trim() === ""
     ) {
 
         td.textContent =
@@ -2189,7 +2618,9 @@ function buatCellNilai(
         );
 
 
-    if (kelas) {
+    if (
+        kelas
+    ) {
 
         td.classList.add(
             kelas
@@ -2203,9 +2634,9 @@ function buatCellNilai(
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER TABLE
-========================================================= */
+===================================================== */
 
 function renderTable() {
 
@@ -2220,11 +2651,11 @@ function renderTable() {
         "";
 
 
-    let belum =
+    let belumTuntas =
         0;
 
 
-    let adaNilai =
+    let sudahAdaNilai =
         0;
 
 
@@ -2238,40 +2669,51 @@ function renderTable() {
                 );
 
 
-            /* NO */
+            /*
+             * NO
+             */
 
             const tdNo =
                 document.createElement(
                     "td"
                 );
 
+
             tdNo.textContent =
                 data.no;
 
 
-            /* NAMA */
+            /*
+             * NAMA
+             */
 
             const tdNama =
                 document.createElement(
                     "td"
                 );
 
+
             tdNama.textContent =
                 data.nama;
 
 
-            /* KELAS */
+            /*
+             * KELAS
+             */
 
             const tdKelas =
                 document.createElement(
                     "td"
                 );
 
+
             tdKelas.textContent =
                 data.kelas;
 
 
-            /* NILAI AKHIR */
+            /*
+             * NILAI
+             */
 
             const tdAkhir =
                 buatCellNilai(
@@ -2279,15 +2721,11 @@ function renderTable() {
                 );
 
 
-            /* NILAI AWAL */
-
             const tdAwal =
                 buatCellNilai(
                     data.nilaiAwal
                 );
 
-
-            /* NILAI REMIDI */
 
             const tdRemidi =
                 buatCellNilai(
@@ -2295,7 +2733,9 @@ function renderTable() {
                 );
 
 
-            /* STATUS */
+            /*
+             * STATUS
+             */
 
             const tdStatus =
                 document.createElement(
@@ -2304,86 +2744,95 @@ function renderTable() {
 
 
             tdStatus.textContent =
-                data.status || "—";
-
-
-            const status =
-                normalisasi(
-                    data.status
-                );
+                data.status;
 
 
             if (
-                status.includes(
-                    "BELUM TUNTAS"
-                )
-                ||
-                status === "BELUM"
-                ||
-                status.includes(
-                    "BELUM"
-                )
-            ) {
-
-                tdStatus.className =
-                    "status-belum";
-
-            }
-
-            else if (
-                status.includes(
-                    "TUNTAS"
-                )
+                data.status ===
+                "TUNTAS"
             ) {
 
                 tdStatus.className =
                     "status-tuntas";
 
             }
-
-
-            /* HITUNG */
-
-            if (
-                !data.nilaiAkhir &&
-                !data.nilaiAwal &&
-                !data.nilaiRemidi
-            ) {
-
-                belum++;
-
-            }
             else {
 
-                adaNilai++;
+                tdStatus.className =
+                    "status-belum";
 
             }
 
 
-            /* MASUKKAN */
+            /*
+             * HITUNG
+             */
 
-            tr.appendChild(tdNo);
+            if (
+                data.nilaiAkhir !== "" ||
+                data.nilaiAwal !== "" ||
+                data.nilaiRemidi !== ""
+            ) {
 
-            tr.appendChild(tdNama);
+                sudahAdaNilai++;
 
-            tr.appendChild(tdKelas);
-
-            tr.appendChild(tdAkhir);
-
-            tr.appendChild(tdAwal);
-
-            tr.appendChild(tdRemidi);
-
-            tr.appendChild(tdStatus);
+            }
 
 
-            tbody.appendChild(tr);
+            if (
+                data.status ===
+                "BELUM TUNTAS"
+            ) {
+
+                belumTuntas++;
+
+            }
+
+
+            /*
+             * APPEND
+             */
+
+            tr.appendChild(
+                tdNo
+            );
+
+            tr.appendChild(
+                tdNama
+            );
+
+            tr.appendChild(
+                tdKelas
+            );
+
+            tr.appendChild(
+                tdAkhir
+            );
+
+            tr.appendChild(
+                tdAwal
+            );
+
+            tr.appendChild(
+                tdRemidi
+            );
+
+            tr.appendChild(
+                tdStatus
+            );
+
+
+            tbody.appendChild(
+                tr
+            );
 
         }
     );
 
 
-    /* INFO */
+    /*
+     * UPDATE INFO
+     */
 
     document
         .getElementById(
@@ -2398,7 +2847,7 @@ function renderTable() {
             "totalNilai"
         )
         .textContent =
-            adaNilai;
+            sudahAdaNilai;
 
 
     document
@@ -2406,10 +2855,8 @@ function renderTable() {
             "belumNilai"
         )
         .textContent =
-            belum;
+            belumTuntas;
 
-
-    /* TAMPILKAN HASIL */
 
     document
         .getElementById(
@@ -2420,8 +2867,6 @@ function renderTable() {
         );
 
 
-    /* AKTIFKAN DOWNLOAD */
-
     document
         .getElementById(
             "downloadBtn"
@@ -2430,14 +2875,16 @@ function renderTable() {
             false;
 
 
-    /* TAMPILKAN DAFTAR BELUM TUNTAS */
+    /*
+     * TAMPILKAN DAFTAR BELUM TUNTAS
+     */
 
     tampilkanBelumTuntas();
 
 
     tampilkanPesan(
 
-        `Berhasil mengurutkan ${hasilData.length} siswa sesuai urutan pada sheet Siswa.`,
+        `Berhasil mengurutkan ${hasilData.length} siswa sesuai urutan pada Sheet Siswa.`,
 
         "success"
 
@@ -2446,53 +2893,9 @@ function renderTable() {
 }
 
 
-/* =========================================================
-   DETEKSI STATUS BELUM TUNTAS
-========================================================= */
-
-function isBelumTuntas(
-    status
-) {
-
-
-    const value =
-        normalisasi(
-            status
-        );
-
-
-    /*
-     * Mendukung beberapa kemungkinan
-     * penulisan status.
-     */
-
-    if (
-        value === "BELUM TUNTAS"
-        ||
-        value === "BELUM"
-        ||
-        value.includes(
-            "BELUM TUNTAS"
-        )
-        ||
-        value.includes(
-            "BELUM"
-        )
-    ) {
-
-        return true;
-
-    }
-
-
-    return false;
-
-}
-
-
-/* =========================================================
-   TAMPILKAN DAFTAR BELUM TUNTAS
-========================================================= */
+/* =====================================================
+   DAFTAR BELUM TUNTAS
+===================================================== */
 
 function tampilkanBelumTuntas() {
 
@@ -2513,22 +2916,16 @@ function tampilkanBelumTuntas() {
         "";
 
 
-    /*
-     * Cari siswa yang statusnya
-     * BELUM TUNTAS
-     */
-
     const belumTuntas =
         hasilData.filter(
             data =>
-                isBelumTuntas(
-                    data.status
-                )
+                data.status ===
+                "BELUM TUNTAS"
         );
 
 
     /*
-     * Tidak ada siswa
+     * SEMUA TUNTAS
      */
 
     if (
@@ -2562,12 +2959,7 @@ function tampilkanBelumTuntas() {
         `;
 
 
-        document
-            .getElementById(
-                "jumlahTerpilih"
-            )
-            .textContent =
-                "0 siswa dipilih";
+        updateJumlahTerpilih();
 
 
         return;
@@ -2575,14 +2967,14 @@ function tampilkanBelumTuntas() {
     }
 
 
-    /*
-     * Tampilkan checklist
-     */
-
     card.classList.remove(
         "hidden"
     );
 
+
+    /*
+     * BUAT CHECKLIST
+     */
 
     belumTuntas.forEach(
         data => {
@@ -2670,10 +3062,6 @@ function tampilkanBelumTuntas() {
                 "BELUM TUNTAS";
 
 
-            /*
-             * SUSUN
-             */
-
             label.appendChild(
                 checkbox
             );
@@ -2702,9 +3090,9 @@ function tampilkanBelumTuntas() {
 }
 
 
-/* =========================================================
-   UPDATE JUMLAH CHECKLIST
-========================================================= */
+/* =====================================================
+   JUMLAH PILIHAN
+===================================================== */
 
 function updateJumlahTerpilih() {
 
@@ -2725,9 +3113,9 @@ function updateJumlahTerpilih() {
 }
 
 
-/* =========================================================
+/* =====================================================
    PILIH SEMUA
-========================================================= */
+===================================================== */
 
 document
     .getElementById(
@@ -2735,35 +3123,32 @@ document
     )
     .addEventListener(
         "click",
-        pilihSemuaBelumTuntas
+        function() {
+
+
+            document
+                .querySelectorAll(
+                    ".checkbox-belum-tuntas"
+                )
+                .forEach(
+                    checkbox => {
+
+                        checkbox.checked =
+                            true;
+
+                    }
+                );
+
+
+            updateJumlahTerpilih();
+
+        }
     );
 
 
-function pilihSemuaBelumTuntas() {
-
-
-    document
-        .querySelectorAll(
-            ".checkbox-belum-tuntas"
-        )
-        .forEach(
-            checkbox => {
-
-                checkbox.checked =
-                    true;
-
-            }
-        );
-
-
-    updateJumlahTerpilih();
-
-}
-
-
-/* =========================================================
-   HAPUS SEMUA PILIHAN
-========================================================= */
+/* =====================================================
+   HAPUS PILIHAN
+===================================================== */
 
 document
     .getElementById(
@@ -2771,35 +3156,32 @@ document
     )
     .addEventListener(
         "click",
-        hapusSemuaPilihan
+        function() {
+
+
+            document
+                .querySelectorAll(
+                    ".checkbox-belum-tuntas"
+                )
+                .forEach(
+                    checkbox => {
+
+                        checkbox.checked =
+                            false;
+
+                    }
+                );
+
+
+            updateJumlahTerpilih();
+
+        }
     );
 
 
-function hapusSemuaPilihan() {
-
-
-    document
-        .querySelectorAll(
-            ".checkbox-belum-tuntas"
-        )
-        .forEach(
-            checkbox => {
-
-                checkbox.checked =
-                    false;
-
-            }
-        );
-
-
-    updateJumlahTerpilih();
-
-}
-
-
-/* =========================================================
-   COPY UNTUK WHATSAPP
-========================================================= */
+/* =====================================================
+   COPY WHATSAPP
+===================================================== */
 
 document
     .getElementById(
@@ -2822,17 +3204,13 @@ async function copyDaftarWA() {
         );
 
 
-    /*
-     * BELUM MEMILIH
-     */
-
     if (
         checked.length === 0
     ) {
 
         tampilkanPesan(
 
-            "Silakan centang minimal satu siswa yang akan diberi pemberitahuan.",
+            "Silakan pilih minimal satu siswa terlebih dahulu.",
 
             "warning"
 
@@ -2843,10 +3221,6 @@ async function copyDaftarWA() {
     }
 
 
-    /*
-     * KELAS
-     */
-
     const kelas =
         document
             .getElementById(
@@ -2854,10 +3228,6 @@ async function copyDaftarWA() {
             )
             .value;
 
-
-    /*
-     * JUDUL
-     */
 
     let text =
 `📢 *PERBAIKAN NILAI INFORMATIKA*
@@ -2876,44 +3246,29 @@ async function copyDaftarWA() {
 
 
     text +=
-`Siswa yang perlu segera melakukan perbaikan nilai:
+`Berikut siswa yang perlu segera melakukan perbaikan nilai:
 
 `;
 
-
-    /*
-     * DAFTAR NAMA
-     */
 
     checked.forEach(
         (checkbox, index) => {
 
 
-            const nama =
-                checkbox.dataset.nama;
-
-
             text +=
-                `${index + 1}. ${nama}\n`;
+                `${index + 1}. ${checkbox.dataset.nama}\n`;
 
         }
     );
 
 
-    /*
-     * PENUTUP
-     */
-
     text +=
 `
-Mohon segera melakukan perbaikan nilai sesuai arahan guru.
+Mohon segera melakukan perbaikan nilai klik => https://look.short.gy/simpatik_bab2
+.
 
 Terima kasih. 🙏`;
 
-
-    /*
-     * COPY CLIPBOARD
-     */
 
     try {
 
@@ -2927,7 +3282,7 @@ Terima kasih. 🙏`;
 
         tampilkanPesan(
 
-            `Berhasil menyalin ${checked.length} nama. Sekarang tinggal paste (Ctrl+V) ke grup WhatsApp.`,
+            `Berhasil menyalin ${checked.length} nama. Silakan paste ke grup WhatsApp.`,
 
             "success"
 
@@ -2936,10 +3291,6 @@ Terima kasih. 🙏`;
     }
     catch(error) {
 
-
-        /*
-         * FALLBACK BROWSER
-         */
 
         const textarea =
             document.createElement(
@@ -2970,37 +3321,20 @@ Terima kasih. 🙏`;
         textarea.select();
 
 
-        try {
-
-            document.execCommand(
-                "copy"
-            );
+        document.execCommand(
+            "copy"
+        );
 
 
-            tampilkanPesan(
-
-                `Berhasil menyalin ${checked.length} nama.`,
-
-                "success"
-
-            );
-
-        }
-        catch(e) {
-
-            tampilkanPesan(
-
-                "Gagal menyalin otomatis. Silakan coba kembali.",
-
-                "error"
-
-            );
-
-        }
+        textarea.remove();
 
 
-        document.body.removeChild(
-            textarea
+        tampilkanPesan(
+
+            `Berhasil menyalin ${checked.length} nama.`,
+
+            "success"
+
         );
 
     }
@@ -3008,9 +3342,9 @@ Terima kasih. 🙏`;
 }
 
 
-/* =========================================================
+/* =====================================================
    DOWNLOAD EXCEL
-========================================================= */
+===================================================== */
 
 document
     .getElementById(
@@ -3031,7 +3365,7 @@ function downloadExcel() {
 
         tampilkanPesan(
 
-            "Belum ada data yang dapat di-download.",
+            "Belum ada hasil yang dapat di-download.",
 
             "warning"
 
@@ -3043,10 +3377,10 @@ function downloadExcel() {
 
 
     /*
-     * BUAT WORKBOOK
+     * WORKBOOK BARU
      */
 
-    const wbOut =
+    const wb =
         XLSX.utils.book_new();
 
 
@@ -3057,7 +3391,6 @@ function downloadExcel() {
     const rows = [
 
         [
-            "NO",
             "Nama",
             "Kelas",
             "Nilai Akhir",
@@ -3073,8 +3406,6 @@ function downloadExcel() {
         data => {
 
             rows.push([
-
-                data.no,
 
                 data.nama,
 
@@ -3095,7 +3426,7 @@ function downloadExcel() {
 
 
     /*
-     * BUAT SHEET
+     * SHEET
      */
 
     const ws =
@@ -3111,31 +3442,33 @@ function downloadExcel() {
     ws["!cols"] = [
 
         {
-            wch: 7
+            wch:
+                35
         },
 
         {
-            wch: 35
+            wch:
+                12
         },
 
         {
-            wch: 12
+            wch:
+                15
         },
 
         {
-            wch: 15
+            wch:
+                15
         },
 
         {
-            wch: 15
+            wch:
+                15
         },
 
         {
-            wch: 15
-        },
-
-        {
-            wch: 23
+            wch:
+                23
         }
 
     ];
@@ -3188,13 +3521,9 @@ function downloadExcel() {
     };
 
 
-    /*
-     * STYLE HEADER
-     */
-
     for (
         let col = 0;
-        col < 7;
+        col < 6;
         col++
     ) {
 
@@ -3202,9 +3531,11 @@ function downloadExcel() {
         const address =
             XLSX.utils.encode_cell({
 
-                r: 0,
+                r:
+                    0,
 
-                c: col
+                c:
+                    col
 
             });
 
@@ -3222,7 +3553,7 @@ function downloadExcel() {
 
 
     /*
-     * STYLE NILAI
+     * WARNA NILAI
      */
 
     for (
@@ -3233,21 +3564,25 @@ function downloadExcel() {
 
 
         /*
-         * D = Nilai Akhir
-         * E = Nilai Awal
-         * F = Nilai Remidi
+         * Kolom:
+         *
+         * C = Nilai Akhir
+         * D = Nilai Awal
+         * E = Nilai Remidi
          */
 
-        [3,4,5].forEach(
+        [2,3,4].forEach(
             col => {
 
 
                 const address =
                     XLSX.utils.encode_cell({
 
-                        r: row,
+                        r:
+                            row,
 
-                        c: col
+                        c:
+                            col
 
                     });
 
@@ -3257,19 +3592,15 @@ function downloadExcel() {
 
 
                 if (!cell) {
+
                     return;
+
                 }
 
 
                 const nilai =
-                    Number(
-                        String(
-                            cell.v
-                        )
-                        .replace(
-                            ",",
-                            "."
-                        )
+                    angkaNilai(
+                        cell.v
                     );
 
 
@@ -3295,7 +3626,6 @@ function downloadExcel() {
                         "FECACA";
 
                 }
-
                 else if (
                     nilai === 78
                 ) {
@@ -3304,7 +3634,6 @@ function downloadExcel() {
                         "FEF08A";
 
                 }
-
                 else {
 
                     warna =
@@ -3339,9 +3668,6 @@ function downloadExcel() {
                     alignment: {
 
                         horizontal:
-                            "center",
-
-                        vertical:
                             "center"
 
                     }
@@ -3351,16 +3677,122 @@ function downloadExcel() {
             }
         );
 
+
+        /*
+         * STATUS
+         *
+         * Kolom F
+         */
+
+        const statusAddress =
+            XLSX.utils.encode_cell({
+
+                r:
+                    row,
+
+                c:
+                    5
+
+            });
+
+
+        if (
+            ws[statusAddress]
+        ) {
+
+
+            const status =
+                hasilData[
+                    row - 1
+                ].status;
+
+
+            if (
+                status ===
+                "TUNTAS"
+            ) {
+
+                ws[statusAddress].s = {
+
+                    fill: {
+
+                        patternType:
+                            "solid",
+
+                        fgColor: {
+
+                            rgb:
+                                "BBF7D0"
+
+                        }
+
+                    },
+
+                    font: {
+
+                        bold:
+                            true,
+
+                        color: {
+
+                            rgb:
+                                "166534"
+
+                        }
+
+                    }
+
+                };
+
+            }
+            else {
+
+                ws[statusAddress].s = {
+
+                    fill: {
+
+                        patternType:
+                            "solid",
+
+                        fgColor: {
+
+                            rgb:
+                                "FECACA"
+
+                        }
+
+                    },
+
+                    font: {
+
+                        bold:
+                            true,
+
+                        color: {
+
+                            rgb:
+                                "991B1B"
+
+                        }
+
+                    }
+
+                };
+
+            }
+
+        }
+
     }
 
 
     /*
-     * APPEND SHEET
+     * APPEND
      */
 
     XLSX.utils.book_append_sheet(
 
-        wbOut,
+        wb,
 
         ws,
 
@@ -3381,23 +3813,12 @@ function downloadExcel() {
             .value;
 
 
-    let namaFile;
-
-
-    if (
+    const namaFile =
         kelas === "SEMUA"
-    ) {
 
-        namaFile =
-            "HASIL_URUT_NILAI_SEMUA_KELAS.xlsx";
+            ? "HASIL_URUT_NILAI_SEMUA_KELAS.xlsx"
 
-    }
-    else {
-
-        namaFile =
-            `HASIL_URUT_NILAI_${kelas}.xlsx`;
-
-    }
+            : `HASIL_URUT_NILAI_${kelas}.xlsx`;
 
 
     /*
@@ -3406,7 +3827,7 @@ function downloadExcel() {
 
     XLSX.writeFile(
 
-        wbOut,
+        wb,
 
         namaFile
 
@@ -3424,9 +3845,9 @@ function downloadExcel() {
 }
 
 
-/* =========================================================
+/* =====================================================
    RESET
-========================================================= */
+===================================================== */
 
 document
     .getElementById(
@@ -3441,17 +3862,24 @@ document
 function resetAplikasi() {
 
 
-    workbook = null;
+    workbook =
+        null;
 
-    siswaData = [];
 
-    jawabanData = [];
+    siswaData =
+        [];
 
-    hasilData = [];
+
+    jawabanData =
+        [];
+
+
+    hasilData =
+        [];
 
 
     /*
-     * RESET INPUT
+     * INPUT
      */
 
     document
@@ -3463,47 +3891,33 @@ function resetAplikasi() {
 
 
     /*
-     * SEMBUNYIKAN PANEL
+     * HIDE
      */
 
-    document
-        .getElementById(
-            "controlCard"
-        )
-        .classList.add(
-            "hidden"
-        );
+    [
+        "controlCard",
+        "infoCard",
+        "resultCard",
+        "remidiCard"
+    ]
+    .forEach(
+        id => {
 
+            document
+                .getElementById(
+                    id
+                )
+                .classList
+                .add(
+                    "hidden"
+                );
 
-    document
-        .getElementById(
-            "infoCard"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "resultCard"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "remidiCard"
-        )
-        .classList.add(
-            "hidden"
-        );
+        }
+    );
 
 
     /*
-     * RESET DOWNLOAD
+     * DOWNLOAD
      */
 
     document
@@ -3515,7 +3929,7 @@ function resetAplikasi() {
 
 
     /*
-     * RESET TABLE
+     * TABLE
      */
 
     document
@@ -3527,7 +3941,7 @@ function resetAplikasi() {
 
 
     /*
-     * RESET REMIDI
+     * REMIDI
      */
 
     document
@@ -3539,7 +3953,7 @@ function resetAplikasi() {
 
 
     /*
-     * RESET MESSAGE
+     * MESSAGE
      */
 
     const message =
@@ -3556,11 +3970,6 @@ function resetAplikasi() {
         "";
 
 }
-
-
-/* =========================================================
-   SELESAI
-========================================================= */
 
 </script>
 
