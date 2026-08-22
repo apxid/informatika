@@ -1,4 +1,4 @@
-// Web Audio API Synthesizer (Tanpa File MP3 External)
+// Web Audio API Synthesizer Effects
 class SoundEffects {
     constructor() {
         this.ctx = null;
@@ -19,9 +19,9 @@ class SoundEffects {
         gain.connect(this.ctx.destination);
         
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); 
-        osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.1); 
-        osc.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.2); 
+        osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
+        osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.2); // G5
         
         gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
@@ -71,17 +71,17 @@ class SoundEffects {
     }
 }
 
-// State Aplikasi
+// App State Variables
 let currentQuestionIndex = 0;
 let score = 0;
 let correctAnswersCount = 0;
 let wrongAnswersCount = 0;
 const sfx = new SoundEffects();
 
-// Element Selector
+// DOM Selectors
 const splashScreen = document.getElementById('splash-screen');
 const homeScreen = document.getElementById('home-screen');
-const quizScreen = document.getElementById('quiz-screen');
+const gameScreen = document.getElementById('game-screen');
 const resultScreen = document.getElementById('result-screen');
 
 const btnStart = document.getElementById('btn-start');
@@ -89,12 +89,9 @@ const btnRestart = document.getElementById('btn-restart');
 const btnNext = document.getElementById('btn-next');
 
 const currentScoreEl = document.getElementById('current-score');
-const currentQNumEl = document.getElementById('current-q-num');
-const totalQNumEl = document.getElementById('total-q-num');
-const progressBar = document.getElementById('progress-bar');
+const currentPosEl = document.getElementById('current-pos');
+const mazeTrack = document.getElementById('maze-track');
 
-const questionIcon = document.getElementById('question-icon');
-const questionClueContainer = document.getElementById('question-clue');
 const clueText = document.getElementById('clue-text');
 const questionText = document.getElementById('question-text');
 const answerButtonsContainer = document.getElementById('answer-buttons');
@@ -105,21 +102,20 @@ const feedbackIcon = document.getElementById('feedback-icon');
 const feedbackTitle = document.getElementById('feedback-title');
 const feedbackText = document.getElementById('feedback-text');
 
-// Splash Auto-Hide
+// Init & Splash Transition
 window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         splashScreen.classList.add('hidden');
         homeScreen.classList.remove('hidden');
     }, 1800);
-
-    totalQNumEl.textContent = quizData.length;
 });
 
-// Event Start
+// Start Game
 btnStart.addEventListener('click', () => {
     homeScreen.classList.add('hidden');
-    quizScreen.classList.remove('hidden');
+    gameScreen.classList.remove('hidden');
     resetQuizState();
+    renderMazeTrack();
     loadQuestion();
 });
 
@@ -131,22 +127,66 @@ function resetQuizState() {
     currentScoreEl.textContent = '0';
 }
 
+// Generate Maze Nodes & Robot Icon
+function renderMazeTrack() {
+    mazeTrack.innerHTML = '';
+
+    // Robot Player Icon
+    const robotPlayer = document.createElement('div');
+    robotPlayer.id = 'robot-player';
+    robotPlayer.className = 'robot-player';
+    robotPlayer.innerHTML = '<i class="fa-solid fa-robot"></i>';
+    mazeTrack.appendChild(robotPlayer);
+
+    // Nodes (Pos 1 - 10 + Finish)
+    for (let i = 0; i < quizData.length; i++) {
+        const node = document.createElement('div');
+        node.className = `maze-node node-${i}`;
+        node.textContent = i + 1;
+        mazeTrack.appendChild(node);
+    }
+
+    // Finish Node
+    const finishNode = document.createElement('div');
+    finishNode.className = `maze-node finish node-${quizData.length}`;
+    finishNode.innerHTML = '<i class="fa-solid fa-flag-checkered"></i>';
+    mazeTrack.appendChild(finishNode);
+
+    updateRobotPosition();
+}
+
+// Move Robot Icon smoothly to active node
+function updateRobotPosition() {
+    const activeNode = document.querySelector(`.node-${currentQuestionIndex}`);
+    const robotPlayer = document.getElementById('robot-player');
+
+    if (activeNode && robotPlayer) {
+        const offsetLeft = activeNode.offsetLeft;
+        robotPlayer.style.left = `${offsetLeft + 2}px`;
+    }
+
+    // Update Node Styles
+    document.querySelectorAll('.maze-node').forEach((node, idx) => {
+        if (idx < currentQuestionIndex) {
+            node.className = `maze-node passed node-${idx}`;
+            node.innerHTML = '<i class="fa-solid fa-check"></i>';
+        } else if (idx === currentQuestionIndex) {
+            node.className = `maze-node current node-${idx}`;
+            if (idx === quizData.length) {
+                node.innerHTML = '<i class="fa-solid fa-flag-checkered"></i>';
+            } else {
+                node.textContent = idx + 1;
+            }
+        }
+    });
+}
+
+// Load Tantangan Pos
 function loadQuestion() {
     const currentData = quizData[currentQuestionIndex];
 
-    currentQNumEl.textContent = currentQuestionIndex + 1;
-    const progressPercent = (currentQuestionIndex / quizData.length) * 100;
-    progressBar.style.width = `${progressPercent}%`;
-
-    questionIcon.className = `fa-solid ${currentData.icon} fa-3x`;
-    
-    if(currentData.clue) {
-        questionClueContainer.classList.remove('hidden');
-        clueText.textContent = `${currentData.topic} - ${currentData.clue}`;
-    } else {
-        questionClueContainer.classList.add('hidden');
-    }
-
+    currentPosEl.textContent = currentQuestionIndex + 1;
+    clueText.textContent = `${currentData.clue}`;
     questionText.innerText = currentData.question;
 
     answerButtonsContainer.innerHTML = '';
@@ -157,8 +197,11 @@ function loadQuestion() {
         button.addEventListener('click', () => selectAnswer(index));
         answerButtonsContainer.appendChild(button);
     });
+
+    updateRobotPosition();
 }
 
+// Select Step Option
 function selectAnswer(selectedIndex) {
     const currentData = quizData[currentQuestionIndex];
     const isCorrect = selectedIndex === currentData.correct;
@@ -170,23 +213,24 @@ function selectAnswer(selectedIndex) {
         sfx.playCorrect();
 
         feedbackIcon.className = 'feedback-icon correct fa-solid fa-circle-check';
-        feedbackTitle.textContent = 'Jawaban Tepat!';
+        feedbackTitle.textContent = 'Langkah Tepat!';
         feedbackTitle.style.color = 'var(--correct-color)';
     } else {
         wrongAnswersCount++;
         sfx.playWrong();
 
         feedbackIcon.className = 'feedback-icon wrong fa-solid fa-circle-xmark';
-        feedbackTitle.textContent = 'Kurang Tepat!';
+        feedbackTitle.textContent = 'Jalur Tersesat!';
         feedbackTitle.style.color = 'var(--wrong-color)';
     }
 
-    feedbackText.innerHTML = `<strong>Penjelasan:</strong><br>${currentData.explanation}`;
+    feedbackText.innerHTML = `<strong>Analisis Logika:</strong><br>${currentData.explanation}`;
 
     modalBackdrop.classList.remove('hidden');
     feedbackCard.classList.remove('hidden');
 }
 
+// Next Step Action
 btnNext.addEventListener('click', () => {
     modalBackdrop.classList.add('hidden');
     feedbackCard.classList.add('hidden');
@@ -196,12 +240,15 @@ btnNext.addEventListener('click', () => {
     if (currentQuestionIndex < quizData.length) {
         loadQuestion();
     } else {
-        showResult();
+        // Move robot to finish node
+        updateRobotPosition();
+        setTimeout(showResult, 600);
     }
 });
 
+// Finish / Escape Screen
 function showResult() {
-    quizScreen.classList.add('hidden');
+    gameScreen.classList.add('hidden');
     resultScreen.classList.remove('hidden');
 
     document.getElementById('final-score').textContent = score;
@@ -210,11 +257,11 @@ function showResult() {
 
     const predikatEl = document.getElementById('predikat-text');
     if (score === 100) {
-        predikatEl.textContent = "Computer Brain 🤖⚡";
+        predikatEl.textContent = "Grandmaster Maze Navigator 🤖⚡";
     } else if (score >= 80) {
-        predikatEl.textContent = "Master Logika 🧠";
+        predikatEl.textContent = "Master Logika Labirin 🧠";
     } else if (score >= 60) {
-        predikatEl.textContent = "Programmer Muda 💻";
+        predikatEl.textContent = "Penjelajah Algoritma 💻";
     } else {
         predikatEl.textContent = "Pembelajar Pemula 📚";
     }
@@ -223,15 +270,17 @@ function showResult() {
     triggerConfetti();
 }
 
+// Restart Game
 btnRestart.addEventListener('click', () => {
     resultScreen.classList.add('hidden');
     homeScreen.classList.remove('hidden');
 });
 
+// Confetti Animation
 function triggerConfetti() {
     const container = document.getElementById('confetti-container');
     container.innerHTML = '';
-    const colors = ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+    const colors = ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 
     for (let i = 0; i < 50; i++) {
         const confetti = document.createElement('div');
