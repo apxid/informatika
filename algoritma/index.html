@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Decision Challenge - Berpikir Seperti Komputer</title>
+    <title>AI Decision Challenge - Maze Escape</title>
     
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
         <div class="splash-content">
             <i class="fa-solid fa-robot fa-5x robot-icon"></i>
             <div class="loader"></div>
-            <h1>AI DECISION CHALLENGE</h1>
+            <h1>AI MAZE ESCAPE</h1>
             <p>Ice Breaking Informatika Kelas IX</p>
         </div>
     </section>
@@ -31,54 +31,52 @@
     <!-- 2. HOME SCREEN -->
     <section id="home-screen" class="screen flex-center hidden">
         <div class="glass-card home-card">
-            <i class="fa-solid fa-microchip fa-4x mb-20 text-primary"></i>
-            <h1 class="title">AI DECISION<br>CHALLENGE</h1>
-            <h2 class="subtitle">"Berpikir Seperti Komputer"</h2>
-            <p class="description">Bisakah kamu mengambil keputusan seperti komputer?</p>
+            <i class="fa-solid fa-map-location-dot fa-4x mb-20 text-primary"></i>
+            <h1 class="title">AI MAZE ESCAPE</h1>
+            <h2 class="subtitle">"Bantu Robot Menemukan Jalan Keluar!"</h2>
+            <p class="description">Jawab tantangan Algoritma, Flowchart, & Pseudocode untuk memandu Robot melangkah hingga Garis Finish 🏁</p>
             
             <div class="info-card">
-                <p><i class="fa-solid fa-list-check"></i> 10 Tantangan</p>
-                <p><i class="fa-solid fa-stopwatch"></i> ±5 Menit</p>
-                <p><i class="fa-solid fa-star"></i> Skor Otomatis</p>
+                <p><i class="fa-solid fa-route"></i> 10 Langkah Pos</p>
+                <p><i class="fa-solid fa-flag-checkered"></i> Misi Escape</p>
+                <p><i class="fa-solid fa-trophy"></i> Skor Otomatis</p>
             </div>
             
             <button id="btn-start" class="btn-primary mt-20">
-                <i class="fa-solid fa-play"></i> MULAI
+                <i class="fa-solid fa-play"></i> MULAI PETUALANGAN
             </button>
         </div>
     </section>
 
-    <!-- 3. QUIZ SCREEN -->
-    <section id="quiz-screen" class="screen hidden">
+    <!-- 3. GAME & MAZE SCREEN -->
+    <section id="game-screen" class="screen hidden">
         <div class="quiz-container glass-card">
             
-            <!-- Header Quiz -->
+            <!-- Header Game & Score -->
             <header class="quiz-header">
                 <div class="header-info">
-                    <h2>Tantangan Logika</h2>
-                    <div class="score-badge">Score: <span id="current-score">0</span></div>
+                    <h2><i class="fa-solid fa-compass"></i> Pos <span id="current-pos">1</span> / 10</h2>
+                    <div class="score-badge">Skor: <span id="current-score">0</span></div>
                 </div>
-                <div class="progress-container">
-                    <div id="progress-bar" class="progress-bar"></div>
-                </div>
-                <p class="question-count">Soal <span id="current-q-num">1</span> dari <span id="total-q-num">10</span></p>
             </header>
 
-            <!-- Main Question Area -->
+            <!-- MAP PETUALANGAN (MAZE ROUTE) -->
+            <div class="maze-container">
+                <div class="maze-track" id="maze-track">
+                    <!-- Nodes Pos & Robot Character di-generate oleh JS -->
+                </div>
+            </div>
+
+            <!-- Question Area (Tantangan Pos) -->
             <div class="question-area">
-                <div class="illustration-container">
-                    <i id="question-icon" class="fa-solid fa-question fa-4x"></i>
+                <div class="clue-badge">
+                    <i class="fa-solid fa-lightbulb"></i> <span id="clue-text">TOPIK</span>
                 </div>
 
-                <!-- Clue Badge / Hint Logika -->
-                <div id="question-clue" class="clue-badge hidden">
-                    <i class="fa-solid fa-lightbulb"></i> <span id="clue-text">CLUE: LOGIKA</span>
-                </div>
-
-                <h3 id="question-text" class="question-text">Memuat pertanyaan...</h3>
+                <h3 id="question-text" class="question-text">Memuat tantangan...</h3>
                 
                 <div id="answer-buttons" class="answer-grid">
-                    <!-- Tombol Jawaban di-generate oleh JavaScript -->
+                    <!-- Tombol Pilihan Langkah di-generate oleh JS -->
                 </div>
             </div>
             
@@ -88,45 +86,48 @@
     <!-- MODAL BACKDROP -->
     <div id="modal-backdrop" class="modal-backdrop hidden"></div>
 
-    <!-- Feedback Card -->
+    <!-- Feedback Card / Pos Result -->
     <div id="feedback-card" class="feedback-card hidden">
         <div id="feedback-icon" class="feedback-icon"></div>
-        <h4 id="feedback-title">Benar/Salah</h4>
-        <p id="feedback-text">Penjelasan akan muncul di sini.</p>
-        <button id="btn-next" class="btn-primary">Lanjut <i class="fa-solid fa-arrow-right"></i></button>
+        <h4 id="feedback-title">Langkah Berhasil!</h4>
+        <p id="feedback-text">Penjelasan alur logika di pos ini.</p>
+        <button id="btn-next" class="btn-primary">Maju Langkah Berikutnya <i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <!-- 4. RESULT SCREEN -->
+    <!-- 4. RESULT / ESCAPE SUCCESS SCREEN -->
     <section id="result-screen" class="screen flex-center hidden">
         <div class="glass-card result-card">
-            <i class="fa-solid fa-robot fa-5x text-primary mb-20 bounce-anim"></i>
-            <h1 class="title">TANTANGAN SELESAI!</h1>
+            <div class="finish-icon-wrapper">
+                <i class="fa-solid fa-robot fa-5x text-primary bounce-anim"></i>
+                <i class="fa-solid fa-flag-checkered fa-3x text-warning"></i>
+            </div>
+            <h1 class="title">BERHASIL KELUAR LABIRIN!</h1>
+            <p class="subtitle">Robot berhasil mencapai titik Finish dengan selamat 🏁</p>
             
             <div class="score-display">
                 <span id="final-score" class="score-number">100</span>
-                <span class="score-label">Total Skor</span>
+                <span class="score-label">Total Skor Petualangan</span>
             </div>
             
             <div class="stats-row">
                 <div class="stat-box correct">
                     <i class="fa-solid fa-check-circle"></i>
-                    <span id="correct-count">0</span> Benar
+                    <span id="correct-count">0</span> Pos Tepat
                 </div>
                 <div class="stat-box wrong">
                     <i class="fa-solid fa-times-circle"></i>
-                    <span id="wrong-count">0</span> Salah
+                    <span id="wrong-count">0</span> Percobaan Ulang
                 </div>
             </div>
 
             <div class="predikat-box">
-                <h3>Predikat Kamu:</h3>
-                <h2 id="predikat-text" class="text-primary">Computer Brain</h2>
+                <h3>Predikat Logika:</h3>
+                <h2 id="predikat-text" class="text-primary">Master Navigator</h2>
             </div>
 
             <div class="closing-message">
-                <p><strong>Hebat!</strong> 🤖</p>
-                <p>Tanpa sadar kamu sudah menggunakan cara berpikir komputer.</p>
-                <p>Materi berikutnya kita akan mempelajari bagaimana komputer menggunakan operator <strong>AND</strong>, <strong>OR</strong>, <strong>NOT</strong>, dan <strong>XOR</strong> untuk mengambil keputusan.</p>
+                <p><strong>Luar Biasa!</strong> 🤖</p>
+                <p>Kamu terbukti mampu berpikir sistematis seperti komputer untuk menyelesaikan masalah dan menemukan jalan keluar!</p>
             </div>
 
             <button id="btn-restart" class="btn-primary mt-20">
