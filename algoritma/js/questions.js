@@ -1,142 +1,132 @@
 const quizData = [
     {
         topic: "ALGORITMA DESKRIPTIF",
-        icon: "fa-pencil-alt",
-        clue: "LOGIKA PEMOGRAMAN",
-        question: "Manakah pernyataan yang paling tepat mengenai pengertian Algoritma Deskriptif?",
+        clue: "POS 1: PINTU GERBANG",
+        question: "Robot harus memahami perintah awal. Apa yang dimaksud dengan Algoritma Deskriptif?",
         options: [
-            "Penulisan langkah-langkah penyelesaian masalah menggunakan kalimat bahasa sehari-hari secara terstruktur.",
-            "Bagan alur diagram yang menggunakan simbol-simbol geometris khusus.",
-            "Perintah langsung berbasis bahasa pemograman C++ atau Python.",
-            "Penerjemahan kode secara otomatis oleh mesin komputer."
+            "Penyusunan instruksi menggunakan kalimat bahasa sehari-hari secara terstruktur.",
+            "Visualisasi logika dalam bentuk simbol-simbol grafis jajaran genjang.",
+            "Baris kode yang ditulis langsung dalam bahasa pemograman C++.",
+            "Proses menerjemahkan file aplikasi ke dalam format mesin."
         ],
         correct: 0,
-        explanation: "Algoritma Deskriptif disusun menggunakan kalimat biasa (misal: Bahasa Indonesia) secara sistematis tanpa terikat sintaksis pemograman."
+        explanation: "Algoritma Deskriptif menggunakan kalimat deskriptif biasa (seperti bahasa Indonesia) yang disusun berurutan agar mudah dipahami sebelum diprogram."
     },
     {
         topic: "FLOWCHART",
-        icon: "fa-project-diagram",
-        clue: "SIMBOL FLOWCHART",
-        question: "Simbol berbentuk belah ketupat (Decision) pada flowchart berfungsi untuk...",
+        clue: "POS 2: PERCABANGAN JALAN",
+        question: "Robot menemukan dua cabang jalan. Simbol flowchart berbentuk Belah Ketupat (Decision) berfungsi untuk...",
         options: [
-            "Menandai titik awal dan akhir dari alur program.",
-            "Melakukan proses perhitungan matematika.",
-            "Mengambil keputusan berdasarkan kondisi Ya (True) atau Tidak (False).",
-            "Menerima masukan data (Input) dari pengguna."
+            "Menandai titik awal dan akhir pergerakan robot.",
+            "Melakukan kalkulasi matematika sederhana.",
+            "Mengevaluasi kondisi keputusan (Ya / Tidak) untuk menentukan jalur.",
+            "Menerima masukan sensor masukan dari luar."
         ],
         correct: 2,
-        explanation: "Simbol Decision (Belah Ketupat) digunakan untuk mengevaluasi suatu kondisi logika sehingga menghasilkan cabang alur keputusan."
+        explanation: "Simbol Decision (Belah Ketupat) mengevaluasi kondisi logika. Jika benar (Ya) robot memilih satu jalur, jika salah (Tidak) mengambil jalur lain."
     },
     {
         topic: "PSEUDOCODE",
-        icon: "fa-terminal",
-        clue: "EVALUASI LOGIKA",
-        question: "Perhatikan pseudocode berikut:\nIF nilai >= 75 THEN\n   PRINT 'Lulus'\nELSE\n   PRINT 'Remedial'\nJika variabel nilai = 75, apa teks yang tercetak?",
+        clue: "POS 3: PINTU SANDI",
+        question: "Perhatikan Pseudocode pintu sandi berikut:\nIF nilai_sandi >= 75 THEN\n   PRINT 'Pintu Terbuka'\nELSE\n   PRINT 'Pintu Terkunci'\nJika robot memasukkan nilai_sandi = 75, apa yang terjadi?",
         options: [
-            "Remedial",
-            "Lulus",
-            "Error",
-            "Tidak terjadi apa-apa"
+            "Pintu Terkunci",
+            "Pintu Terbuka",
+            "Sistem Error",
+            "Robot Berhenti"
         ],
         correct: 1,
-        explanation: "Operator `>=` artinya lebih besar atau sama dengan. Karena nilai bernilai 75, maka syarat '75 >= 75' terpenuhi (True) dan mencetak 'Lulus'."
+        explanation: "Operator `>=` berarti lebih besar dari atau sama dengan. Karena nilai_sandi = 75, kondisi `75 >= 75` bernilai Benar (True), sehingga pintu terbuka."
     },
     {
         topic: "FLOWCHART",
-        icon: "fa-shapes",
-        clue: "SIMBOL FLOWCHART",
-        question: "Simbol jajaran genjang pada flowchart digunakan untuk alur...",
+        clue: "POS 4: SENSOR MASUKAN",
+        question: "Simbol jajaran genjang pada flowchart digunakan saat robot melakukan...",
         options: [
-            "Input (Masukan) atau Output (Keluaran) data.",
-            "Proses aritmatika/perhitungan.",
-            "Penghubung antar halaman.",
-            "Memulai program."
+            "Membaca Input sensor atau Menampilkan Output hasil.",
+            "Perhitungan variabel memori internal.",
+            "Memulai atau menghentikan seluruh program.",
+            "Perulangan langkah secara terus-menerus."
         ],
         correct: 0,
-        explanation: "Simbol Jajaran Genjang adalah standar visual untuk menggambarkan operasi pembacaan Input data atau penampilkan Output hasil."
+        explanation: "Jajaran Genjang adalah simbol standar untuk merepresentasikan fungsi Input (membaca data) atau Output (mengeluarkan data)."
     },
     {
         topic: "ALGORITMA DESKRIPTIF",
-        icon: "fa-list-ol",
-        clue: "PRINSIattribute ALGORITMA",
-        question: "Ciri 'Definiteness' dalam penyusunan algoritma berarti...",
+        clue: "POS 5: ATURAN PERSYARATAN",
+        question: "Agar robot tidak kebingungan di labirin, algoritma harus memenuhi syarat 'Definiteness', artinya...",
         options: [
-            "Langkah harus berakhir setelah sejumlah langkah terbatas.",
-            "Setiap instruksi harus jelas, pasti, dan tidak bermakna ganda (ambigu).",
-            "Harus menghasilkan angka bilangan bulat.",
-            "Tampilan algoritma harus berupa diagram."
+            "Langkah instruksi harus pasti, jelas, dan tidak ambigu (bermakna ganda).",
+            "Algoritma tidak boleh berhenti dan berjalan selamanya.",
+            "Setiap instruksi wajib dituliskan dengan diagram berwarna.",
+            "Output yang dihasilkan harus selalu bernilai positif."
         ],
-        correct: 1,
-        explanation: "Definiteness (kepastian) memastikan setiap langkah tidak membingungkan atau menimbulkan tafsir ganda bagi pemrosesnya."
+        correct: 0,
+        explanation: "Definiteness (kepastian) menjamin setiap langkah memiliki arti yang eksplisit dan tidak membuat pemroses algoritma ragu."
     },
     {
         topic: "PSEUDOCODE",
-        icon: "fa-code",
-        clue: "STRUKTUR KODE",
-        question: "Apa tujuan utama penggunaan Pseudocode bagi seorang programmer?",
+        clue: "POS 6: BUKU PETUNJUK",
+        question: "Mengapa programmer membuat Pseudocode sebelum menulis program asli untuk robot?",
         options: [
-            "Dapat langsung dijalankan oleh komputer tanpa compiler.",
-            "Merancang logika alur program dengan ringkas tanpa terikat aturan ketat bahasa pemograman.",
-            "Membuat tampilan aplikasi menjadi lebih menarik.",
-            "Mempercepat proses unduhan file di internet."
+            "Bisa langsung dijalankan oleh mesin tanpa perlu di-compile.",
+            "Merancang logika alur penyelesaian masalah tanpa terikat aturan sintaksis yang rumit.",
+            "Agar tampilan antarmuka game menjadi lebih indah.",
+            "Untuk menghemat konsumsi daya baterai robot."
         ],
         correct: 1,
-        explanation: "Pseudocode membantu perancang berfokus pada logika penyelesaian masalah sebelum menulis sintaksis bahasa pemograman yang sebenarnya."
+        explanation: "Pseudocode membantu perancang mematangkan logika dasar penyelesaian masalah sebelum masuk ke penulisan bahasa pemograman yang ketat."
     },
     {
         topic: "FLOWCHART",
-        icon: "fa-stop-circle",
-        clue: "SIMBOL FLOWCHART",
-        question: "Simbol Terminator (berbentuk oval / kapsul) pada flowchart menandai...",
+        clue: "POS 7: BATAS JALUR",
+        question: "Simbol 'Terminator' (oval/kapsul) pada flowchart diletakkan pada...",
         options: [
-            "Awal (Start) atau Akhir (End) dari sebuah alur program.",
-            "Proses perulangan instruksi.",
-            "Penyimpanan data di memori.",
-            "Percabangan kondisi."
+            "Titik awal (Start) dan titik akhir (Stop) alur algoritma.",
+            "Tengah-tengah proses perhitungan.",
+            "Tempat percabangan dua kondisi.",
+            "Garis penghubung antar modul."
         ],
         correct: 0,
-        explanation: "Terminator melambangkan titik awal mulai serta titik akhir selesainya suatu proses pada diagram flowchart."
+        explanation: "Simbol Terminator berupa bentuk oval berfungsi menandai awal dimulainya alur dan akhir selesainya suatu program."
     },
     {
         topic: "PSEUDOCODE",
-        icon: "fa-calculator",
-        clue: "CONTOH KODE",
-        question: "Manakah contoh penulisan pseudocode untuk menghitung luas persegi panjang?",
+        clue: "POS 8: FORMULA NAVIGASI",
+        question: "Manakah contoh Pseudocode yang tepat untuk menghitung jarak langkah robot?",
         options: [
-            "READ panjang, lebar\nluas = panjang * lebar\nPRINT luas",
-            "Mulai -> Buat Gambar -> Selesai",
-            "IF panjang == lebar THEN PRINT 'Persegi'",
-            "INPUT gambar_persegi_panjang"
+            "READ kecepatan, waktu\njarak = kecepatan * waktu\nPRINT jarak",
+            "START -> Jalan Lurus -> FINISH",
+            "IF robot == jalan THEN PRINT 'Maju'",
+            "INPUT gambar_robot"
         ],
         correct: 0,
-        explanation: "Pseudocode menggunakan kata kunci terstruktur seperti READ/INPUT, kalkulasi variabel `luas = panjang * lebar`, dan penampil hasil PRINT."
+        explanation: "Pseudocode menggunakan struktur kata perintah ringkas seperti READ/INPUT, kalkulasi variabel `jarak = kecepatan * waktu`, dan output PRINT."
     },
     {
         topic: "FLOWCHART vs PSEUDOCODE",
-        icon: "fa-exchange-alt",
-        clue: "PERBANDINGAN",
-        question: "Perbedaan mendasar antara Flowchart dan Pseudocode adalah...",
+        clue: "POS 9: PEMETAAN LOGIKA",
+        question: "Apa perbedaan bentuk penyajian antara Flowchart dan Pseudocode?",
         options: [
-            "Flowchart berupa bagan visual, sedangkan Pseudocode berupa naskah teks mirip bahasa pemrograman.",
-            "Flowchart berupa naskah teks, sedangkan Pseudocode menggunakan gambar.",
-            "Flowchart hanya untuk bahasa C++, Pseudocode untuk Python.",
-            "Keduanya sama sekali tidak memiliki perbedaan."
+            "Flowchart berupa bagan visual (diagram), sedangkan Pseudocode berupa naskah teks terstruktur.",
+            "Flowchart berupa teks kalimat, sedangkan Pseudocode berupa gambar berwarna.",
+            "Flowchart khusus untuk robot, sedangkan Pseudocode khusus untuk komputer desktop.",
+            "Keduanya tidak memiliki perbedaan bentuk penyajian."
         ],
         correct: 0,
-        explanation: "Flowchart merepresentasikan algoritma secara visual (gambar), sedangkan Pseudocode merepresentasikannya menggunakan teks terstruktur."
+        explanation: "Flowchart disajikan secara visual dengan bagan geometris, sedangkan Pseudocode disajikan dengan teks perintah ringkas menyerupai kode program."
     },
     {
         topic: "LOGIKA ALGORITMA",
-        icon: "fa-brain",
-        clue: "ANALISIS SOAL",
-        question: "Algoritma singkat:\n1. Masukkan harga barang.\n2. Jika harga > 100000 maka diskon = 10%.\n3. Jika tidak, diskon = 0%.\nBerapa diskon jika harga barang Rp 100.000?",
+        clue: "POS 10: PINTU KELUAR FINISH",
+        question: "Aturan Pintu Keluar:\n1. Cek energi robot.\n2. Jika energi > 50 maka Buka Pintu Utama.\n3. Jika tidak, Buka Pintu Darurat.\nJika energi robot = 50, pintu mana yang terbuka?",
         options: [
-            "10%",
-            "0%",
-            "5%",
-            "Rp 10.000"
+            "Pintu Utama",
+            "Pintu Darurat",
+            "Kedua Pintu Terbuka",
+            "Pintu Terkunci Total"
         ],
         correct: 1,
-        explanation: "Kondisinya adalah 'harga > 100000' (harus lebih besar). Karena harganya pas Rp 100.000, syarat tidak terpenuhi (False), sehingga mendapat diskon 0%."
+        explanation: "Syarat Pintu Utama adalah 'energi > 50' (harus lebih besar dari 50). Karena energi pas 50, kondisi bernilai Salah (False), sehingga sistem membuka Pintu Darurat."
     }
 ];
