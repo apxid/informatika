@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Rekap Tugas</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f4f6f9;
+  padding:20px;
+}
+
+h2{ margin-bottom:15px; }
+
+.topbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+
+select,button{
+  padding:8px;
+}
+
+button{
+  background:#0A4FA3;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#083d82;
+}
+
+.container{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.box{
+  flex:1;
+  min-width:300px;
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+th,td{
+  border:1px solid #ddd;
+  padding:6px;
+}
+
+th{
+  background:#f0f0f0;
+}
+
+.sudah{ color:green; }
+.belum{ color:red; }
+
+#statistik{
+  margin-bottom:10px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📊 Dashboard Rekap Pengumpulan Tugas</h2>
+
+<div class="topbar">
+  <select id="filterKelas">
+    <option value="ALL">Semua Kelas</option>
+  </select>
+
+  <select id="filterJudul">
+    <option value="ALL">Semua Judul</option>
+  </select>
+
+  <button onclick="renderData()">Tampilkan</button>
+</div>
+
+<div id="statistik">Memuat data...</div>
+
+<div class="container">
+
+<div class="box">
+<h3 class="sudah">🟢 Sudah Mengirim</h3>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Kelompok</th>
+<th>Nama Anggota</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody id="sudahList"></tbody>
+</table>
+</div>
+
+<div class="box">
+<h3 class="belum">🔴 Belum Mengirim</h3>
+<ul id="belumList"></ul>
+</div>
+
+</div>
+
+<script>
+
+const url="https://script.google.com/macros/s/AKfycbxuqI3lb6jo81M4ZnY2GVoOO0h6Y9_ATfamTCkVELxkK82VlMHU4Xhb7Aev1pQdF7Q8RQ/exec";
+
+let semuaSiswa=[];
+let semuaTugas=[];
+
+/* LOAD DATA */
+Promise.all([
+  fetch(url+"?action=getDataSiswa").then(r=>r.json()),
+  fetch(url+"?action=getDataTugas").then(r=>r.json())
+])
+.then(([siswa,tugas])=>{
+  semuaSiswa=siswa || [];
+  semuaTugas=tugas || [];
+  initFilter();
+})
+.catch(()=>{
+  document.getElementById("statistik").innerHTML="Gagal mengambil data";
+});
+
+
+/* INIT FILTER */
+function initFilter(){
+
+  const kelasSet=[...new Set(semuaSiswa.map(s=>s.rombel))];
+  const judulSet=[...new Set(semuaTugas.map(t=>t.judul))];
+
+  kelasSet.forEach(k=>{
+    document.getElementById("filterKelas")
+      .innerHTML+=`<option>${k}</option>`;
+  });
+
+  judulSet.forEach(j=>{
+    document.getElementById("filterJudul")
+      .innerHTML+=`<option>${j}</option>`;
+  });
+}
+
+
+/* RENDER DATA */
+function renderData(){
+
+  const kelas=document.getElementById("filterKelas").value;
+  const judul=document.getElementById("filterJudul").value;
+
+  let siswaKelas=semuaSiswa;
+  if(kelas!=="ALL"){
+    siswaKelas=siswaKelas.filter(s=>s.rombel===kelas);
+  }
+
+  let tugas=semuaTugas;
+  if(kelas!=="ALL"){
+    tugas=tugas.filter(t=>t.kelas===kelas);
+  }
+  if(judul!=="ALL"){
+    tugas=tugas.filter(t=>t.judul===judul);
+  }
+
+  /* =====================
+     AMBIL SEMUA NAMA SUDAH (FLATTEN)
+  ===================== */
+  let sudahSet=new Set();
+
+  tugas.forEach(t=>{
+    if(t.nama){
+      t.nama.split(",").forEach(n=>{
+        sudahSet.add(n.trim());
+      });
+    }
+  });
+
+  const total=siswaKelas.length;
+  const belum=siswaKelas.filter(s=>!sudahSet.has(s.nama));
+
+  /* =====================
+     TABEL SUDAH
+  ===================== */
+  document.getElementById("sudahList").innerHTML=
+    tugas.map((t,i)=>`
+      <tr>
+        <td>${i+1}</td>
+        <td>${t.kelompok}</td>
+        <td>${t.nama}</td>
+        <td><a href="${t.link}" target="_blank">Buka</a></td>
+      </tr>
+    `).join("");
+
+  /* =====================
+     BELUM
+  ===================== */
+  document.getElementById("belumList").innerHTML=
+    belum.map(s=>`<li>${s.nama}</li>`).join("");
+
+  /* =====================
+     STATISTIK
+  ===================== */
+  document.getElementById("statistik").innerHTML=
+    `Total: ${total} | Sudah: ${sudahSet.size} | Belum: ${belum.length}`;
+}
+
+</script>
+
+</body>
+</html>
