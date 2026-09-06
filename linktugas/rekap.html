@@ -113,7 +113,7 @@ th{
 
 <div class="box">
 <h3 class="belum">🔴 Belum Mengirim</h3>
-<ul id="belumList"></ul>
+<ol id="belumList"></ol>
 </div>
 
 </div>
@@ -194,17 +194,36 @@ function renderData(){
   const belum=siswaKelas.filter(s=>!sudahSet.has(s.nama));
 
   /* =====================
-     TABEL SUDAH
+     TABEL SUDAH (Pecah nama ke tiap baris)
   ===================== */
-  document.getElementById("sudahList").innerHTML=
-    tugas.map((t,i)=>`
-      <tr>
-        <td>${i+1}</td>
-        <td>${t.kelompok}</td>
-        <td>${t.nama}</td>
-        <td><a href="${t.link}" target="_blank">Buka</a></td>
-      </tr>
-    `).join("");
+  let htmlSudah = "";
+
+  tugas.forEach((t, i) => {
+    // Ambil daftar nama, hilangkan spasi di awal/akhir
+    const listNama = t.nama ? t.nama.split(",").map(n => n.trim()).filter(n => n !== "") : ["-"];
+    const jumlahAnggota = listNama.length;
+
+    listNama.forEach((nama, indexNama) => {
+      htmlSudah += `<tr>`;
+      
+      // Jika baris pertama dari kelompok tersebut, buat cell untuk No, Kelompok, dan Link dengan rowspan
+      if (indexNama === 0) {
+        htmlSudah += `<td rowspan="${jumlahAnggota}">${i + 1}</td>`;
+        htmlSudah += `<td rowspan="${jumlahAnggota}">${t.kelompok}</td>`;
+      }
+      
+      // Nama dibuat 1 baris untuk 1 siswa
+      htmlSudah += `<td>${nama}</td>`;
+      
+      if (indexNama === 0) {
+        htmlSudah += `<td rowspan="${jumlahAnggota}"><a href="${t.link}" target="_blank">Buka</a></td>`;
+      }
+      
+      htmlSudah += `</tr>`;
+    });
+  });
+
+  document.getElementById("sudahList").innerHTML = htmlSudah;
 
   /* =====================
      BELUM
