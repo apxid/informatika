@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Apersepsi Pembelajaran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .question-card {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #cbd5e1;
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        /* Modal / Pop-up Animasi */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Style khusus modal benar/salah */
+        .correct-icon { color: var(--success); }
+        .incorrect-icon { color: var(--error); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Kuis Apersepsi Pembelajaran</h1>
+
+        <div class="section-title">
+            <i class="fa-solid fa-rotate"></i> Review Pembelajaran Sebelumnya
+        </div>
+
+        <div class="question-card" id="q1">
+            <div class="question-text">1. Aplikasi apa yang paling tepat digunakan untuk mengolah teks?</div>
+            <div class="options-list">
+                <button class="option-btn" onclick="checkAnswer(1, 0, false)">A. Microsoft Excel</button>
+                <button class="option-btn" onclick="checkAnswer(1, 1, true)">B. Microsoft Word / Google Docs</button>
+                <button class="option-btn" onclick="checkAnswer(1, 2, false)">C. Adobe Photoshop</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q2">
+            <div class="question-text">2. Aplikasi apa yang dapat digunakan untuk mengolah data angka/tabel?</div>
+            <div class="options-list">
+                <button class="option-btn" onclick="checkAnswer(2, 0, true)">A. Microsoft Excel / Google Sheets</button>
+                <button class="option-btn" onclick="checkAnswer(2, 1, false)">B. CorelDraw</button>
+                <button class="option-btn" onclick="checkAnswer(2, 2, false)">C. Notepad</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q3">
+            <div class="question-text">3. Aplikasi apa yang dapat digunakan untuk mengolah gambar?</div>
+            <div class="options-list">
+                <button class="option-btn" onclick="checkAnswer(3, 0, false)">A. Microsoft PowerPoint</button>
+                <button class="option-btn" onclick="checkAnswer(3, 1, true)">B. Adobe Photoshop / Canva</button>
+                <button class="option-btn" onclick="checkAnswer(3, 2, false)">C. Microsoft Word</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q4">
+            <div class="question-text">4. Mengapa kita harus memilih aplikasi sesuai kebutuhan?</div>
+            <div class="options-list">
+                <button class="option-btn" onclick="checkAnswer(4, 0, false)">A. Agar ukuran file menjadi sangat besar</button>
+                <button class="option-btn" onclick="checkAnswer(4, 1, true)">B. Agar pekerjaan menjadi lebih efektif, efisien, dan hasil maksimal</button>
+                <button class="option-btn" onclick="checkAnswer(4, 2, false)">C. Supaya komputer cepat rusak</button>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fa-solid fa-gamepad"></i> Pertanyaan Pemantik (Artikel Blog: "Seberapa Canggih Sekolahku?")
+        </div>
+
+        <div class="question-card" id="q5">
+            <div class="question-text">5. Apa saja yang harus disiapkan sebelum artikel blog dipublikasikan?</div>
+            <div class="options-list">
+                <button class="option-btn" onclick="checkAnswer(5, 0, false)">A. Langsung publikasikan tanpa isi</button>
+                <button class="option-btn" onclick="checkAnswer(5, 1, true)">B. Judul menarik, isi teks, data/fakta pendukung, dan gambar dokumentasi</button>
+                <button class="option-btn" onclick="checkAnswer(5, 2, false)">C. Hanya perlu mencantumkan musik latar saja</button>
+            </div>
+        </div>
+
+        <div class="question-card" id="q6">
+            <div class="question-text">6. Apakah artikel yang menarik cukup hanya berisi tulisan? Mengapa data dan gambar juga diperlukan?</div>
+            <div class="options-list">
+                <button class="option-btn" onclick="checkAnswer(6, 0, false)">A. Cukup tulisan saja agar pembaca cepat bosan</button>
+                <button class="option-btn" onclick="checkAnswer(6, 1, true)">B. Tidak cukup; data membuat artikel tepercaya, dan gambar membuat visual lebih menarik</button>
+                <button class="option-btn" onclick="checkAnswer(6, 2, false)">C. Gambar dan data tidak penting sama sekali</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div id="modalIconContainer"></div>
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-message" id="modalMessage"></div>
+            <button class="modal-btn" onclick="closeModal()">Lanjutkan</button>
+        </div>
+    </div>
+
+    <script>
+        // Kumpulan pesan koreksi untuk setiap nomor soal jika salah
+        const corrections = {
+            1: "Koreksi: Aplikasi pengolah teks yang tepat adalah Microsoft Word atau Google Docs.",
+            2: "Koreksi: Aplikasi pengolah data angka/tabel yang tepat adalah Microsoft Excel atau Google Sheets.",
+            3: "Koreksi: Aplikasi pengolah gambar yang tepat adalah Adobe Photoshop, Canva, atau CorelDraw.",
+            4: "Koreksi: Kita memilih aplikasi sesuai kebutuhan agar pekerjaan lebih efektif, efisien, dan hasilnya maksimal.",
+            5: "Koreksi: Sebelum dipublikasikan, kita perlu menyiapkan judul menarik, isi teks, data pendukung, serta gambar.",
+            6: "Koreksi: Tulisan saja tidak cukup. Data berfungsi menguatkan fakta, sedangkan gambar membuat visual artikel lebih menarik dibaca."
+        };
+
+        function checkAnswer(questionNum, optionIndex, isCorrect) {
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalIconContainer = document.getElementById('modalIconContainer');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+
+            // Nonaktifkan tombol pada soal tersebut setelah dipilih agar tidak klik ganda
+            const questionCard = document.getElementById('q' + questionNum);
+            const buttons = questionCard.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (isCorrect) {
+                modalIconContainer.innerHTML = '<i class="fa-solid fa-circle-check correct-icon"></i>';
+                modalTitle.innerText = "Luar Biasa! 🎉";
+                modalMessage.innerText = "Jawaban kamu benar! Pertahankan semangat belajarnya.";
+                questionCard.style.borderLeftColor = "var(--success)";
+            } else {
+                modalIconContainer.innerHTML = '<i class="fa-solid fa-circle-xmark incorrect-icon"></i>';
+                modalTitle.innerText = "Kurang Tepat 😅";
+                modalMessage.innerText = corrections[questionNum];
+                questionCard.style.borderLeftColor = "var(--error)";
+            }
+
+            modalOverlay.classList.add('active');
+        }
+
+        function closeModal() {
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
