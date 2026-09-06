@@ -194,24 +194,26 @@ function renderData(){
   const belum=siswaKelas.filter(s=>!sudahSet.has(s.nama));
 
   /* =====================
-     TABEL SUDAH (Nomor per anggota kelompok)
+     TABEL SUDAH (Pecah nama ke tiap baris)
   ===================== */
   let htmlSudah = "";
 
   tugas.forEach((t, i) => {
+    // Ambil daftar nama, hilangkan spasi di awal/akhir
     const listNama = t.nama ? t.nama.split(",").map(n => n.trim()).filter(n => n !== "") : ["-"];
     const jumlahAnggota = listNama.length;
 
     listNama.forEach((nama, indexNama) => {
       htmlSudah += `<tr>`;
       
+      // Jika baris pertama dari kelompok tersebut, buat cell untuk No, Kelompok, dan Link dengan rowspan
       if (indexNama === 0) {
         htmlSudah += `<td rowspan="${jumlahAnggota}">${i + 1}</td>`;
         htmlSudah += `<td rowspan="${jumlahAnggota}">${t.kelompok}</td>`;
       }
       
-      // Menambahkan penomoran internal untuk tiap anggota di kelompoknya (cth: 1. Nama Siswa)
-      htmlSudah += `<td>${indexNama + 1}. ${nama}</td>`;
+      // Nama dibuat 1 baris untuk 1 siswa
+      htmlSudah += `<td>${nama}</td>`;
       
       if (indexNama === 0) {
         htmlSudah += `<td rowspan="${jumlahAnggota}"><a href="${t.link}" target="_blank">Buka</a></td>`;
