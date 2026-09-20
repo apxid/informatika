@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cetak Kartu Ujian — F4</title>
+<style>
+:root{--page-w:215.9mm;--page-h:330.2mm;--page-x:5mm;--page-y:8mm;--card-h:45mm;--gap:5mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif}
+#root{display:block;width:var(--page-w)}
+.page{width:var(--page-w);height:var(--page-h);background:#fff;position:relative;padding:var(--page-y) var(--page-x)}
+.page-inner{height:calc(var(--page-h) - 2 * var(--page-y));display:grid;grid-template-rows:repeat(4,var(--card-h));row-gap:var(--gap)}
+.card-slot{height:var(--card-h);position:relative}.cutline{position:absolute;left:-1mm;right:-1mm;bottom:calc(-1 * var(--gap) / 2);border-top:.25mm dashed #333;z-index:3}
+@media print{
+  @page{size:215.9mm 330.2mm;margin:0}
+  html,body{width:215.9mm;height:330.2mm;background:#fff}
+  .print-page{page-break-after:always;break-after:page}
+  .print-page:last-child{page-break-after:auto;break-after:auto}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+let cardMaster=null,settings=null,assets=null,schedule=[];
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function classMajor(k){return String(k||"").trim().split(/\s+/)[0]||""}
+async function loadCardMaster(){
+ const res=await fetch("./card.html",{cache:"no-store"});
+ if(!res.ok)throw new Error("card.html gagal dimuat");
+ const doc=new DOMParser().parseFromString(await res.text(),"text/html");
+ const style=doc.querySelector("style[data-card-master]");const tpl=doc.querySelector("#card-template");
+ if(!style||!tpl)throw new Error("Struktur card.html tidak lengkap");
+ const st=document.createElement("style");st.textContent=style.textContent;document.head.appendChild(st);
+ cardMaster=tpl.content.firstElementChild.cloneNode(true);
+ const h=Number(tpl.dataset.heightMm||45);document.documentElement.style.setProperty("--card-h",h+"mm");
+}
+function cloneCard(s){
+ const el=cardMaster.cloneNode(true);
+ const set=(sel,val)=>{const n=el.querySelector(sel);if(n)n.textContent=String(val??"")};
+ const img=(sel,src)=>{const n=el.querySelector(sel);if(n)n.src=src||""};
+ set('[data-field="title"]',settings.title);set('[data-field="school"]',settings.school);set('[data-field="year"]',settings.year);
+ // querySelector hanya mengisi kemunculan pertama; isi kedua juga harus sama.
+ el.querySelectorAll('[data-field="title"]').forEach(n=>n.textContent=String(settings.title??""));
+ el.querySelectorAll('[data-field="school"]').forEach(n=>n.textContent=String(settings.school??""));
+ el.querySelectorAll('[data-field="year"]').forEach(n=>n.textContent=String(settings.year??""));
+ set('[data-field="no"]',s.no);set('[data-field="nama"]',s.nama);set('[data-field="nis"]',s.nis);set('[data-field="kelas"]',s.kelas);set('[data-field="ruang"]',s.ruang);
+ set('[data-field="placeDate"]',settings.placeDate);set('[data-field="principal"]',settings.principal);set('[data-field="nip"]',settings.nip);set('[data-field="major"]',classMajor(s.kelas));
+ img('[data-asset="logo"]',assets.logo);el.querySelectorAll('[data-asset="logo"]').forEach(n=>n.src=assets.logo||"");img('[data-asset="blue"]',assets.blue);img('[data-asset="signature"]',assets.signature);
+ const tb=el.querySelector('[data-schedule-body]');
+ tb.innerHTML=schedule.map(r=>{const has2=String(r.time2||"").trim()||String(r.subject2||"").trim();const sp=has2?2:1;return `<tr><td rowspan="${sp}">${esc(r.no)}</td><td rowspan="${sp}"><div>${esc(r.day)}</div><div>${esc(r.date)}</div></td><td>${esc(r.time1)}</td><td>${esc(r.subject1)}</td></tr>${has2?`<tr><td>${esc(r.time2)}</td><td>${esc(r.subject2)}</td></tr>`:""}`}).join("")||'<tr><td colspan="4" class="empty">Jadwal belum diisi</td></tr>';
+ return el;
+}
+function makePage(group){
+ const slots=[...group];while(slots.length<4)slots.push(null);
+ return `<div class="page print-page"><div class="page-inner">${slots.map((s,i)=>`<div class="card-slot">${s?cloneCard(s).outerHTML:""}${i<3?'<div class="cutline"></div>':""}</div>`).join("")}</div></div>`;
+}
+async function init(){
+ try{
+  const raw=localStorage.getItem("kartuPrintPayload");if(!raw)throw new Error("Data cetak tidak ditemukan");
+  const p=JSON.parse(raw);settings=p.settings;assets=p.assets;schedule=p.schedule||[];
+  await loadCardMaster();
+  document.documentElement.style.setProperty("--page-x",(Number(settings.marginX||5)+Number(settings.calX||0))+"mm");
+  document.documentElement.style.setProperty("--page-y",(Number(settings.marginY||8)+Number(settings.calY||0))+"mm");
+  document.documentElement.style.setProperty("--gap",Number(settings.gap||5)+"mm");
+  const groups=[];for(let i=0;i<p.list.length;i+=4)groups.push(p.list.slice(i,i+4));
+  document.getElementById("root").innerHTML=groups.map(makePage).join("");
+  setTimeout(()=>window.print(),250);
+ }catch(e){document.body.innerHTML='<div style="padding:30px;font-family:Arial"><b>Gagal menyiapkan cetakan.</b><br>'+esc(e.message)+'</div>';console.error(e)}
+}
+init();
+</script>
+</body>
+</html>
