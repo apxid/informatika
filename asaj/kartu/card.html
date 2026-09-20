@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Master Kartu Ujian</title>
+<style data-card-master>
+.card{width:100%;height:45mm;border:.28mm solid #111;background:#fff;overflow:hidden;display:grid;grid-template-columns:50% 50%;font-family:Arial,Helvetica,sans-serif;color:#111}
+.card-half{position:relative;height:100%;overflow:hidden}.card-half.left{border-right:.35mm solid #111}
+.card-head{height:9mm;display:grid;grid-template-columns:9mm 1fr 8mm;align-items:center;border-bottom:.25mm solid #111;position:relative}
+.card-head .logo{width:6.6mm;height:6.6mm;object-fit:contain;justify-self:center}.card-head .blue{width:6.5mm;height:6.5mm;object-fit:contain;justify-self:center}
+.card-head .title{text-align:center;line-height:1.02;font-size:5.7pt;font-weight:700;padding:0 .7mm}.card-head .school{font-size:5.5pt;margin-top:.35mm}.card-head .year{font-size:5.1pt;margin-top:.25mm}
+.class-mark{font-size:14pt;font-weight:800;text-align:center;line-height:1}
+.left-body{padding:1.35mm 1.8mm 1mm;position:relative;height:calc(100% - 9mm)}
+.identity{display:grid;grid-template-columns:25mm 2.8mm 1fr;grid-auto-rows:3.65mm;row-gap:0;font-size:5.7pt;line-height:1;border:.22mm solid #111;width:100%}
+.identity>div{padding:.45mm .7mm;border-right:.22mm solid #111;border-bottom:.22mm solid #111;display:flex;align-items:center}.identity>div:nth-child(3n){border-right:0}.identity>div:nth-last-child(-n+3){border-bottom:0}.identity .colon{justify-content:center;text-align:center}.identity .val{font-weight:400;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sign{position:absolute;left:27mm;right:0;bottom:.6mm;text-align:left;font-size:4.9pt;line-height:1}.sign .sig{width:16mm;height:8mm;object-fit:contain;display:block;margin:-.6mm 0 -.55mm}.sign .name{font-weight:700;font-size:5.2pt}.sign .nip{font-size:4.9pt}
+.schedule-wrap{height:100%;display:flex;flex-direction:column}.schedule-title{height:9mm;display:grid;grid-template-columns:9mm 1fr 8mm;align-items:center;border-bottom:.25mm solid #111}.schedule-title .logo{width:6.6mm;height:6.6mm;object-fit:contain;justify-self:center}.schedule-title .blue{width:6.5mm;height:6.5mm;object-fit:contain;justify-self:center}.schedule-title .t{text-align:center;font-size:5.7pt;font-weight:700;line-height:1.02}.schedule-title .school{font-size:5.5pt}.schedule-title .year{font-size:5.1pt;margin-top:.25mm}
+.schedule-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:4.7pt;line-height:1}.schedule-table th,.schedule-table td{border-right:.2mm solid #111;border-bottom:.2mm solid #111;padding:.28mm .35mm;vertical-align:middle}.schedule-table th{font-weight:700;text-align:center}.schedule-table td{text-align:left}.schedule-table th:nth-child(1),.schedule-table td:nth-child(1){width:8%}.schedule-table th:nth-child(2),.schedule-table td:nth-child(2){width:27%}.schedule-table th:nth-child(3),.schedule-table td:nth-child(3){width:25%}.schedule-table th:nth-child(4),.schedule-table td:nth-child(4){width:39%}.schedule-table td:nth-child(1),.schedule-table td:nth-child(3){text-align:center}.empty{color:#a1a1a1}
+</style>
+</head>
+<body>
+<template id="card-template" data-width-mm="100" data-height-mm="45">
+<div class="card">
+  <div class="card-half left">
+    <div class="card-head">
+      <img class="logo" data-asset="logo" alt="Logo">
+      <div class="title"><span data-field="title"></span><div class="school" data-field="school"></div><div class="year" data-field="year"></div></div>
+      <img class="blue" data-asset="blue" alt="Logo">
+    </div>
+    <div class="left-body">
+      <div class="identity">
+        <div>No. Peserta</div><div class="colon">:</div><div class="val" data-field="no"></div>
+        <div>Nama Peserta</div><div class="colon">:</div><div class="val" data-field="nama"></div>
+        <div>NIS</div><div class="colon">:</div><div class="val" data-field="nis"></div>
+        <div>Kelas</div><div class="colon">:</div><div class="val" data-field="kelas"></div>
+        <div>Ruang</div><div class="colon">:</div><div class="val" data-field="ruang"></div>
+      </div>
+      <div class="sign">
+        <div data-field="placeDate"></div>
+        <div>Kepala Sekolah,</div>
+        <img class="sig" data-asset="signature" alt="Tanda tangan">
+        <div class="name" data-field="principal"></div>
+        <div class="nip" data-field="nip"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-half">
+    <div class="schedule-wrap">
+      <div class="schedule-title">
+        <img class="logo" data-asset="logo" alt="Logo">
+        <div class="t"><span data-field="title"></span><div class="school" data-field="school"></div><div class="year" data-field="year"></div></div>
+        <div class="class-mark" data-field="major"></div>
+      </div>
+      <table class="schedule-table">
+        <thead><tr><th>NO</th><th>HARI, TGL</th><th>WAKTU</th><th>MATA PELAJARAN</th></tr></thead>
+        <tbody data-schedule-body></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</template>
+</body>
+</html>
