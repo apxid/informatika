@@ -61,31 +61,31 @@ table.data tr.sel{background:#f0f7ff}
 .page-inner{height:calc(var(--page-h) - 2 * var(--page-y));display:grid;grid-template-rows:repeat(4,var(--card-h));row-gap:var(--gap)}
 .card-slot{height:var(--card-h);position:relative}
 .card{
-  width:100%;height:var(--card-h);border:.28mm solid #111;background:#fff;overflow:hidden;
-  display:grid;grid-template-columns:50% 50%;font-family:Arial,Helvetica,sans-serif;color:#111;
+  width:100%;height:var(--card-h);border:0;background:transparent;overflow:visible;
+  display:grid;grid-template-columns:calc((100% - 3mm)/2) calc((100% - 3mm)/2);column-gap:3mm;font-family:Arial,Helvetica,sans-serif;color:#111;
 }
 .cutline{position:absolute;left:-1mm;right:-1mm;bottom:calc(-1 * var(--gap) / 2);border-top:.25mm dashed #333;z-index:3}
 .card-half{position:relative;height:100%;overflow:hidden}
-.card-half.left{border-right:.35mm solid #111}
-.card-head{height:9mm;display:grid;grid-template-columns:9mm 1fr 8mm;align-items:center;border-bottom:.25mm solid #111;position:relative}
+.card-half{border:.28mm solid #111;background:#fff}.card-half.left{border-right:.28mm solid #111}
+.card-head{height:10mm;display:grid;grid-template-columns:9mm 1fr 8mm;align-items:center;border-bottom:.25mm solid #111;position:relative}
 .card-head .logo{width:6.6mm;height:6.6mm;object-fit:contain;justify-self:center}
 .card-head .blue{width:6.5mm;height:6.5mm;object-fit:contain;justify-self:center}
-.card-head .title{text-align:center;line-height:1.02;font-size:5.7pt;font-weight:700;padding:0 .7mm}
-.card-head .school{font-size:5.5pt;margin-top:.35mm}
-.card-head .year{font-size:5.1pt;margin-top:.25mm}
+.card-head .title{text-align:center;line-height:1.02;font-size:7pt;font-weight:800;padding:0 .7mm}
+.card-head .school{font-size:6.4pt;font-weight:800;margin-top:.35mm}
+.card-head .year{font-size:6pt;font-weight:800;margin-top:.25mm}
 .class-mark{font-size:14pt;font-weight:800;text-align:center;line-height:1}
-.left-body{padding:1.35mm 1.8mm 1mm;position:relative;height:calc(100% - 9mm)}
-.identity{display:grid;grid-template-columns:25mm 2.8mm 1fr;grid-auto-rows:3.65mm;row-gap:0;font-size:5.7pt;line-height:1;border:.22mm solid #111;width:100%;}
-.identity > div{padding:.45mm .7mm;border-right:.22mm solid #111;border-bottom:.22mm solid #111;display:flex;align-items:center}.identity > div:nth-child(3n){border-right:0}.identity > div:nth-last-child(-n+3){border-bottom:0}.identity .colon{justify-content:center;text-align:center}.identity .val{font-weight:400;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.sign{position:absolute;left:27mm;right:0;bottom:.6mm;text-align:left;font-size:4.9pt;line-height:1.0}
+.left-body{padding:1.5mm 2mm 1mm;position:relative;height:calc(100% - 10mm)}
+.identity{display:grid;grid-template-columns:25mm 2.8mm 1fr;grid-auto-rows:3.7mm;row-gap:0;font-size:6.1pt;line-height:1;width:100%;border:0;background:transparent;}
+.identity > div{padding:.35mm .5mm;border:0;display:flex;align-items:center}.identity .colon{justify-content:center;text-align:center}.identity .val{font-weight:400;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sign{position:absolute;left:55mm;right:1.5mm;bottom:.6mm;text-align:left;font-size:4.9pt;line-height:1.0}
 .sign .sig{width:16mm;height:8mm;object-fit:contain;display:block;margin:-.6mm 0 -.55mm}
 .sign .name{font-weight:700;font-size:5.2pt}.sign .nip{font-size:4.9pt}
 .schedule-wrap{height:100%;display:flex;flex-direction:column}
-.schedule-title{height:9mm;display:grid;grid-template-columns:9mm 1fr 8mm;align-items:center;border-bottom:.25mm solid #111}
+.schedule-title{height:10mm;display:grid;grid-template-columns:9mm 1fr 8mm;align-items:center;border-bottom:.25mm solid #111}
 .schedule-title .logo{width:6.6mm;height:6.6mm;object-fit:contain;justify-self:center}
 .schedule-title .blue{width:6.5mm;height:6.5mm;object-fit:contain;justify-self:center}
-.schedule-title .t{text-align:center;font-size:5.7pt;font-weight:700;line-height:1.02}
-.schedule-title .school{font-size:5.5pt}.schedule-title .year{font-size:5.1pt;margin-top:.25mm}
+.schedule-title .t{text-align:center;font-size:7pt;font-weight:800;line-height:1.02}
+.schedule-title .school{font-size:6.4pt;font-weight:800}.schedule-title .year{font-size:6pt;font-weight:800;margin-top:.25mm}
 .schedule-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:4.7pt;line-height:1}
 .schedule-table th,.schedule-table td{border-right:.2mm solid #111;border-bottom:.2mm solid #111;padding:.28mm .35mm;vertical-align:middle}
 .schedule-table th{font-weight:700;text-align:center}.schedule-table td{text-align:left}
@@ -319,14 +319,14 @@ const DEFAULT_SETTINGS = {
   principal:"Didin Muamalah, S.Pd., M.Pd.",
   nip:"NIP  198202052007012007",
   marginX:5,
-  marginY:14.6,
-  cardH:64.5,
-  gap:14.3,
+  marginY:8,
+  cardH:45,
+  gap:5,
   calX:0,
   calY:0,
   screenScale:.65,
   cutStyle:"dashed",
-  layoutVersion:3
+  layoutVersion:4
 };
 
 let students = JSON.parse(JSON.stringify(DEFAULT_DATA));
@@ -335,7 +335,7 @@ let activeClasses = new Set();
 let schedule = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
 let settings = JSON.parse(localStorage.getItem("kartuSettings") || "null") || {...DEFAULT_SETTINGS};
 if(Number(settings.layoutVersion||0)<3){
-  settings={...settings,marginX:5,marginY:8,cardH:45,gap:5,layoutVersion:3};
+  settings={...settings,marginX:5,marginY:8,cardH:45,gap:5,layoutVersion:4};
 }
 let assets = JSON.parse(localStorage.getItem("kartuAssets") || "null") || {...DEFAULT_ASSETS};
 let pendingWorkbook = null;
@@ -518,7 +518,7 @@ function updateSettingsFromUI(){
   settings.title=$("titleInput").value;settings.school=$("schoolInput").value;settings.year=$("yearInput").value;
   settings.placeDate=$("placeDateInput").value;settings.principal=$("principalInput").value;settings.nip=$("nipInput").value;
   settings.marginX=Number($("marginX").value)||0;settings.marginY=Number($("marginY").value)||0;
-  settings.cardH=Number($("cardH").value)||64.5;settings.gap=Number($("gap").value)||14.3;
+  settings.cardH=Number($("cardH").value)||45;settings.gap=Number($("gap").value)||5;
   settings.calX=Number($("calX").value)||0;settings.calY=Number($("calY").value)||0;
   settings.screenScale=Number($("screenScale").value)||.65;settings.cutStyle=$("cutStyle").value;
   setCSS();saveLocal();renderPreview();
