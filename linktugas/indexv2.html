@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -81,6 +80,11 @@ textarea:focus{
   box-shadow:0 0 0 3px rgba(10,79,163,.10);
 }
 
+select:disabled{
+  background:#f3f4f6;
+  color:#777;
+}
+
 textarea{
   height:65px;
   resize:none;
@@ -100,7 +104,7 @@ textarea{
   align-items:center;
   margin-bottom:5px;
   font-size:13px;
-  padding:4px;
+  padding:6px;
   border-radius:5px;
 }
 
@@ -121,27 +125,27 @@ textarea{
 .loading{
   text-align:center;
   color:#777;
-  padding:12px 5px;
+  padding:14px 5px;
   font-size:13px;
 }
 
 .info{
   text-align:center;
   color:#777;
-  padding:12px 5px;
+  padding:14px 5px;
   font-size:13px;
 }
 
 .error-info{
   text-align:center;
   color:#e53935;
-  padding:12px 5px;
+  padding:14px 5px;
   font-size:13px;
 }
 
 .retry-btn{
-  margin-top:6px;
-  padding:6px 12px;
+  margin-top:7px;
+  padding:7px 12px;
   border:none;
   border-radius:6px;
   background:#e53935;
@@ -223,6 +227,7 @@ textarea{
     transform:scale(.9);
     opacity:0;
   }
+
   to{
     transform:scale(1);
     opacity:1;
@@ -263,182 +268,206 @@ textarea{
   background:#e53935;
 }
 </style>
-
 </head>
 
 <body>
 
 <div class="card">
 
-<img
-src="https://yanuar-moga.github.io/informatika/absen/assets/logo.png"
-class="logo"
-alt="Logo"
+  <img
+    src="https://yanuar-moga.github.io/informatika/absen/assets/logo.png"
+    class="logo"
+    alt="Logo"
+  >
 
->
+  <h1 class="title">
+    Form Pengumpulan Tugas
+  </h1>
 
-<h1 class="title">Form Pengumpulan Tugas</h1>
+  <form id="formTugas" class="form">
 
-<form id="formTugas" class="form">
+    <!-- KELOMPOK -->
 
-  <div class="field">
-    <span class="label-text">Nama Kelompok</span>
+    <div class="field">
 
-```
-<input
-  type="text"
-  id="kelompok"
-  class="input-field"
-  autocomplete="off"
-  required
->
-```
+      <span class="label-text">
+        Nama Kelompok
+      </span>
 
-  </div>
+      <input
+        type="text"
+        id="kelompok"
+        class="input-field"
+        autocomplete="off"
+        required
+      >
 
-  <div class="field">
-    <span class="label-text">Kelas</span>
+    </div>
 
-```
-<select id="kelas" required>
-  <option value="">Memuat kelas...</option>
-</select>
-```
 
-  </div>
+    <!-- KELAS -->
 
-  <div class="field">
+    <div class="field">
 
-```
-<span class="label-text">
-  Nama Anak
-  <span style="color:#777;font-weight:normal;">
-    (maksimal 6)
-  </span>
-</span>
+      <span class="label-text">
+        Kelas
+      </span>
 
-<div id="listNama" class="checkbox-list">
+      <select id="kelas" required>
 
-  <div class="info">
-    Pilih kelas terlebih dahulu
+        <option value="">
+          Memuat kelas...
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- NAMA -->
+
+    <div class="field">
+
+      <span class="label-text">
+        Nama Anak
+        <span style="color:#777;font-weight:normal;">
+          (maksimal 6)
+        </span>
+      </span>
+
+      <div
+        id="listNama"
+        class="checkbox-list"
+      >
+
+        <div class="info">
+          Pilih kelas terlebih dahulu
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- JUDUL -->
+
+    <div class="field">
+
+      <span class="label-text">
+        Judul Tugas
+      </span>
+
+      <select id="judul" required>
+
+        <option value="">
+          -- Pilih Judul Tugas --
+        </option>
+
+        <option>
+          Rancangan Konten Artikel Blog
+        </option>
+
+        <option>
+          Link Artikel Blog
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- LINK -->
+
+    <div class="field">
+
+      <span class="label-text">
+        Link Tugas
+      </span>
+
+      <input
+        id="link"
+        type="url"
+        class="input-field"
+        placeholder="https://..."
+        required
+      >
+
+    </div>
+
+
+    <!-- CATATAN -->
+
+    <div class="field">
+
+      <span class="label-text">
+        Catatan
+      </span>
+
+      <textarea
+        id="catatan"
+        placeholder="Opsional"
+      ></textarea>
+
+    </div>
+
+
+    <!-- SUBMIT -->
+
+    <button
+      type="submit"
+      id="btnKirim"
+      class="btn-primary"
+    >
+      Kirim Tugas
+    </button>
+
+
+    <!-- REKAP -->
+
+    <a
+      href="https://apxid.github.io/informatika/linktugas/rekap"
+      target="_blank"
+      class="btn-secondary"
+    >
+      Lihat Rekap Pengiriman Tugas
+    </a>
+
+  </form>
+
+
+  <div class="footer">
+    © 2026 MB All Rights Reserved
   </div>
 
 </div>
-```
 
-  </div>
-
-  <div class="field">
-
-```
-<span class="label-text">Judul Tugas</span>
-
-<select id="judul" required>
-
-  <option value="">
-    -- Pilih Judul Tugas --
-  </option>
-
-  <option>
-    Rancangan Konten Artikel Blog
-  </option>
-
-  <option>
-    Link Artikel Blog
-  </option>
-
-</select>
-```
-
-  </div>
-
-  <div class="field">
-
-```
-<span class="label-text">Link Tugas</span>
-
-<input
-  id="link"
-  type="url"
-  class="input-field"
-  placeholder="https://..."
-  required
->
-```
-
-  </div>
-
-  <div class="field">
-
-```
-<span class="label-text">Catatan</span>
-
-<textarea
-  id="catatan"
-  placeholder="Opsional"
-></textarea>
-```
-
-  </div>
-
-<button
-type="submit"
-id="btnKirim"
-class="btn-primary"
-
->
-
-```
-Kirim Tugas
-```
-
-  </button>
-
-<a
-href="https://apxid.github.io/informatika/linktugas/rekap"
-target="_blank"
-class="btn-secondary"
-
->
-
-```
-Lihat Rekap Pengiriman Tugas
-```
-
-  </a>
-
-</form>
-
-<div class="footer">
-  © 2026 MB All Rights Reserved
-</div>
-
-</div>
 
 <!-- ALERT -->
 
-<div id="customAlert" class="alert-overlay">
+<div
+  id="customAlert"
+  class="alert-overlay"
+>
 
   <div class="alert-box">
 
-```
-<h3 id="alertTitle"></h3>
+    <h3 id="alertTitle"></h3>
 
-<p id="alertMessage"></p>
+    <p id="alertMessage"></p>
 
-<button onclick="closeAlert()">
-  OK
-</button>
-```
+    <button onclick="closeAlert()">
+      OK
+    </button>
 
   </div>
 
 </div>
+
 
 <script>
 
 /* =========================================
-   KONFIGURASI
+   KONFIGURASI API
 ========================================= */
 
 const API_URL =
@@ -498,8 +527,8 @@ function showAlert(type,message){
     "alert-box " +
     (
       type === "success"
-      ? "alert-success"
-      : "alert-error"
+        ? "alert-success"
+        : "alert-error"
     );
 
   overlay.style.display="flex";
@@ -515,10 +544,14 @@ function closeAlert(){
 
 
 /* =========================================
-   FETCH JSON DENGAN TIMEOUT
+   FETCH JSON + TIMEOUT
 ========================================= */
 
-async function fetchJSON(url,options={},timeout=15000){
+async function fetchJSON(
+  requestURL,
+  options={},
+  timeout=15000
+){
 
   const controller =
     new AbortController();
@@ -533,7 +566,7 @@ async function fetchJSON(url,options={},timeout=15000){
 
     const response =
       await fetch(
-        url,
+        requestURL,
         {
           ...options,
           signal:controller.signal
@@ -560,15 +593,19 @@ async function fetchJSON(url,options={},timeout=15000){
 
 
 /* =========================================
-   LOAD DAFTAR KELAS
+   LOAD KELAS
 ========================================= */
 
 async function loadKelas(){
 
-  kelas.innerHTML =
-    `<option value="">Memuat kelas...</option>`;
-
   kelas.disabled=true;
+
+  kelas.innerHTML =
+    `
+    <option value="">
+      Memuat kelas...
+    </option>
+    `;
 
   try{
 
@@ -580,26 +617,39 @@ async function loadKelas(){
       );
 
     kelas.innerHTML =
-      `<option value="">Pilih Kelas</option>`;
+      `
+      <option value="">
+        Pilih Kelas
+      </option>
+      `;
 
-    if(!Array.isArray(data) || data.length===0){
+    if(
+      !Array.isArray(data) ||
+      data.length===0
+    ){
 
       kelas.innerHTML =
-        `<option value="">Kelas tidak tersedia</option>`;
+        `
+        <option value="">
+          Kelas tidak tersedia
+        </option>
+        `;
 
       return;
     }
 
-    data.forEach(k=>{
+    data.forEach(item=>{
 
-      if(!k) return;
+      if(!item) return;
+
+      const value =
+        String(item).trim();
 
       const option =
         document.createElement("option");
 
-      option.value=String(k).trim();
-
-      option.textContent=String(k).trim();
+      option.value=value;
+      option.textContent=value;
 
       kelas.appendChild(option);
 
@@ -612,13 +662,20 @@ async function loadKelas(){
     console.error(error);
 
     kelas.innerHTML =
-      `<option value="">Gagal memuat kelas</option>`;
+      `
+      <option value="">
+        Gagal memuat kelas
+      </option>
+      `;
 
     listNama.innerHTML =
       `
       <div class="error-info">
+
         Gagal mengambil daftar kelas.
+
         <br>
+
         <button
           type="button"
           class="retry-btn"
@@ -626,6 +683,7 @@ async function loadKelas(){
         >
           Coba Lagi
         </button>
+
       </div>
       `;
 
@@ -635,7 +693,7 @@ async function loadKelas(){
 
 
 /* =========================================
-   LOAD SISWA BERDASARKAN KELAS
+   LOAD SISWA SESUAI KELAS
 ========================================= */
 
 async function loadSiswaByKelas(kelasDipilih){
@@ -649,51 +707,67 @@ async function loadSiswaByKelas(kelasDipilih){
 
   try{
 
+    const requestURL =
+      API_URL +
+      "?action=getSiswaByKelas" +
+      "&kelas=" +
+      encodeURIComponent(kelasDipilih);
+
     const data =
       await fetchJSON(
-        API_URL +
-        "?action=getSiswaByKelas&kelas=" +
-        encodeURIComponent(kelasDipilih),
+        requestURL,
         {},
         15000
       );
 
     listNama.innerHTML="";
 
-    if(!Array.isArray(data) || data.length===0){
+    if(
+      !Array.isArray(data) ||
+      data.length===0
+    ){
 
       listNama.innerHTML =
         `
         <div class="info">
-          Tidak ada data siswa untuk kelas ini.
+          Tidak ada data siswa
+          untuk kelas ini.
         </div>
         `;
 
       return;
-
     }
 
-    data.forEach(s=>{
+    data.forEach(siswa=>{
 
-      if(!s || !s.nama) return;
+      if(!siswa || !siswa.nama){
+        return;
+      }
 
       const div =
         document.createElement("div");
 
       div.className="checkbox-item";
 
+
       const input =
         document.createElement("input");
 
       input.type="checkbox";
-      input.value=s.nama;
+
+      input.value=
+        String(siswa.nama).trim();
+
 
       const label =
         document.createElement("label");
 
-      label.textContent=s.nama;
+      label.textContent=
+        String(siswa.nama).trim();
+
 
       div.appendChild(input);
+
       div.appendChild(label);
 
       listNama.appendChild(div);
@@ -707,8 +781,11 @@ async function loadSiswaByKelas(kelasDipilih){
     listNama.innerHTML =
       `
       <div class="error-info">
+
         Gagal memuat data siswa.
+
         <br>
+
         <button
           type="button"
           class="retry-btn"
@@ -716,6 +793,7 @@ async function loadSiswaByKelas(kelasDipilih){
         >
           Coba Lagi
         </button>
+
       </div>
       `;
 
@@ -745,7 +823,6 @@ kelas.addEventListener(
         `;
 
       return;
-
     }
 
     loadSiswaByKelas(selected);
@@ -755,15 +832,19 @@ kelas.addEventListener(
 
 
 /* =========================================
-   BATAS MAKSIMAL 6 SISWA
+   MAKSIMAL 6 SISWA
 ========================================= */
 
 listNama.addEventListener(
   "change",
-  function(e){
+  function(event){
 
-    if(e.target.type !== "checkbox"){
+    if(
+      event.target.type !== "checkbox"
+    ){
+
       return;
+
     }
 
     const checked =
@@ -773,7 +854,7 @@ listNama.addEventListener(
 
     if(checked.length > 6){
 
-      e.target.checked=false;
+      event.target.checked=false;
 
       showAlert(
         "error",
@@ -792,44 +873,46 @@ listNama.addEventListener(
 
 formTugas.addEventListener(
   "submit",
-  async function(e){
+  async function(event){
 
-    e.preventDefault();
+    event.preventDefault();
 
-    const kelompokVal =
+
+    const kelompokValue =
       kelompok.value.trim();
 
-    const kelasVal =
+    const kelasValue =
       kelas.value.trim();
 
-    const judulVal =
+    const judulValue =
       judul.value.trim();
 
-    const nama =
+    const linkValue =
+      link.value.trim();
+
+    const catatanValue =
+      catatan.value.trim();
+
+
+    const namaValue =
       [
         ...listNama.querySelectorAll(
           "input[type='checkbox']:checked"
         )
       ]
-      .map(i=>i.value.trim())
+      .map(
+        item=>item.value.trim()
+      )
       .filter(Boolean)
       .join(", ");
 
-    const linkVal =
-      link.value.trim();
-
-    const catatanVal =
-      catatan.value.trim();
-
-
-    /* VALIDASI */
 
     if(
-      !kelompokVal ||
-      !kelasVal ||
-      !nama ||
-      !judulVal ||
-      !linkVal
+      !kelompokValue ||
+      !kelasValue ||
+      !namaValue ||
+      !judulValue ||
+      !linkValue
     ){
 
       showAlert(
@@ -838,16 +921,16 @@ formTugas.addEventListener(
       );
 
       return;
-
     }
 
 
-    const checkedCount =
+    const jumlahNama =
       listNama.querySelectorAll(
         "input[type='checkbox']:checked"
       ).length;
 
-    if(checkedCount > 6){
+
+    if(jumlahNama > 6){
 
       showAlert(
         "error",
@@ -855,15 +938,13 @@ formTugas.addEventListener(
       );
 
       return;
-
     }
 
 
-    /* BUTTON */
-
     btnKirim.disabled=true;
 
-    btnKirim.innerText="Mengirim...";
+    btnKirim.innerText=
+      "Mengirim...";
 
 
     try{
@@ -878,32 +959,32 @@ formTugas.addEventListener(
 
       fd.append(
         "kelompok",
-        kelompokVal
+        kelompokValue
       );
 
       fd.append(
         "kelas",
-        kelasVal
+        kelasValue
       );
 
       fd.append(
         "nama",
-        nama
+        namaValue
       );
 
       fd.append(
         "judul",
-        judulVal
+        judulValue
       );
 
       fd.append(
         "link",
-        linkVal
+        linkValue
       );
 
       fd.append(
         "catatan",
-        catatanVal
+        catatanValue
       );
 
 
@@ -918,7 +999,10 @@ formTugas.addEventListener(
         );
 
 
-      if(result.status==="success"){
+      if(
+        result &&
+        result.status==="success"
+      ){
 
         showAlert(
           "success",
@@ -948,7 +1032,9 @@ formTugas.addEventListener(
 
       console.error(error);
 
-      if(error.name==="AbortError"){
+      if(
+        error.name==="AbortError"
+      ){
 
         showAlert(
           "error",
@@ -968,7 +1054,8 @@ formTugas.addEventListener(
 
       btnKirim.disabled=false;
 
-      btnKirim.innerText="Kirim Tugas";
+      btnKirim.innerText=
+        "Kirim Tugas";
 
     }
 
@@ -977,7 +1064,7 @@ formTugas.addEventListener(
 
 
 /* =========================================
-   START
+   MULAI
 ========================================= */
 
 loadKelas();
