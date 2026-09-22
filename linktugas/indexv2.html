@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Form Pengumpulan Tugas</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#e3f2fd,#bbdefb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.card{
+  width:400px;
+  max-width:100%;
+  background:#fff;
+  border-radius:18px;
+  padding:28px 26px 22px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+  text-align:center;
+}
+
+.logo{
+  width:80px;
+  height:80px;
+  object-fit:contain;
+  margin-bottom:10px;
+}
+
+.title{
+  margin:6px 0 18px;
+  color:#0A4FA3;
+  font-size:25px;
+}
+
+.form{
+  text-align:left;
+}
+
+.field{
+  margin-bottom:14px;
+}
+
+.label-text{
+  font-size:13px;
+  margin-bottom:6px;
+  display:block;
+  color:#444;
+  font-weight:600;
+}
+
+.input-field,
+select,
+textarea{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:14px;
+  background:#fff;
+}
+
+.input-field:focus,
+select:focus,
+textarea:focus{
+  outline:none;
+  border-color:#0A4FA3;
+  box-shadow:0 0 0 3px rgba(10,79,163,.10);
+}
+
+textarea{
+  height:65px;
+  resize:none;
+}
+
+.checkbox-list{
+  max-height:180px;
+  overflow-y:auto;
+  border:1px solid #ccc;
+  border-radius:8px;
+  padding:8px;
+  background:#fafafa;
+}
+
+.checkbox-item{
+  display:flex;
+  align-items:center;
+  margin-bottom:5px;
+  font-size:13px;
+  padding:4px;
+  border-radius:5px;
+}
+
+.checkbox-item:hover{
+  background:#eef5ff;
+}
+
+.checkbox-item input{
+  margin-right:7px;
+  cursor:pointer;
+}
+
+.checkbox-item label{
+  cursor:pointer;
+  flex:1;
+}
+
+.loading{
+  text-align:center;
+  color:#777;
+  padding:12px 5px;
+  font-size:13px;
+}
+
+.info{
+  text-align:center;
+  color:#777;
+  padding:12px 5px;
+  font-size:13px;
+}
+
+.error-info{
+  text-align:center;
+  color:#e53935;
+  padding:12px 5px;
+  font-size:13px;
+}
+
+.retry-btn{
+  margin-top:6px;
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  background:#e53935;
+  color:#fff;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.btn-primary{
+  width:100%;
+  padding:11px;
+  background:#0A4FA3;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn-primary:hover{
+  background:#083d82;
+}
+
+.btn-primary:disabled{
+  background:#9aa9ba;
+  cursor:not-allowed;
+}
+
+.btn-secondary{
+  display:block;
+  width:100%;
+  margin-top:10px;
+  padding:11px;
+  background:#4CAF50;
+  border-radius:10px;
+  color:#fff;
+  text-align:center;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.btn-secondary:hover{
+  background:#388E3C;
+}
+
+.footer{
+  margin-top:18px;
+  font-size:12px;
+  color:#777;
+}
+
+/* ALERT */
+
+.alert-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  padding:20px;
+}
+
+.alert-box{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  width:280px;
+  max-width:100%;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
+  animation:popup .2s ease;
+}
+
+@keyframes popup{
+  from{
+    transform:scale(.9);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+.alert-box h3{
+  margin:0 0 10px;
+}
+
+.alert-box p{
+  font-size:14px;
+  line-height:1.5;
+  color:#555;
+}
+
+.alert-box button{
+  padding:8px 16px;
+  border:none;
+  border-radius:6px;
+  color:#fff;
+  cursor:pointer;
+}
+
+.alert-success h3{
+  color:#0A4FA3;
+}
+
+.alert-success button{
+  background:#0A4FA3;
+}
+
+.alert-error h3{
+  color:#e53935;
+}
+
+.alert-error button{
+  background:#e53935;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<img
+src="https://yanuar-moga.github.io/informatika/absen/assets/logo.png"
+class="logo"
+alt="Logo"
+
+>
+
+<h1 class="title">Form Pengumpulan Tugas</h1>
+
+<form id="formTugas" class="form">
+
+  <div class="field">
+    <span class="label-text">Nama Kelompok</span>
+
+```
+<input
+  type="text"
+  id="kelompok"
+  class="input-field"
+  autocomplete="off"
+  required
+>
+```
+
+  </div>
+
+  <div class="field">
+    <span class="label-text">Kelas</span>
+
+```
+<select id="kelas" required>
+  <option value="">Memuat kelas...</option>
+</select>
+```
+
+  </div>
+
+  <div class="field">
+
+```
+<span class="label-text">
+  Nama Anak
+  <span style="color:#777;font-weight:normal;">
+    (maksimal 6)
+  </span>
+</span>
+
+<div id="listNama" class="checkbox-list">
+
+  <div class="info">
+    Pilih kelas terlebih dahulu
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <div class="field">
+
+```
+<span class="label-text">Judul Tugas</span>
+
+<select id="judul" required>
+
+  <option value="">
+    -- Pilih Judul Tugas --
+  </option>
+
+  <option>
+    Rancangan Konten Artikel Blog
+  </option>
+
+  <option>
+    Link Artikel Blog
+  </option>
+
+</select>
+```
+
+  </div>
+
+  <div class="field">
+
+```
+<span class="label-text">Link Tugas</span>
+
+<input
+  id="link"
+  type="url"
+  class="input-field"
+  placeholder="https://..."
+  required
+>
+```
+
+  </div>
+
+  <div class="field">
+
+```
+<span class="label-text">Catatan</span>
+
+<textarea
+  id="catatan"
+  placeholder="Opsional"
+></textarea>
+```
+
+  </div>
+
+<button
+type="submit"
+id="btnKirim"
+class="btn-primary"
+
+>
+
+```
+Kirim Tugas
+```
+
+  </button>
+
+<a
+href="https://apxid.github.io/informatika/linktugas/rekap"
+target="_blank"
+class="btn-secondary"
+
+>
+
+```
+Lihat Rekap Pengiriman Tugas
+```
+
+  </a>
+
+</form>
+
+<div class="footer">
+  © 2026 MB All Rights Reserved
+</div>
+
+</div>
+
+<!-- ALERT -->
+
+<div id="customAlert" class="alert-overlay">
+
+  <div class="alert-box">
+
+```
+<h3 id="alertTitle"></h3>
+
+<p id="alertMessage"></p>
+
+<button onclick="closeAlert()">
+  OK
+</button>
+```
+
+  </div>
+
+</div>
+
+<script>
+
+/* =========================================
+   KONFIGURASI
+========================================= */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwOAjGhkqMB5A9Ui4hHqcapjYcy1Rz_LNTjmcPXiwP975LJMfvDsp4aGo0MnWOtFoAEWw/exec";
+
+
+/* =========================================
+   ELEMENT
+========================================= */
+
+const formTugas =
+document.getElementById("formTugas");
+
+const kelompok =
+document.getElementById("kelompok");
+
+const kelas =
+document.getElementById("kelas");
+
+const listNama =
+document.getElementById("listNama");
+
+const judul =
+document.getElementById("judul");
+
+const link =
+document.getElementById("link");
+
+const catatan =
+document.getElementById("catatan");
+
+const btnKirim =
+document.getElementById("btnKirim");
+
+
+/* =========================================
+   ALERT
+========================================= */
+
+function showAlert(type,message){
+
+  const overlay =
+    document.getElementById("customAlert");
+
+  const box =
+    overlay.querySelector(".alert-box");
+
+  document.getElementById("alertTitle").innerText =
+    type === "success"
+      ? "Berhasil"
+      : "Gagal";
+
+  document.getElementById("alertMessage").innerText =
+    message;
+
+  box.className =
+    "alert-box " +
+    (
+      type === "success"
+      ? "alert-success"
+      : "alert-error"
+    );
+
+  overlay.style.display="flex";
+}
+
+
+function closeAlert(){
+
+  document.getElementById("customAlert")
+    .style.display="none";
+
+}
+
+
+/* =========================================
+   FETCH JSON DENGAN TIMEOUT
+========================================= */
+
+async function fetchJSON(url,options={},timeout=15000){
+
+  const controller =
+    new AbortController();
+
+  const timer =
+    setTimeout(
+      ()=>controller.abort(),
+      timeout
+    );
+
+  try{
+
+    const response =
+      await fetch(
+        url,
+        {
+          ...options,
+          signal:controller.signal
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        "HTTP " + response.status
+      );
+
+    }
+
+    return await response.json();
+
+  }finally{
+
+    clearTimeout(timer);
+
+  }
+
+}
+
+
+/* =========================================
+   LOAD DAFTAR KELAS
+========================================= */
+
+async function loadKelas(){
+
+  kelas.innerHTML =
+    `<option value="">Memuat kelas...</option>`;
+
+  kelas.disabled=true;
+
+  try{
+
+    const data =
+      await fetchJSON(
+        API_URL + "?action=getKelas",
+        {},
+        15000
+      );
+
+    kelas.innerHTML =
+      `<option value="">Pilih Kelas</option>`;
+
+    if(!Array.isArray(data) || data.length===0){
+
+      kelas.innerHTML =
+        `<option value="">Kelas tidak tersedia</option>`;
+
+      return;
+    }
+
+    data.forEach(k=>{
+
+      if(!k) return;
+
+      const option =
+        document.createElement("option");
+
+      option.value=String(k).trim();
+
+      option.textContent=String(k).trim();
+
+      kelas.appendChild(option);
+
+    });
+
+    kelas.disabled=false;
+
+  }catch(error){
+
+    console.error(error);
+
+    kelas.innerHTML =
+      `<option value="">Gagal memuat kelas</option>`;
+
+    listNama.innerHTML =
+      `
+      <div class="error-info">
+        Gagal mengambil daftar kelas.
+        <br>
+        <button
+          type="button"
+          class="retry-btn"
+          onclick="loadKelas()"
+        >
+          Coba Lagi
+        </button>
+      </div>
+      `;
+
+  }
+
+}
+
+
+/* =========================================
+   LOAD SISWA BERDASARKAN KELAS
+========================================= */
+
+async function loadSiswaByKelas(kelasDipilih){
+
+  listNama.innerHTML =
+    `
+    <div class="loading">
+      ⏳ Memuat daftar siswa...
+    </div>
+    `;
+
+  try{
+
+    const data =
+      await fetchJSON(
+        API_URL +
+        "?action=getSiswaByKelas&kelas=" +
+        encodeURIComponent(kelasDipilih),
+        {},
+        15000
+      );
+
+    listNama.innerHTML="";
+
+    if(!Array.isArray(data) || data.length===0){
+
+      listNama.innerHTML =
+        `
+        <div class="info">
+          Tidak ada data siswa untuk kelas ini.
+        </div>
+        `;
+
+      return;
+
+    }
+
+    data.forEach(s=>{
+
+      if(!s || !s.nama) return;
+
+      const div =
+        document.createElement("div");
+
+      div.className="checkbox-item";
+
+      const input =
+        document.createElement("input");
+
+      input.type="checkbox";
+      input.value=s.nama;
+
+      const label =
+        document.createElement("label");
+
+      label.textContent=s.nama;
+
+      div.appendChild(input);
+      div.appendChild(label);
+
+      listNama.appendChild(div);
+
+    });
+
+  }catch(error){
+
+    console.error(error);
+
+    listNama.innerHTML =
+      `
+      <div class="error-info">
+        Gagal memuat data siswa.
+        <br>
+        <button
+          type="button"
+          class="retry-btn"
+          onclick="loadSiswaByKelas(${JSON.stringify(kelasDipilih)})"
+        >
+          Coba Lagi
+        </button>
+      </div>
+      `;
+
+  }
+
+}
+
+
+/* =========================================
+   EVENT KELAS
+========================================= */
+
+kelas.addEventListener(
+  "change",
+  function(){
+
+    const selected =
+      this.value.trim();
+
+    if(!selected){
+
+      listNama.innerHTML =
+        `
+        <div class="info">
+          Pilih kelas terlebih dahulu
+        </div>
+        `;
+
+      return;
+
+    }
+
+    loadSiswaByKelas(selected);
+
+  }
+);
+
+
+/* =========================================
+   BATAS MAKSIMAL 6 SISWA
+========================================= */
+
+listNama.addEventListener(
+  "change",
+  function(e){
+
+    if(e.target.type !== "checkbox"){
+      return;
+    }
+
+    const checked =
+      listNama.querySelectorAll(
+        "input[type='checkbox']:checked"
+      );
+
+    if(checked.length > 6){
+
+      e.target.checked=false;
+
+      showAlert(
+        "error",
+        "Maksimal 6 anak dalam satu kelompok."
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   SUBMIT
+========================================= */
+
+formTugas.addEventListener(
+  "submit",
+  async function(e){
+
+    e.preventDefault();
+
+    const kelompokVal =
+      kelompok.value.trim();
+
+    const kelasVal =
+      kelas.value.trim();
+
+    const judulVal =
+      judul.value.trim();
+
+    const nama =
+      [
+        ...listNama.querySelectorAll(
+          "input[type='checkbox']:checked"
+        )
+      ]
+      .map(i=>i.value.trim())
+      .filter(Boolean)
+      .join(", ");
+
+    const linkVal =
+      link.value.trim();
+
+    const catatanVal =
+      catatan.value.trim();
+
+
+    /* VALIDASI */
+
+    if(
+      !kelompokVal ||
+      !kelasVal ||
+      !nama ||
+      !judulVal ||
+      !linkVal
+    ){
+
+      showAlert(
+        "error",
+        "Lengkapi semua data terlebih dahulu."
+      );
+
+      return;
+
+    }
+
+
+    const checkedCount =
+      listNama.querySelectorAll(
+        "input[type='checkbox']:checked"
+      ).length;
+
+    if(checkedCount > 6){
+
+      showAlert(
+        "error",
+        "Maksimal 6 anak."
+      );
+
+      return;
+
+    }
+
+
+    /* BUTTON */
+
+    btnKirim.disabled=true;
+
+    btnKirim.innerText="Mengirim...";
+
+
+    try{
+
+      const fd =
+        new URLSearchParams();
+
+      fd.append(
+        "action",
+        "submitTugas"
+      );
+
+      fd.append(
+        "kelompok",
+        kelompokVal
+      );
+
+      fd.append(
+        "kelas",
+        kelasVal
+      );
+
+      fd.append(
+        "nama",
+        nama
+      );
+
+      fd.append(
+        "judul",
+        judulVal
+      );
+
+      fd.append(
+        "link",
+        linkVal
+      );
+
+      fd.append(
+        "catatan",
+        catatanVal
+      );
+
+
+      const result =
+        await fetchJSON(
+          API_URL,
+          {
+            method:"POST",
+            body:fd
+          },
+          20000
+        );
+
+
+      if(result.status==="success"){
+
+        showAlert(
+          "success",
+          "Tugas berhasil dikirim!"
+        );
+
+        formTugas.reset();
+
+        listNama.innerHTML =
+          `
+          <div class="info">
+            Pilih kelas terlebih dahulu
+          </div>
+          `;
+
+      }else{
+
+        showAlert(
+          "error",
+          result.message ||
+          "Gagal mengirim tugas."
+        );
+
+      }
+
+    }catch(error){
+
+      console.error(error);
+
+      if(error.name==="AbortError"){
+
+        showAlert(
+          "error",
+          "Koneksi terlalu lama. Silakan coba lagi."
+        );
+
+      }else{
+
+        showAlert(
+          "error",
+          "Terjadi kesalahan koneksi."
+        );
+
+      }
+
+    }finally{
+
+      btnKirim.disabled=false;
+
+      btnKirim.innerText="Kirim Tugas";
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   START
+========================================= */
+
+loadKelas();
+
+</script>
+
+</body>
+</html>
