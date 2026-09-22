@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
+<title>Dashboard Rekap Tugas</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+
+  margin:0;
+
+  font-family:
+    Arial,
+    sans-serif;
+
+  background:#f4f6f9;
+
+  padding:20px;
+
+  color:#333;
+}
+
+
+h2{
+
+  margin:0 0 15px;
+
+  color:#17365d;
+
+}
+
+
+.topbar{
+
+  display:flex;
+
+  gap:10px;
+
+  flex-wrap:wrap;
+
+  margin-bottom:15px;
+
+}
+
+
+.topbar select{
+
+  flex:1;
+
+  min-width:180px;
+
+}
+
+
+select,
+button{
+
+  padding:9px;
+
+  border-radius:7px;
+
+  border:1px solid #ccc;
+
+  font-size:14px;
+
+}
+
+
+select{
+
+  background:white;
+
+}
+
+
+button{
+
+  background:#0A4FA3;
+
+  color:white;
+
+  border:none;
+
+  cursor:pointer;
+
+  min-width:110px;
+
+}
+
+
+button:hover{
+
+  background:#083d82;
+
+}
+
+
+button:disabled{
+
+  background:#9aa9ba;
+
+  cursor:not-allowed;
+
+}
+
+
+#statistik{
+
+  margin-bottom:15px;
+
+  font-weight:bold;
+
+  background:white;
+
+  padding:12px;
+
+  border-radius:8px;
+
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.05);
+
+}
+
+
+.container{
+
+  display:flex;
+
+  gap:20px;
+
+  flex-wrap:wrap;
+
+}
+
+
+.box{
+
+  flex:1;
+
+  min-width:320px;
+
+  background:white;
+
+  padding:15px;
+
+  border-radius:10px;
+
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.08);
+
+  overflow:hidden;
+
+}
+
+
+.box h3{
+
+  margin-top:0;
+
+}
+
+
+.sudah{
+
+  color:green;
+
+}
+
+
+.belum{
+
+  color:red;
+
+}
+
+
+.table-wrapper{
+
+  overflow-x:auto;
+
+}
+
+
+table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  font-size:13px;
+
+}
+
+
+th,
+td{
+
+  border:1px solid #ddd;
+
+  padding:7px;
+
+  vertical-align:top;
+
+}
+
+
+th{
+
+  background:#f0f0f0;
+
+  white-space:nowrap;
+
+}
+
+
+.sudah-table{
+
+  min-width:500px;
+
+}
+
+
+.sudah-table a{
+
+  color:#0A4FA3;
+
+  font-weight:bold;
+
+  text-decoration:none;
+
+}
+
+
+.sudah-table a:hover{
+
+  text-decoration:underline;
+
+}
+
+
+#belumList{
+
+  margin:0;
+
+  padding-left:25px;
+
+}
+
+
+#belumList li{
+
+  margin-bottom:6px;
+
+}
+
+
+.empty{
+
+  text-align:center;
+
+  padding:20px;
+
+  color:#777;
+
+}
+
+
+.loading{
+
+  text-align:center;
+
+  padding:25px;
+
+  color:#777;
+
+}
+
+
+.error{
+
+  text-align:center;
+
+  padding:20px;
+
+  color:#d32f2f;
+
+  background:#fff5f5;
+
+  border-radius:8px;
+
+}
+
+
+.retry{
+
+  margin-top:10px;
+
+}
+
+
+@media(max-width:600px){
+
+  body{
+
+    padding:10px;
+
+  }
+
+  h2{
+
+    font-size:20px;
+
+  }
+
+  .box{
+
+    min-width:100%;
+
+  }
+
+  .topbar{
+
+    flex-direction:column;
+
+  }
+
+  .topbar select,
+  .topbar button{
+
+    width:100%;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h2>
+  📊 Dashboard Rekap Pengumpulan Tugas
+</h2>
+
+
+<div class="topbar">
+
+  <select id="filterKelas">
+
+    <option value="ALL">
+      Memuat kelas...
+    </option>
+
+  </select>
+
+
+  <select id="filterJudul">
+
+    <option value="ALL">
+      Memuat judul...
+    </option>
+
+  </select>
+
+
+  <button
+    id="btnTampilkan"
+    onclick="renderData()"
+  >
+    Tampilkan
+  </button>
+
+</div>
+
+
+<div id="statistik">
+
+  Silakan pilih kelas dan judul tugas.
+
+</div>
+
+
+<div class="container">
+
+
+  <!-- SUDAH -->
+
+  <div class="box">
+
+    <h3 class="sudah">
+      🟢 Sudah Mengirim
+    </h3>
+
+    <div class="table-wrapper">
+
+      <table class="sudah-table">
+
+        <thead>
+
+          <tr>
+
+            <th>No</th>
+
+            <th>Kelompok</th>
+
+            <th>Nama Anggota</th>
+
+            <th>Link</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="sudahList">
+
+          <tr>
+
+            <td
+              colspan="4"
+              class="empty"
+            >
+              Pilih filter lalu tekan
+              Tampilkan.
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- BELUM -->
+
+  <div class="box">
+
+    <h3 class="belum">
+      🔴 Belum Mengirim
+    </h3>
+
+    <ol id="belumList">
+
+      <li class="empty">
+        Belum ada data.
+      </li>
+
+    </ol>
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+/* =========================================
+   API
+========================================= */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwOAjGhkqMB5A9Ui4hHqcapjYcy1Rz_LNTjmcPXiwP975LJMfvDsp4aGo0MnWOtFoAEWw/exec";
+
+
+/* =========================================
+   ELEMENT
+========================================= */
+
+const filterKelas =
+document.getElementById("filterKelas");
+
+const filterJudul =
+document.getElementById("filterJudul");
+
+const btnTampilkan =
+document.getElementById("btnTampilkan");
+
+const statistik =
+document.getElementById("statistik");
+
+const sudahList =
+document.getElementById("sudahList");
+
+const belumList =
+document.getElementById("belumList");
+
+
+/* =========================================
+   FETCH JSON + TIMEOUT
+========================================= */
+
+async function fetchJSON(
+  requestURL,
+  options={},
+  timeout=20000
+){
+
+  const controller =
+    new AbortController();
+
+  const timer =
+    setTimeout(
+      ()=>controller.abort(),
+      timeout
+    );
+
+  try{
+
+    const response =
+      await fetch(
+        requestURL,
+        {
+          ...options,
+          signal:controller.signal
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "HTTP " + response.status
+      );
+
+    }
+
+
+    return await response.json();
+
+  }finally{
+
+    clearTimeout(timer);
+
+  }
+
+}
+
+
+/* =========================================
+   LOAD FILTER
+========================================= */
+
+async function loadFilter(){
+
+  filterKelas.disabled=true;
+
+  filterJudul.disabled=true;
+
+  btnTampilkan.disabled=true;
+
+
+  filterKelas.innerHTML =
+    `
+    <option value="ALL">
+      Memuat kelas...
+    </option>
+    `;
+
+
+  filterJudul.innerHTML =
+    `
+    <option value="ALL">
+      Memuat judul...
+    </option>
+    `;
+
+
+  try{
+
+    const data =
+      await fetchJSON(
+        API_URL + "?action=getInit",
+        {},
+        15000
+      );
+
+
+    /* KELAS */
+
+    filterKelas.innerHTML =
+      `
+      <option value="ALL">
+        Semua Kelas
+      </option>
+      `;
+
+
+    if(
+      Array.isArray(data.kelas)
+    ){
+
+      data.kelas.forEach(kelas=>{
+
+        if(!kelas) return;
+
+        const option =
+          document.createElement("option");
+
+        option.value=kelas;
+
+        option.textContent=kelas;
+
+        filterKelas.appendChild(option);
+
+      });
+
+    }
+
+
+    /* JUDUL */
+
+    filterJudul.innerHTML =
+      `
+      <option value="ALL">
+        Semua Judul
+      </option>
+      `;
+
+
+    if(
+      Array.isArray(data.judul)
+    ){
+
+      data.judul.forEach(judul=>{
+
+        if(!judul) return;
+
+        const option =
+          document.createElement("option");
+
+        option.value=judul;
+
+        option.textContent=judul;
+
+        filterJudul.appendChild(option);
+
+      });
+
+    }
+
+
+    filterKelas.disabled=false;
+
+    filterJudul.disabled=false;
+
+    btnTampilkan.disabled=false;
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    filterKelas.innerHTML =
+      `
+      <option>
+        Gagal memuat
+      </option>
+      `;
+
+
+    filterJudul.innerHTML =
+      `
+      <option>
+        Gagal memuat
+      </option>
+      `;
+
+
+    statistik.innerHTML =
+      `
+      <div class="error">
+
+        Gagal mengambil
+        daftar filter.
+
+        <br>
+
+        <button
+          class="retry"
+          onclick="loadFilter()"
+        >
+          Coba Lagi
+        </button>
+
+      </div>
+      `;
+
+  }
+
+}
+
+
+/* =========================================
+   RENDER DATA
+========================================= */
+
+async function renderData(){
+
+  const kelas =
+    filterKelas.value;
+
+  const judul =
+    filterJudul.value;
+
+
+  btnTampilkan.disabled=true;
+
+  btnTampilkan.innerText=
+    "Memuat...";
+
+
+  statistik.innerHTML =
+    `
+    <div class="loading">
+      ⏳ Mengambil data rekap...
+    </div>
+    `;
+
+
+  sudahList.innerHTML =
+    `
+    <tr>
+      <td
+        colspan="4"
+        class="empty"
+      >
+        Memuat data...
+      </td>
+    </tr>
+    `;
+
+
+  belumList.innerHTML =
+    `
+    <li class="empty">
+      Memuat data...
+    </li>
+    `;
+
+
+  try{
+
+    let requestURL =
+      API_URL +
+      "?action=getRekap" +
+      "&kelas=" +
+      encodeURIComponent(kelas) +
+      "&judul=" +
+      encodeURIComponent(judul);
+
+
+    const data =
+      await fetchJSON(
+        requestURL,
+        {},
+        20000
+      );
+
+
+    if(
+      !data ||
+      data.status==="error"
+    ){
+
+      throw new Error(
+        data.message ||
+        "Gagal mengambil rekap."
+      );
+
+    }
+
+
+    renderSudah(data.sudah || []);
+
+    renderBelum(data.belum || []);
+
+
+    statistik.innerHTML =
+      `
+      Total: <b>${data.total || 0}</b>
+      &nbsp; | &nbsp;
+      Sudah: <b>${data.sudahCount || 0}</b>
+      &nbsp; | &nbsp;
+      Belum: <b>${data.belumCount || 0}</b>
+      `;
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    statistik.innerHTML =
+      `
+      <div class="error">
+
+        Gagal mengambil data rekap.
+
+        <br>
+
+        ${error.message || ""}
+
+        <br>
+
+        <button
+          class="retry"
+          onclick="renderData()"
+        >
+          Coba Lagi
+        </button>
+
+      </div>
+      `;
+
+
+    sudahList.innerHTML =
+      `
+      <tr>
+        <td
+          colspan="4"
+          class="empty"
+        >
+          Data gagal dimuat.
+        </td>
+      </tr>
+      `;
+
+
+    belumList.innerHTML="";
+
+  }finally{
+
+    btnTampilkan.disabled=false;
+
+    btnTampilkan.innerText=
+      "Tampilkan";
+
+  }
+
+}
+
+
+/* =========================================
+   RENDER SUDAH
+========================================= */
+
+function renderSudah(data){
+
+  if(
+    !Array.isArray(data) ||
+    data.length===0
+  ){
+
+    sudahList.innerHTML =
+      `
+      <tr>
+        <td
+          colspan="4"
+          class="empty"
+        >
+          Belum ada pengumpulan tugas.
+        </td>
+      </tr>
+      `;
+
+    return;
+
+  }
+
+
+  let html="";
+
+
+  data.forEach(
+    (item,index)=>{
+
+      const nama =
+        Array.isArray(item.nama)
+          ? item.nama
+          : [];
+
+
+      const jumlah =
+        nama.length || 1;
+
+
+      nama.forEach(
+        (namaSiswa,namaIndex)=>{
+
+          html += "<tr>";
+
+
+          if(namaIndex===0){
+
+            html +=
+              `
+              <td rowspan="${jumlah}">
+                ${index+1}
+              </td>
+
+              <td rowspan="${jumlah}">
+                ${escapeHTML(item.kelompok || "-")}
+              </td>
+              `;
+
+          }
+
+
+          html +=
+            `
+            <td>
+              ${escapeHTML(namaSiswa)}
+            </td>
+            `;
+
+
+          if(namaIndex===0){
+
+            const link =
+              escapeAttribute(
+                item.link || ""
+              );
+
+
+            html +=
+              `
+              <td rowspan="${jumlah}">
+
+                ${
+                  link
+                  ?
+                  `<a
+                    href="${link}"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Buka
+                  </a>`
+                  :
+                  "-"
+                }
+
+              </td>
+              `;
+
+          }
+
+
+          html += "</tr>";
+
+        }
+      );
+
+    }
+  );
+
+
+  sudahList.innerHTML=html;
+
+}
+
+
+/* =========================================
+   RENDER BELUM
+========================================= */
+
+function renderBelum(data){
+
+  if(
+    !Array.isArray(data) ||
+    data.length===0
+  ){
+
+    belumList.innerHTML =
+      `
+      <li>
+        Semua siswa sudah mengirim.
+      </li>
+      `;
+
+    return;
+
+  }
+
+
+  belumList.innerHTML =
+    data
+      .map(
+        nama=>
+          `<li>${escapeHTML(nama)}</li>`
+      )
+      .join("");
+
+}
+
+
+/* =========================================
+   SECURITY HELPER
+========================================= */
+
+function escapeHTML(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/"/g,"&quot;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+loadFilter();
+
+</script>
+
+</body>
+
+</html>
