@@ -41,7 +41,7 @@ button:hover{
 
 .btn-simpan{
   background:#28a745;
-  padding:5px 10px;
+  padding:5px 8px;
   font-size:12px;
 }
 
@@ -49,13 +49,24 @@ button:hover{
   background:#218838;
 }
 
-.btn-simpan:disabled{
-  background:#6c757d;
+.btn-hapus{
+  background:#dc3545;
+  padding:5px 8px;
+  font-size:12px;
+  margin-left:3px;
+}
+
+.btn-hapus:hover{
+  background:#c82333;
+}
+
+button:disabled{
+  background:#6c757d !important;
   cursor:not-allowed;
 }
 
 .input-nilai{
-  width:60px;
+  width:55px;
   text-align:center;
 }
 
@@ -109,6 +120,10 @@ th{
 #statistik{
   margin-bottom:10px;
   font-weight:bold;
+}
+
+.action-cell {
+  white-space: nowrap;
 }
 </style>
 </head>
@@ -253,6 +268,9 @@ function renderData(){
     const listNama = t.nama ? t.nama.split(",").map(n => n.trim()).filter(n => n !== "") : ["-"];
     const jumlahAnggota = listNama.length;
     const nilaiAwal = (t.nilai !== undefined && t.nilai !== null) ? t.nilai : "";
+    
+    // Identifier unik untuk tugas (menggunakan ID jika ada, atau kombinasi atribut)
+    const tId = t.id || i;
 
     listNama.forEach((nama, indexNama) => {
       htmlSudah += `<tr>`;
@@ -273,9 +291,10 @@ function renderData(){
           <input type="number" id="nilai_${i}" class="input-nilai" value="${nilaiAwal}" min="0" max="100" placeholder="0-100">
         </td>`;
         
-        // Tombol Simpan
-        htmlSudah += `<td rowspan="${jumlahAnggota}">
-          <button id="btn_${i}" class="btn-simpan" onclick="simpanNilai(${i}, '${t.kelompok}', '${t.kelas}', '${t.judul}')">Simpan</button>
+        // Tombol Simpan & Hapus
+        htmlSudah += `<td rowspan="${jumlahAnggota}" class="action-cell">
+          <button id="btn_simpan_${i}" class="btn-simpan" onclick="simpanNilai(${i}, '${t.kelompok}', '${t.kelas}', '${t.judul}')">Simpan</button>
+          <button id="btn_hapus_${i}" class="btn-hapus" onclick="hapusTugas(${i}, '${tId}', '${t.kelompok}', '${t.kelas}', '${t.judul}', '${t.link}')">Hapus</button>
         </td>`;
       }
       
@@ -292,11 +311,11 @@ function renderData(){
     `Total Siswa: ${total} | Sudah Mengumpulkan: ${sudahSet.size} | Belum: ${belum.length}`;
 }
 
-/* FUNGSI SIMPAN NILAI KE GOOGLE SHEETS DENGAN VERIFIKASI PIN */
+/* FUNGSI SIMPAN NILAI */
 function simpanNilai(index, kelompok, kelas, judul) {
   const pinVal = document.getElementById("pinAdmin").value;
   const inputEl = document.getElementById(`nilai_${index}`);
-  const btnEl = document.getElementById(`btn_${index}`);
+  const btnEl = document.getElementById(`btn_simpan_${index}`);
   const nilaiVal = inputEl.value;
 
   if (!pinVal) {
@@ -311,7 +330,7 @@ function simpanNilai(index, kelompok, kelas, judul) {
   }
 
   btnEl.disabled = true;
-  btnEl.innerText = "Proses...";
+  btnEl.innerText = "...";
 
   const targetUrl = `${url}?action=simpanNilai&pin=${encodeURIComponent(pinVal)}&kelompok=${encodeURIComponent(kelompok)}&kelas=${encodeURIComponent(kelas)}&judul=${encodeURIComponent(judul)}&nilai=${encodeURIComponent(nilaiVal)}`;
 
@@ -323,7 +342,6 @@ function simpanNilai(index, kelompok, kelas, judul) {
 
       if (res.status === "success") {
         alert(`Nilai ${nilaiVal} untuk ${kelompok} berhasil disimpan!`);
-        // Update memori lokal
         const itemTugas = semuaTugas.find(t => t.kelompok === kelompok && t.kelas === kelas && t.judul === judul);
         if (itemTugas) itemTugas.nilai = nilaiVal;
       } else {
@@ -333,6 +351,49 @@ function simpanNilai(index, kelompok, kelas, judul) {
     .catch(err => {
       btnEl.disabled = false;
       btnEl.innerText = "Simpan";
+      alert("Terjadi kesalahan jaringan atau server.");
+    });
+}
+
+/* FUNGSI HAPUS BARIS TUGAS DENGAN PIN */
+function hapusTugas(index, id, kelompok, kelas, judul, link) {
+  const pinVal = document.getElementById("pinAdmin").value;
+  const btnEl = document.getElementById(`btn_hapus_${index}`);
+
+  if (!pinVal) {
+    alert("Masukkan PIN Guru terlebih dahulu di bagian atas!");
+    document.getElementById("pinAdmin").focus();
+    return;
+  }
+
+  if (!confirm(`Yakin ingin menghapus pengumpulan dari ${kelompok} (${kelas})?`)) {
+    return;
+  }
+
+  btnEl.disabled = true;
+  btnEl.innerText = "...";
+
+  const targetUrl = `${url}?action=hapusTugas&pin=${encodeURIComponent(pinVal)}&id=${encodeURIComponent(id)}&kelompok=${encodeURIComponent(kelompok)}&kelas=${encodeURIComponent(kelas)}&judul=${encodeURIComponent(judul)}&link=${encodeURIComponent(link)}`;
+
+  fetch(targetUrl)
+    .then(r => r.json())
+    .then(res => {
+      btnEl.disabled = false;
+      btnEl.innerText = "Hapus";
+
+      if (res.status === "success") {
+        alert(`Pengumpulan ${kelompok} berhasil dihapus!`);
+        
+        // Hapus dari memori lokal dan render ulang tampilan
+        semuaTugas = semuaTugas.filter(t => !(t.kelompok === kelompok && t.kelas === kelas && t.judul === judul && (t.link === link || t.id === id)));
+        renderData();
+      } else {
+        alert("Gagal menghapus: " + (res.message || "Terjadi kesalahan"));
+      }
+    })
+    .catch(err => {
+      btnEl.disabled = false;
+      btnEl.innerText = "Hapus";
       alert("Terjadi kesalahan jaringan atau server.");
     });
 }
