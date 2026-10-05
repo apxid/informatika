@@ -6,7 +6,7 @@
 
 <style>
 body{
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   background:#f4f6f9;
   padding:20px;
 }
@@ -18,22 +18,58 @@ h2{ margin-bottom:15px; }
   gap:10px;
   flex-wrap:wrap;
   margin-bottom:15px;
+  align-items:center;
 }
 
-select,button{
+select, button, input[type="number"], input[type="password"]{
   padding:8px;
+  border-radius:4px;
+  border:1px solid #ccc;
 }
 
 button{
   background:#0A4FA3;
   color:white;
   border:none;
-  border-radius:6px;
   cursor:pointer;
+  transition: background 0.2s;
 }
 
 button:hover{
   background:#083d82;
+}
+
+.btn-simpan{
+  background:#28a745;
+  padding:5px 10px;
+  font-size:12px;
+}
+
+.btn-simpan:hover{
+  background:#218838;
+}
+
+.btn-simpan:disabled{
+  background:#6c757d;
+  cursor:not-allowed;
+}
+
+.input-nilai{
+  width:60px;
+  text-align:center;
+}
+
+.input-pin{
+  width:110px;
+}
+
+.admin-area {
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
 
 .container{
@@ -44,7 +80,7 @@ button:hover{
 
 .box{
   flex:1;
-  min-width:300px;
+  min-width:320px;
   background:white;
   padding:15px;
   border-radius:10px;
@@ -57,9 +93,10 @@ table{
   font-size:13px;
 }
 
-th,td{
+th, td{
   border:1px solid #ddd;
   padding:6px;
+  text-align:center;
 }
 
 th{
@@ -90,6 +127,11 @@ th{
   </select>
 
   <button onclick="renderData()">Tampilkan</button>
+
+  <div class="admin-area">
+    <label style="font-size: 12px; font-weight: bold;">🔑 PIN Guru:</label>
+    <input type="password" id="pinAdmin" class="input-pin" placeholder="PIN Guru">
+  </div>
 </div>
 
 <div id="statistik">Memuat data...</div>
@@ -105,6 +147,8 @@ th{
 <th>Kelompok</th>
 <th>Nama Anggota</th>
 <th>Link</th>
+<th>Nilai</th>
+<th>Aksi</th>
 </tr>
 </thead>
 <tbody id="sudahList"></tbody>
@@ -125,42 +169,56 @@ const url="https://script.google.com/macros/s/AKfycbwOAjGhkqMB5A9Ui4hHqcapjYcy1R
 let semuaSiswa=[];
 let semuaTugas=[];
 
-/* LOAD DATA */
-Promise.all([
-  fetch(url+"?action=getDataSiswa").then(r=>r.json()),
-  fetch(url+"?action=getDataTugas").then(r=>r.json())
-])
-.then(([siswa,tugas])=>{
-  semuaSiswa=siswa || [];
-  semuaTugas=tugas || [];
-  initFilter();
-})
-.catch(()=>{
-  document.getElementById("statistik").innerHTML="Gagal mengambil data";
+// Ambil PIN dari session jika sebelumnya pernah dimasukkan
+document.getElementById("pinAdmin").value = sessionStorage.getItem("pin_guru") || "";
+
+document.getElementById("pinAdmin").addEventListener("input", function(e) {
+  sessionStorage.setItem("pin_guru", e.target.value);
 });
 
-
-/* INIT FILTER */
-function initFilter(){
-
-  const kelasSet=[...new Set(semuaSiswa.map(s=>s.rombel))];
-  const judulSet=[...new Set(semuaTugas.map(t=>t.judul))];
-
-  kelasSet.forEach(k=>{
-    document.getElementById("filterKelas")
-      .innerHTML+=`<option>${k}</option>`;
-  });
-
-  judulSet.forEach(j=>{
-    document.getElementById("filterJudul")
-      .innerHTML+=`<option>${j}</option>`;
+/* LOAD DATA */
+function loadData(){
+  document.getElementById("statistik").innerHTML = "Memuat data...";
+  Promise.all([
+    fetch(url+"?action=getDataSiswa").then(r=>r.json()),
+    fetch(url+"?action=getDataTugas").then(r=>r.json())
+  ])
+  .then(([siswa,tugas])=>{
+    semuaSiswa = siswa || [];
+    semuaTugas = tugas || [];
+    initFilter();
+    renderData();
+  })
+  .catch(()=>{
+    document.getElementById("statistik").innerHTML="Gagal mengambil data dari server.";
   });
 }
 
+loadData();
+
+/* INIT FILTER */
+function initFilter(){
+  const selectKelas = document.getElementById("filterKelas");
+  const selectJudul = document.getElementById("filterJudul");
+
+  const valKelasSebelumnya = selectKelas.value;
+  const valJudulSebelumnya = selectJudul.value;
+
+  selectKelas.innerHTML = '<option value="ALL">Semua Kelas</option>';
+  selectJudul.innerHTML = '<option value="ALL">Semua Judul</option>';
+
+  const kelasSet=[...new Set(semuaSiswa.map(s=>s.rombel))].sort();
+  const judulSet=[...new Set(semuaTugas.map(t=>t.judul))].filter(Boolean).sort();
+
+  kelasSet.forEach(k=>{ selectKelas.innerHTML += `<option value="${k}">${k}</option>`; });
+  judulSet.forEach(j=>{ selectJudul.innerHTML += `<option value="${j}">${j}</option>`; });
+
+  if(kelasSet.includes(valKelasSebelumnya)) selectKelas.value = valKelasSebelumnya;
+  if(judulSet.includes(valJudulSebelumnya)) selectJudul.value = valJudulSebelumnya;
+}
 
 /* RENDER DATA */
 function renderData(){
-
   const kelas=document.getElementById("filterKelas").value;
   const judul=document.getElementById("filterJudul").value;
 
@@ -177,15 +235,11 @@ function renderData(){
     tugas=tugas.filter(t=>t.judul===judul);
   }
 
-  /* =====================
-     AMBIL SEMUA NAMA SUDAH (FLATTEN)
-  ===================== */
   let sudahSet=new Set();
-
   tugas.forEach(t=>{
     if(t.nama){
       t.nama.split(",").forEach(n=>{
-        sudahSet.add(n.trim());
+        if(n.trim()) sudahSet.add(n.trim());
       });
     }
   });
@@ -193,49 +247,94 @@ function renderData(){
   const total=siswaKelas.length;
   const belum=siswaKelas.filter(s=>!sudahSet.has(s.nama));
 
-  /* =====================
-     TABEL SUDAH (Pecah nama ke tiap baris)
-  ===================== */
   let htmlSudah = "";
 
   tugas.forEach((t, i) => {
-    // Ambil daftar nama, hilangkan spasi di awal/akhir
     const listNama = t.nama ? t.nama.split(",").map(n => n.trim()).filter(n => n !== "") : ["-"];
     const jumlahAnggota = listNama.length;
+    const nilaiAwal = (t.nilai !== undefined && t.nilai !== null) ? t.nilai : "";
 
     listNama.forEach((nama, indexNama) => {
       htmlSudah += `<tr>`;
       
-      // Jika baris pertama dari kelompok tersebut, buat cell untuk No, Kelompok, dan Link dengan rowspan
       if (indexNama === 0) {
         htmlSudah += `<td rowspan="${jumlahAnggota}">${i + 1}</td>`;
         htmlSudah += `<td rowspan="${jumlahAnggota}">${t.kelompok}</td>`;
       }
       
-      // Nama dibuat 1 baris untuk 1 siswa
-      htmlSudah += `<td>${nama}</td>`;
+      htmlSudah += `<td style="text-align:left;">${nama}</td>`;
       
       if (indexNama === 0) {
-        htmlSudah += `<td rowspan="${jumlahAnggota}"><a href="${t.link}" target="_blank">Buka</a></td>`;
+        const linkHtml = t.link ? `<a href="${t.link}" target="_blank">Buka</a>` : '-';
+        htmlSudah += `<td rowspan="${jumlahAnggota}">${linkHtml}</td>`;
+        
+        // Input Nilai
+        htmlSudah += `<td rowspan="${jumlahAnggota}">
+          <input type="number" id="nilai_${i}" class="input-nilai" value="${nilaiAwal}" min="0" max="100" placeholder="0-100">
+        </td>`;
+        
+        // Tombol Simpan
+        htmlSudah += `<td rowspan="${jumlahAnggota}">
+          <button id="btn_${i}" class="btn-simpan" onclick="simpanNilai(${i}, '${t.kelompok}', '${t.kelas}', '${t.judul}')">Simpan</button>
+        </td>`;
       }
       
       htmlSudah += `</tr>`;
     });
   });
 
-  document.getElementById("sudahList").innerHTML = htmlSudah;
+  document.getElementById("sudahList").innerHTML = htmlSudah || '<tr><td colspan="6">Belum ada data pengumpulan</td></tr>';
+  document.getElementById("belumList").innerHTML = belum.length > 0
+    ? belum.map(s => `<li>${s.nama} (${s.rombel})</li>`).join("")
+    : "<li>Semua siswa sudah mengumpulkan.</li>";
 
-  /* =====================
-     BELUM
-  ===================== */
-  document.getElementById("belumList").innerHTML=
-    belum.map(s=>`<li>${s.nama}</li>`).join("");
+  document.getElementById("statistik").innerHTML = 
+    `Total Siswa: ${total} | Sudah Mengumpulkan: ${sudahSet.size} | Belum: ${belum.length}`;
+}
 
-  /* =====================
-     STATISTIK
-  ===================== */
-  document.getElementById("statistik").innerHTML=
-    `Total: ${total} | Sudah: ${sudahSet.size} | Belum: ${belum.length}`;
+/* FUNGSI SIMPAN NILAI KE GOOGLE SHEETS DENGAN VERIFIKASI PIN */
+function simpanNilai(index, kelompok, kelas, judul) {
+  const pinVal = document.getElementById("pinAdmin").value;
+  const inputEl = document.getElementById(`nilai_${index}`);
+  const btnEl = document.getElementById(`btn_${index}`);
+  const nilaiVal = inputEl.value;
+
+  if (!pinVal) {
+    alert("Masukkan PIN Guru terlebih dahulu di bagian atas!");
+    document.getElementById("pinAdmin").focus();
+    return;
+  }
+
+  if (nilaiVal === "") {
+    alert("Silakan masukkan nilai terlebih dahulu!");
+    return;
+  }
+
+  btnEl.disabled = true;
+  btnEl.innerText = "Proses...";
+
+  const targetUrl = `${url}?action=simpanNilai&pin=${encodeURIComponent(pinVal)}&kelompok=${encodeURIComponent(kelompok)}&kelas=${encodeURIComponent(kelas)}&judul=${encodeURIComponent(judul)}&nilai=${encodeURIComponent(nilaiVal)}`;
+
+  fetch(targetUrl)
+    .then(r => r.json())
+    .then(res => {
+      btnEl.disabled = false;
+      btnEl.innerText = "Simpan";
+
+      if (res.status === "success") {
+        alert(`Nilai ${nilaiVal} untuk ${kelompok} berhasil disimpan!`);
+        // Update memori lokal
+        const itemTugas = semuaTugas.find(t => t.kelompok === kelompok && t.kelas === kelas && t.judul === judul);
+        if (itemTugas) itemTugas.nilai = nilaiVal;
+      } else {
+        alert("Gagal: " + (res.message || "Terjadi kesalahan"));
+      }
+    })
+    .catch(err => {
+      btnEl.disabled = false;
+      btnEl.innerText = "Simpan";
+      alert("Terjadi kesalahan jaringan atau server.");
+    });
 }
 
 </script>
