@@ -38,11 +38,11 @@
   --line-soft:    rgba(13,59,102,0.06);
 
   /* Glass */
-  --glass-bg:     rgba(255,255,255,0.55);
+  --glass-bg:        rgba(255,255,255,0.55);
   --glass-bg-strong: rgba(255,255,255,0.78);
-  --glass-blur:   16px;
-  --glass-border: rgba(255,255,255,0.55);
-  --glass-shadow: 0 10px 30px rgba(13,59,102,0.12);
+  --glass-blur:      16px;
+  --glass-border:    rgba(255,255,255,0.55);
+  --glass-shadow:    0 10px 30px rgba(13,59,102,0.12);
 
   /* Radius & spacing */
   --r-sm: 10px;
@@ -293,7 +293,7 @@ body {
 }
 .toggle-group button {
   border: 0; background: transparent; padding: 6px 10px;
-  border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 600;
+  border-radius: 99px; cursor: pointer; font-size: 12px; font-weight: 600;
   color: var(--ink-soft); font-family: var(--font-body);
   display: inline-flex; align-items: center; gap: 4px;
 }
@@ -418,15 +418,6 @@ table.rekap .badge {
 }
 .sc-info { flex: 1; min-width: 0; }
 .sc-name { font-weight: 700; font-size: 14px; line-height: 1.2; }
-.sc-nisn { font-size: 11px; color: var(--ink-soft); }
-.sc-tp-pills { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
-.tp-pill {
-  display: inline-block; padding: 2px 6px; border-radius: 6px;
-  font-size: 10px; font-weight: 700; min-width: 18px; text-align: center;
-  background: rgba(13,59,102,0.08); color: var(--ink-soft);
-}
-.tp-pill.t { background: var(--green-soft); color: #2c7a3a; }
-.tp-pill.r { background: #FDECEC; color: #B23B3B; }
 .sc-rank {
   font-size: 11px; font-weight: 700; padding: 4px 8px;
   border-radius: 999px; flex-shrink: 0;
@@ -446,8 +437,6 @@ table.rekap .badge {
 .sc-stat .lbl { font-size: 10px; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
 .sc-stat .val { font-size: 16px; font-weight: 800; font-family: var(--font-head); color: var(--blue-dark); }
 .sc-stat.green .val { color: var(--green); }
-.sc-stat.yellow .val { color: #B57E00; }
-.sc-stat.red .val { color: #B23B3B; }
 
 .sc-input { margin-bottom: 10px; }
 .sc-input label {
@@ -475,10 +464,6 @@ table.rekap .badge {
 .sc-status { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
 .sc-status.t { background: var(--green-soft); color: #2c7a3a; }
 .sc-status.r { background: #FDECEC; color: #B23B3B; }
-.sc-orig {
-  font-size: 11px; color: var(--ink-soft);
-}
-.sc-orig b { color: var(--blue-dark); }
 
 /* MODAL */
 .modal-overlay {
@@ -543,17 +528,7 @@ table.rekap .badge {
 #toast.err { background: linear-gradient(135deg, #E85A5A, #c84545); }
 #toast.warn { background: linear-gradient(135deg, var(--yellow), var(--yellow-bright)); color: var(--blue-dark); }
 
-/* LOADING SPINNER */
-.spinner {
-  display: inline-block; width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.4);
-  border-top-color: #fff; border-radius: 50%;
-  animation: spin .6s linear infinite;
-}
-.spinner.dark { border-color: rgba(13,59,102,0.2); border-top-color: var(--blue-dark); }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* CONFIG API URL PROMPT */
+/* API SETUP BANNER */
 .api-setup-banner {
   background: linear-gradient(135deg, #FFF6D6, #FFE9A8);
   border: 1px solid #E5C770;
@@ -563,47 +538,16 @@ table.rekap .badge {
   margin-left: auto; margin-right: auto;
   display: flex; align-items: center; gap: 10px;
 }
-.api-setup-banner i { font-size: 18px; }
 
-/* EMPTY STATE */
-.empty {
-  text-align: center; padding: 40px 20px;
-  color: var(--ink-soft);
-}
-.empty i { font-size: 48px; color: var(--blue); opacity: .5; }
-.empty h4 { margin: 12px 0 4px; font-family: var(--font-head); color: var(--blue-dark); }
-.empty p { margin: 0; font-size: 13px; }
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .dash-strip { grid-template-columns: repeat(2, 1fr); }
-  .control-card { flex: 1 1 100%; }
-}
-@media (max-width: 600px) {
-  .topbar-inner { padding: 8px 12px; gap: 8px; }
-  .brand { padding: 6px 10px; font-size: 13px; }
-  .brand small { display: none; }
-  .controls { padding: 0 12px; gap: 8px; }
-  .dash-strip { padding: 0 12px; gap: 8px; }
-  .main { padding: 0 12px; }
-  .dash-num { font-size: 18px; }
-  .sc-grid { grid-template-columns: 1fr 1fr; }
-  table.rekap { font-size: 11.5px; }
-  .modal { padding: 18px; }
-}
-@media (max-width: 380px) {
-  .dash-strip { grid-template-columns: 1fr; }
-}
-
-/* HIDDEN HELPER */
+/* RESPONSIVE & HIDDEN */
+@media (max-width: 900px) { .dash-strip { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .dash-strip { grid-template-columns: repeat(2, 1fr); } }
 .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<!-- ============================================================
-     LOGIN SCREEN
-     ============================================================ -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo"><i class="bi bi-mortarboard-fill"></i></div>
@@ -626,12 +570,8 @@ table.rekap .badge {
   </div>
 </div>
 
-<!-- ============================================================
-     MAIN APP
-     ============================================================ -->
+<!-- MAIN APP -->
 <div id="app">
-
-  <!-- TOP NAVBAR -->
   <div class="topbar">
     <div class="topbar-inner">
       <div class="brand">
@@ -646,18 +586,16 @@ table.rekap .badge {
         <div class="avatar"><i class="bi bi-person-fill"></i></div>
         <span id="userName">Admin</span>
       </div>
-      <button class="btn-icon" id="btnSettings" title="Pengaturan KKTP/Katrol"><i class="bi bi-gear-fill"></i></button>
+      <button class="btn-icon" id="btnSettings" title="Pengaturan"><i class="bi bi-gear-fill"></i></button>
       <button class="btn-icon danger" id="btnLogout" title="Keluar"><i class="bi bi-box-arrow-right"></i></button>
     </div>
   </div>
 
-  <!-- API SETUP BANNER -->
   <div class="api-setup-banner hidden" id="apiBanner">
     <i class="bi bi-exclamation-triangle-fill"></i>
-    <span><b>Belum dikonfigurasi:</b> Klik tombol Settings, lalu set <b>API URL</b> (URL Web App Google Apps Script Anda) agar aplikasi dapat terhubung ke database.</span>
+    <span><b>Belum dikonfigurasi:</b> Klik Settings, lalu isi <b>API URL</b> Apps Script Anda.</span>
   </div>
 
-  <!-- CONTROL PANEL -->
   <div class="controls">
     <div class="control-card">
       <div class="control-stack" style="min-width:130px;">
@@ -667,7 +605,7 @@ table.rekap .badge {
     </div>
     <div class="control-card">
       <div class="control-stack" style="min-width:180px;">
-        <label><i class="bi bi-clipboard-data-fill"></i> Jenis Penilaian</label>
+        <label><i class="bi bi-clipboard-data-fill"></i> Penilaian</label>
         <select id="fieldTypeSelect">
           <option value="STS">STS — Sumatif Tengah Semester</option>
           <option value="SAS">SAS — Sumatif Akhir Semester</option>
@@ -699,7 +637,7 @@ table.rekap .badge {
     <div class="control-card" style="flex:0 0 auto;">
       <div class="control-stack">
         <label>Tampilan</label>
-        <div class="toggle-group" role="tablist">
+        <div class="toggle-group">
           <button data-view="mobile" class="active"><i class="bi bi-phone"></i> Card</button>
           <button data-view="desktop"><i class="bi bi-table"></i> Tabel</button>
         </div>
@@ -711,49 +649,32 @@ table.rekap .badge {
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn btn-warning" id="btnSync"><i class="bi bi-arrow-repeat"></i> Sync Remidi</button>
           <button class="btn btn-success" id="btnSave"><i class="bi bi-save-fill"></i> Simpan Nilai</button>
-          <button class="btn btn-ghost" id="btnExport"><i class="bi bi-file-earmark-excel-fill"></i> Export Excel</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- DASHBOARD STRIP -->
   <div class="dash-strip">
     <div class="dash-card">
       <div class="dash-icon"><i class="bi bi-people-fill"></i></div>
-      <div class="dash-meta">
-        <span class="dash-num" id="statTotal">0</span>
-        <span class="dash-lbl">Total Siswa</span>
-      </div>
+      <div class="dash-meta"><span class="dash-num" id="statTotal">0</span><span class="dash-lbl">Total Siswa</span></div>
     </div>
     <div class="dash-card green">
       <div class="dash-icon"><i class="bi bi-check-circle-fill"></i></div>
-      <div class="dash-meta">
-        <span class="dash-num" id="statTuntas">0</span>
-        <span class="dash-lbl">Tuntas</span>
-      </div>
+      <div class="dash-meta"><span class="dash-num" id="statTuntas">0</span><span class="dash-lbl">Tuntas</span></div>
     </div>
     <div class="dash-card red">
       <div class="dash-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
-      <div class="dash-meta">
-        <span class="dash-num" id="statRemidi">0</span>
-        <span class="dash-lbl">Remidial</span>
-      </div>
+      <div class="dash-meta"><span class="dash-num" id="statRemidi">0</span><span class="dash-lbl">Remidial</span></div>
     </div>
     <div class="dash-card yellow">
       <div class="dash-icon"><i class="bi bi-bar-chart-fill"></i></div>
-      <div class="dash-meta">
-        <span class="dash-num" id="statAvg">0</span>
-        <span class="dash-lbl">Rata-rata NA</span>
-      </div>
+      <div class="dash-meta"><span class="dash-num" id="statAvg">0</span><span class="dash-lbl">Rata-rata NA</span></div>
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
   <div class="main">
-    <!-- MOBILE CARD VIEW -->
     <div id="cardView" class="cards-list"></div>
-    <!-- TABLE VIEW -->
     <div id="tableView" class="table-wrap hidden">
       <div class="table-scroll">
         <table class="rekap" id="rekapTable">
@@ -765,217 +686,191 @@ table.rekap .badge {
   </div>
 </div>
 
-<!-- ============================================================
-     SETTINGS MODAL
-     ============================================================ -->
+<!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <h3><i class="bi bi-gear-fill"></i> Pengaturan</h3>
-    <p class="sub">Konfigurasi API URL & batas nilai (KKTP, Katrol).</p>
+    <p class="sub">Konfigurasi API URL & batas nilai.</p>
 
     <div class="field-group">
       <label>API URL (Google Apps Script Web App)</label>
-      <input type="text" id="cfgApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzy_Qmp3jRP7nT7rR6WGetB5ORm2SVg1wDnpd7KNUqEr67YVxTDg8WJbVlEluNdb7EQSA/exec" />
+      <input type="text" id="cfgApiUrl" placeholder="https://script.google.com/macros/s/.../exec" />
     </div>
 
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
-      <div class="field-group">
-        <label>KKTP</label>
-        <input type="number" id="cfgKktp" min="0" max="100" />
-      </div>
-      <div class="field-group">
-        <label>Katrol Min</label>
-        <input type="number" id="cfgKatrolMin" min="0" max="100" />
-      </div>
-      <div class="field-group">
-        <label>Katrol Max</label>
-        <input type="number" id="cfgKatrolMax" min="0" max="100" />
-      </div>
+      <div class="field-group"><label>KKTP</label><input type="number" id="cfgKktp" min="0" max="100" /></div>
+      <div class="field-group"><label>Katrol Min</label><input type="number" id="cfgKatrolMin" min="0" max="100" /></div>
+      <div class="field-group"><label>Katrol Max</label><input type="number" id="cfgKatrolMax" min="0" max="100" /></div>
     </div>
 
     <div class="modal-actions">
-      <button class="btn btn-ghost" id="cfgClose"><i class="bi bi-x-lg"></i> Tutup</button>
-      <button class="btn btn-success" id="cfgSave"><i class="bi bi-save-fill"></i> Simpan</button>
+      <button class="btn btn-ghost" id="cfgClose">Tutup</button>
+      <button class="btn btn-success" id="cfgSave">Simpan</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-/* ============================================================
-   STATE
-   ============================================================ */
+/* STATE & UTILS */
 const State = {
   apiUrl: localStorage.getItem('apiUrl') || '',
-  token:  localStorage.getItem('token')  || '',
-  user:   localStorage.getItem('user')   || '',
-  kelas:  localStorage.getItem('kelas')  || '9A',
-  mode:   localStorage.getItem('mode')   || 'mobile',  // mobile | desktop
+  token: localStorage.getItem('token') || '',
+  user: localStorage.getItem('user') || '',
+  kelas: localStorage.getItem('kelas') || '9A',
+  mode: localStorage.getItem('mode') || 'mobile',
   fieldType: 'STS',
   siswa: [],
   config: {}
 };
 
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-function $(sel) { return document.querySelector(sel); }
-function $$(sel) { return document.querySelectorAll(sel); }
+function $(sel) { return document.querySelector(sel); } function $$(sel) { return document.querySelectorAll(sel); }
 
 function toast(msg, type = '') {
   const t = $('#toast');
-  t.className = '';
-  t.classList.add('show');
-  if (type) t.classList.add(type);
-  t.innerHTML = (type === 'ok' ? '<i class="bi bi-check-circle-fill"></i> '
-              : type === 'err' ? '<i class="bi bi-x-circle-fill"></i> '
-              : type === 'warn' ? '<i class="bi bi-exclamation-triangle-fill"></i> '
-              : '') + msg;
+  t.className = 'show ' + type;
+  t.innerHTML = (type === 'ok' ? '<i class="bi bi-check-circle-fill"></i> ' : type === 'err' ? '<i class="bi bi-x-circle-fill"></i> ' : '') + msg;
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => t.classList.remove('show'), 3200);
+  toast._t = setTimeout(() => t.className = '', 3200);
 }
 
-function escapeHtml(s) {
-  if (s === null || s === undefined) return '';
-  return String(s).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
-
-/* ============================================================
-   API CLIENT
-   ============================================================ */
+/* API CLIENT */
 async function api(action, params = {}, method = 'GET') {
   if (!State.apiUrl) {
-    toast('API URL belum dikonfigurasi. Buka Pengaturan.', 'warn');
-    $('#apiBanner').classList.remove('hidden');
-    throw new Error('No API URL');
+    toast('API URL belum dikonfigurasi. Buka Pengaturan.', 'err');
+    $('#apiBanner')?.classList.remove('hidden');
+    return null;
   }
-  let url = State.apiUrl + (State.apiUrl.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(action);
-  for (const k in params) {
-    if (params[k] !== undefined && params[k] !== null) {
-      url += '&' + k + '=' + encodeURIComponent(params[k]);
-    }
-  }
-  const opts = { method: method, redirect: 'follow' };
-  if (method === 'POST') {
-    opts.headers = { 'Content-Type': 'text/plain;charset=utf-8' };
-    opts.body = JSON.stringify({ action: action, data: params });
-  }
-  const res = await fetch(url, opts);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const json = await res.json();
-  return json;
-}
-
-/* ============================================================
-   AUTH
-   ============================================================ */
-async function doLogin() {
-  const user = $('#loginUser').value.trim();
-  const pass = $('#loginPass').value;
-  if (!user || !pass) { showLoginError('Username & password wajib diisi'); return; }
-  if (!State.apiUrl) {
-    showLoginError('API URL belum dikonfigurasi. Tutup form login, klik Settings, lalu set API URL.');
-    return;
-  }
-  $('#loginBtnText').innerHTML = '<span class="spinner"></span> Memproses...';
+  
   try {
-    const r = await api('login', { user, pass }, 'POST');
-    if (r.success) {
-      State.token = r.token; State.user = r.user;
-      localStorage.setItem('token', r.token);
-      localStorage.setItem('user', r.user);
-      $('#userName').textContent = r.user;
-      enterApp();
+    let url = new URL(State.apiUrl);
+    let options = { method: method };
+
+    if (method === 'GET') {
+      url.searchParams.append('action', action);
+      if (State.token) url.searchParams.append('token', State.token);
+      Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
     } else {
-      showLoginError(r.error || 'Login gagal');
+      options.body = JSON.stringify({ action: action, token: State.token, ...params });
+      options.headers = { 'Content-Type': 'text/plain;charset=utf-8' };
     }
-  } catch (e) {
-    showLoginError('Koneksi gagal: ' + e.message);
-  } finally {
-    $('#loginBtnText').innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Masuk';
+
+    const res = await fetch(url.toString(), options);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error(err);
+    toast('Gagal terhubung ke server Apps Script.', 'err');
+    return null;
   }
 }
 
-function showLoginError(msg) {
-  const el = $('#loginError');
-  el.textContent = msg; el.style.display = 'block';
-  setTimeout(() => el.style.display = 'none', 4000);
-}
-
-function doLogout() {
-  State.token = ''; State.user = '';
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  $('#app').classList.remove('show');
-  $('#loginScreen').style.display = 'flex';
-  $('#loginPass').value = '';
-}
-
-function enterApp() {
-  $('#loginScreen').style.display = 'none';
-  $('#app').classList.add('show');
-  if (!State.apiUrl) $('#apiBanner').classList.remove('hidden');
-  else $('#apiBanner').classList.add('hidden');
+/* AUTH & INITIALIZATION */
+document.addEventListener('DOMContentLoaded', () => {
   initApp();
+});
+
+function initApp() {
+  // Populate Kelas Dropdown
+  const kelasOptions = ['9A','9B','9C','9D','9E','9F','9G','9H','9I'];
+  const sel = $('#kelasSelect');
+  sel.innerHTML = kelasOptions.map(k => `<option value="${k}" ${k === State.kelas ? 'selected' : ''}>Kelas ${k}</option>`).join('');
+
+  if (State.token) {
+    $('#loginScreen').style.display = 'none';
+    $('#app').classList.add('show');
+    $('#userName').textContent = State.user || 'Admin';
+    loadData();
+  } else {
+    $('#loginScreen').style.display = 'flex';
+    $('#app').classList.remove('show');
+  }
+
+  setupEvents();
 }
 
-/* ============================================================
-   INIT APP
-   ============================================================ */
-async function initApp() {
-  // Toggle view
-  $$(`.toggle-group button`).forEach(b => {
-    b.classList.toggle('active', b.dataset.view === State.mode);
+function setupEvents() {
+  $('#btnLogin').onclick = handleLogin;
+  $('#btnLogout').onclick = handleLogout;
+  $('#btnSettings').onclick = () => $('#settingsModal').classList.add('show');
+  $('#cfgClose').onclick = () => $('#settingsModal').classList.remove('show');
+  $('#cfgSave').onclick = saveSettings;
+
+  $('#kelasSelect').onchange = (e) => {
+    State.kelas = e.target.value;
+    localStorage.setItem('kelas', State.kelas);
+    loadData();
+  };
+
+  $('#fieldTypeSelect').onchange = (e) => {
+    State.fieldType = e.target.value;
+    renderData();
+  };
+
+  $$('.toggle-group button').forEach(btn => {     btn.onclick = () => {$$
+('.toggle-group button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      State.mode = btn.dataset.view;
+      localStorage.setItem('mode', State.mode);
+      renderData();
+    };
   });
 
-  // Load classes & config
-  try {
-    const [listRes, cfgRes] = await Promise.all([
-      api('getListKelas'),
-      api('getConfig')
-    ]);
-    if (listRes.success) {
-      const sel = $('#kelasSelect');
-      sel.innerHTML = listRes.classes.map(k => `<option value="${k}" ${k===State.kelas?'selected':''}>Kelas ${k}</option>`).join('');
-    }
-    if (cfgRes.success) {
-      State.config = cfgRes.config || {};
-      $('#cfgKktp').value = State.config.KKTP || 78;
-      $('#cfgKatrolMin').value = State.config.KATROL_MIN || 79;
-      $('#cfgKatrolMax').value = State.config.KATROL_MAX || 94;
-    }
-    $('#cfgApiUrl').value = State.apiUrl;
-    await loadData();
-  } catch (e) {
-    toast('Gagal memuat data awal: ' + e.message, 'err');
+  $('#btnSave').onclick = handleSave;
+  $('#btnSync').onclick = handleSync;
+}
+
+async function handleLogin() {
+  const user = $('#loginUser').value.trim();
+  const pass = $('#loginPass').value.trim();
+  if (!user || !pass) return toast('Isi username & password!', 'warn');
+
+  const res = await api('checkLogin', { username: user, password: pass }, 'POST');
+  if (res && res.success) {
+    State.token = res.token;
+    State.user = res.user;
+    localStorage.setItem('token', State.token);
+    localStorage.setItem('user', State.user);
+    
+    $('#loginScreen').style.display = 'none';
+    $('#app').classList.add('show');
+    $('#userName').textContent = State.user;
+    toast('Login berhasil!', 'ok');
+    loadData();
+  } else {
+    toast(res ? res.message : 'Login gagal', 'err');
   }
 }
 
-/* ============================================================
-   LOAD SISWA DATA
-   ============================================================ */
+function handleLogout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  State.token = '';
+  location.reload();
+}
+
 async function loadData() {
-  try {
-    const r = await api('getSiswa', { kelas: State.kelas, mode: 'REKAP' });
-    if (!r.success) { toast(r.error || 'Gagal memuat data', 'err'); return; }
-    State.siswa = r.siswa || [];
-    renderView();
-    updateDashboard();
-  } catch (e) {
-    State.siswa = [];
-    renderView();
-    toast('Gagal memuat siswa: ' + e.message, 'err');
+  const cfg = await api('getConfig');
+  if (cfg) {
+    State.config = cfg;
+    $('#cfgKktp').value = cfg.KKTP || 78;
+    $('#cfgKatrolMin').value = cfg.KATROL_MIN || 79;
+    $('#cfgKatrolMax').value = cfg.KATROL_MAX || 94;
+    $('#cfgApiUrl').value = State.apiUrl;
+  }
+
+  const res = await api('getSiswaByKelas', { namaKelas: 'KELAS' + State.kelas });
+  if (res) {
+    State.siswa = res;
+    renderData();
   }
 }
 
-/* ============================================================
-   RENDER VIEW (Mobile Card / Desktop Table)
-   ============================================================ */
-function renderView() {
+/* RENDER DATA */
+function renderData() {
+  updateDashboard();
+
   if (State.mode === 'mobile') {
     $('#cardView').classList.remove('hidden');
     $('#tableView').classList.add('hidden');
@@ -987,83 +882,66 @@ function renderView() {
   }
 }
 
-function rankClass(rank) {
-  if (rank === 1) return 'r1';
-  if (rank === 2) return 'r2';
-  if (rank === 3) return 'r3';
-  return 'rx';
+function updateDashboard() {
+  const total = State.siswa.length;
+  const kktp = Number(State.config.KKTP || 78);
+  let tuntas = 0, remidi = 0, sumNA = 0;
+
+  State.siswa.forEach(s => {
+    const na = Number(s.na) || 0;
+    sumNA += na;
+    if (na >= kktp) tuntas++; else remidi++;
+  });
+
+  $('#statTotal').textContent = total;
+  $('#statTuntas').textContent = tuntas;
+  $('#statRemidi').textContent = remidi;
+  $('#statAvg').textContent = total ? (sumNA / total).toFixed(1) : 0;
 }
-function rankBadge(rank) {
-  if (rank === 1) return 'rank-1';
-  if (rank === 2) return 'rank-2';
-  if (rank === 3) return 'rank-3';
+
+function getFieldValue(s, field) {
+  if (field === 'STS') return s.sts ?? '';
+  if (field === 'SAS') return s.sas ?? '';
+  if (field.startsWith('LM')) {
+    const parts = field.split('_TP');
+    const lmIdx = parseInt(parts[0].replace('LM','')) - 1;
+    const tpIdx = parseInt(parts[1]) - 1;
+    const globalIdx = (lmIdx * 4) + tpIdx;
+    return s.tp ? (s.tp[globalIdx] ?? '') : '';
+  }
   return '';
 }
 
 function renderCards() {
   const container = $('#cardView');
   if (!State.siswa.length) {
-    container.innerHTML = `<div class="empty"><i class="bi bi-inbox"></i><h4>Belum ada data siswa</h4><p>Pilih kelas lain atau isi data siswa di sheet KELAS${State.kelas} pada Google Sheets.</p></div>`;
+    container.innerHTML = '<div class="empty"><h4>Data Kosong</h4></div>';
     return;
   }
-  const fieldType = State.fieldType;
-  const isLM = fieldType.startsWith('LM');
-  // Untuk LM, ambil nilai TP saat ini dari array s.tp
-  const getOrigTPValue = (s) => {
-    if (!isLM) return fieldType === 'STS' ? (s.stsRaw ?? '-') : (s.sasRaw ?? '-');
-    const m = fieldType.match(/^LM(\d)_TP(\d)$/);
-    if (!m) return '-';
-    const lmIdx = parseInt(m[1], 10) - 1;
-    const tpIdx = parseInt(m[2], 10) - 1;
-    const tpIdxAbs = lmIdx * 4 + tpIdx;
-    return s.tp?.[tpIdxAbs] ?? '-';
-  };
 
-  container.innerHTML = State.siswa.map((s, i) => {
-    const rank = s.rank || '-';
-    const validasi = s.validasi || '';
-    const origValue = getOrigTPValue(s);
-    // Status badge: VALID = Tuntas (hijau), TIDAK VALID = Remidial (merah)
-    const statusBadge = validasi === 'VALID'
-      ? `<span class="sc-status t">Tuntas</span>`
-      : validasi === 'TIDAK VALID'
-        ? `<span class="sc-status r">Remidial</span>`
-        : `<span class="sc-status">-</span>`;
-
-    // TP status pills (5 LM)
-    const tpPills = (s.tpStatus || []).map((st, idx) => {
-      const cls = st === 'R' ? 'r' : (st === 'T' ? 't' : '');
-      return `<span class="tp-pill ${cls}" title="LM${idx+1}">${st || '-'}</span>`;
-    }).join('');
+  container.innerHTML = State.siswa.map((s, idx) => {
+    const val = getFieldValue(s, State.fieldType);
+    const isTuntas = (Number(s.nilaiRapor) || 0) >= (Number(State.config.KKTP) || 78);
 
     return `
-      <div class="siswa-card" data-row="${s.row}">
+      <div class="siswa-card">
         <div class="sc-head">
-          <div class="sc-no">${s.no || (i+1)}</div>
+          <div class="sc-no">${s.no}</div>
           <div class="sc-info">
-            <div class="sc-name">${escapeHtml(s.nama)}</div>
-            <div class="sc-tp-pills">${tpPills}</div>
+            <div class="sc-name">${s.nama}</div>
           </div>
-          <div class="sc-rank ${rankClass(rank)}">#${rank}</div>
+          <div class="sc-rank rx">Rank ${s.rank || '-'}</div>
         </div>
-
         <div class="sc-grid">
-          <div class="sc-stat"><div class="lbl">NA</div><div class="val">${s.na ?? '-'}</div></div>
-          <div class="sc-stat green"><div class="lbl">Katrol Rapor</div><div class="val">${s.katrol ?? '-'}</div></div>
-          <div class="sc-stat yellow"><div class="lbl">STS 30%</div><div class="val">${s.sts30 ?? '-'}</div></div>
-          <div class="sc-stat yellow"><div class="lbl">SAS 40%</div><div class="val">${s.sas40 ?? '-'}</div></div>
+          <div class="sc-stat"><div class="lbl">Nilai Rapor</div><div class="val green">${s.nilaiRapor || '-'}</div></div>
+          <div class="sc-stat"><div class="lbl">Nilai Akhir (NA)</div><div class="val">${s.na || '-'}</div></div>
         </div>
-
         <div class="sc-input">
-          <label>Input Nilai ${fieldType} ${isLM ? '(TP)' : ''}</label>
-          <input type="number" min="0" max="100" class="sc-input-val"
-                 data-row="${s.row}"
-                 placeholder="0-100" />
+          <label>Nilai ${State.fieldType}</label>
+          <input type="number" data-row="${s.rowIndex}" value="${val}" class="inp-val" placeholder="0 - 100" />
         </div>
-
         <div class="sc-foot">
-          <span class="sc-orig">Nilai saat ini: <b>${origValue}</b></span>
-          ${statusBadge}
+          <span class="sc-status ${isTuntas ? 't' : 'r'}">${isTuntas ? 'TUNTAS' : 'REMIDIAL'}</span>
         </div>
       </div>
     `;
@@ -1071,314 +949,83 @@ function renderCards() {
 }
 
 function renderTable() {
-  const tbl = $('#rekapTable');
-  if (!State.siswa.length) {
-    tbl.querySelector('thead').innerHTML = '';
-    tbl.querySelector('tbody').innerHTML = `<tr><td colspan="14"><div class="empty"><i class="bi bi-inbox"></i><h4>Belum ada data</h4><p>Pilih kelas lain atau isi data siswa di Google Sheets.</p></div></td></tr>`;
-    return;
-  }
-  const fieldType = State.fieldType;
-  const isLM = fieldType.startsWith('LM');
-
-  // Hitung index TP yang sedang aktif (jika LMx_TPy)
-  let activeTpIdx = -1;
-  if (isLM) {
-    const m = fieldType.match(/^LM(\d)_TP(\d)$/);
-    if (m) activeTpIdx = (parseInt(m[1],10) - 1) * 4 + (parseInt(m[2],10) - 1);
-  }
-
-  // Header (match sample structure: 3-row grouped)
-  tbl.querySelector('thead').innerHTML = `
-    <tr class="group">
-      <th rowspan="3">No</th>
-      <th rowspan="3">Nama Siswa</th>
-      <th colspan="20" class="sub">FORMATIF (TP1.1 s.d. TP5.4)</th>
-      <th colspan="5" class="sub">SUMATIF LM</th>
-      <th rowspan="3">30% LM<br>(AB)</th>
-      <th rowspan="3">STS<br>(AC)</th>
-      <th rowspan="3">30% STS<br>(AD)</th>
-      <th rowspan="3">SAS<br>(AE)</th>
-      <th rowspan="3">40% SAS<br>(AF)</th>
-      <th rowspan="3">NA<br>(AG)</th>
-      <th rowspan="3">Katrol<br>(AH)</th>
-      <th rowspan="3">Rank<br>(AI)</th>
-      <th colspan="5" class="sub">STATUS TP (R/T)</th>
-      <th rowspan="3">VALIDASI<br>(AP)</th>
-    </tr>
+  const table = $('#rekapTable');
+  table.querySelector('thead').innerHTML = `
     <tr>
-      <th colspan="4">LM1</th><th colspan="4">LM2</th><th colspan="4">LM3</th>
-      <th colspan="4">LM4</th><th colspan="4">LM5</th>
-      <th>LM1</th><th>LM2</th><th>LM3</th><th>LM4</th><th>LM5</th>
-      <th>TP.911</th><th>TP.912</th><th>TP.913</th><th>TP.914</th><th>TP.915</th>
-    </tr>
-    <tr>
-      <th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4</th>
-      <th>(W)</th><th>(X)</th><th>(Y)</th><th>(Z)</th><th>(AA)</th>
-      <th>(AK)</th><th>(AL)</th><th>(AM)</th><th>(AN)</th><th>(AO)</th>
+      <th>NO</th><th>NAMA SISWA</th><th>STS</th><th>SAS</th><th>NA</th><th>RAPOR</th><th>RANK</th>
     </tr>
   `;
 
-  // Body
-  tbl.querySelector('tbody').innerHTML = State.siswa.map((s, i) => {
-    const rank = s.rank || '-';
-    const validasi = s.validasi || '';
-
-    // TP cells C-V (20 nilai) — editable jika fieldType sesuai
-    const tpCells = (s.tp || []).map((v, idx) => {
-      const isActive = isLM && idx === activeTpIdx;
-      if (isActive) {
-        return `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${fieldType}" value="${v ?? ''}" /></td>`;
-      }
-      return `<td>${v ?? '-'}</td>`;
-    }).join('');
-
-    // LM avg cells W-AA
-    const lmCells = (s.lm || []).map(v => `<td>${v ?? '-'}</td>`).join('');
-
-    // STS / SAS cells (editable jika fieldType sesuai)
-    const stsCell = (fieldType === 'STS')
-      ? `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" /></td>`
-      : `<td>${s.stsRaw ?? '-'}</td>`;
-    const sasCell = (fieldType === 'SAS')
-      ? `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" /></td>`
-      : `<td>${s.sasRaw ?? '-'}</td>`;
-
-    // TP status cells AK-AO
-    const tpStatusCells = (s.tpStatus || []).map(st => {
-      const cls = st === 'R' ? 'r' : (st === 'T' ? 't' : '');
-      return `<td><span class="badge ${cls}">${st || '-'}</span></td>`;
-    }).join('');
-
-    // VALIDASI badge
-    const validasiBadge = validasi === 'VALID'
-      ? `<span class="badge t">VALID</span>`
-      : validasi === 'TIDAK VALID'
-        ? `<span class="badge r">TIDAK VALID</span>`
-        : '-';
-
-    return `
-      <tr>
-        <td>${s.no || (i+1)}</td>
-        <td class="nama">${escapeHtml(s.nama)}</td>
-        ${tpCells}
-        ${lmCells}
-        <td>${s.lm30 ?? '-'}</td>
-        ${stsCell}
-        <td>${s.sts30 ?? '-'}</td>
-        ${sasCell}
-        <td>${s.sas40 ?? '-'}</td>
-        <td class="cell-na">${s.na ?? '-'}</td>
-        <td class="cell-katrol">${s.katrol ?? '-'}</td>
-        <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
-        ${tpStatusCells}
-        <td>${validasiBadge}</td>
-      </tr>
-    `;
-  }).join('');
+  table.querySelector('tbody').innerHTML = State.siswa.map(s => `
+    <tr>
+      <td>${s.no}</td>
+      <td class="nama">${s.nama}</td>
+      <td>${s.sts ?? '-'}</td>
+      <td>${s.sas ?? '-'}</td>
+      <td class="cell-na">${s.na ?? '-'}</td>
+      <td class="cell-katrol">${s.nilaiRapor ?? '-'}</td>
+      <td><span class="badge rank-1">${s.rank ?? '-'}</span></td>
+    </tr>
+  `).join('');
 }
 
-/* ============================================================
-   DASHBOARD UPDATE
-   ============================================================ */
-async function updateDashboard() {
-  try {
-    const r = await api('getDashboard', { kelas: State.kelas });
-    if (r.success) {
-      $('#statTotal').textContent  = r.totalSiswa || 0;
-      $('#statTuntas').textContent = r.tuntas || 0;
-      $('#statRemidi').textContent = r.remidi || 0;
-      $('#statAvg').textContent    = r.avgNa || 0;
-    }
-  } catch (e) {
-    // silent
-  }
-}
-
-/* ============================================================
-   SAVE BATCH NILAI
-   ============================================================ */
-async function saveNilai() {
-  const fieldType = State.fieldType;
-  const payload = [];
-  if (State.mode === 'mobile') {
-    $$('#cardView .sc-input-val').forEach(inp => {
-      const val = inp.value.trim();
-      if (val === '') return;
-      const row = parseInt(inp.dataset.row, 10);
-      // Semua fieldType (STS/SAS/LMx_TPy) kini menulis ke baris yang sama di KELAS9x
-      payload.push({ row: row, value: Number(val) });
+/* ACTIONS */
+async function handleSave() {
+  let payload = [];
+  $$('.inp-val').forEach(inp => {
+    payload.push({
+      rowIndex: inp.dataset.row,
+      value: inp.value
     });
-  } else {
-    $$('#rekapTable .tbl-input').forEach(inp => {
-      const val = inp.value.trim();
-      if (val === '') return;
-      payload.push({ row: parseInt(inp.dataset.row, 10), value: Number(val) });
-    });
-  }
+  });
 
-  if (!payload.length) { toast('Tidak ada nilai untuk disimpan', 'warn'); return; }
+  if (!payload.length) return toast('Tidak ada data untuk disimpan!', 'warn');
 
-  const btn = $('#btnSave');
-  const old = btn.innerHTML;
-  btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
-  btn.disabled = true;
+  toast('Menyimpan nilai...', '');
+  const res = await api('saveBatchNilai', {
+    namaKelas: 'KELAS' + State.kelas,
+    fieldType: State.fieldType,
+    payloadData: payload
+  }, 'POST');
 
-  try {
-    const r = await api('saveNilai', { kelas: State.kelas, fieldType: fieldType, payload: payload }, 'POST');
-    if (r.success) {
-      toast(`Berhasil menyimpan ${r.saved} nilai. Formula di-refresh otomatis.`, 'ok');
-      await loadData();
-    } else {
-      toast(r.error || 'Gagal menyimpan', 'err');
-    }
-  } catch (e) {
-    toast('Error: ' + e.message, 'err');
-  } finally {
-    btn.innerHTML = old;
-    btn.disabled = false;
-  }
-}
-
-/* ============================================================
-   SYNC REMIDI
-   ============================================================ */
-async function syncRemidi() {
-  const btn = $('#btnSync');
-  const old = btn.innerHTML;
-  btn.innerHTML = '<span class="spinner"></span> Sync...';
-  btn.disabled = true;
-  try {
-    const r = await api('syncRemidi', { kelas: State.kelas }, 'POST');
-    if (r.success) {
-      toast(`Sync selesai: ${r.totalRemidi} siswa masuk daftar remidi (KKTP=${r.kktp})`, 'ok');
-      await loadData();
-    } else {
-      toast(r.error || 'Gagal sync', 'err');
-    }
-  } catch (e) {
-    toast('Error: ' + e.message, 'err');
-  } finally {
-    btn.innerHTML = old;
-    btn.disabled = false;
-  }
-}
-
-/* ============================================================
-   EXPORT EXCEL
-   ============================================================ */
-async function exportExcel() {
-  try {
-    const r = await api('exportExcel');
-    if (r.success && r.downloadUrl) {
-      toast('Mempersiapkan file Excel...', 'ok');
-      // Buka tab baru untuk download
-      window.open(r.downloadUrl, '_blank');
-    } else {
-      toast(r.error || 'Gagal export', 'err');
-    }
-  } catch (e) {
-    toast('Error: ' + e.message, 'err');
-  }
-}
-
-/* ============================================================
-   SETTINGS
-   ============================================================ */
-function openSettings() {
-  $('#cfgApiUrl').value = State.apiUrl;
-  $('#settingsModal').classList.add('show');
-}
-function closeSettings() { $('#settingsModal').classList.remove('show'); }
-
-async function saveSettings() {
-  const apiUrl = $('#cfgApiUrl').value.trim();
-  const kktp = $('#cfgKktp').value;
-  const min = $('#cfgKatrolMin').value;
-  const max = $('#cfgKatrolMax').value;
-
-  if (apiUrl && apiUrl !== State.apiUrl) {
-    State.apiUrl = apiUrl;
-    localStorage.setItem('apiUrl', apiUrl);
-    toast('API URL disimpan', 'ok');
-  }
-
-  // Save config to backend if changed
-  if (State.apiUrl && kktp && min && max) {
-    try {
-      const r = await api('saveConfig', { kktp: Number(kktp), minKatrol: Number(min), maxKatrol: Number(max) }, 'POST');
-      if (r.success) {
-        State.config.KKTP = Number(kktp);
-        State.config.KATROL_MIN = Number(min);
-        State.config.KATROL_MAX = Number(max);
-        toast('Konfigurasi KKTP/Katrol disimpan', 'ok');
-        await loadData();
-      } else {
-        toast(r.error || 'Gagal simpan config', 'err');
-      }
-    } catch (e) {
-      toast('Error simpan config: ' + e.message, 'err');
-    }
-  }
-  closeSettings();
-}
-
-/* ============================================================
-   EVENT BINDINGS
-   ============================================================ */
-function bindEvents() {
-  $('#btnLogin').addEventListener('click', doLogin);
-  $('#loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  $('#loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginPass').focus(); });
-
-  $('#btnLogout').addEventListener('click', doLogout);
-  $('#btnSettings').addEventListener('click', openSettings);
-  $('#cfgClose').addEventListener('click', closeSettings);
-  $('#cfgSave').addEventListener('click', saveSettings);
-  $('#settingsModal').addEventListener('click', e => { if (e.target.id === 'settingsModal') closeSettings(); });
-
-  $('#kelasSelect').addEventListener('change', e => {
-    State.kelas = e.target.value;
-    localStorage.setItem('kelas', State.kelas);
+  if (res && res.success) {
+    toast('Nilai berhasil disimpan!', 'ok');
     loadData();
-  });
-  $('#fieldTypeSelect').addEventListener('change', e => {
-    State.fieldType = e.target.value;
-    renderView();
-  });
-
-  $$('.toggle-group button').forEach(b => {
-    b.addEventListener('click', () => {
-      State.mode = b.dataset.view;
-      localStorage.setItem('mode', State.mode);
-      $$('.toggle-group button').forEach(x => x.classList.toggle('active', x === b));
-      renderView();
-    });
-  });
-
-  $('#btnSync').addEventListener('click', syncRemidi);
-  $('#btnSave').addEventListener('click', saveNilai);
-  $('#btnExport').addEventListener('click', exportExcel);
+  } else {
+    toast(res ? res.message : 'Gagal menyimpan nilai', 'err');
+  }
 }
 
-/* ============================================================
-   BOOTSTRAP
-   ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  bindEvents();
-  // Pre-fill API URL field
-  $('#cfgApiUrl').value = State.apiUrl;
-  // Auto-login if token exists
-  if (State.token && State.user) {
-    $('#userName').textContent = State.user;
-    enterApp();
+async function handleSync() {
+  if (!confirm(`Sync data remidi untuk Kelas ${State.kelas}?`)) return;
+  
+  toast('Menyinkronkan data remidi...', '');
+  const res = await api('syncDataRemidi', { namaKelas: 'KELAS' + State.kelas }, 'POST');
+  if (res && res.success) {
+    toast(res.message, 'ok');
+    loadData();
   } else {
-    $('#loginScreen').style.display = 'flex';
+    toast(res ? res.message : 'Gagal sinkronisasi data', 'err');
   }
-});
+}
+
+function saveSettings() {
+  const url = $('#cfgApiUrl').value.trim();
+  State.apiUrl = url;
+  localStorage.setItem('apiUrl', url);
+
+  const kktp = $('#cfgKktp').value;
+  const minK = $('#cfgKatrolMin').value;
+  const maxK = $('#cfgKatrolMax').value;
+
+  api('saveConfigData', { kktp: kktp, minKatrol: minK, maxKatrol: maxK }, 'POST').then(res => {
+    if (res && res.success) {
+      toast('Pengaturan berhasil disimpan!', 'ok');
+      $('#settingsModal').classList.remove('show');
+      loadData();
+    }
+  });
+}
 </script>
 </body>
 </html>
