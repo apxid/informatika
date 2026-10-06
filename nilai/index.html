@@ -1,254 +1,1384 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Download File — Rekap Nilai Informatika Kelas 9</title>
-  <style>
-    :root {
-      --lemon: #c5e76a;
-      --lemon-light: #f0f7c3;
-      --lemon-dark: #a3c64a;
-      --blue: #1e40af;
-      --blue-light: #dbeafe;
-      --blue-dark: #1e3a8a;
-      --yellow: #fde047;
-      --yellow-dark: #facc15;
-      --white: #ffffff;
-      --gray: #475569;
-      --gray-light: #94a3b8;
-      --gray-bg: #f8fafc;
-      --gray-border: #cbd5e1;
-      --success: #16a34a;
-      --success-light: #dcfce7;
-      --radius: 10px;
-      --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
-      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, var(--lemon) 0%, var(--lemon-light) 50%, var(--white) 100%);
-      min-height: 100vh; padding: 20px; color: var(--gray);
-    }
-    .container { max-width: 960px; margin: 0 auto; }
-    .header {
-      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
-      padding: 28px 32px; margin-bottom: 20px; border-top: 4px solid var(--blue); position: relative; overflow: hidden;
-    }
-    .header::before {
-      content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
-      background: var(--yellow); border-radius: 50%; opacity: 0.4;
-    }
-    .header h1 { color: var(--blue-dark); font-size: 24px; font-weight: 800; margin-bottom: 4px; position: relative; z-index: 1; }
-    .header .subtitle { color: var(--gray); font-size: 13px; position: relative; z-index: 1; }
-    .header .meta { display: inline-block; background: var(--lemon-light); color: var(--blue-dark); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; margin-top: 10px; position: relative; z-index: 1; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="theme-color" content="#1E56A0" />
+<title>e-Rapor Informatika Kelas 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Hijau Muda Stabilo / Lemon Green */
+  --green:        #72BF78;
+  --green-light:  #A8E6CF;
+  --green-soft:   #E5F7E9;
 
-    .section { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px 28px; margin-bottom: 16px; border-left: 4px solid var(--lemon); }
-    .section h2 { color: var(--blue); font-size: 16px; font-weight: 700; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--lemon-light); display: flex; align-items: center; gap: 8px; }
-    .section h2 .icon { background: var(--lemon); width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: var(--blue-dark); font-size: 14px; }
-    .section .desc { font-size: 13px; color: var(--gray); margin-bottom: 16px; line-height: 1.6; }
+  /* Biru Celana SMP */
+  --blue:         #1E56A0;
+  --blue-dark:    #0D3B66;
+  --blue-soft:    #E4ECF7;
 
-    .file-card {
-      display: flex; align-items: center; gap: 16px; padding: 16px; border: 1.5px solid var(--gray-border);
-      border-radius: 8px; margin-bottom: 10px; transition: all 0.15s; background: var(--gray-bg);
-    }
-    .file-card:hover { border-color: var(--blue); background: var(--blue-light); transform: translateX(2px); }
-    .file-icon {
-      width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
-    }
-    .file-icon.xlsx { background: var(--success-light); color: var(--success); }
-    .file-icon.html { background: var(--blue-light); color: var(--blue); }
-    .file-icon.gs { background: var(--lemon); color: var(--blue-dark); }
-    .file-icon.json { background: var(--yellow); color: var(--blue-dark); }
-    .file-icon.zip { background: var(--lemon-light); color: var(--blue-dark); }
-    .file-icon.md { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--gray-border); }
+  /* Kuning OSIS SMP */
+  --yellow:       #FFC93C;
+  --yellow-bright:#FFD600;
+  --yellow-soft:  #FFF6D6;
 
-    .file-info { flex: 1; min-width: 0; }
-    .file-name { font-weight: 700; color: var(--blue-dark); font-size: 14px; word-break: break-all; }
-    .file-meta { font-size: 11px; color: var(--gray); margin-top: 2px; display: flex; flex-wrap: wrap; gap: 12px; }
-    .file-meta span { display: inline-flex; align-items: center; gap: 4px; }
-    .file-desc { font-size: 12px; color: var(--gray); margin-top: 4px; line-height: 1.5; }
+  /* Neutral */
+  --white:        #FFFFFF;
+  --bg:           #F4F6F9;
+  --ink:          #1B2433;
+  --ink-soft:     #5A6675;
+  --line:         rgba(13,59,102,0.10);
+  --line-soft:    rgba(13,59,102,0.06);
 
-    .btn-download {
-      background: var(--yellow); color: var(--blue-dark); border: none; padding: 10px 18px;
-      border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
-    }
-    .btn-download:hover { background: var(--yellow-dark); color: var(--white); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(250, 204, 21, 0.4); }
-    .btn-download.primary { background: var(--blue); color: var(--white); }
-    .btn-download.primary:hover { background: var(--blue-dark); box-shadow: 0 4px 8px rgba(30, 64, 175, 0.4); }
+  /* Glass */
+  --glass-bg:     rgba(255,255,255,0.55);
+  --glass-bg-strong: rgba(255,255,255,0.78);
+  --glass-blur:   16px;
+  --glass-border: rgba(255,255,255,0.55);
+  --glass-shadow: 0 10px 30px rgba(13,59,102,0.12);
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } .file-card { flex-wrap: wrap; } }
+  /* Radius & spacing */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
 
-    .note {
-      background: var(--lemon-light); border-left: 4px solid var(--lemon-dark); padding: 12px 16px;
-      border-radius: 6px; font-size: 12px; color: var(--gray); margin-top: 16px; line-height: 1.6;
-    }
-    .note b { color: var(--blue-dark); }
+  --font-body: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-head: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
 
-    .footer { text-align: center; color: var(--gray); font-size: 12px; padding: 20px; }
-    .footer a { color: var(--blue); }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 6px; }
-    .badge.must { background: var(--yellow); color: var(--blue-dark); }
-    .badge.opt { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--gray-border); }
-  </style>
+/* ============================================================
+   BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  background-image:
+    radial-gradient(1200px 600px at 110% -10%, rgba(168,230,207,0.45), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(30,86,160,0.18), transparent 60%),
+    radial-gradient(700px 400px at 50% 50%, rgba(255,201,60,0.10), transparent 70%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
+#loginScreen {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(800px 400px at 80% 20%, rgba(168,230,207,0.55), transparent 60%),
+    radial-gradient(700px 400px at 20% 80%, rgba(30,86,160,0.45), transparent 60%),
+    linear-gradient(135deg, #0D3B66 0%, #1E56A0 60%, #72BF78 130%);
+  overflow: hidden;
+}
+#loginScreen::before {
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 0 2px, transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.08) 0 3px, transparent 3px),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.06) 0 1px, transparent 1px);
+  background-size: 60px 60px, 90px 90px, 40px 40px;
+  pointer-events: none;
+}
+.login-card {
+  position: relative;
+  width: 100%; max-width: 420px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--glass-shadow);
+  padding: 36px 32px;
+  animation: pop .35s cubic-bezier(.2,.7,.3,1.2);
+}
+@keyframes pop {
+  0%   { opacity: 0; transform: translateY(20px) scale(.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-logo {
+  width: 76px; height: 76px;
+  margin: 0 auto 16px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--green) 100%);
+  display: grid; place-items: center;
+  color: #fff; font-size: 36px;
+  box-shadow: 0 8px 20px rgba(30,86,160,0.35);
+}
+.login-title {
+  text-align: center;
+  font-family: var(--font-head); font-weight: 800;
+  font-size: 22px; line-height: 1.2; margin: 0 0 4px;
+  color: var(--blue-dark);
+}
+.login-sub {
+  text-align: center; color: var(--ink-soft);
+  font-size: 13px; margin: 0 0 24px;
+}
+.field { position: relative; margin-bottom: 14px; }
+.field i {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--blue); font-size: 16px;
+}
+.field input {
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.85);
+  font-size: 14px; color: var(--ink);
+  font-family: var(--font-body);
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:focus {
+  outline: none; border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(30,86,160,0.12);
+}
+.btn-login {
+  width: 100%; padding: 14px;
+  border: 0; border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  color: #fff; font-weight: 700; font-size: 15px;
+  font-family: var(--font-body); cursor: pointer;
+  box-shadow: 0 8px 18px rgba(13,59,102,0.28);
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-login:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(13,59,102,0.32); }
+.btn-login:active { transform: translateY(0); }
+.login-error {
+  margin-top: 12px; padding: 10px 12px;
+  background: #FDECEC; color: #B23B3B; border: 1px solid #F4C7C7;
+  border-radius: 10px; font-size: 13px; text-align: center;
+  display: none;
+}
+.login-foot {
+  margin-top: 18px; text-align: center;
+  font-size: 11px; color: var(--ink-soft);
+}
+
+/* ============================================================
+   APP LAYOUT
+   ============================================================ */
+#app { display: none; }
+#app.show { display: block; }
+
+/* TOP NAVBAR */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 14px rgba(13,59,102,0.06);
+}
+.topbar-inner {
+  max-width: 1400px; margin: 0 auto;
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-head); font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  padding: 8px 14px; border-radius: var(--r-md);
+  font-size: 14px; letter-spacing: .2px;
+  box-shadow: 0 4px 10px rgba(13,59,102,0.20);
+}
+.brand .brand-logo {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+  display: grid; place-items: center; color: #fff; font-size: 16px;
+}
+.brand small { font-weight: 500; font-size: 11px; opacity: .85; display: block; margin-top: -2px; }
+
+.topbar-spacer { flex: 1; }
+
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px 6px 6px;
+  background: rgba(255,255,255,0.65);
+  border: 1px solid var(--line);
+  border-radius: 999px; font-size: 13px; font-weight: 600;
+}
+.user-chip .avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  color: #fff; display: grid; place-items: center; font-size: 13px;
+}
+.btn-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.65);
+  display: grid; place-items: center; cursor: pointer;
+  color: var(--blue-dark); font-size: 16px;
+  transition: background .15s, transform .15s;
+}
+.btn-icon:hover { background: #fff; transform: translateY(-1px); }
+.btn-icon.danger { color: #B23B3B; }
+
+/* CONTROL PANEL */
+.controls {
+  max-width: 1400px; margin: 16px auto; padding: 0 16px;
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch;
+}
+.control-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  box-shadow: var(--glass-shadow);
+  display: flex; align-items: center; gap: 10px;
+  flex: 1 1 200px;
+}
+.control-card label {
+  font-size: 11px; font-weight: 700;
+  color: var(--ink-soft); letter-spacing: .4px;
+  text-transform: uppercase; display: block; margin-bottom: 4px;
+}
+.control-card select, .control-card input {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.92);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-family: var(--font-body); font-size: 13px;
+  color: var(--ink); width: 100%;
+  cursor: pointer;
+}
+.control-card select:focus, .control-card input:focus {
+  outline: none; border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30,86,160,0.12);
+}
+.control-stack { display: flex; flex-direction: column; flex: 1; }
+
+.btn {
+  border: 0; cursor: pointer; font-family: var(--font-body);
+  font-weight: 600; font-size: 13px;
+  padding: 10px 14px; border-radius: 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: transform .12s, box-shadow .15s, background .15s;
+  white-space: nowrap;
+}
+.btn i { font-size: 15px; }
+.btn-primary { background: var(--blue); color: #fff; box-shadow: 0 6px 14px rgba(30,86,160,0.25); }
+.btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+.btn-success { background: var(--green); color: #fff; box-shadow: 0 6px 14px rgba(114,191,120,0.30); }
+.btn-success:hover { background: #5fa966; transform: translateY(-1px); }
+.btn-warning { background: var(--yellow); color: var(--blue-dark); box-shadow: 0 6px 14px rgba(255,201,60,0.35); }
+.btn-warning:hover { background: var(--yellow-bright); transform: translateY(-1px); }
+.btn-ghost { background: rgba(255,255,255,0.7); border: 1px solid var(--line); color: var(--blue-dark); }
+.btn-ghost:hover { background: #fff; }
+.btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 10px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+.toggle-group {
+  display: inline-flex; background: rgba(255,255,255,0.7);
+  border: 1px solid var(--line); border-radius: 12px; padding: 3px; gap: 2px;
+}
+.toggle-group button {
+  border: 0; background: transparent; padding: 6px 10px;
+  border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 600;
+  color: var(--ink-soft); font-family: var(--font-body);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.toggle-group button.active {
+  background: var(--blue); color: #fff;
+  box-shadow: 0 4px 8px rgba(30,86,160,0.20);
+}
+
+/* DASHBOARD STRIP */
+.dash-strip {
+  max-width: 1400px; margin: 0 auto 16px; padding: 0 16px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.dash-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  box-shadow: var(--glass-shadow);
+  display: flex; align-items: center; gap: 12px;
+  position: relative; overflow: hidden;
+}
+.dash-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--blue);
+}
+.dash-card.green::before { background: var(--green); }
+.dash-card.yellow::before { background: var(--yellow); }
+.dash-card.red::before { background: #E85A5A; }
+.dash-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: grid; place-items: center; font-size: 22px; color: #fff;
+  background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+}
+.dash-card.green .dash-icon  { background: linear-gradient(135deg, var(--green), #5fa966); }
+.dash-card.yellow .dash-icon { background: linear-gradient(135deg, var(--yellow), var(--yellow-bright)); color: var(--blue-dark); }
+.dash-card.red .dash-icon    { background: linear-gradient(135deg, #E85A5A, #c84545); }
+.dash-meta { display: flex; flex-direction: column; }
+.dash-num { font-family: var(--font-head); font-weight: 800; font-size: 22px; line-height: 1; }
+.dash-lbl { font-size: 11px; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; margin-top: 2px; }
+
+/* MAIN CONTENT */
+.main { max-width: 1400px; margin: 0 auto 80px; padding: 0 16px; }
+
+/* TABLE VIEW (Desktop) */
+.table-wrap {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.rekap {
+  width: 100%; border-collapse: collapse;
+  font-size: 12.5px; min-width: 980px;
+}
+table.rekap thead th {
+  background: linear-gradient(180deg, var(--blue) 0%, var(--blue-dark) 100%);
+  color: #fff; font-weight: 700; text-align: center;
+  padding: 10px 8px; border-right: 1px solid rgba(255,255,255,0.15);
+  position: sticky; top: 0; z-index: 2;
+  font-family: var(--font-head); font-size: 12px; letter-spacing: .3px;
+}
+table.rekap thead th.sub { background: var(--blue); }
+table.rekap thead tr.group th { background: var(--blue-dark); }
+table.rekap tbody td {
+  padding: 8px 8px; text-align: center;
+  border-bottom: 1px solid var(--line-soft);
+  background: rgba(255,255,255,0.5);
+}
+table.rekap tbody tr:hover td { background: rgba(168,230,207,0.18); }
+table.rekap tbody td input {
+  width: 52px; padding: 5px 6px; text-align: center;
+  border: 1px solid var(--line); border-radius: 6px;
+  background: rgba(255,255,255,0.95);
+  font-family: var(--font-body); font-size: 12px;
+}
+table.rekap tbody td input:focus {
+  outline: none; border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(114,191,120,0.18);
+  background: #fff;
+}
+table.rekap tbody td.nama { text-align: left; font-weight: 600; }
+table.rekap .badge {
+  display: inline-block; padding: 2px 8px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700;
+}
+.badge.t { background: var(--green-soft); color: #2c7a3a; }
+.badge.r { background: #FDECEC; color: #B23B3B; }
+.badge.rank-1 { background: linear-gradient(135deg,#FFD600,#FFC93C); color: var(--blue-dark); }
+.badge.rank-2 { background: #E5E9F0; color: var(--blue-dark); }
+.badge.rank-3 { background: #F4D9B0; color: #8B5A2B; }
+.cell-na { font-weight: 700; color: var(--blue-dark); }
+.cell-katrol { font-weight: 700; color: var(--green); }
+
+/* MOBILE CARD VIEW */
+.cards-list { display: flex; flex-direction: column; gap: 12px; }
+.siswa-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--glass-shadow);
+  padding: 14px;
+  position: relative;
+}
+.siswa-card .sc-head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.sc-no {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+  color: #fff; font-weight: 800; display: grid; place-items: center;
+  font-family: var(--font-head); font-size: 14px;
+  flex-shrink: 0;
+}
+.sc-info { flex: 1; min-width: 0; }
+.sc-name { font-weight: 700; font-size: 14px; line-height: 1.2; }
+.sc-nisn { font-size: 11px; color: var(--ink-soft); }
+.sc-tp-pills { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+.tp-pill {
+  display: inline-block; padding: 2px 6px; border-radius: 6px;
+  font-size: 10px; font-weight: 700; min-width: 18px; text-align: center;
+  background: rgba(13,59,102,0.08); color: var(--ink-soft);
+}
+.tp-pill.t { background: var(--green-soft); color: #2c7a3a; }
+.tp-pill.r { background: #FDECEC; color: #B23B3B; }
+.sc-rank {
+  font-size: 11px; font-weight: 700; padding: 4px 8px;
+  border-radius: 999px; flex-shrink: 0;
+}
+.sc-rank.r1 { background: linear-gradient(135deg,#FFD600,#FFC93C); color: var(--blue-dark); }
+.sc-rank.r2 { background: #E5E9F0; color: var(--blue-dark); }
+.sc-rank.r3 { background: #F4D9B0; color: #8B5A2B; }
+.sc-rank.rx { background: var(--blue-soft); color: var(--blue-dark); }
+
+.sc-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px;
+}
+.sc-stat {
+  background: rgba(255,255,255,0.55); border: 1px solid var(--line-soft);
+  border-radius: 10px; padding: 6px 10px;
+}
+.sc-stat .lbl { font-size: 10px; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+.sc-stat .val { font-size: 16px; font-weight: 800; font-family: var(--font-head); color: var(--blue-dark); }
+.sc-stat.green .val { color: var(--green); }
+.sc-stat.yellow .val { color: #B57E00; }
+.sc-stat.red .val { color: #B23B3B; }
+
+.sc-input { margin-bottom: 10px; }
+.sc-input label {
+  display: block; font-size: 11px; font-weight: 700;
+  color: var(--ink-soft); text-transform: uppercase; letter-spacing: .4px;
+  margin-bottom: 4px;
+}
+.sc-input input {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 10px;
+  background: rgba(255,255,255,0.92);
+  font-size: 15px; font-family: var(--font-body);
+  color: var(--ink);
+}
+.sc-input input:focus {
+  outline: none; border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(114,191,120,0.18);
+  background: #fff;
+}
+
+.sc-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 8px; border-top: 1px dashed var(--line);
+}
+.sc-status { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+.sc-status.t { background: var(--green-soft); color: #2c7a3a; }
+.sc-status.r { background: #FDECEC; color: #B23B3B; }
+.sc-orig {
+  font-size: 11px; color: var(--ink-soft);
+}
+.sc-orig b { color: var(--blue-dark); }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(13,59,102,0.45);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: 0 20px 50px rgba(13,59,102,0.30);
+  width: 100%; max-width: 480px;
+  padding: 24px;
+  animation: pop .25s cubic-bezier(.2,.7,.3,1.2);
+}
+.modal h3 {
+  margin: 0 0 4px; font-family: var(--font-head); font-weight: 800;
+  font-size: 18px; color: var(--blue-dark);
+}
+.modal p.sub { margin: 0 0 18px; font-size: 13px; color: var(--ink-soft); }
+.modal .field-group { margin-bottom: 14px; }
+.modal .field-group label {
+  display: block; font-size: 11px; font-weight: 700;
+  color: var(--ink-soft); text-transform: uppercase; letter-spacing: .4px;
+  margin-bottom: 6px;
+}
+.modal .field-group input {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid var(--line); border-radius: 10px;
+  background: rgba(255,255,255,0.92);
+  font-size: 15px; font-family: var(--font-body);
+}
+.modal .field-group input:focus {
+  outline: none; border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30,86,160,0.12);
+}
+.modal-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+  margin-top: 18px;
+}
+
+/* TOAST */
+#toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  z-index: 200; padding: 12px 18px;
+  background: var(--blue-dark); color: #fff;
+  border-radius: 999px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 10px 24px rgba(13,59,102,0.30);
+  transition: transform .35s cubic-bezier(.2,.7,.3,1.2);
+  display: flex; align-items: center; gap: 8px;
+  max-width: 90vw;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast.ok { background: linear-gradient(135deg, var(--green), #5fa966); }
+#toast.err { background: linear-gradient(135deg, #E85A5A, #c84545); }
+#toast.warn { background: linear-gradient(135deg, var(--yellow), var(--yellow-bright)); color: var(--blue-dark); }
+
+/* LOADING SPINNER */
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+.spinner.dark { border-color: rgba(13,59,102,0.2); border-top-color: var(--blue-dark); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* CONFIG API URL PROMPT */
+.api-setup-banner {
+  background: linear-gradient(135deg, #FFF6D6, #FFE9A8);
+  border: 1px solid #E5C770;
+  color: #6B4D00;
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 12.5px; margin: 12px 16px; max-width: 1400px;
+  margin-left: auto; margin-right: auto;
+  display: flex; align-items: center; gap: 10px;
+}
+.api-setup-banner i { font-size: 18px; }
+
+/* EMPTY STATE */
+.empty {
+  text-align: center; padding: 40px 20px;
+  color: var(--ink-soft);
+}
+.empty i { font-size: 48px; color: var(--blue); opacity: .5; }
+.empty h4 { margin: 12px 0 4px; font-family: var(--font-head); color: var(--blue-dark); }
+.empty p { margin: 0; font-size: 13px; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .dash-strip { grid-template-columns: repeat(2, 1fr); }
+  .control-card { flex: 1 1 100%; }
+}
+@media (max-width: 600px) {
+  .topbar-inner { padding: 8px 12px; gap: 8px; }
+  .brand { padding: 6px 10px; font-size: 13px; }
+  .brand small { display: none; }
+  .controls { padding: 0 12px; gap: 8px; }
+  .dash-strip { padding: 0 12px; gap: 8px; }
+  .main { padding: 0 12px; }
+  .dash-num { font-size: 18px; }
+  .sc-grid { grid-template-columns: 1fr 1fr; }
+  table.rekap { font-size: 11.5px; }
+  .modal { padding: 18px; }
+}
+@media (max-width: 380px) {
+  .dash-strip { grid-template-columns: 1fr; }
+}
+
+/* HIDDEN HELPER */
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>REKAP NILAI INFORMATIKA KELAS 9</h1>
-      <div class="subtitle">Halaman Download File Aplikasi — Google Apps Script Web App</div>
-      <div class="meta">v3 · Semester 1 · T.A. 2025/2026</div>
+
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><i class="bi bi-mortarboard-fill"></i></div>
+    <h1 class="login-title">e-Rapor Informatika</h1>
+    <p class="login-sub">Aplikasi Pengolahan Nilai Siswa — Kelas 9</p>
+
+    <div class="field">
+      <i class="bi bi-person-fill"></i>
+      <input type="text" id="loginUser" placeholder="Username Admin" autocomplete="username" />
     </div>
-
-    <div class="section">
-      <h2><span class="icon">1</span>File Kode Aplikasi (untuk GitHub)</h2>
-      <div class="desc">File-file ini di-zip dalam satu folder <code>gas-rekap-nilai-informatika/</code>. Bisa langsung upload ke GitHub sebagai repository, atau paste satu per satu ke editor Google Apps Script.</div>
-
-      <div class="file-card">
-        <div class="file-icon zip">📦</div>
-        <div class="file-info">
-          <div class="file-name">gas-rekap-nilai-informatika.zip <span class="badge must">WAJIB</span></div>
-          <div class="file-meta">
-            <span>📊 35 KB</span>
-            <span>📁 6 file di dalam</span>
-          </div>
-          <div class="file-desc">ZIP berisi: Code.gs, Index.html, appsscript.json, .clasp.json, .gitignore, README.md. Extract lalu upload ke GitHub repo baru.</div>
-        </div>
-        <a class="btn-download primary" href="gas-rekap-nilai-informatika.zip" download>⬇ Download</a>
-      </div>
-
-      <div class="file-card">
-        <div class="file-icon html">🌐</div>
-        <div class="file-info">
-          <div class="file-name">Index.html <span class="badge must">WAJIB</span></div>
-          <div class="file-meta">
-            <span>📊 77 KB</span>
-            <span>📜 Frontend UI</span>
-          </div>
-          <div class="file-desc">HTML/CSS/JS untuk web app. Berisi: login screen, tab kelas 9A-9I, grid nilai, import Excel, mode nilai asli/akhir, modal config.</div>
-        </div>
-        <a class="btn-download" href="gas-rekap-nilai-informatika/Index.html" download>⬇ Download</a>
-      </div>
-
-      <div class="file-card">
-        <div class="file-icon gs">⚙</div>
-        <div class="file-info">
-          <div class="file-name">Code.gs <span class="badge must">WAJIB</span></div>
-          <div class="file-meta">
-            <span>📊 36 KB</span>
-            <span>📜 Backend GAS</span>
-          </div>
-          <div class="file-desc">Kode Google Apps Script. Berisi: setup 9 sheet, login+session, sheet CONFIG, import Excel, export nilai asli & nilai akhir (katrol).</div>
-        </div>
-        <a class="btn-download" href="gas-rekap-nilai-informatika/Code.gs" download>⬇ Download</a>
-      </div>
-
-      <div class="file-card">
-        <div class="file-icon json">📋</div>
-        <div class="file-info">
-          <div class="file-name">appsscript.json</div>
-          <div class="file-meta">
-            <span>📊 0.3 KB</span>
-            <span>⚙ Manifest</span>
-          </div>
-          <div class="file-desc">Manifest GAS: timezone Asia/Jakarta, scope Sheets+Drive, webapp config.</div>
-        </div>
-        <a class="btn-download" href="gas-rekap-nilai-informatika/appsscript.json" download>⬇ Download</a>
-      </div>
-
-      <div class="file-card">
-        <div class="file-icon md">📖</div>
-        <div class="file-info">
-          <div class="file-name">README.md</div>
-          <div class="file-meta">
-            <span>📊 16 KB</span>
-            <span>📖 Dokumentasi</span>
-          </div>
-          <div class="file-desc">Panduan lengkap: cara setup, deploy, pakai, troubleshooting. Baca dulu sebelum mulai.</div>
-        </div>
-        <a class="btn-download" href="gas-rekap-nilai-informatika/README.md" download>⬇ Download</a>
-      </div>
+    <div class="field">
+      <i class="bi bi-lock-fill"></i>
+      <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password" />
     </div>
+    <button class="btn-login" id="btnLogin">
+      <span id="loginBtnText"><i class="bi bi-box-arrow-in-right"></i> Masuk</span>
+    </button>
+    <div class="login-error" id="loginError"></div>
+    <div class="login-foot">v1.0 · Decoupled GAS + GitHub Pages</div>
+  </div>
+</div>
 
-    <div class="section">
-      <h2><span class="icon">2</span>Spreadsheet Template (untuk Google Drive)</h2>
-      <div class="desc">Upload file ini ke Google Drive, lalu buka di Google Sheets (klik kanan → Open with → Google Sheets). Aplikasi GAS akan otomatis deteksi spreadsheet ini saat pertama dijalankan.</div>
+<!-- ============================================================
+     MAIN APP
+     ============================================================ -->
+<div id="app">
 
-      <div class="file-card">
-        <div class="file-icon xlsx">📊</div>
-        <div class="file-info">
-          <div class="file-name">REKAP NILAI INFORMATIKA KELAS 9.xlsx <span class="badge must">WAJIB</span></div>
-          <div class="file-meta">
-            <span>📊 90 KB</span>
-            <span>📁 10 sheet</span>
-          </div>
-          <div class="file-desc">Template spreadsheet berisi: sheet CONFIG (admin/admin123, KKTP=78, rapor 79-94, deskripsi TP) + 9 sheet kelas KELAS9A-KELAS9I dengan header, merge, formula katrol, dan print layout (landscape A4, fit-to-width, repeat header rows 1-9).</div>
+  <!-- TOP NAVBAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo"><i class="bi bi-code-slash"></i></div>
+        <div>
+          e-Rapor Informatika
+          <small>Pengolahan Nilai Kelas 9</small>
         </div>
-        <a class="btn-download primary" href="REKAP NILAI INFORMATIKA KELAS 9.xlsx" download>⬇ Download</a>
       </div>
-
-      <div class="note">
-        <b>Cara pakai:</b><br>
-        1. Download file .xlsx di atas<br>
-        2. Buka <a href="https://drive.google.com" target="_blank">Google Drive</a> → klik <b>New</b> → <b>File upload</b> → pilih file ini<br>
-        3. Setelah upload, klik kanan file → <b>Open with</b> → <b>Google Sheets</b> (Drive akan konversi ke Google Spreadsheet)<br>
-        4. Deploy GAS app (paste Code.gs + Index.html) → buka URL → login <b>admin</b> / <b>admin123</b><br>
-        5. GAS app akan otomatis pakai spreadsheet yang sudah Anda upload (tidak perlu run <code>setupInitial</code>)
+      <div class="topbar-spacer"></div>
+      <div class="user-chip">
+        <div class="avatar"><i class="bi bi-person-fill"></i></div>
+        <span id="userName">Admin</span>
       </div>
-    </div>
-
-    <div class="section">
-      <h2><span class="icon">3</span>Contoh File Import (untuk test)</h2>
-      <div class="desc">File-file ini dipakai untuk testing fitur import di aplikasi. Cocok untuk simulasi alur kerja: input nama → input nilai → cek katrol.</div>
-
-      <div class="file-card">
-        <div class="file-icon xlsx">👥</div>
-        <div class="file-info">
-          <div class="file-name">CONTOH_IMPORT_NAMA_SISWA.xlsx</div>
-          <div class="file-meta">
-            <span>📊 6 KB</span>
-            <span>👥 10 nama sample</span>
-          </div>
-          <div class="file-desc">Format sederhana: kolom <b>No.</b> + <b>Nama Siswa</b> dengan 10 nama contoh (Abil Wafa, Adinda, Bayu, dst). Dipakai di panel "Import Nama dari Excel" untuk testing auto-detect kolom nama.</div>
-        </div>
-        <a class="btn-download" href="CONTOH_IMPORT_NAMA_SISWA.xlsx" download>⬇ Download</a>
-      </div>
-
-      <div class="file-card">
-        <div class="file-icon xlsx">📝</div>
-        <div class="file-info">
-          <div class="file-name">CONTOH_IMPORT_NILAI_TP.xlsx</div>
-          <div class="file-meta">
-            <span>📊 13 KB</span>
-            <span>📁 5 sheet (LM1-LM5)</span>
-          </div>
-          <div class="file-desc">5 sheet (LM1-LM5), masing-masing kolom <b>No., Nama Siswa, TP1, TP2, TP3, TP4</b> dengan 10 siswa × nilai acak. Beberapa nilai sengaja < 78 (KKTP) untuk demo fitur Mode Nilai Akhir (Katrol).</div>
-        </div>
-        <a class="btn-download" href="CONTOH_IMPORT_NILAI_TP.xlsx" download>⬇ Download</a>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2><span class="icon">4</span>Cara Pakai Singkat</h2>
-      <div class="desc">Urutan penggunaan file-file di atas.</div>
-      <div class="note">
-        <b>Langkah 1 — Setup kode:</b> Extract <code>gas-rekap-nilai-informatika.zip</code> → upload folder ke GitHub (atau paste <code>Code.gs</code> + <code>Index.html</code> ke editor GAS di <a href="https://script.google.com" target="_blank">script.google.com</a>).<br><br>
-        <b>Langkah 2 — Setup spreadsheet:</b> Download <code>REKAP NILAI INFORMATIKA KELAS 9.xlsx</code> → upload ke Google Drive → buka di Google Sheets untuk konversi.<br><br>
-        <b>Langkah 3 — Deploy:</b> Di editor GAS → <b>Deploy</b> → <b>New deployment</b> → tipe <b>Web app</b> → Execute as: Me → Who has access: Anyone with Google Account.<br><br>
-        <b>Langkah 4 — Login:</b> Buka Web app URL → login dengan <code>admin</code> / <code>admin123</code>. <b>Ubah password default via menu Config!</b><br><br>
-        <b>Langkah 5 — Test import:</b> Download <code>CONTOH_IMPORT_NAMA_SISWA.xlsx</code> & <code>CONTOH_IMPORT_NILAI_TP.xlsx</code> → di web app, pilih kelas KELAS9A → upload file nama → import. Lalu upload file nilai, pilih sheet LM1, target LM1-TP1, kolom nilai TP1 → Preview Match → Simpan.<br><br>
-        <b>Langkah 6 — Test katrol:</b> Klik toggle <b>Mode: Nilai Akhir</b> di header grid → lihat cell kuning (nilai < 78 di-bump jadi 78). Klik <b>Download Excel Nilai Akhir (Katrol)</b> untuk dapatkan file versi bumped untuk wali murid.
-      </div>
-    </div>
-
-    <div class="footer">
-      <div>© 2025-2026 Aplikasi Rekap Nilai Informatika Kelas 9 · Dibuat dengan Google Apps Script</div>
-      <div style="margin-top: 6px;">Pertanyaan? Baca <b>README.md</b> atau hubungi pembuat aplikasi.</div>
+      <button class="btn-icon" id="btnSettings" title="Pengaturan KKTP/Katrol"><i class="bi bi-gear-fill"></i></button>
+      <button class="btn-icon danger" id="btnLogout" title="Keluar"><i class="bi bi-box-arrow-right"></i></button>
     </div>
   </div>
+
+  <!-- API SETUP BANNER -->
+  <div class="api-setup-banner hidden" id="apiBanner">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span><b>Belum dikonfigurasi:</b> Klik tombol Settings, lalu set <b>API URL</b> (URL Web App Google Apps Script Anda) agar aplikasi dapat terhubung ke database.</span>
+  </div>
+
+  <!-- CONTROL PANEL -->
+  <div class="controls">
+    <div class="control-card">
+      <div class="control-stack" style="min-width:130px;">
+        <label><i class="bi bi-people-fill"></i> Kelas</label>
+        <select id="kelasSelect"></select>
+      </div>
+    </div>
+    <div class="control-card">
+      <div class="control-stack" style="min-width:180px;">
+        <label><i class="bi bi-clipboard-data-fill"></i> Jenis Penilaian</label>
+        <select id="fieldTypeSelect">
+          <option value="STS">STS — Sumatif Tengah Semester</option>
+          <option value="SAS">SAS — Sumatif Akhir Semester</option>
+          <optgroup label="Formatif LM (TP)">
+            <option value="LM1_TP1">LM1 · TP1.1</option>
+            <option value="LM1_TP2">LM1 · TP1.2</option>
+            <option value="LM1_TP3">LM1 · TP1.3</option>
+            <option value="LM1_TP4">LM1 · TP1.4</option>
+            <option value="LM2_TP1">LM2 · TP2.1</option>
+            <option value="LM2_TP2">LM2 · TP2.2</option>
+            <option value="LM2_TP3">LM2 · TP2.3</option>
+            <option value="LM2_TP4">LM2 · TP2.4</option>
+            <option value="LM3_TP1">LM3 · TP3.1</option>
+            <option value="LM3_TP2">LM3 · TP3.2</option>
+            <option value="LM3_TP3">LM3 · TP3.3</option>
+            <option value="LM3_TP4">LM3 · TP3.4</option>
+            <option value="LM4_TP1">LM4 · TP4.1</option>
+            <option value="LM4_TP2">LM4 · TP4.2</option>
+            <option value="LM4_TP3">LM4 · TP4.3</option>
+            <option value="LM4_TP4">LM4 · TP4.4</option>
+            <option value="LM5_TP1">LM5 · TP5.1</option>
+            <option value="LM5_TP2">LM5 · TP5.2</option>
+            <option value="LM5_TP3">LM5 · TP5.3</option>
+            <option value="LM5_TP4">LM5 · TP5.4</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="control-card" style="flex:0 0 auto;">
+      <div class="control-stack">
+        <label>Tampilan</label>
+        <div class="toggle-group" role="tablist">
+          <button data-view="mobile" class="active"><i class="bi bi-phone"></i> Card</button>
+          <button data-view="desktop"><i class="bi bi-table"></i> Tabel</button>
+        </div>
+      </div>
+    </div>
+    <div class="control-card" style="flex:0 0 auto;">
+      <div class="control-stack">
+        <label>&nbsp;</label>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-warning" id="btnSync"><i class="bi bi-arrow-repeat"></i> Sync Remidi</button>
+          <button class="btn btn-success" id="btnSave"><i class="bi bi-save-fill"></i> Simpan Nilai</button>
+          <button class="btn btn-ghost" id="btnExport"><i class="bi bi-file-earmark-excel-fill"></i> Export Excel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD STRIP -->
+  <div class="dash-strip">
+    <div class="dash-card">
+      <div class="dash-icon"><i class="bi bi-people-fill"></i></div>
+      <div class="dash-meta">
+        <span class="dash-num" id="statTotal">0</span>
+        <span class="dash-lbl">Total Siswa</span>
+      </div>
+    </div>
+    <div class="dash-card green">
+      <div class="dash-icon"><i class="bi bi-check-circle-fill"></i></div>
+      <div class="dash-meta">
+        <span class="dash-num" id="statTuntas">0</span>
+        <span class="dash-lbl">Tuntas</span>
+      </div>
+    </div>
+    <div class="dash-card red">
+      <div class="dash-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <div class="dash-meta">
+        <span class="dash-num" id="statRemidi">0</span>
+        <span class="dash-lbl">Remidial</span>
+      </div>
+    </div>
+    <div class="dash-card yellow">
+      <div class="dash-icon"><i class="bi bi-bar-chart-fill"></i></div>
+      <div class="dash-meta">
+        <span class="dash-num" id="statAvg">0</span>
+        <span class="dash-lbl">Rata-rata NA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <!-- MOBILE CARD VIEW -->
+    <div id="cardView" class="cards-list"></div>
+    <!-- TABLE VIEW -->
+    <div id="tableView" class="table-wrap hidden">
+      <div class="table-scroll">
+        <table class="rekap" id="rekapTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SETTINGS MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <h3><i class="bi bi-gear-fill"></i> Pengaturan</h3>
+    <p class="sub">Konfigurasi API URL & batas nilai (KKTP, Katrol).</p>
+
+    <div class="field-group">
+      <label>API URL (Google Apps Script Web App)</label>
+      <input type="text" id="cfgApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzy_Qmp3jRP7nT7rR6WGetB5ORm2SVg1wDnpd7KNUqEr67YVxTDg8WJbVlEluNdb7EQSA/exec" />
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+      <div class="field-group">
+        <label>KKTP</label>
+        <input type="number" id="cfgKktp" min="0" max="100" />
+      </div>
+      <div class="field-group">
+        <label>Katrol Min</label>
+        <input type="number" id="cfgKatrolMin" min="0" max="100" />
+      </div>
+      <div class="field-group">
+        <label>Katrol Max</label>
+        <input type="number" id="cfgKatrolMax" min="0" max="100" />
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cfgClose"><i class="bi bi-x-lg"></i> Tutup</button>
+      <button class="btn btn-success" id="cfgSave"><i class="bi bi-save-fill"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   STATE
+   ============================================================ */
+const State = {
+  apiUrl: localStorage.getItem('apiUrl') || '',
+  token:  localStorage.getItem('token')  || '',
+  user:   localStorage.getItem('user')   || '',
+  kelas:  localStorage.getItem('kelas')  || '9A',
+  mode:   localStorage.getItem('mode')   || 'mobile',  // mobile | desktop
+  fieldType: 'STS',
+  siswa: [],
+  config: {}
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return document.querySelectorAll(sel); }
+
+function toast(msg, type = '') {
+  const t = $('#toast');
+  t.className = '';
+  t.classList.add('show');
+  if (type) t.classList.add(type);
+  t.innerHTML = (type === 'ok' ? '<i class="bi bi-check-circle-fill"></i> '
+              : type === 'err' ? '<i class="bi bi-x-circle-fill"></i> '
+              : type === 'warn' ? '<i class="bi bi-exclamation-triangle-fill"></i> '
+              : '') + msg;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+/* ============================================================
+   API CLIENT
+   ============================================================ */
+async function api(action, params = {}, method = 'GET') {
+  if (!State.apiUrl) {
+    toast('API URL belum dikonfigurasi. Buka Pengaturan.', 'warn');
+    $('#apiBanner').classList.remove('hidden');
+    throw new Error('No API URL');
+  }
+  let url = State.apiUrl + (State.apiUrl.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(action);
+  for (const k in params) {
+    if (params[k] !== undefined && params[k] !== null) {
+      url += '&' + k + '=' + encodeURIComponent(params[k]);
+    }
+  }
+  const opts = { method: method, redirect: 'follow' };
+  if (method === 'POST') {
+    opts.headers = { 'Content-Type': 'text/plain;charset=utf-8' };
+    opts.body = JSON.stringify({ action: action, data: params });
+  }
+  const res = await fetch(url, opts);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  return json;
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+async function doLogin() {
+  const user = $('#loginUser').value.trim();
+  const pass = $('#loginPass').value;
+  if (!user || !pass) { showLoginError('Username & password wajib diisi'); return; }
+  if (!State.apiUrl) {
+    showLoginError('API URL belum dikonfigurasi. Tutup form login, klik Settings, lalu set API URL.');
+    return;
+  }
+  $('#loginBtnText').innerHTML = '<span class="spinner"></span> Memproses...';
+  try {
+    const r = await api('login', { user, pass }, 'POST');
+    if (r.success) {
+      State.token = r.token; State.user = r.user;
+      localStorage.setItem('token', r.token);
+      localStorage.setItem('user', r.user);
+      $('#userName').textContent = r.user;
+      enterApp();
+    } else {
+      showLoginError(r.error || 'Login gagal');
+    }
+  } catch (e) {
+    showLoginError('Koneksi gagal: ' + e.message);
+  } finally {
+    $('#loginBtnText').innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Masuk';
+  }
+}
+
+function showLoginError(msg) {
+  const el = $('#loginError');
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+function doLogout() {
+  State.token = ''; State.user = '';
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  $('#app').classList.remove('show');
+  $('#loginScreen').style.display = 'flex';
+  $('#loginPass').value = '';
+}
+
+function enterApp() {
+  $('#loginScreen').style.display = 'none';
+  $('#app').classList.add('show');
+  if (!State.apiUrl) $('#apiBanner').classList.remove('hidden');
+  else $('#apiBanner').classList.add('hidden');
+  initApp();
+}
+
+/* ============================================================
+   INIT APP
+   ============================================================ */
+async function initApp() {
+  // Toggle view
+  $$(`.toggle-group button`).forEach(b => {
+    b.classList.toggle('active', b.dataset.view === State.mode);
+  });
+
+  // Load classes & config
+  try {
+    const [listRes, cfgRes] = await Promise.all([
+      api('getListKelas'),
+      api('getConfig')
+    ]);
+    if (listRes.success) {
+      const sel = $('#kelasSelect');
+      sel.innerHTML = listRes.classes.map(k => `<option value="${k}" ${k===State.kelas?'selected':''}>Kelas ${k}</option>`).join('');
+    }
+    if (cfgRes.success) {
+      State.config = cfgRes.config || {};
+      $('#cfgKktp').value = State.config.KKTP || 78;
+      $('#cfgKatrolMin').value = State.config.KATROL_MIN || 79;
+      $('#cfgKatrolMax').value = State.config.KATROL_MAX || 94;
+    }
+    $('#cfgApiUrl').value = State.apiUrl;
+    await loadData();
+  } catch (e) {
+    toast('Gagal memuat data awal: ' + e.message, 'err');
+  }
+}
+
+/* ============================================================
+   LOAD SISWA DATA
+   ============================================================ */
+async function loadData() {
+  try {
+    const r = await api('getSiswa', { kelas: State.kelas, mode: 'REKAP' });
+    if (!r.success) { toast(r.error || 'Gagal memuat data', 'err'); return; }
+    State.siswa = r.siswa || [];
+    renderView();
+    updateDashboard();
+  } catch (e) {
+    State.siswa = [];
+    renderView();
+    toast('Gagal memuat siswa: ' + e.message, 'err');
+  }
+}
+
+/* ============================================================
+   RENDER VIEW (Mobile Card / Desktop Table)
+   ============================================================ */
+function renderView() {
+  if (State.mode === 'mobile') {
+    $('#cardView').classList.remove('hidden');
+    $('#tableView').classList.add('hidden');
+    renderCards();
+  } else {
+    $('#cardView').classList.add('hidden');
+    $('#tableView').classList.remove('hidden');
+    renderTable();
+  }
+}
+
+function rankClass(rank) {
+  if (rank === 1) return 'r1';
+  if (rank === 2) return 'r2';
+  if (rank === 3) return 'r3';
+  return 'rx';
+}
+function rankBadge(rank) {
+  if (rank === 1) return 'rank-1';
+  if (rank === 2) return 'rank-2';
+  if (rank === 3) return 'rank-3';
+  return '';
+}
+
+function renderCards() {
+  const container = $('#cardView');
+  if (!State.siswa.length) {
+    container.innerHTML = `<div class="empty"><i class="bi bi-inbox"></i><h4>Belum ada data siswa</h4><p>Pilih kelas lain atau isi data siswa di sheet KELAS${State.kelas} pada Google Sheets.</p></div>`;
+    return;
+  }
+  const fieldType = State.fieldType;
+  const isLM = fieldType.startsWith('LM');
+  // Untuk LM, ambil nilai TP saat ini dari array s.tp
+  const getOrigTPValue = (s) => {
+    if (!isLM) return fieldType === 'STS' ? (s.stsRaw ?? '-') : (s.sasRaw ?? '-');
+    const m = fieldType.match(/^LM(\d)_TP(\d)$/);
+    if (!m) return '-';
+    const lmIdx = parseInt(m[1], 10) - 1;
+    const tpIdx = parseInt(m[2], 10) - 1;
+    const tpIdxAbs = lmIdx * 4 + tpIdx;
+    return s.tp?.[tpIdxAbs] ?? '-';
+  };
+
+  container.innerHTML = State.siswa.map((s, i) => {
+    const rank = s.rank || '-';
+    const validasi = s.validasi || '';
+    const origValue = getOrigTPValue(s);
+    // Status badge: VALID = Tuntas (hijau), TIDAK VALID = Remidial (merah)
+    const statusBadge = validasi === 'VALID'
+      ? `<span class="sc-status t">Tuntas</span>`
+      : validasi === 'TIDAK VALID'
+        ? `<span class="sc-status r">Remidial</span>`
+        : `<span class="sc-status">-</span>`;
+
+    // TP status pills (5 LM)
+    const tpPills = (s.tpStatus || []).map((st, idx) => {
+      const cls = st === 'R' ? 'r' : (st === 'T' ? 't' : '');
+      return `<span class="tp-pill ${cls}" title="LM${idx+1}">${st || '-'}</span>`;
+    }).join('');
+
+    return `
+      <div class="siswa-card" data-row="${s.row}">
+        <div class="sc-head">
+          <div class="sc-no">${s.no || (i+1)}</div>
+          <div class="sc-info">
+            <div class="sc-name">${escapeHtml(s.nama)}</div>
+            <div class="sc-tp-pills">${tpPills}</div>
+          </div>
+          <div class="sc-rank ${rankClass(rank)}">#${rank}</div>
+        </div>
+
+        <div class="sc-grid">
+          <div class="sc-stat"><div class="lbl">NA</div><div class="val">${s.na ?? '-'}</div></div>
+          <div class="sc-stat green"><div class="lbl">Katrol Rapor</div><div class="val">${s.katrol ?? '-'}</div></div>
+          <div class="sc-stat yellow"><div class="lbl">STS 30%</div><div class="val">${s.sts30 ?? '-'}</div></div>
+          <div class="sc-stat yellow"><div class="lbl">SAS 40%</div><div class="val">${s.sas40 ?? '-'}</div></div>
+        </div>
+
+        <div class="sc-input">
+          <label>Input Nilai ${fieldType} ${isLM ? '(TP)' : ''}</label>
+          <input type="number" min="0" max="100" class="sc-input-val"
+                 data-row="${s.row}"
+                 placeholder="0-100" />
+        </div>
+
+        <div class="sc-foot">
+          <span class="sc-orig">Nilai saat ini: <b>${origValue}</b></span>
+          ${statusBadge}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderTable() {
+  const tbl = $('#rekapTable');
+  if (!State.siswa.length) {
+    tbl.querySelector('thead').innerHTML = '';
+    tbl.querySelector('tbody').innerHTML = `<tr><td colspan="14"><div class="empty"><i class="bi bi-inbox"></i><h4>Belum ada data</h4><p>Pilih kelas lain atau isi data siswa di Google Sheets.</p></div></td></tr>`;
+    return;
+  }
+  const fieldType = State.fieldType;
+  const isLM = fieldType.startsWith('LM');
+
+  // Hitung index TP yang sedang aktif (jika LMx_TPy)
+  let activeTpIdx = -1;
+  if (isLM) {
+    const m = fieldType.match(/^LM(\d)_TP(\d)$/);
+    if (m) activeTpIdx = (parseInt(m[1],10) - 1) * 4 + (parseInt(m[2],10) - 1);
+  }
+
+  // Header (match sample structure: 3-row grouped)
+  tbl.querySelector('thead').innerHTML = `
+    <tr class="group">
+      <th rowspan="3">No</th>
+      <th rowspan="3">Nama Siswa</th>
+      <th colspan="20" class="sub">FORMATIF (TP1.1 s.d. TP5.4)</th>
+      <th colspan="5" class="sub">SUMATIF LM</th>
+      <th rowspan="3">30% LM<br>(AB)</th>
+      <th rowspan="3">STS<br>(AC)</th>
+      <th rowspan="3">30% STS<br>(AD)</th>
+      <th rowspan="3">SAS<br>(AE)</th>
+      <th rowspan="3">40% SAS<br>(AF)</th>
+      <th rowspan="3">NA<br>(AG)</th>
+      <th rowspan="3">Katrol<br>(AH)</th>
+      <th rowspan="3">Rank<br>(AI)</th>
+      <th colspan="5" class="sub">STATUS TP (R/T)</th>
+      <th rowspan="3">VALIDASI<br>(AP)</th>
+    </tr>
+    <tr>
+      <th colspan="4">LM1</th><th colspan="4">LM2</th><th colspan="4">LM3</th>
+      <th colspan="4">LM4</th><th colspan="4">LM5</th>
+      <th>LM1</th><th>LM2</th><th>LM3</th><th>LM4</th><th>LM5</th>
+      <th>TP.911</th><th>TP.912</th><th>TP.913</th><th>TP.914</th><th>TP.915</th>
+    </tr>
+    <tr>
+      <th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
+      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
+      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
+      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
+      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4</th>
+      <th>(W)</th><th>(X)</th><th>(Y)</th><th>(Z)</th><th>(AA)</th>
+      <th>(AK)</th><th>(AL)</th><th>(AM)</th><th>(AN)</th><th>(AO)</th>
+    </tr>
+  `;
+
+  // Body
+  tbl.querySelector('tbody').innerHTML = State.siswa.map((s, i) => {
+    const rank = s.rank || '-';
+    const validasi = s.validasi || '';
+
+    // TP cells C-V (20 nilai) — editable jika fieldType sesuai
+    const tpCells = (s.tp || []).map((v, idx) => {
+      const isActive = isLM && idx === activeTpIdx;
+      if (isActive) {
+        return `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${fieldType}" value="${v ?? ''}" /></td>`;
+      }
+      return `<td>${v ?? '-'}</td>`;
+    }).join('');
+
+    // LM avg cells W-AA
+    const lmCells = (s.lm || []).map(v => `<td>${v ?? '-'}</td>`).join('');
+
+    // STS / SAS cells (editable jika fieldType sesuai)
+    const stsCell = (fieldType === 'STS')
+      ? `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" /></td>`
+      : `<td>${s.stsRaw ?? '-'}</td>`;
+    const sasCell = (fieldType === 'SAS')
+      ? `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" /></td>`
+      : `<td>${s.sasRaw ?? '-'}</td>`;
+
+    // TP status cells AK-AO
+    const tpStatusCells = (s.tpStatus || []).map(st => {
+      const cls = st === 'R' ? 'r' : (st === 'T' ? 't' : '');
+      return `<td><span class="badge ${cls}">${st || '-'}</span></td>`;
+    }).join('');
+
+    // VALIDASI badge
+    const validasiBadge = validasi === 'VALID'
+      ? `<span class="badge t">VALID</span>`
+      : validasi === 'TIDAK VALID'
+        ? `<span class="badge r">TIDAK VALID</span>`
+        : '-';
+
+    return `
+      <tr>
+        <td>${s.no || (i+1)}</td>
+        <td class="nama">${escapeHtml(s.nama)}</td>
+        ${tpCells}
+        ${lmCells}
+        <td>${s.lm30 ?? '-'}</td>
+        ${stsCell}
+        <td>${s.sts30 ?? '-'}</td>
+        ${sasCell}
+        <td>${s.sas40 ?? '-'}</td>
+        <td class="cell-na">${s.na ?? '-'}</td>
+        <td class="cell-katrol">${s.katrol ?? '-'}</td>
+        <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
+        ${tpStatusCells}
+        <td>${validasiBadge}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   DASHBOARD UPDATE
+   ============================================================ */
+async function updateDashboard() {
+  try {
+    const r = await api('getDashboard', { kelas: State.kelas });
+    if (r.success) {
+      $('#statTotal').textContent  = r.totalSiswa || 0;
+      $('#statTuntas').textContent = r.tuntas || 0;
+      $('#statRemidi').textContent = r.remidi || 0;
+      $('#statAvg').textContent    = r.avgNa || 0;
+    }
+  } catch (e) {
+    // silent
+  }
+}
+
+/* ============================================================
+   SAVE BATCH NILAI
+   ============================================================ */
+async function saveNilai() {
+  const fieldType = State.fieldType;
+  const payload = [];
+  if (State.mode === 'mobile') {
+    $$('#cardView .sc-input-val').forEach(inp => {
+      const val = inp.value.trim();
+      if (val === '') return;
+      const row = parseInt(inp.dataset.row, 10);
+      // Semua fieldType (STS/SAS/LMx_TPy) kini menulis ke baris yang sama di KELAS9x
+      payload.push({ row: row, value: Number(val) });
+    });
+  } else {
+    $$('#rekapTable .tbl-input').forEach(inp => {
+      const val = inp.value.trim();
+      if (val === '') return;
+      payload.push({ row: parseInt(inp.dataset.row, 10), value: Number(val) });
+    });
+  }
+
+  if (!payload.length) { toast('Tidak ada nilai untuk disimpan', 'warn'); return; }
+
+  const btn = $('#btnSave');
+  const old = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+  btn.disabled = true;
+
+  try {
+    const r = await api('saveNilai', { kelas: State.kelas, fieldType: fieldType, payload: payload }, 'POST');
+    if (r.success) {
+      toast(`Berhasil menyimpan ${r.saved} nilai. Formula di-refresh otomatis.`, 'ok');
+      await loadData();
+    } else {
+      toast(r.error || 'Gagal menyimpan', 'err');
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 'err');
+  } finally {
+    btn.innerHTML = old;
+    btn.disabled = false;
+  }
+}
+
+/* ============================================================
+   SYNC REMIDI
+   ============================================================ */
+async function syncRemidi() {
+  const btn = $('#btnSync');
+  const old = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Sync...';
+  btn.disabled = true;
+  try {
+    const r = await api('syncRemidi', { kelas: State.kelas }, 'POST');
+    if (r.success) {
+      toast(`Sync selesai: ${r.totalRemidi} siswa masuk daftar remidi (KKTP=${r.kktp})`, 'ok');
+      await loadData();
+    } else {
+      toast(r.error || 'Gagal sync', 'err');
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 'err');
+  } finally {
+    btn.innerHTML = old;
+    btn.disabled = false;
+  }
+}
+
+/* ============================================================
+   EXPORT EXCEL
+   ============================================================ */
+async function exportExcel() {
+  try {
+    const r = await api('exportExcel');
+    if (r.success && r.downloadUrl) {
+      toast('Mempersiapkan file Excel...', 'ok');
+      // Buka tab baru untuk download
+      window.open(r.downloadUrl, '_blank');
+    } else {
+      toast(r.error || 'Gagal export', 'err');
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 'err');
+  }
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function openSettings() {
+  $('#cfgApiUrl').value = State.apiUrl;
+  $('#settingsModal').classList.add('show');
+}
+function closeSettings() { $('#settingsModal').classList.remove('show'); }
+
+async function saveSettings() {
+  const apiUrl = $('#cfgApiUrl').value.trim();
+  const kktp = $('#cfgKktp').value;
+  const min = $('#cfgKatrolMin').value;
+  const max = $('#cfgKatrolMax').value;
+
+  if (apiUrl && apiUrl !== State.apiUrl) {
+    State.apiUrl = apiUrl;
+    localStorage.setItem('apiUrl', apiUrl);
+    toast('API URL disimpan', 'ok');
+  }
+
+  // Save config to backend if changed
+  if (State.apiUrl && kktp && min && max) {
+    try {
+      const r = await api('saveConfig', { kktp: Number(kktp), minKatrol: Number(min), maxKatrol: Number(max) }, 'POST');
+      if (r.success) {
+        State.config.KKTP = Number(kktp);
+        State.config.KATROL_MIN = Number(min);
+        State.config.KATROL_MAX = Number(max);
+        toast('Konfigurasi KKTP/Katrol disimpan', 'ok');
+        await loadData();
+      } else {
+        toast(r.error || 'Gagal simpan config', 'err');
+      }
+    } catch (e) {
+      toast('Error simpan config: ' + e.message, 'err');
+    }
+  }
+  closeSettings();
+}
+
+/* ============================================================
+   EVENT BINDINGS
+   ============================================================ */
+function bindEvents() {
+  $('#btnLogin').addEventListener('click', doLogin);
+  $('#loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  $('#loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginPass').focus(); });
+
+  $('#btnLogout').addEventListener('click', doLogout);
+  $('#btnSettings').addEventListener('click', openSettings);
+  $('#cfgClose').addEventListener('click', closeSettings);
+  $('#cfgSave').addEventListener('click', saveSettings);
+  $('#settingsModal').addEventListener('click', e => { if (e.target.id === 'settingsModal') closeSettings(); });
+
+  $('#kelasSelect').addEventListener('change', e => {
+    State.kelas = e.target.value;
+    localStorage.setItem('kelas', State.kelas);
+    loadData();
+  });
+  $('#fieldTypeSelect').addEventListener('change', e => {
+    State.fieldType = e.target.value;
+    renderView();
+  });
+
+  $$('.toggle-group button').forEach(b => {
+    b.addEventListener('click', () => {
+      State.mode = b.dataset.view;
+      localStorage.setItem('mode', State.mode);
+      $$('.toggle-group button').forEach(x => x.classList.toggle('active', x === b));
+      renderView();
+    });
+  });
+
+  $('#btnSync').addEventListener('click', syncRemidi);
+  $('#btnSave').addEventListener('click', saveNilai);
+  $('#btnExport').addEventListener('click', exportExcel);
+}
+
+/* ============================================================
+   BOOTSTRAP
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  bindEvents();
+  // Pre-fill API URL field
+  $('#cfgApiUrl').value = State.apiUrl;
+  // Auto-login if token exists
+  if (State.token && State.user) {
+    $('#userName').textContent = State.user;
+    enterApp();
+  } else {
+    $('#loginScreen').style.display = 'flex';
+  }
+});
+</script>
 </body>
 </html>
