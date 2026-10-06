@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Download File — Rekap Nilai Informatika Kelas 9</title>
+  <style>
+    :root {
+      --lemon: #c5e76a;
+      --lemon-light: #f0f7c3;
+      --lemon-dark: #a3c64a;
+      --blue: #1e40af;
+      --blue-light: #dbeafe;
+      --blue-dark: #1e3a8a;
+      --yellow: #fde047;
+      --yellow-dark: #facc15;
+      --white: #ffffff;
+      --gray: #475569;
+      --gray-light: #94a3b8;
+      --gray-bg: #f8fafc;
+      --gray-border: #cbd5e1;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--lemon) 0%, var(--lemon-light) 50%, var(--white) 100%);
+      min-height: 100vh; padding: 20px; color: var(--gray);
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    .header {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-md);
+      padding: 28px 32px; margin-bottom: 20px; border-top: 4px solid var(--blue); position: relative; overflow: hidden;
+    }
+    .header::before {
+      content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
+      background: var(--yellow); border-radius: 50%; opacity: 0.4;
+    }
+    .header h1 { color: var(--blue-dark); font-size: 24px; font-weight: 800; margin-bottom: 4px; position: relative; z-index: 1; }
+    .header .subtitle { color: var(--gray); font-size: 13px; position: relative; z-index: 1; }
+    .header .meta { display: inline-block; background: var(--lemon-light); color: var(--blue-dark); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; margin-top: 10px; position: relative; z-index: 1; }
+
+    .section { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px 28px; margin-bottom: 16px; border-left: 4px solid var(--lemon); }
+    .section h2 { color: var(--blue); font-size: 16px; font-weight: 700; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--lemon-light); display: flex; align-items: center; gap: 8px; }
+    .section h2 .icon { background: var(--lemon); width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: var(--blue-dark); font-size: 14px; }
+    .section .desc { font-size: 13px; color: var(--gray); margin-bottom: 16px; line-height: 1.6; }
+
+    .file-card {
+      display: flex; align-items: center; gap: 16px; padding: 16px; border: 1.5px solid var(--gray-border);
+      border-radius: 8px; margin-bottom: 10px; transition: all 0.15s; background: var(--gray-bg);
+    }
+    .file-card:hover { border-color: var(--blue); background: var(--blue-light); transform: translateX(2px); }
+    .file-icon {
+      width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .file-icon.xlsx { background: var(--success-light); color: var(--success); }
+    .file-icon.html { background: var(--blue-light); color: var(--blue); }
+    .file-icon.gs { background: var(--lemon); color: var(--blue-dark); }
+    .file-icon.json { background: var(--yellow); color: var(--blue-dark); }
+    .file-icon.zip { background: var(--lemon-light); color: var(--blue-dark); }
+    .file-icon.md { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--gray-border); }
+
+    .file-info { flex: 1; min-width: 0; }
+    .file-name { font-weight: 700; color: var(--blue-dark); font-size: 14px; word-break: break-all; }
+    .file-meta { font-size: 11px; color: var(--gray); margin-top: 2px; display: flex; flex-wrap: wrap; gap: 12px; }
+    .file-meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .file-desc { font-size: 12px; color: var(--gray); margin-top: 4px; line-height: 1.5; }
+
+    .btn-download {
+      background: var(--yellow); color: var(--blue-dark); border: none; padding: 10px 18px;
+      border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+    }
+    .btn-download:hover { background: var(--yellow-dark); color: var(--white); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(250, 204, 21, 0.4); }
+    .btn-download.primary { background: var(--blue); color: var(--white); }
+    .btn-download.primary:hover { background: var(--blue-dark); box-shadow: 0 4px 8px rgba(30, 64, 175, 0.4); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } .file-card { flex-wrap: wrap; } }
+
+    .note {
+      background: var(--lemon-light); border-left: 4px solid var(--lemon-dark); padding: 12px 16px;
+      border-radius: 6px; font-size: 12px; color: var(--gray); margin-top: 16px; line-height: 1.6;
+    }
+    .note b { color: var(--blue-dark); }
+
+    .footer { text-align: center; color: var(--gray); font-size: 12px; padding: 20px; }
+    .footer a { color: var(--blue); }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+    .badge.must { background: var(--yellow); color: var(--blue-dark); }
+    .badge.opt { background: var(--gray-bg); color: var(--gray); border: 1px solid var(--gray-border); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>REKAP NILAI INFORMATIKA KELAS 9</h1>
+      <div class="subtitle">Halaman Download File Aplikasi — Google Apps Script Web App</div>
+      <div class="meta">v3 · Semester 1 · T.A. 2025/2026</div>
+    </div>
+
+    <div class="section">
+      <h2><span class="icon">1</span>File Kode Aplikasi (untuk GitHub)</h2>
+      <div class="desc">File-file ini di-zip dalam satu folder <code>gas-rekap-nilai-informatika/</code>. Bisa langsung upload ke GitHub sebagai repository, atau paste satu per satu ke editor Google Apps Script.</div>
+
+      <div class="file-card">
+        <div class="file-icon zip">📦</div>
+        <div class="file-info">
+          <div class="file-name">gas-rekap-nilai-informatika.zip <span class="badge must">WAJIB</span></div>
+          <div class="file-meta">
+            <span>📊 35 KB</span>
+            <span>📁 6 file di dalam</span>
+          </div>
+          <div class="file-desc">ZIP berisi: Code.gs, Index.html, appsscript.json, .clasp.json, .gitignore, README.md. Extract lalu upload ke GitHub repo baru.</div>
+        </div>
+        <a class="btn-download primary" href="gas-rekap-nilai-informatika.zip" download>⬇ Download</a>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon html">🌐</div>
+        <div class="file-info">
+          <div class="file-name">Index.html <span class="badge must">WAJIB</span></div>
+          <div class="file-meta">
+            <span>📊 77 KB</span>
+            <span>📜 Frontend UI</span>
+          </div>
+          <div class="file-desc">HTML/CSS/JS untuk web app. Berisi: login screen, tab kelas 9A-9I, grid nilai, import Excel, mode nilai asli/akhir, modal config.</div>
+        </div>
+        <a class="btn-download" href="gas-rekap-nilai-informatika/Index.html" download>⬇ Download</a>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon gs">⚙</div>
+        <div class="file-info">
+          <div class="file-name">Code.gs <span class="badge must">WAJIB</span></div>
+          <div class="file-meta">
+            <span>📊 36 KB</span>
+            <span>📜 Backend GAS</span>
+          </div>
+          <div class="file-desc">Kode Google Apps Script. Berisi: setup 9 sheet, login+session, sheet CONFIG, import Excel, export nilai asli & nilai akhir (katrol).</div>
+        </div>
+        <a class="btn-download" href="gas-rekap-nilai-informatika/Code.gs" download>⬇ Download</a>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon json">📋</div>
+        <div class="file-info">
+          <div class="file-name">appsscript.json</div>
+          <div class="file-meta">
+            <span>📊 0.3 KB</span>
+            <span>⚙ Manifest</span>
+          </div>
+          <div class="file-desc">Manifest GAS: timezone Asia/Jakarta, scope Sheets+Drive, webapp config.</div>
+        </div>
+        <a class="btn-download" href="gas-rekap-nilai-informatika/appsscript.json" download>⬇ Download</a>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon md">📖</div>
+        <div class="file-info">
+          <div class="file-name">README.md</div>
+          <div class="file-meta">
+            <span>📊 16 KB</span>
+            <span>📖 Dokumentasi</span>
+          </div>
+          <div class="file-desc">Panduan lengkap: cara setup, deploy, pakai, troubleshooting. Baca dulu sebelum mulai.</div>
+        </div>
+        <a class="btn-download" href="gas-rekap-nilai-informatika/README.md" download>⬇ Download</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2><span class="icon">2</span>Spreadsheet Template (untuk Google Drive)</h2>
+      <div class="desc">Upload file ini ke Google Drive, lalu buka di Google Sheets (klik kanan → Open with → Google Sheets). Aplikasi GAS akan otomatis deteksi spreadsheet ini saat pertama dijalankan.</div>
+
+      <div class="file-card">
+        <div class="file-icon xlsx">📊</div>
+        <div class="file-info">
+          <div class="file-name">REKAP NILAI INFORMATIKA KELAS 9.xlsx <span class="badge must">WAJIB</span></div>
+          <div class="file-meta">
+            <span>📊 90 KB</span>
+            <span>📁 10 sheet</span>
+          </div>
+          <div class="file-desc">Template spreadsheet berisi: sheet CONFIG (admin/admin123, KKTP=78, rapor 79-94, deskripsi TP) + 9 sheet kelas KELAS9A-KELAS9I dengan header, merge, formula katrol, dan print layout (landscape A4, fit-to-width, repeat header rows 1-9).</div>
+        </div>
+        <a class="btn-download primary" href="REKAP NILAI INFORMATIKA KELAS 9.xlsx" download>⬇ Download</a>
+      </div>
+
+      <div class="note">
+        <b>Cara pakai:</b><br>
+        1. Download file .xlsx di atas<br>
+        2. Buka <a href="https://drive.google.com" target="_blank">Google Drive</a> → klik <b>New</b> → <b>File upload</b> → pilih file ini<br>
+        3. Setelah upload, klik kanan file → <b>Open with</b> → <b>Google Sheets</b> (Drive akan konversi ke Google Spreadsheet)<br>
+        4. Deploy GAS app (paste Code.gs + Index.html) → buka URL → login <b>admin</b> / <b>admin123</b><br>
+        5. GAS app akan otomatis pakai spreadsheet yang sudah Anda upload (tidak perlu run <code>setupInitial</code>)
+      </div>
+    </div>
+
+    <div class="section">
+      <h2><span class="icon">3</span>Contoh File Import (untuk test)</h2>
+      <div class="desc">File-file ini dipakai untuk testing fitur import di aplikasi. Cocok untuk simulasi alur kerja: input nama → input nilai → cek katrol.</div>
+
+      <div class="file-card">
+        <div class="file-icon xlsx">👥</div>
+        <div class="file-info">
+          <div class="file-name">CONTOH_IMPORT_NAMA_SISWA.xlsx</div>
+          <div class="file-meta">
+            <span>📊 6 KB</span>
+            <span>👥 10 nama sample</span>
+          </div>
+          <div class="file-desc">Format sederhana: kolom <b>No.</b> + <b>Nama Siswa</b> dengan 10 nama contoh (Abil Wafa, Adinda, Bayu, dst). Dipakai di panel "Import Nama dari Excel" untuk testing auto-detect kolom nama.</div>
+        </div>
+        <a class="btn-download" href="CONTOH_IMPORT_NAMA_SISWA.xlsx" download>⬇ Download</a>
+      </div>
+
+      <div class="file-card">
+        <div class="file-icon xlsx">📝</div>
+        <div class="file-info">
+          <div class="file-name">CONTOH_IMPORT_NILAI_TP.xlsx</div>
+          <div class="file-meta">
+            <span>📊 13 KB</span>
+            <span>📁 5 sheet (LM1-LM5)</span>
+          </div>
+          <div class="file-desc">5 sheet (LM1-LM5), masing-masing kolom <b>No., Nama Siswa, TP1, TP2, TP3, TP4</b> dengan 10 siswa × nilai acak. Beberapa nilai sengaja < 78 (KKTP) untuk demo fitur Mode Nilai Akhir (Katrol).</div>
+        </div>
+        <a class="btn-download" href="CONTOH_IMPORT_NILAI_TP.xlsx" download>⬇ Download</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2><span class="icon">4</span>Cara Pakai Singkat</h2>
+      <div class="desc">Urutan penggunaan file-file di atas.</div>
+      <div class="note">
+        <b>Langkah 1 — Setup kode:</b> Extract <code>gas-rekap-nilai-informatika.zip</code> → upload folder ke GitHub (atau paste <code>Code.gs</code> + <code>Index.html</code> ke editor GAS di <a href="https://script.google.com" target="_blank">script.google.com</a>).<br><br>
+        <b>Langkah 2 — Setup spreadsheet:</b> Download <code>REKAP NILAI INFORMATIKA KELAS 9.xlsx</code> → upload ke Google Drive → buka di Google Sheets untuk konversi.<br><br>
+        <b>Langkah 3 — Deploy:</b> Di editor GAS → <b>Deploy</b> → <b>New deployment</b> → tipe <b>Web app</b> → Execute as: Me → Who has access: Anyone with Google Account.<br><br>
+        <b>Langkah 4 — Login:</b> Buka Web app URL → login dengan <code>admin</code> / <code>admin123</code>. <b>Ubah password default via menu Config!</b><br><br>
+        <b>Langkah 5 — Test import:</b> Download <code>CONTOH_IMPORT_NAMA_SISWA.xlsx</code> & <code>CONTOH_IMPORT_NILAI_TP.xlsx</code> → di web app, pilih kelas KELAS9A → upload file nama → import. Lalu upload file nilai, pilih sheet LM1, target LM1-TP1, kolom nilai TP1 → Preview Match → Simpan.<br><br>
+        <b>Langkah 6 — Test katrol:</b> Klik toggle <b>Mode: Nilai Akhir</b> di header grid → lihat cell kuning (nilai < 78 di-bump jadi 78). Klik <b>Download Excel Nilai Akhir (Katrol)</b> untuk dapatkan file versi bumped untuk wali murid.
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>© 2025-2026 Aplikasi Rekap Nilai Informatika Kelas 9 · Dibuat dengan Google Apps Script</div>
+      <div style="margin-top: 6px;">Pertanyaan? Baca <b>README.md</b> atau hubungi pembuat aplikasi.</div>
+    </div>
+  </div>
+</body>
+</html>
