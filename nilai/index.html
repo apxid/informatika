@@ -169,6 +169,17 @@ body {
   margin-top: 18px; text-align: center;
   font-size: 11px; color: var(--ink-soft);
 }
+.login-status {
+  margin-top: 10px; padding: 8px 12px;
+  border-radius: 10px; font-size: 12px; text-align: center;
+  background: #E8F4FD; color: var(--blue-dark);
+  border: 1px solid #B6D4F0;
+  display: none;
+}
+.login-status.ok { background: #E5F7E9; color: #2c7a3a; border-color: #A8E6CF; }
+.login-status.err { background: #FDECEC; color: #B23B3B; border-color: #F4C7C7; }
+.login-status.show { display: block; }
+.login-card .field input::placeholder { color: #999; font-size: 13px; }
 
 /* ============================================================
    APP LAYOUT
@@ -611,6 +622,10 @@ table.rekap .badge {
     <p class="login-sub">Aplikasi Pengolahan Nilai Siswa — Kelas 9</p>
 
     <div class="field">
+      <i class="bi bi-link-45deg"></i>
+      <input type="text" id="loginApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzy_Qmp3jRP7nT7rR6WGetB5ORm2SVg1wDnpd7KNUqEr67YVxTDg8WJbVlEluNdb7EQSA/exec" autocomplete="off" />
+    </div>
+    <div class="field">
       <i class="bi bi-person-fill"></i>
       <input type="text" id="loginUser" placeholder="Username Admin" autocomplete="username" />
     </div>
@@ -622,7 +637,8 @@ table.rekap .badge {
       <span id="loginBtnText"><i class="bi bi-box-arrow-in-right"></i> Masuk</span>
     </button>
     <div class="login-error" id="loginError"></div>
-    <div class="login-foot">v1.0 · Decoupled GAS + GitHub Pages</div>
+    <div class="login-status" id="loginStatus"></div>
+    <div class="login-foot">v1.1 · Decoupled GAS + GitHub Pages</div>
   </div>
 </div>
 
@@ -775,7 +791,7 @@ table.rekap .badge {
 
     <div class="field-group">
       <label>API URL (Google Apps Script Web App)</label>
-      <input type="text" id="cfgApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzy_Qmp3jRP7nT7rR6WGetB5ORm2SVg1wDnpd7KNUqEr67YVxTDg8WJbVlEluNdb7EQSA/exec" />
+      <input type="text" id="cfgApiUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
     </div>
 
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
@@ -913,11 +929,20 @@ async function api(action, params = {}, method = 'GET') {
 async function doLogin() {
   const user = $('#loginUser').value.trim();
   const pass = $('#loginPass').value;
-  if (!user || !pass) { showLoginError('Username & password wajib diisi'); return; }
+  // Ambil API URL dari field login (jika diisi), fallback ke localStorage
+  const inputApiUrl = $('#loginApiUrl').value.trim();
+  if (inputApiUrl) {
+    State.apiUrl = inputApiUrl;
+    localStorage.setItem('apiUrl', inputApiUrl);
+  }
+
   if (!State.apiUrl) {
-    showLoginError('API URL belum dikonfigurasi. Tutup form login, klik Settings, lalu set API URL.');
+    showLoginError('API URL wajib diisi. Paste URL Web App Google Apps Script Anda di field pertama.');
     return;
   }
+  if (!user || !pass) { showLoginError('Username & password wajib diisi'); return; }
+
+  showLoginStatus('Menghubungi backend...', '');
   $('#loginBtnText').innerHTML = '<span class="spinner"></span> Memproses...';
   try {
     const r = await api('login', { user, pass });
@@ -926,21 +951,56 @@ async function doLogin() {
       localStorage.setItem('token', r.token);
       localStorage.setItem('user', r.user);
       $('#userName').textContent = r.user;
+      showLoginStatus('✓ Login berhasil! Memuat aplikasi...', 'ok');
       enterApp();
     } else {
       showLoginError(r.error || 'Login gagal');
+      showLoginStatus('✗ ' + (r.error || 'Login gagal'), 'err');
     }
   } catch (e) {
     showLoginError('Koneksi gagal: ' + e.message);
+    showLoginStatus('✗ ' + e.message, 'err');
   } finally {
     $('#loginBtnText').innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Masuk';
+  }
+}
+
+/** Test koneksi backend saat user selesai isi API URL */
+async function testApiConnection() {
+  const url = $('#loginApiUrl').value.trim();
+  if (!url) {
+    $('#loginStatus').classList.remove('show');
+    return;
+  }
+  showLoginStatus('Menguji koneksi backend...', '');
+  try {
+    State.apiUrl = url;
+    const r = await api('ping');
+    if (r.success && r.message === 'pong') {
+      showLoginStatus('✓ Backend terhubung. Silakan login.', 'ok');
+    } else {
+      showLoginStatus('⚠ Backend merespon tapi format tidak dikenal', 'err');
+    }
+  } catch (e) {
+    showLoginStatus('✗ Backend tidak terjangkau: ' + e.message, 'err');
   }
 }
 
 function showLoginError(msg) {
   const el = $('#loginError');
   el.textContent = msg; el.style.display = 'block';
-  setTimeout(() => el.style.display = 'none', 4000);
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
+function showLoginStatus(msg, type) {
+  const el = $('#loginStatus');
+  el.className = 'login-status';
+  if (type) el.classList.add(type);
+  el.classList.add('show');
+  el.textContent = msg;
+  if (type === 'ok') {
+    setTimeout(() => el.classList.remove('show'), 4000);
+  }
 }
 
 function doLogout() {
@@ -950,6 +1010,8 @@ function doLogout() {
   $('#app').classList.remove('show');
   $('#loginScreen').style.display = 'flex';
   $('#loginPass').value = '';
+  // Pre-fill API URL agar user tidak perlu isi lagi
+  $('#loginApiUrl').value = State.apiUrl || '';
 }
 
 function enterApp() {
@@ -1370,6 +1432,8 @@ function bindEvents() {
   $('#btnLogin').addEventListener('click', doLogin);
   $('#loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   $('#loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginPass').focus(); });
+  $('#loginApiUrl').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginUser').focus(); });
+  $('#loginApiUrl').addEventListener('blur', testApiConnection);
 
   $('#btnLogout').addEventListener('click', doLogout);
   $('#btnSettings').addEventListener('click', openSettings);
@@ -1406,8 +1470,13 @@ function bindEvents() {
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   bindEvents();
-  // Pre-fill API URL field
+  // Pre-fill API URL field di login dan di settings
   $('#cfgApiUrl').value = State.apiUrl;
+  $('#loginApiUrl').value = State.apiUrl;
+  // Auto-test koneksi jika API URL sudah ada
+  if (State.apiUrl) {
+    setTimeout(testApiConnection, 500);
+  }
   // Auto-login if token exists
   if (State.token && State.user) {
     $('#userName').textContent = State.user;
