@@ -591,7 +591,7 @@ body {
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table.rekap {
   width: 100%; border-collapse: collapse;
-  font-size: 12.5px; min-width: 980px;
+  font-size: 13px; min-width: 600px;
 }
 table.rekap thead th {
   background: linear-gradient(180deg, var(--blue) 0%, var(--blue-dark) 100%);
@@ -1510,7 +1510,7 @@ function renderTable() {
   const tbl = $('#rekapTable');
   if (!State.siswa.length) {
     tbl.querySelector('thead').innerHTML = '';
-    tbl.querySelector('tbody').innerHTML = `<tr><td colspan="14"><div class="empty"><i class="bi bi-inbox"></i><h4>Belum ada data</h4><p>Pilih kelas lain atau isi data siswa di Google Sheets.</p></div></td></tr>`;
+    tbl.querySelector('tbody').innerHTML = `<tr><td><div class="empty"><i class="bi bi-inbox"></i><h4>Belum ada data siswa</h4><p>Klik tombol <b>"Kelola Siswa"</b> di atas untuk menambah siswa, atau pilih kelas lain.</p></div></td></tr>`;
     return;
   }
   const fieldType = State.fieldType;
@@ -1518,102 +1518,144 @@ function renderTable() {
 
   // Hitung index TP yang sedang aktif (jika LMx_TPy)
   let activeTpIdx = -1;
+  let lmIdx = -1, tpIdx = -1;
   if (isLM) {
     const m = fieldType.match(/^LM(\d)_TP(\d)$/);
-    if (m) activeTpIdx = (parseInt(m[1],10) - 1) * 4 + (parseInt(m[2],10) - 1);
+    if (m) {
+      lmIdx = parseInt(m[1],10);
+      tpIdx = parseInt(m[2],10);
+      activeTpIdx = (lmIdx - 1) * 4 + (tpIdx - 1);
+    }
   }
 
-  // Header (match sample structure: 3-row grouped)
-  tbl.querySelector('thead').innerHTML = `
-    <tr class="group">
-      <th rowspan="3">No</th>
-      <th rowspan="3">Nama Siswa</th>
-      <th colspan="20" class="sub">FORMATIF (TP1.1 s.d. TP5.4)</th>
-      <th colspan="5" class="sub">SUMATIF LM</th>
-      <th rowspan="3">30% LM<br>(AB)</th>
-      <th rowspan="3">STS<br>(AC)</th>
-      <th rowspan="3">30% STS<br>(AD)</th>
-      <th rowspan="3">SAS<br>(AE)</th>
-      <th rowspan="3">40% SAS<br>(AF)</th>
-      <th rowspan="3">NA<br>(AG)</th>
-      <th rowspan="3">Katrol<br>(AH)</th>
-      <th rowspan="3">Rank<br>(AI)</th>
-      <th colspan="5" class="sub">STATUS TP (R/T)</th>
-      <th rowspan="3">VALIDASI<br>(AP)</th>
-    </tr>
-    <tr>
-      <th colspan="4">LM1</th><th colspan="4">LM2</th><th colspan="4">LM3</th>
-      <th colspan="4">LM4</th><th colspan="4">LM5</th>
-      <th>LM1</th><th>LM2</th><th>LM3</th><th>LM4</th><th>LM5</th>
-      <th>TP.911</th><th>TP.912</th><th>TP.913</th><th>TP.914</th><th>TP.915</th>
-    </tr>
-    <tr>
-      <th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4
-      </th><th>TP1</th><th>TP2</th><th>TP3</th><th>TP4</th>
-      <th>(W)</th><th>(X)</th><th>(Y)</th><th>(Z)</th><th>(AA)</th>
-      <th>(AK)</th><th>(AL)</th><th>(AM)</th><th>(AN)</th><th>(AO)</th>
-    </tr>
-  `;
+  // ====== MODE FOKUS: Tampilkan hanya kolom yang relevan ======
+  // Tentukan kolom header berdasarkan fieldType
+  let headerHtml = '', bodyRowTemplate = '';
+  const inputCellStyle = `style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"`;
+  const inputStyle = `style="background:#fff; border:1px solid #FFC93C; font-weight:700; width:70px; padding:5px; border-radius:6px; text-align:center; font-size:13px;"`;
 
-  // Body
+  if (fieldType === 'STS') {
+    headerHtml = `
+      <tr class="group">
+        <th rowspan="2" style="width:50px;">No</th>
+        <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
+        <th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ STS<br>(Input)</th>
+        <th rowspan="2">30% STS<br>(Auto)</th>
+        <th rowspan="2">NA</th>
+        <th rowspan="2">Katrol</th>
+        <th rowspan="2">Rank</th>
+        <th rowspan="2">Status</th>
+      </tr>
+      <tr></tr>
+    `;
+  } else if (fieldType === 'SAS') {
+    headerHtml = `
+      <tr class="group">
+        <th rowspan="2" style="width:50px;">No</th>
+        <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
+        <th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ SAS<br>(Input)</th>
+        <th rowspan="2">40% SAS<br>(Auto)</th>
+        <th rowspan="2">NA</th>
+        <th rowspan="2">Katrol</th>
+        <th rowspan="2">Rank</th>
+        <th rowspan="2">Status</th>
+      </tr>
+      <tr></tr>
+    `;
+  } else if (isLM && lmIdx > 0) {
+    const tpLabel = `TP${lmIdx}.${tpIdx}`;
+    const lmLabel = `LM${lmIdx}`;
+    headerHtml = `
+      <tr class="group">
+        <th rowspan="2" style="width:50px;">No</th>
+        <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
+        <th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ ${tpLabel}<br>(Input)</th>
+        <th rowspan="2">${lmLabel} Avg<br>(Auto)</th>
+        <th rowspan="2">30% LM<br>(Auto)</th>
+        <th rowspan="2">NA</th>
+        <th rowspan="2">Katrol</th>
+        <th rowspan="2">Rank</th>
+        <th rowspan="2">Status ${lmLabel}</th>
+      </tr>
+      <tr></tr>
+    `;
+  } else {
+    // fallback: tabel lengkap
+    headerHtml = `
+      <tr class="group">
+        <th>No</th><th>Nama</th><th>STS</th><th>SAS</th><th>NA</th><th>Katrol</th><th>Rank</th>
+      </tr>
+    `;
+  }
+  tbl.querySelector('thead').innerHTML = headerHtml;
+
+  // Body — render sesuai fieldType
   tbl.querySelector('tbody').innerHTML = State.siswa.map((s, i) => {
     const rank = s.rank || '-';
     const validasi = s.validasi || '';
-
-    // TP cells C-V (20 nilai) — editable jika fieldType sesuai, kolom aktif di-highlight
-    const tpCells = (s.tp || []).map((v, idx) => {
-      const isActive = isLM && idx === activeTpIdx;
-      if (isActive) {
-        return `<td style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${fieldType}" value="${v ?? ''}" style="background:#fff; border:1px solid #FFC93C; font-weight:700;" /></td>`;
-      }
-      return `<td style="${v ? '' : 'color:#bbb;'}">${v ?? '-'}</td>`;
-    }).join('');
-
-    // LM avg cells W-AA
-    const lmCells = (s.lm || []).map(v => `<td>${v ?? '-'}</td>`).join('');
-
-    // STS / SAS cells (editable jika fieldType sesuai, di-highlight kuning)
-    const stsCell = (fieldType === 'STS')
-      ? `<td style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" style="background:#fff; border:1px solid #FFC93C; font-weight:700;" /></td>`
-      : `<td style="${s.stsRaw ? '' : 'color:#bbb;'}">${s.stsRaw ?? '-'}</td>`;
-    const sasCell = (fieldType === 'SAS')
-      ? `<td style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" style="background:#fff; border:1px solid #FFC93C; font-weight:700;" /></td>`
-      : `<td style="${s.sasRaw ? '' : 'color:#bbb;'}">${s.sasRaw ?? '-'}</td>`;
-
-    // TP status cells AK-AO
-    const tpStatusCells = (s.tpStatus || []).map(st => {
-      const cls = st === 'R' ? 'r' : (st === 'T' ? 't' : '');
-      return `<td><span class="badge ${cls}">${st || '-'}</span></td>`;
-    }).join('');
-
-    // VALIDASI badge
-    const validasiBadge = validasi === 'VALID'
-      ? `<span class="badge t">VALID</span>`
+    const statusBadge = validasi === 'VALID'
+      ? `<span class="badge t">TUNTAS</span>`
       : validasi === 'TIDAK VALID'
-        ? `<span class="badge r">TIDAK VALID</span>`
+        ? `<span class="badge r">REMIDI</span>`
         : '-';
 
-    return `
-      <tr>
-        <td>${s.no || (i+1)}</td>
-        <td class="nama">${escapeHtml(s.nama)}</td>
-        ${tpCells}
-        ${lmCells}
-        <td>${s.lm30 ?? '-'}</td>
-        ${stsCell}
+    let rowHtml = `<tr>
+      <td style="font-weight:700;">${s.no || (i+1)}</td>
+      <td class="nama" style="text-align:left; font-weight:600;">${escapeHtml(s.nama)}</td>`;
+
+    if (fieldType === 'STS') {
+      rowHtml += `
+        <td ${inputCellStyle}>
+          <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" ${inputStyle} />
+        </td>
         <td>${s.sts30 ?? '-'}</td>
-        ${sasCell}
+        <td class="cell-na">${s.na ?? '-'}</td>
+        <td class="cell-katrol">${s.katrol ?? '-'}</td>
+        <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
+        <td>${statusBadge}</td>
+      </tr>`;
+    } else if (fieldType === 'SAS') {
+      rowHtml += `
+        <td ${inputCellStyle}>
+          <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" ${inputStyle} />
+        </td>
         <td>${s.sas40 ?? '-'}</td>
         <td class="cell-na">${s.na ?? '-'}</td>
         <td class="cell-katrol">${s.katrol ?? '-'}</td>
         <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
-        ${tpStatusCells}
-        <td>${validasiBadge}</td>
-      </tr>
-    `;
+        <td>${statusBadge}</td>
+      </tr>`;
+    } else if (isLM && lmIdx > 0) {
+      const tpValue = s.tp ? s.tp[activeTpIdx] : '';
+      const lmAvg = s.lm ? s.lm[lmIdx - 1] : '';
+      const lmStatus = s.tpStatus ? s.tpStatus[lmIdx - 1] : '';
+      const lmStatusBadge = lmStatus === 'T'
+        ? `<span class="badge t">T</span>`
+        : lmStatus === 'R'
+          ? `<span class="badge r">R</span>`
+          : '-';
+      rowHtml += `
+        <td ${inputCellStyle}>
+          <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${fieldType}" value="${tpValue ?? ''}" ${inputStyle} />
+        </td>
+        <td>${lmAvg ?? '-'}</td>
+        <td>${s.lm30 ?? '-'}</td>
+        <td class="cell-na">${s.na ?? '-'}</td>
+        <td class="cell-katrol">${s.katrol ?? '-'}</td>
+        <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
+        <td>${lmStatusBadge}</td>
+      </tr>`;
+    } else {
+      rowHtml += `
+        <td>${s.stsRaw ?? '-'}</td>
+        <td>${s.sasRaw ?? '-'}</td>
+        <td>${s.na ?? '-'}</td>
+        <td>${s.katrol ?? '-'}</td>
+        <td>${rank}</td>
+        <td>${statusBadge}</td>
+      </tr>`;
+    }
+    return rowHtml;
   }).join('');
 }
 
@@ -1814,13 +1856,13 @@ function updateSheetInfoBar() {
   $('#sheetInfoKelas').textContent = State.kelas;
   $('#sheetInfoCount').textContent = State.siswa ? State.siswa.length : 0;
   $('#sheetInfoField').textContent = State.fieldType;
-  // Hint dinamis
+  // Hint dinamis sesuai mode fokus
   const isLM = State.fieldType.startsWith('LM');
   const hint = isLM
-    ? `Input nilai TP ke kolom C-V (formatif). Lalu klik Simpan — formula LM avg, NA, Katrol auto-refresh.`
+    ? `Isi nilai ${State.fieldType.replace('_','·')} di kolom kuning. Klik Simpan — formula LM avg & NA auto-refresh.`
     : State.fieldType === 'STS'
-      ? `Input nilai STS (0-100) di kolom AC. Klik Simpan — formula 30% STS, NA, Katrol auto-refresh.`
-      : `Input nilai SAS (0-100) di kolom AE. Klik Simpan — formula 40% SAS, NA, Katrol auto-refresh.`;
+      ? `Isi nilai STS (0-100) di kolom kuning. Klik Simpan — formula 30% STS, NA, Katrol auto-refresh.`
+      : `Isi nilai SAS (0-100) di kolom kuning. Klik Simpan — formula 40% SAS, NA, Katrol auto-refresh.`;
   $('#sheetInfoHint').textContent = hint;
 }
 
