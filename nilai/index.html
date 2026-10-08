@@ -912,34 +912,12 @@ table.rekap .badge {
       </div>
     </div>
     <div class="control-card">
-      <div class="control-stack" style="min-width:180px;">
-        <label><i class="bi bi-clipboard-data-fill"></i> Jenis Penilaian</label>
-        <select id="fieldTypeSelect">
-          <option value="STS">STS — Sumatif Tengah Semester</option>
-          <option value="SAS">SAS — Sumatif Akhir Semester</option>
-          <optgroup label="Formatif LM (TP)">
-            <option value="LM1_TP1">LM1 · TP1.1</option>
-            <option value="LM1_TP2">LM1 · TP1.2</option>
-            <option value="LM1_TP3">LM1 · TP1.3</option>
-            <option value="LM1_TP4">LM1 · TP1.4</option>
-            <option value="LM2_TP1">LM2 · TP2.1</option>
-            <option value="LM2_TP2">LM2 · TP2.2</option>
-            <option value="LM2_TP3">LM2 · TP2.3</option>
-            <option value="LM2_TP4">LM2 · TP2.4</option>
-            <option value="LM3_TP1">LM3 · TP3.1</option>
-            <option value="LM3_TP2">LM3 · TP3.2</option>
-            <option value="LM3_TP3">LM3 · TP3.3</option>
-            <option value="LM3_TP4">LM3 · TP3.4</option>
-            <option value="LM4_TP1">LM4 · TP4.1</option>
-            <option value="LM4_TP2">LM4 · TP4.2</option>
-            <option value="LM4_TP3">LM4 · TP4.3</option>
-            <option value="LM4_TP4">LM4 · TP4.4</option>
-            <option value="LM5_TP1">LM5 · TP5.1</option>
-            <option value="LM5_TP2">LM5 · TP5.2</option>
-            <option value="LM5_TP3">LM5 · TP5.3</option>
-            <option value="LM5_TP4">LM5 · TP5.4</option>
-          </optgroup>
-        </select>
+      <div class="control-stack" style="min-width:200px;">
+        <label><i class="bi bi-clipboard-data-fill"></i> Kolom Nilai</label>
+        <button class="btn btn-ghost" id="btnPilihKolom" style="justify-content:space-between; width:100%;">
+          <span id="selectedFieldsLabel">Pilih kolom...</span>
+          <i class="bi bi-chevron-down"></i>
+        </button>
       </div>
     </div>
     <div class="control-card" style="flex:0 0 auto;">
@@ -1081,6 +1059,49 @@ table.rekap .badge {
 </div>
 
 <!-- ============================================================
+     PILIH KOLOM MODAL (Multi-select checkbox)
+     ============================================================ -->
+<div class="modal-overlay" id="pilihKolomModal">
+  <div class="modal" style="max-width:520px;">
+    <h3><i class="bi bi-list-check"></i> Pilih Kolom Nilai</h3>
+    <p class="sub">Centang kolom yang ingin ditampilkan & di-edit. Bisa pilih beberapa sekaligus.</p>
+
+    <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+      <button class="btn btn-success btn-sm" id="btnPilihSemua"><i class="bi bi-check2-all"></i> Pilih Semua (All)</button>
+      <button class="btn btn-ghost btn-sm" id="btnHapusPilihan"><i class="bi bi-x-circle"></i> Hapus Semua</button>
+      <button class="btn btn-ghost btn-sm" id="btnPilihSumatif"><i class="bi bi-pencil"></i> STS + SAS</button>
+    </div>
+
+    <div style="max-height:380px; overflow-y:auto; border:1px solid var(--line); border-radius:10px; padding:8px;">
+      <!-- Sumatif -->
+      <div style="margin-bottom:12px;">
+        <div style="font-weight:700; color:var(--blue-dark); padding:6px 4px; border-bottom:1px solid var(--line); margin-bottom:6px;">
+          <i class="bi bi-pencil-fill"></i> SUMATIF
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; padding:6px 8px; cursor:pointer; border-radius:6px;" onmouseover="this.style.background='#f0f5ff'" onmouseout="this.style.background=''">
+          <input type="checkbox" class="kolom-cb" value="STS" /> <b>STS</b> — Sumatif Tengah Semester
+        </label>
+        <label style="display:flex; align-items:center; gap:8px; padding:6px 8px; cursor:pointer; border-radius:6px;" onmouseover="this.style.background='#f0f5ff'" onmouseout="this.style.background=''">
+          <input type="checkbox" class="kolom-cb" value="SAS" /> <b>SAS</b> — Sumatif Akhir Semester
+        </label>
+      </div>
+
+      <!-- Formatif per LM -->
+      <div id="formatifCheckboxList"></div>
+    </div>
+
+    <div style="margin-top:14px; padding:10px; background:#FFF6D6; border:1px solid #FFC93C; border-radius:8px; font-size:12px; color:#6B4D00;">
+      <i class="bi bi-info-circle-fill"></i> <b>Tips:</b> Pilih "All" untuk lihat semua kolom. Pilih beberapa TP untuk input paralel. Kolom <b>NA, Katrol, Rank, Status</b> otomatis tampil di akhir tabel.
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="pilihKolomClose"><i class="bi bi-x-lg"></i> Batal</button>
+      <button class="btn btn-success" id="pilihKolomApply"><i class="bi bi-check-lg"></i> Terapkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
      KELOLA SISWA MODAL
      ============================================================ -->
 <div class="modal-overlay" id="kelolaSiswaModal">
@@ -1171,7 +1192,9 @@ const State = {
   user:   localStorage.getItem('user')   || '',
   kelas:  localStorage.getItem('kelas')  || '9A',
   mode:   localStorage.getItem('mode')   || 'mobile',  // mobile | desktop
-  fieldType: 'STS',
+  // Array kolom yang dipilih untuk ditampilkan/edit (default: ['STS'])
+  selectedFields: JSON.parse(localStorage.getItem('selectedFields') || '["STS"]'),
+  fieldType: 'STS',  // backward compat — ambil dari selectedFields[0]
   siswa: [],
   config: {}
 };
@@ -1563,83 +1586,64 @@ function renderTable() {
     tbl.querySelector('tbody').innerHTML = `<tr><td><div class="empty"><i class="bi bi-inbox"></i><h4>Belum ada data siswa</h4><p>Klik tombol <b>"Kelola Siswa"</b> di atas untuk menambah siswa, atau pilih kelas lain.</p></div></td></tr>`;
     return;
   }
-  const fieldType = State.fieldType;
-  const isLM = fieldType.startsWith('LM');
 
-  // Hitung index TP yang sedang aktif (jika LMx_TPy)
-  let activeTpIdx = -1;
-  let lmIdx = -1, tpIdx = -1;
-  if (isLM) {
-    const m = fieldType.match(/^LM(\d)_TP(\d)$/);
-    if (m) {
-      lmIdx = parseInt(m[1],10);
-      tpIdx = parseInt(m[2],10);
-      activeTpIdx = (lmIdx - 1) * 4 + (tpIdx - 1);
-    }
+  // Ambil kolom yang dipilih (dari State.selectedFields)
+  const fields = State.selectedFields || [];
+  if (fields.length === 0) {
+    tbl.querySelector('thead').innerHTML = '';
+    tbl.querySelector('tbody').innerHTML = `<tr><td><div class="empty"><i class="bi bi-arrow-up-circle"></i><h4>Belum ada kolom dipilih</h4><p>Klik tombol <b>"Pilih kolom..."</b> di atas untuk memilih kolom nilai yang ingin ditampilkan.</p></div></td></tr>`;
+    return;
   }
 
-  // ====== MODE FOKUS: Tampilkan hanya kolom yang relevan ======
-  // Tentukan kolom header berdasarkan fieldType
-  let headerHtml = '', bodyRowTemplate = '';
+  // Helper untuk parse field → info (lmIdx, tpIdx, type)
+  function parseField(f) {
+    if (f === 'STS' || f === 'SAS') return { type: f };
+    const m = f.match(/^LM(\d)_TP(\d)$/);
+    if (m) {
+      const lmIdx = parseInt(m[1],10);
+      const tpIdx = parseInt(m[2],10);
+      return { type: 'LM', field: f, lmIdx, tpIdx, tpIdxAbs: (lmIdx-1)*4 + (tpIdx-1) };
+    }
+    return null;
+  }
+  const parsedFields = fields.map(parseField).filter(Boolean);
+
+  // ====== HEADER DINAMIS sesuai kolom yang dipilih ======
   const inputCellStyle = `style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"`;
   const inputStyle = `style="background:#fff; border:1px solid #FFC93C; font-weight:700; width:70px; padding:5px; border-radius:6px; text-align:center; font-size:13px;"`;
 
-  if (fieldType === 'STS') {
-    headerHtml = `
-      <tr class="group">
-        <th rowspan="2" style="width:50px;">No</th>
-        <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
-        <th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ STS<br>(Input)</th>
-        <th rowspan="2">30% STS<br>(Auto)</th>
-        <th rowspan="2">NA</th>
-        <th rowspan="2">Katrol</th>
-        <th rowspan="2">Rank</th>
-        <th rowspan="2">Status</th>
-      </tr>
-      <tr></tr>
-    `;
-  } else if (fieldType === 'SAS') {
-    headerHtml = `
-      <tr class="group">
-        <th rowspan="2" style="width:50px;">No</th>
-        <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
-        <th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ SAS<br>(Input)</th>
-        <th rowspan="2">40% SAS<br>(Auto)</th>
-        <th rowspan="2">NA</th>
-        <th rowspan="2">Katrol</th>
-        <th rowspan="2">Rank</th>
-        <th rowspan="2">Status</th>
-      </tr>
-      <tr></tr>
-    `;
-  } else if (isLM && lmIdx > 0) {
-    const tpLabel = `TP${lmIdx}.${tpIdx}`;
-    const lmLabel = `LM${lmIdx}`;
-    headerHtml = `
-      <tr class="group">
-        <th rowspan="2" style="width:50px;">No</th>
-        <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
-        <th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ ${tpLabel}<br>(Input)</th>
-        <th rowspan="2">${lmLabel} Avg<br>(Auto)</th>
-        <th rowspan="2">30% LM<br>(Auto)</th>
-        <th rowspan="2">NA</th>
-        <th rowspan="2">Katrol</th>
-        <th rowspan="2">Rank</th>
-        <th rowspan="2">Status ${lmLabel}</th>
-      </tr>
-      <tr></tr>
-    `;
-  } else {
-    // fallback: tabel lengkap
-    headerHtml = `
-      <tr class="group">
-        <th>No</th><th>Nama</th><th>STS</th><th>SAS</th><th>NA</th><th>Katrol</th><th>Rank</th>
-      </tr>
-    `;
-  }
-  tbl.querySelector('thead').innerHTML = headerHtml;
+  let headerCells = `
+    <th rowspan="2" style="width:50px;">No</th>
+    <th rowspan="2" style="min-width:180px;">Nama Siswa</th>
+  `;
 
-  // Body — render sesuai fieldType
+  // Tambah header per field yang dipilih
+  parsedFields.forEach(p => {
+    if (p.type === 'STS') {
+      headerCells += `<th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ STS<br>(Input)</th>
+                      <th rowspan="2">30% STS<br>(Auto)</th>`;
+    } else if (p.type === 'SAS') {
+      headerCells += `<th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ SAS<br>(Input)</th>
+                      <th rowspan="2">40% SAS<br>(Auto)</th>`;
+    } else if (p.type === 'LM') {
+      const tpLabel = `TP${p.lmIdx}.${p.tpIdx}`;
+      headerCells += `<th rowspan="2" style="background:#FFC93C; color:#0D3B66;">✏️ ${tpLabel}<br>(Input)</th>
+                      <th rowspan="2">LM${p.lmIdx} Avg</th>`;
+    }
+  });
+
+  // Kolom hasil (selalu tampil di akhir)
+  headerCells += `
+    <th rowspan="2">30% LM<br>(Auto)</th>
+    <th rowspan="2">NA</th>
+    <th rowspan="2">Katrol</th>
+    <th rowspan="2">Rank</th>
+    <th rowspan="2">Status</th>
+  `;
+
+  tbl.querySelector('thead').innerHTML = `<tr class="group">${headerCells}</tr><tr></tr>`;
+
+  // ====== BODY ======
   tbl.querySelector('tbody').innerHTML = State.siswa.map((s, i) => {
     const rank = s.rank || '-';
     const validasi = s.validasi || '';
@@ -1653,58 +1657,39 @@ function renderTable() {
       <td style="font-weight:700;">${s.no || (i+1)}</td>
       <td class="nama" style="text-align:left; font-weight:600;">${escapeHtml(s.nama)}</td>`;
 
-    if (fieldType === 'STS') {
-      rowHtml += `
-        <td ${inputCellStyle}>
-          <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" ${inputStyle} />
-        </td>
-        <td>${s.sts30 ?? '-'}</td>
-        <td class="cell-na">${s.na ?? '-'}</td>
-        <td class="cell-katrol">${s.katrol ?? '-'}</td>
-        <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
-        <td>${statusBadge}</td>
-      </tr>`;
-    } else if (fieldType === 'SAS') {
-      rowHtml += `
-        <td ${inputCellStyle}>
-          <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" ${inputStyle} />
-        </td>
-        <td>${s.sas40 ?? '-'}</td>
-        <td class="cell-na">${s.na ?? '-'}</td>
-        <td class="cell-katrol">${s.katrol ?? '-'}</td>
-        <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
-        <td>${statusBadge}</td>
-      </tr>`;
-    } else if (isLM && lmIdx > 0) {
-      const tpValue = s.tp ? s.tp[activeTpIdx] : '';
-      const lmAvg = s.lm ? s.lm[lmIdx - 1] : '';
-      const lmStatus = s.tpStatus ? s.tpStatus[lmIdx - 1] : '';
-      const lmStatusBadge = lmStatus === 'T'
-        ? `<span class="badge t">T</span>`
-        : lmStatus === 'R'
-          ? `<span class="badge r">R</span>`
-          : '-';
-      rowHtml += `
-        <td ${inputCellStyle}>
-          <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${fieldType}" value="${tpValue ?? ''}" ${inputStyle} />
-        </td>
-        <td>${lmAvg ?? '-'}</td>
-        <td>${s.lm30 ?? '-'}</td>
-        <td class="cell-na">${s.na ?? '-'}</td>
-        <td class="cell-katrol">${s.katrol ?? '-'}</td>
-        <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
-        <td>${lmStatusBadge}</td>
-      </tr>`;
-    } else {
-      rowHtml += `
-        <td>${s.stsRaw ?? '-'}</td>
-        <td>${s.sasRaw ?? '-'}</td>
-        <td>${s.na ?? '-'}</td>
-        <td>${s.katrol ?? '-'}</td>
-        <td>${rank}</td>
-        <td>${statusBadge}</td>
-      </tr>`;
-    }
+    // Render cell per field yang dipilih
+    parsedFields.forEach(p => {
+      if (p.type === 'STS') {
+        rowHtml += `
+          <td ${inputCellStyle}>
+            <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" ${inputStyle} />
+          </td>
+          <td>${s.sts30 ?? '-'}</td>`;
+      } else if (p.type === 'SAS') {
+        rowHtml += `
+          <td ${inputCellStyle}>
+            <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" ${inputStyle} />
+          </td>
+          <td>${s.sas40 ?? '-'}</td>`;
+      } else if (p.type === 'LM') {
+        const tpValue = s.tp ? s.tp[p.tpIdxAbs] : '';
+        const lmAvg = s.lm ? s.lm[p.lmIdx - 1] : '';
+        rowHtml += `
+          <td ${inputCellStyle}>
+            <input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${p.field}" value="${tpValue ?? ''}" ${inputStyle} />
+          </td>
+          <td>${lmAvg ?? '-'}</td>`;
+      }
+    });
+
+    // Kolom hasil (NA, Katrol, Rank, Status)
+    rowHtml += `
+      <td>${s.lm30 ?? '-'}</td>
+      <td class="cell-na">${s.na ?? '-'}</td>
+      <td class="cell-katrol">${s.katrol ?? '-'}</td>
+      <td><span class="badge ${rankBadge(rank)}">${rank}</span></td>
+      <td>${statusBadge}</td>
+    </tr>`;
     return rowHtml;
   }).join('');
 }
@@ -1727,28 +1712,27 @@ async function updateDashboard() {
 }
 
 /* ============================================================
-   SAVE BATCH NILAI
+   SAVE BATCH NILAI (Multi-field support)
    ============================================================ */
 async function saveNilai() {
-  const fieldType = State.fieldType;
-  const payload = [];
-  if (State.mode === 'mobile') {
-    $$('#cardView .sc-input-val').forEach(inp => {
-      const val = inp.value.trim();
-      if (val === '') return;
-      const row = parseInt(inp.dataset.row, 10);
-      // Semua fieldType (STS/SAS/LMx_TPy) kini menulis ke baris yang sama di KELAS9x
-      payload.push({ row: row, value: Number(val) });
-    });
-  } else {
-    $$('#rekapTable .tbl-input').forEach(inp => {
-      const val = inp.value.trim();
-      if (val === '') return;
-      payload.push({ row: parseInt(inp.dataset.row, 10), value: Number(val) });
-    });
+  // Kumpulkan semua input per field yang dipilih
+  const inputs = State.mode === 'mobile'
+    ? Array.from($$('#cardView .sc-input-val'))
+    : Array.from($$('#rekapTable .tbl-input'));
+
+  // Kelompokkan payload per fieldType (data-field attribute)
+  const payloadPerField = {};
+  for (const inp of inputs) {
+    const val = inp.value.trim();
+    if (val === '') continue;
+    const field = inp.dataset.field || State.fieldType;
+    const row = parseInt(inp.dataset.row, 10);
+    if (!payloadPerField[field]) payloadPerField[field] = [];
+    payloadPerField[field].push({ row: row, value: Number(val) });
   }
 
-  if (!payload.length) { toast('Tidak ada nilai untuk disimpan', 'warn'); return; }
+  const totalInputs = Object.values(payloadPerField).reduce((sum, p) => sum + p.length, 0);
+  if (totalInputs === 0) { toast('Tidak ada nilai untuk disimpan', 'warn'); return; }
 
   const btn = $('#btnSave');
   const old = btn.innerHTML;
@@ -1756,19 +1740,107 @@ async function saveNilai() {
   btn.disabled = true;
 
   try {
-    const r = await api('saveNilai', { kelas: State.kelas, fieldType: fieldType, payload: payload });
-    if (r.success) {
-      toast(`Berhasil menyimpan ${r.saved} nilai. Formula di-refresh otomatis.`, 'ok');
-      await loadData();
-    } else {
-      toast(r.error || 'Gagal menyimpan', 'err');
+    let totalSaved = 0;
+    let errors = [];
+    // Kirim satu-per-satu per field (backend handle satu field per request)
+    for (const [field, payload] of Object.entries(payloadPerField)) {
+      const r = await api('saveNilai', { kelas: State.kelas, fieldType: field, payload: payload });
+      if (r.success) {
+        totalSaved += r.saved || 0;
+      } else {
+        errors.push(`${field}: ${r.error || 'gagal'}`);
+      }
     }
+
+    if (errors.length === 0) {
+      toast(`✓ Berhasil menyimpan ${totalSaved} nilai (${Object.keys(payloadPerField).length} kolom). Formula di-refresh.`, 'ok');
+    } else {
+      toast(`Sebagian gagal: ${errors.join('; ')}`, 'warn');
+    }
+    await loadData();
   } catch (e) {
     toast('Error: ' + e.message, 'err');
   } finally {
     btn.innerHTML = old;
     btn.disabled = false;
   }
+}
+
+/* ============================================================
+   PILIH KOLOM MODAL (Multi-select checkbox)
+   ============================================================ */
+function openPilihKolom() {
+  // Render formatif checkbox list (20 TP)
+  const list = $('#formatifCheckboxList');
+  let html = '';
+  for (let lm = 1; lm <= 5; lm++) {
+    html += `<div style="margin-bottom:10px;">
+      <div style="font-weight:700; color:var(--blue-dark); padding:6px 4px; border-bottom:1px solid var(--line); margin-bottom:6px;">
+        <i class="bi bi-collection-fill"></i> LINGKUP MATERI ${lm} (LM${lm})
+      </div>`;
+    for (let tp = 1; tp <= 4; tp++) {
+      const fieldCode = `LM${lm}_TP${tp}`;
+      const isChecked = (State.selectedFields || []).includes(fieldCode) ? 'checked' : '';
+      html += `<label style="display:flex; align-items:center; gap:8px; padding:6px 8px; cursor:pointer; border-radius:6px;" onmouseover="this.style.background='#f0f5ff'" onmouseout="this.style.background=''">
+        <input type="checkbox" class="kolom-cb" value="${fieldCode}" ${isChecked} />
+        <b>TP${lm}.${tp}</b> <span style="color:var(--ink-soft); font-size:12px;">(${fieldCode})</span>
+      </label>`;
+    }
+    html += `</div>`;
+  }
+  list.innerHTML = html;
+
+  // Set checkbox STS/SAS sesuai state
+  document.querySelectorAll('.kolom-cb[value="STS"]').forEach(cb => cb.checked = State.selectedFields.includes('STS'));
+  document.querySelectorAll('.kolom-cb[value="SAS"]').forEach(cb => cb.checked = State.selectedFields.includes('SAS'));
+
+  $('#pilihKolomModal').classList.add('show');
+}
+function closePilihKolom() { $('#pilihKolomModal').classList.remove('show'); }
+
+function applyPilihKolom() {
+  // Ambil semua checkbox yang dicentang
+  const checked = Array.from(document.querySelectorAll('.kolom-cb:checked')).map(cb => cb.value);
+  if (checked.length === 0) {
+    toast('Pilih minimal 1 kolom', 'warn');
+    return;
+  }
+  State.selectedFields = checked;
+  State.fieldType = checked[0];  // backward compat
+  localStorage.setItem('selectedFields', JSON.stringify(checked));
+
+  // Update label tombol
+  updateSelectedFieldsLabel();
+  updateSheetInfoBar();
+  renderView();
+  closePilihKolom();
+  toast(`✓ ${checked.length} kolom dipilih: ${checked.join(', ')}`, 'ok');
+}
+
+function updateSelectedFieldsLabel() {
+  const count = (State.selectedFields || []).length;
+  const label = $('#selectedFieldsLabel');
+  if (!count) {
+    label.textContent = 'Pilih kolom...';
+  } else if (count === 1) {
+    label.textContent = State.selectedFields[0];
+  } else if (count === 22) {
+    label.textContent = '📊 All (22 kolom)';
+  } else {
+    label.textContent = `${count} kolom dipilih`;
+  }
+}
+
+function pilihSemuaKolom() {
+  document.querySelectorAll('.kolom-cb').forEach(cb => cb.checked = true);
+}
+function hapusPilihanKolom() {
+  document.querySelectorAll('.kolom-cb').forEach(cb => cb.checked = false);
+}
+function pilihSumatifOnly() {
+  document.querySelectorAll('.kolom-cb').forEach(cb => {
+    cb.checked = (cb.value === 'STS' || cb.value === 'SAS');
+  });
 }
 
 /* ============================================================
@@ -1901,19 +1973,28 @@ async function deleteSiswaConfirm(row, nama) {
   }
 }
 
-/** Update info bar di atas tabel — menampilkan sheet aktif, jumlah siswa, jenis nilai */
+/** Update info bar di atas tabel — menampilkan sheet aktif, jumlah siswa, kolom terpilih */
 function updateSheetInfoBar() {
   $('#sheetInfoKelas').textContent = State.kelas;
   $('#sheetInfoCount').textContent = State.siswa ? State.siswa.length : 0;
-  $('#sheetInfoField').textContent = State.fieldType;
-  // Hint dinamis sesuai mode fokus
-  const isLM = State.fieldType.startsWith('LM');
-  const hint = isLM
-    ? `Isi nilai ${State.fieldType.replace('_','·')} di kolom kuning. Klik Simpan — formula LM avg & NA auto-refresh.`
-    : State.fieldType === 'STS'
-      ? `Isi nilai STS (0-100) di kolom kuning. Klik Simpan — formula 30% STS, NA, Katrol auto-refresh.`
-      : `Isi nilai SAS (0-100) di kolom kuning. Klik Simpan — formula 40% SAS, NA, Katrol auto-refresh.`;
+  const fieldsCount = (State.selectedFields || []).length;
+  const fieldsLabel = fieldsCount === 0
+    ? '(belum dipilih)'
+    : fieldsCount === 22 ? 'All (22)'
+    : `${fieldsCount} kolom`;
+  $('#sheetInfoField').textContent = fieldsLabel;
+  // Hint dinamis
+  let hint;
+  if (fieldsCount === 0) {
+    hint = 'Klik tombol "Pilih kolom..." untuk memilih kolom nilai yang ingin ditampilkan.';
+  } else if (fieldsCount === 22) {
+    hint = 'Mode ALL — semua kolom nilai ditampilkan. Isi nilai di kolom kuning, lalu klik Simpan Nilai.';
+  } else {
+    hint = `Isi nilai di ${fieldsCount} kolom kuning (input). Klik Simpan — formula NA, Katrol, Rank auto-refresh.`;
+  }
   $('#sheetInfoHint').textContent = hint;
+  // Update label tombol juga
+  updateSelectedFieldsLabel();
 }
 
 /* ============================================================
@@ -1983,11 +2064,14 @@ function bindEvents() {
     updateSheetInfoBar();
     loadData();
   });
-  $('#fieldTypeSelect').addEventListener('change', e => {
-    State.fieldType = e.target.value;
-    updateSheetInfoBar();
-    renderView();
-  });
+  // Pilih Kolom modal (multi-select checkbox)
+  $('#btnPilihKolom').addEventListener('click', openPilihKolom);
+  $('#pilihKolomClose').addEventListener('click', closePilihKolom);
+  $('#pilihKolomApply').addEventListener('click', applyPilihKolom);
+  $('#pilihKolomModal').addEventListener('click', e => { if (e.target.id === 'pilihKolomModal') closePilihKolom(); });
+  $('#btnPilihSemua').addEventListener('click', pilihSemuaKolom);
+  $('#btnHapusPilihan').addEventListener('click', hapusPilihanKolom);
+  $('#btnPilihSumatif').addEventListener('click', pilihSumatifOnly);
 
   $$('.toggle-group button').forEach(b => {
     b.addEventListener('click', () => {
@@ -2017,6 +2101,8 @@ document.addEventListener('DOMContentLoaded', () => {
   bindEvents();
   // Pre-fill API URL field di settings
   $('#cfgApiUrl').value = State.apiUrl;
+  // Init label kolom terpilih
+  updateSelectedFieldsLabel();
   // Auto-test koneksi jika API URL sudah ada
   if (State.apiUrl) {
     setTimeout(testApiConnection, 500);
