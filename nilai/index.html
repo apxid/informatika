@@ -955,11 +955,38 @@ table.rekap .badge {
       <div class="control-stack">
         <label>&nbsp;</label>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="btnKelolaSiswa"><i class="bi bi-person-plus-fill"></i> Kelola Siswa</button>
           <button class="btn btn-warning" id="btnSync"><i class="bi bi-arrow-repeat"></i> Sync Remidi</button>
           <button class="btn btn-success" id="btnSave"><i class="bi bi-save-fill"></i> Simpan Nilai</button>
           <button class="btn btn-ghost" id="btnExport"><i class="bi bi-file-earmark-excel-fill"></i> Export Excel</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- SHEET INFO BAR -->
+  <div style="max-width:1400px; margin:0 auto 12px; padding:0 16px;">
+    <div id="sheetInfoBar" style="
+      background: linear-gradient(135deg, rgba(30,86,160,0.08), rgba(114,191,120,0.08));
+      border: 1px solid rgba(30,86,160,0.15);
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 13px; flex-wrap: wrap;
+    ">
+      <span style="background:var(--blue);color:#fff;padding:4px 10px;border-radius:8px;font-weight:700;">
+        <i class="bi bi-table"></i> Sheet: KELAS<span id="sheetInfoKelas">9A</span>
+      </span>
+      <span style="color:var(--ink-soft);">
+        <i class="bi bi-people-fill"></i> <span id="sheetInfoCount">0</span> siswa
+      </span>
+      <span style="background:var(--green-soft);color:#2c7a3a;padding:4px 10px;border-radius:8px;font-weight:600;">
+        <i class="bi bi-pencil-fill"></i> Sedang input: <span id="sheetInfoField">STS</span>
+      </span>
+      <span style="color:var(--ink-soft);font-size:12px;margin-left:auto;">
+        <i class="bi bi-info-circle"></i> 
+        <span id="sheetInfoHint">Pilih jenis nilai di dropdown, isi nilai di tabel/kartu, lalu klik Simpan Nilai</span>
+      </span>
     </div>
   </div>
 
@@ -1049,6 +1076,46 @@ table.rekap .badge {
     <div class="modal-actions">
       <button class="btn btn-ghost" id="cfgClose"><i class="bi bi-x-lg"></i> Tutup</button>
       <button class="btn btn-success" id="cfgSave"><i class="bi bi-save-fill"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     KELOLA SISWA MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="kelolaSiswaModal">
+  <div class="modal" style="max-width:560px;">
+    <h3><i class="bi bi-people-fill"></i> Kelola Siswa — Kelas <span id="kelolaKelasLabel">9A</span></h3>
+    <p class="sub">Tambah atau hapus siswa di sheet KELAS<span id="kelolaKelasLabel2">9A</span>. Maksimal 32 siswa per kelas.</p>
+
+    <!-- Form tambah siswa -->
+    <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+      <input type="number" id="newSiswaNo" placeholder="No (auto)" min="1" max="99"
+        style="flex:0 0 90px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font-size:14px;" />
+      <input type="text" id="newSiswaNama" placeholder="Nama siswa lengkap..."
+        style="flex:1; min-width:200px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font-size:14px;" />
+      <button class="btn btn-success" id="btnAddSiswa"><i class="bi bi-plus-lg"></i> Tambah</button>
+    </div>
+
+    <!-- Daftar siswa -->
+    <div style="max-height:320px; overflow-y:auto; border:1px solid var(--line); border-radius:10px;">
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead style="position:sticky; top:0; background:var(--blue-dark); color:#fff; z-index:1;">
+          <tr>
+            <th style="padding:8px; text-align:center; width:50px;">No</th>
+            <th style="padding:8px; text-align:left;">Nama Siswa</th>
+            <th style="padding:8px; text-align:center; width:60px;">Baris</th>
+            <th style="padding:8px; text-align:center; width:80px;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="kelolaSiswaList">
+          <tr><td colspan="4" style="padding:20px; text-align:center; color:var(--ink-soft);">Memuat data siswa...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="kelolaClose"><i class="bi bi-x-lg"></i> Tutup</button>
     </div>
   </div>
 </div>
@@ -1331,10 +1398,12 @@ async function loadData() {
     if (!r.success) { toast(r.error || 'Gagal memuat data', 'err'); return; }
     State.siswa = r.siswa || [];
     renderView();
+    updateSheetInfoBar();
     updateDashboard();
   } catch (e) {
     State.siswa = [];
     renderView();
+    updateSheetInfoBar();
     toast('Gagal memuat siswa: ' + e.message, 'err');
   }
 }
@@ -1494,25 +1563,25 @@ function renderTable() {
     const rank = s.rank || '-';
     const validasi = s.validasi || '';
 
-    // TP cells C-V (20 nilai) — editable jika fieldType sesuai
+    // TP cells C-V (20 nilai) — editable jika fieldType sesuai, kolom aktif di-highlight
     const tpCells = (s.tp || []).map((v, idx) => {
       const isActive = isLM && idx === activeTpIdx;
       if (isActive) {
-        return `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${fieldType}" value="${v ?? ''}" /></td>`;
+        return `<td style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="${fieldType}" value="${v ?? ''}" style="background:#fff; border:1px solid #FFC93C; font-weight:700;" /></td>`;
       }
-      return `<td>${v ?? '-'}</td>`;
+      return `<td style="${v ? '' : 'color:#bbb;'}">${v ?? '-'}</td>`;
     }).join('');
 
     // LM avg cells W-AA
     const lmCells = (s.lm || []).map(v => `<td>${v ?? '-'}</td>`).join('');
 
-    // STS / SAS cells (editable jika fieldType sesuai)
+    // STS / SAS cells (editable jika fieldType sesuai, di-highlight kuning)
     const stsCell = (fieldType === 'STS')
-      ? `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" /></td>`
-      : `<td>${s.stsRaw ?? '-'}</td>`;
+      ? `<td style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="STS" value="${s.stsRaw ?? ''}" style="background:#fff; border:1px solid #FFC93C; font-weight:700;" /></td>`
+      : `<td style="${s.stsRaw ? '' : 'color:#bbb;'}">${s.stsRaw ?? '-'}</td>`;
     const sasCell = (fieldType === 'SAS')
-      ? `<td><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" /></td>`
-      : `<td>${s.sasRaw ?? '-'}</td>`;
+      ? `<td style="background:#FFF6D6; box-shadow: inset 0 0 0 2px #FFC93C;"><input type="number" min="0" max="100" class="tbl-input" data-row="${s.row}" data-field="SAS" value="${s.sasRaw ?? ''}" style="background:#fff; border:1px solid #FFC93C; font-weight:700;" /></td>`
+      : `<td style="${s.sasRaw ? '' : 'color:#bbb;'}">${s.sasRaw ?? '-'}</td>`;
 
     // TP status cells AK-AO
     const tpStatusCells = (s.tpStatus || []).map(st => {
@@ -1653,6 +1722,109 @@ async function exportExcel() {
 }
 
 /* ============================================================
+   KELOLA SISWA (TAMBAH / HAPUS)
+   ============================================================ */
+function openKelolaSiswa() {
+  $('#kelolaKelasLabel').textContent  = State.kelas;
+  $('#kelolaKelasLabel2').textContent = State.kelas;
+  $('#kelolaSiswaModal').classList.add('show');
+  loadKelolaSiswaList();
+}
+function closeKelolaSiswa() { $('#kelolaSiswaModal').classList.remove('show'); }
+
+async function loadKelolaSiswaList() {
+  const tbody = $('#kelolaSiswaList');
+  tbody.innerHTML = '<tr><td colspan="4" style="padding:20px;text-align:center;color:var(--ink-soft);"><span class="spinner dark"></span> Memuat...</td></tr>';
+  try {
+    const r = await api('getListSiswa', { kelas: State.kelas });
+    if (!r.success) {
+      tbody.innerHTML = `<tr><td colspan="4" style="padding:20px;text-align:center;color:#B23B3B;">${escapeHtml(r.error||'Gagal memuat')}</td></tr>`;
+      return;
+    }
+    if (!r.siswa || r.siswa.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--ink-soft);"><i class="bi bi-inbox" style="font-size:32px;display:block;margin-bottom:8px;"></i>Belum ada siswa.<br>Gunakan form di atas untuk menambah.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = r.siswa.map(s => `
+      <tr style="border-bottom:1px solid var(--line-soft);">
+        <td style="padding:8px; text-align:center; font-weight:700;">${s.no}</td>
+        <td style="padding:8px; text-align:left;">${escapeHtml(s.nama)}</td>
+        <td style="padding:8px; text-align:center; color:var(--ink-soft); font-size:11px;">${s.row}</td>
+        <td style="padding:8px; text-align:center;">
+          <button class="btn-icon danger" data-row="${s.row}" data-nama="${escapeHtml(s.nama)}" title="Hapus siswa" style="width:30px;height:30px;font-size:12px;">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+    // Bind tombol hapus
+    tbody.querySelectorAll('button[data-row]').forEach(btn => {
+      btn.addEventListener('click', () => deleteSiswaConfirm(parseInt(btn.dataset.row,10), btn.dataset.nama));
+    });
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:20px;text-align:center;color:#B23B3B;">Error: ${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+async function addSiswa() {
+  const nama = $('#newSiswaNama').value.trim();
+  const no = $('#newSiswaNo').value.trim();
+  if (!nama) { toast('Nama siswa wajib diisi', 'warn'); return; }
+  const btn = $('#btnAddSiswa');
+  const old = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  try {
+    const r = await api('addSiswa', { kelas: State.kelas, nama: nama, no: no || undefined });
+    if (r.success) {
+      toast('✓ ' + r.message, 'ok');
+      $('#newSiswaNama').value = '';
+      $('#newSiswaNo').value = '';
+      await loadKelolaSiswaList();
+      await loadData(); // refresh tabel utama
+    } else {
+      toast(r.error || 'Gagal tambah siswa', 'err');
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 'err');
+  } finally {
+    btn.innerHTML = old;
+    btn.disabled = false;
+  }
+}
+
+async function deleteSiswaConfirm(row, nama) {
+  if (!confirm(`Hapus siswa "${nama}" (baris ${row})?\nData nilai siswa ini juga akan dihapus.`)) return;
+  try {
+    const r = await api('deleteSiswa', { kelas: State.kelas, row: row });
+    if (r.success) {
+      toast('✓ ' + r.message, 'ok');
+      await loadKelolaSiswaList();
+      await loadData();
+    } else {
+      toast(r.error || 'Gagal hapus', 'err');
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 'err');
+  }
+}
+
+/** Update info bar di atas tabel — menampilkan sheet aktif, jumlah siswa, jenis nilai */
+function updateSheetInfoBar() {
+  $('#sheetInfoKelas').textContent = State.kelas;
+  $('#sheetInfoCount').textContent = State.siswa ? State.siswa.length : 0;
+  $('#sheetInfoField').textContent = State.fieldType;
+  // Hint dinamis
+  const isLM = State.fieldType.startsWith('LM');
+  const hint = isLM
+    ? `Input nilai TP ke kolom C-V (formatif). Lalu klik Simpan — formula LM avg, NA, Katrol auto-refresh.`
+    : State.fieldType === 'STS'
+      ? `Input nilai STS (0-100) di kolom AC. Klik Simpan — formula 30% STS, NA, Katrol auto-refresh.`
+      : `Input nilai SAS (0-100) di kolom AE. Klik Simpan — formula 40% SAS, NA, Katrol auto-refresh.`;
+  $('#sheetInfoHint').textContent = hint;
+}
+
+/* ============================================================
    SETTINGS
    ============================================================ */
 function openSettings() {
@@ -1716,10 +1888,12 @@ function bindEvents() {
   $('#kelasSelect').addEventListener('change', e => {
     State.kelas = e.target.value;
     localStorage.setItem('kelas', State.kelas);
+    updateSheetInfoBar();
     loadData();
   });
   $('#fieldTypeSelect').addEventListener('change', e => {
     State.fieldType = e.target.value;
+    updateSheetInfoBar();
     renderView();
   });
 
@@ -1735,6 +1909,13 @@ function bindEvents() {
   $('#btnSync').addEventListener('click', syncRemidi);
   $('#btnSave').addEventListener('click', saveNilai);
   $('#btnExport').addEventListener('click', exportExcel);
+
+  // Kelola Siswa
+  $('#btnKelolaSiswa').addEventListener('click', openKelolaSiswa);
+  $('#kelolaClose').addEventListener('click', closeKelolaSiswa);
+  $('#kelolaSiswaModal').addEventListener('click', e => { if (e.target.id === 'kelolaSiswaModal') closeKelolaSiswa(); });
+  $('#btnAddSiswa').addEventListener('click', addSiswa);
+  $('#newSiswaNama').addEventListener('keydown', e => { if (e.key === 'Enter') addSiswa(); });
 }
 
 /* ============================================================
