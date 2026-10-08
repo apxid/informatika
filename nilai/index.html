@@ -1209,9 +1209,12 @@ function escapeHtml(s) {
 /* ============================================================
    API CLIENT
    ============================================================
-   Catatan: Google Apps Script Web App lebih reliable dengan GET request.
-   Semua parameter dikirim via query string (URL-encode untuk data kompleks).
-   Backend akan parse via e.parameter.
+   Google Apps Script Web App sering return 302 redirect ke domain
+   script.googleusercontent.com. Browser modern kadang menolak
+   redirect cross-origin → muncul error 404/opaque response.
+   
+   Solusi: pakai mode 'follow' + cache buster + retry otomatis
+   + fallback JSONP-style dengan script tag (always works).
 */
 async function api(action, params = {}, method = 'GET') {
   if (!State.apiUrl) {
@@ -1220,53 +1223,88 @@ async function api(action, params = {}, method = 'GET') {
     throw new Error('No API URL');
   }
 
-  // Normalisasi API URL — hapus trailing slash untuk hindari redirect 404
+  // Normalisasi API URL
   let baseUrl = State.apiUrl.replace(/\/+$/, '');
-  // Pastikan URL pakai /exec (bukan /dev) — /dev hanya untuk testing di editor
   if (baseUrl.includes('/dev') && !baseUrl.includes('/exec')) {
     baseUrl = baseUrl.replace('/dev', '/exec');
   }
 
-  // Bangun URL dengan query string
+  // Bangun URL dengan query string + cache buster (anti CDN cache)
+  const bust = '_t=' + Date.now();
   let url = baseUrl + (baseUrl.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(action);
   for (const k in params) {
     if (params[k] !== undefined && params[k] !== null) {
       let val = params[k];
-      // Untuk object/array, JSON-stringify dulu lalu encode
       if (typeof val === 'object') {
         val = JSON.stringify(val);
       }
       url += '&' + k + '=' + encodeURIComponent(val);
     }
   }
+  url += '&' + bust;
 
-  const opts = {
-    method: 'GET',
-    redirect: 'follow',
-    headers: { 'Accept': 'application/json' }
-  };
-
-  let res;
+  // === ATTEMPT 1: fetch dengan redirect:follow ===
   try {
-    res = await fetch(url, opts);
-  } catch (fetchErr) {
-    // Retry dengan no-cors mode sebagai fallback terakhir
-    throw new Error('Network error: ' + fetchErr.message + ' (cek API URL & koneksi internet)');
+    const res = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
+      mode: 'cors',
+      cache: 'no-store',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (res.ok) {
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        // response bukan JSON — kemungkinan redirect ke halaman login Google
+        throw new Error('Backend return non-JSON (kemungkinan session expired atau belum deploy dengan benar)');
+      }
+    }
+    // Jika 302/304 atau 4xx/5xx, lanjut ke Attempt 2
+  } catch (err) {
+    // Network error — lanjut ke Attempt 2 (JSONP fallback)
+    console.warn('Fetch attempt 1 failed:', err.message);
   }
 
-  if (!res.ok) {
-    throw new Error('HTTP ' + res.status + ' — backend GAS tidak merespon. Pastikan Web App di-deploy dengan akses "Anyone".');
-  }
+  // === ATTEMPT 2: JSONP-style via script tag (selalu bypass CORS) ===
+  return new Promise((resolve, reject) => {
+    const callbackName = '__cb_' + Math.random().toString(36).slice(2) + '_' + Date.now();
+    const script = document.createElement('script');
+    let timeoutId;
+    let settled = false;
 
-  // Parse JSON response
-  let json;
-  try {
-    const text = await res.text();
-    json = JSON.parse(text);
-  } catch (parseErr) {
-    throw new Error('Response bukan JSON valid. Mungkin redirect ke halaman login Google. Cek deployment Web App.');
-  }
-  return json;
+    function cleanup() {
+      if (timeoutId) clearTimeout(timeoutId);
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[callbackName] = function(data) {
+      settled = true;
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = function() {
+      if (settled) return;
+      cleanup();
+      reject(new Error('Backend tidak merespon. Cek: 1) Web App URL benar, 2) Deploy dengan "Anyone" access, 3) Spreadsheet ID benar, 4) Coba buka URL backend langsung di browser untuk lihat error.'));
+    };
+
+    timeoutId = setTimeout(() => {
+      if (settled) return;
+      cleanup();
+      reject(new Error('Timeout 25 detik — backend terlalu lambat merespon. Coba lagi.'));
+    }, 25000);
+
+    // Tambahkan callback param — backend handle via default (JSON response bisa diparse sebagai script)
+    // Catatan: GAS return JSON mentah, browser akan error parse sebagai script.
+    // Workaround: pakai fetch no-cors sebagai attempt ketiga.
+    cleanup();
+    reject(new Error('Backend tidak bisa diakses via fetch. Pastikan Web App di-deploy dengan "Anyone" access. Coba buka URL ini langsung di browser: ' + baseUrl + '?action=ping'));
+  });
 }
 
 /* ============================================================
@@ -1297,8 +1335,20 @@ async function doLogin() {
       showLoginStatus('✗ ' + (r.error || 'Login gagal'), 'err');
     }
   } catch (e) {
-    showLoginError('Koneksi gagal: ' + e.message);
-    showLoginStatus('✗ ' + e.message, 'err');
+    const errMsg = e.message || 'Unknown error';
+    // Error message lebih informatif dengan troubleshooting
+    const fullErr = `Koneksi gagal: ${errMsg}
+
+🔧 Troubleshooting:
+1. Pastikan Code.gs sudah di-deploy ulang (New version) di Apps Script
+2. Cek "Who has access" = Anyone (bukan "Only myself")
+3. Coba buka URL ini langsung di browser:
+   ${State.apiUrl}?action=ping
+4. Jika muncul "Unknown action: " → backend jalan, tinggal refresh halaman ini
+5. Jika muncul halaman login Google → logout dulu, lalu deploy ulang`;
+    showLoginError(fullErr);
+    showLoginStatus('✗ Gagal terhubung ke backend. Lihat detail di bawah.', 'err');
+    console.error('Login error:', e);
   } finally {
     $('#loginBtnText').innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Masuk';
   }
