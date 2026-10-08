@@ -73,113 +73,340 @@ body {
 }
 
 /* ============================================================
-   LOGIN SCREEN
+   LOGIN SCREEN — STYLISH ANIMATED v2.0
    ============================================================ */
 #loginScreen {
   position: fixed; inset: 0; z-index: 50;
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
-  background:
-    radial-gradient(800px 400px at 80% 20%, rgba(168,230,207,0.55), transparent 60%),
-    radial-gradient(700px 400px at 20% 80%, rgba(30,86,160,0.45), transparent 60%),
-    linear-gradient(135deg, #0D3B66 0%, #1E56A0 60%, #72BF78 130%);
+  background: linear-gradient(135deg, #0D3B66 0%, #1E56A0 50%, #72BF78 130%);
+  background-size: 200% 200%;
+  animation: gradientShift 18s ease infinite;
   overflow: hidden;
 }
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Animated floating orbs background */
 #loginScreen::before {
   content: ""; position: absolute; inset: 0;
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 0 2px, transparent 2px),
-    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.08) 0 3px, transparent 3px),
-    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.06) 0 1px, transparent 1px);
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.18) 0 2px, transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.14) 0 3px, transparent 3px),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.10) 0 1px, transparent 1px);
   background-size: 60px 60px, 90px 90px, 40px 40px;
   pointer-events: none;
+  animation: twinkle 8s ease-in-out infinite alternate;
 }
+@keyframes twinkle {
+  0%   { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Floating orbs (animated colored circles) */
+.login-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+.login-orb.o1 {
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, #FFC93C, transparent 70%);
+  top: -80px; left: -80px;
+  animation: float1 14s ease-in-out infinite;
+}
+.login-orb.o2 {
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, #A8E6CF, transparent 70%);
+  bottom: -100px; right: -100px;
+  animation: float2 16s ease-in-out infinite;
+}
+.login-orb.o3 {
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, #72BF78, transparent 70%);
+  top: 40%; right: -60px;
+  animation: float3 12s ease-in-out infinite;
+}
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(40px, 60px) scale(1.15); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-50px, -40px) scale(1.1); }
+}
+@keyframes float3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-30px, 30px) scale(0.9); }
+}
+
+/* Login card */
 .login-card {
   position: relative;
-  width: 100%; max-width: 420px;
+  width: 100%; max-width: 440px;
   background: var(--glass-bg-strong);
-  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid var(--glass-border);
   border-radius: var(--r-xl);
-  box-shadow: var(--glass-shadow);
-  padding: 36px 32px;
-  animation: pop .35s cubic-bezier(.2,.7,.3,1.2);
+  box-shadow:
+    0 20px 60px rgba(13,59,102,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  padding: 40px 36px 32px;
+  animation: cardEnter .6s cubic-bezier(.2,.7,.3,1.2);
+  z-index: 1;
 }
-@keyframes pop {
-  0%   { opacity: 0; transform: translateY(20px) scale(.96); }
+@keyframes cardEnter {
+  0%   { opacity: 0; transform: translateY(40px) scale(.92); }
+  60%  { opacity: 1; transform: translateY(-4px) scale(1.02); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* Animated glow border around card */
+.login-card::before {
+  content: ""; position: absolute; inset: -2px;
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, #FFC93C, #72BF78, #1E56A0, #FFC93C);
+  background-size: 300% 300%;
+  z-index: -1;
+  animation: borderGlow 6s linear infinite;
+  opacity: 0.6;
+  filter: blur(2px);
+}
+@keyframes borderGlow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* Logo with pulse animation */
 .login-logo {
-  width: 76px; height: 76px;
-  margin: 0 auto 16px;
-  border-radius: 22px;
+  width: 90px; height: 90px;
+  margin: 0 auto 18px;
+  border-radius: 24px;
   background: linear-gradient(135deg, var(--blue) 0%, var(--green) 100%);
   display: grid; place-items: center;
-  color: #fff; font-size: 36px;
-  box-shadow: 0 8px 20px rgba(30,86,160,0.35);
+  color: #fff; font-size: 42px;
+  box-shadow:
+    0 12px 28px rgba(30,86,160,0.45),
+    0 0 0 0 rgba(255,201,60,0.5);
+  position: relative;
+  overflow: hidden;
+  animation: logoPulse 2.5s ease-in-out infinite;
 }
+@keyframes logoPulse {
+  0%, 100% {
+    box-shadow: 0 12px 28px rgba(30,86,160,0.45), 0 0 0 0 rgba(255,201,60,0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 12px 28px rgba(30,86,160,0.45), 0 0 0 14px rgba(255,201,60,0);
+    transform: scale(1.05);
+  }
+}
+/* Logo shine effect */
+.login-logo::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%);
+  transform: translateX(-100%);
+  animation: shine 3.5s ease-in-out infinite;
+}
+@keyframes shine {
+  0%, 100% { transform: translateX(-100%); }
+  50%      { transform: translateX(100%); }
+}
+
 .login-title {
   text-align: center;
   font-family: var(--font-head); font-weight: 800;
-  font-size: 22px; line-height: 1.2; margin: 0 0 4px;
+  font-size: 26px; line-height: 1.2; margin: 0 0 4px;
   color: var(--blue-dark);
+  animation: fadeInDown .6s .2s both;
 }
 .login-sub {
   text-align: center; color: var(--ink-soft);
-  font-size: 13px; margin: 0 0 24px;
+  font-size: 13px; margin: 0 0 28px;
+  animation: fadeInDown .6s .35s both;
 }
-.field { position: relative; margin-bottom: 14px; }
+@keyframes fadeInDown {
+  0%   { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Input fields with glow focus */
+.field {
+  position: relative;
+  margin-bottom: 16px;
+  animation: fadeInUp .6s .4s both;
+}
+.field:nth-child(2) { animation-delay: .5s; }
+.field:nth-child(3) { animation-delay: .6s; }
+@keyframes fadeInUp {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 .field i {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  color: var(--blue); font-size: 16px;
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  color: var(--blue); font-size: 17px;
+  transition: color .2s, transform .2s;
 }
 .field input {
   width: 100%;
-  padding: 14px 14px 14px 42px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,0.85);
-  font-size: 14px; color: var(--ink);
+  padding: 15px 16px 15px 46px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line);
+  background: rgba(255,255,255,0.92);
+  font-size: 14.5px; color: var(--ink);
   font-family: var(--font-body);
-  transition: border-color .15s, box-shadow .15s;
+  transition: all .2s ease;
 }
+.field input::placeholder { color: #999; }
 .field input:focus {
-  outline: none; border-color: var(--blue);
-  box-shadow: 0 0 0 4px rgba(30,86,160,0.12);
+  outline: none;
+  border-color: var(--green);
+  background: #fff;
+  box-shadow:
+    0 0 0 4px rgba(114,191,120,0.18),
+    0 4px 12px rgba(114,191,120,0.15);
+  transform: translateY(-1px);
 }
+.field input:focus + i,
+.field:focus-within i {
+  color: var(--green);
+  transform: translateY(-50%) scale(1.15);
+}
+
+/* Login button with shine & ripple */
 .btn-login {
-  width: 100%; padding: 14px;
-  border: 0; border-radius: var(--r-md);
+  position: relative;
+  width: 100%; padding: 15px;
+  border: 0; border-radius: 14px;
   background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
-  color: #fff; font-weight: 700; font-size: 15px;
+  color: #fff; font-weight: 700; font-size: 15.5px;
   font-family: var(--font-body); cursor: pointer;
-  box-shadow: 0 8px 18px rgba(13,59,102,0.28);
-  transition: transform .15s, box-shadow .15s;
+  box-shadow:
+    0 10px 22px rgba(13,59,102,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: transform .15s, box-shadow .2s;
+  overflow: hidden;
+  animation: fadeInUp .6s .75s both;
 }
-.btn-login:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(13,59,102,0.32); }
+.btn-login::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform .6s;
+}
+.btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 28px rgba(13,59,102,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.btn-login:hover::before { transform: translateX(100%); }
 .btn-login:active { transform: translateY(0); }
+.btn-login:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+
 .login-error {
-  margin-top: 12px; padding: 10px 12px;
+  margin-top: 14px; padding: 11px 14px;
   background: #FDECEC; color: #B23B3B; border: 1px solid #F4C7C7;
-  border-radius: 10px; font-size: 13px; text-align: center;
+  border-radius: 12px; font-size: 13px; text-align: center;
   display: none;
+  animation: shakeError .5s;
+}
+@keyframes shakeError {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
 }
 .login-foot {
-  margin-top: 18px; text-align: center;
-  font-size: 11px; color: var(--ink-soft);
+  margin-top: 22px; text-align: center;
+  font-size: 12px; color: var(--ink-soft);
+  animation: fadeInUp .6s .9s both;
 }
+.login-foot a {
+  color: var(--blue); text-decoration: none;
+  font-weight: 600;
+  transition: color .15s;
+}
+.login-foot a:hover { color: var(--green); text-decoration: underline; }
 .login-status {
-  margin-top: 10px; padding: 8px 12px;
-  border-radius: 10px; font-size: 12px; text-align: center;
+  margin-top: 12px; padding: 10px 14px;
+  border-radius: 12px; font-size: 12.5px; text-align: center;
   background: #E8F4FD; color: var(--blue-dark);
   border: 1px solid #B6D4F0;
   display: none;
+  animation: fadeInUp .3s;
 }
 .login-status.ok { background: #E5F7E9; color: #2c7a3a; border-color: #A8E6CF; }
 .login-status.err { background: #FDECEC; color: #B23B3B; border-color: #F4C7C7; }
 .login-status.show { display: block; }
-.login-card .field input::placeholder { color: #999; font-size: 13px; }
+
+/* FOOTER ABOUT */
+.app-footer {
+  margin-top: 24px; padding: 16px 0;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+.about-btn {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--line);
+  color: var(--blue-dark);
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 12.5px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: background .15s, transform .15s;
+}
+.about-btn:hover {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(13,59,102,0.10);
+}
+.about-btn i { font-size: 14px; color: var(--blue); }
+
+/* ABOUT MODAL */
+.about-logo {
+  width: 80px; height: 80px;
+  margin: 0 auto 14px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--green) 100%);
+  display: grid; place-items: center;
+}
+.about-logo img {
+  width: 100%; height: 100%; object-fit: contain;
+}
+.about-info {
+  margin-top: 14px;
+  display: grid; gap: 10px;
+}
+.about-info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.about-info-row .lbl {
+  font-size: 11px; font-weight: 700;
+  color: var(--ink-soft); text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.about-info-row .val {
+  font-size: 14px; font-weight: 600; color: var(--blue-dark);
+}
+.about-info-row .val a {
+  color: var(--blue); text-decoration: none;
+}
+.about-info-row .val a:hover { text-decoration: underline; }
 
 /* ============================================================
    APP LAYOUT
@@ -616,15 +843,16 @@ table.rekap .badge {
      LOGIN SCREEN
      ============================================================ -->
 <div id="loginScreen">
+  <div class="login-orb o1"></div>
+  <div class="login-orb o2"></div>
+  <div class="login-orb o3"></div>
   <div class="login-card">
-    <div class="login-logo"><i class="bi bi-mortarboard-fill"></i></div>
+    <div class="login-logo">
+      <img src="https://apxid.github.io/informatika/assets/Logo_SIREVA.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:18px;" onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'bi bi-mortarboard-fill\'></i>'" />
+    </div>
     <h1 class="login-title">e-Rapor Informatika</h1>
     <p class="login-sub">Aplikasi Pengolahan Nilai Siswa — Kelas 9</p>
 
-    <div class="field">
-      <i class="bi bi-link-45deg"></i>
-      <input type="text" id="loginApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzy_Qmp3jRP7nT7rR6WGetB5ORm2SVg1wDnpd7KNUqEr67YVxTDg8WJbVlEluNdb7EQSA/exec" autocomplete="off" />
-    </div>
     <div class="field">
       <i class="bi bi-person-fill"></i>
       <input type="text" id="loginUser" placeholder="Username Admin" autocomplete="username" />
@@ -638,7 +866,9 @@ table.rekap .badge {
     </button>
     <div class="login-error" id="loginError"></div>
     <div class="login-status" id="loginStatus"></div>
-    <div class="login-foot">v1.1 · Decoupled GAS + GitHub Pages</div>
+    <div class="login-foot">
+      <a href="#" id="aboutLinkLogin">About e-Rapor V 1.10</a>
+    </div>
   </div>
 </div>
 
@@ -778,6 +1008,13 @@ table.rekap .badge {
         </table>
       </div>
     </div>
+
+    <!-- FOOTER ABOUT -->
+    <footer class="app-footer">
+      <button class="about-btn" id="aboutLinkApp">
+        <i class="bi bi-info-circle-fill"></i> About e-Rapor V 1.10
+      </button>
+    </footer>
   </div>
 </div>
 
@@ -791,7 +1028,7 @@ table.rekap .badge {
 
     <div class="field-group">
       <label>API URL (Google Apps Script Web App)</label>
-      <input type="text" id="cfgApiUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+      <input type="text" id="cfgApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzy_Qmp3jRP7nT7rR6WGetB5ORm2SVg1wDnpd7KNUqEr67YVxTDg8WJbVlEluNdb7EQSA/exec" />
     </div>
 
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
@@ -816,6 +1053,42 @@ table.rekap .badge {
   </div>
 </div>
 
+<!-- ============================================================
+     ABOUT MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="aboutModal">
+  <div class="modal">
+    <div class="about-logo">
+      <img src="https://apxid.github.io/informatika/assets/Logo_SIREVA.png" alt="Logo e-Rapor" onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'bi bi-mortarboard-fill\' style=\'font-size:36px;color:#fff\'></i>'" />
+    </div>
+    <h3 style="text-align:center;">e-Rapor</h3>
+    <p class="sub" style="text-align:center;">Aplikasi Pengolahan Nilai Siswa</p>
+
+    <div class="about-info">
+      <div class="about-info-row">
+        <span class="lbl"><i class="bi bi-app-indicator"></i> Nama Aplikasi</span>
+        <span class="val">e-Rapor</span>
+      </div>
+      <div class="about-info-row">
+        <span class="lbl"><i class="bi bi-tag-fill"></i> Versi</span>
+        <span class="val">1.0</span>
+      </div>
+      <div class="about-info-row">
+        <span class="lbl"><i class="bi bi-calendar3-fill"></i> Build</span>
+        <span class="val">6 Oktober 2026</span>
+      </div>
+      <div class="about-info-row">
+        <span class="lbl"><i class="bi bi-envelope-fill"></i> Contact</span>
+        <span class="val"><a href="mailto:yanuar.b@gmail.com">yanuar.b@gmail.com</a></span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="aboutClose"><i class="bi bi-check-lg"></i> Tutup</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast"></div>
 
@@ -824,7 +1097,9 @@ table.rekap .badge {
    STATE
    ============================================================ */
 const State = {
-  apiUrl: localStorage.getItem('apiUrl') || '',
+  // API URL default hardcode — user tidak perlu set manual.
+  // Bisa di-override via Settings (tombol gear) jika perlu ganti backend.
+  apiUrl: localStorage.getItem('apiUrl') || 'https://script.google.com/macros/s/AKfycbzy_Qmp3jRP7nT7rR6WGetB5ORm2SVg1wDnpd7KNUqEr67YVxTDg8WJbVlEluNdb7EQSA/exec',
   token:  localStorage.getItem('token')  || '',
   user:   localStorage.getItem('user')   || '',
   kelas:  localStorage.getItem('kelas')  || '9A',
@@ -833,6 +1108,10 @@ const State = {
   siswa: [],
   config: {}
 };
+// Simpan API URL default ke localStorage agar konsisten
+if (!localStorage.getItem('apiUrl')) {
+  localStorage.setItem('apiUrl', State.apiUrl);
+}
 
 /* ============================================================
    UTILITIES
@@ -929,15 +1208,8 @@ async function api(action, params = {}, method = 'GET') {
 async function doLogin() {
   const user = $('#loginUser').value.trim();
   const pass = $('#loginPass').value;
-  // Ambil API URL dari field login (jika diisi), fallback ke localStorage
-  const inputApiUrl = $('#loginApiUrl').value.trim();
-  if (inputApiUrl) {
-    State.apiUrl = inputApiUrl;
-    localStorage.setItem('apiUrl', inputApiUrl);
-  }
-
   if (!State.apiUrl) {
-    showLoginError('API URL wajib diisi. Paste URL Web App Google Apps Script Anda di field pertama.');
+    showLoginError('API URL belum dikonfigurasi. Klik "About e-Rapor" untuk info, lalu hubungi admin atau set API URL via pengaturan (tombol gear di kanan atas setelah login).');
     return;
   }
   if (!user || !pass) { showLoginError('Username & password wajib diisi'); return; }
@@ -965,24 +1237,16 @@ async function doLogin() {
   }
 }
 
-/** Test koneksi backend saat user selesai isi API URL */
+/** Test koneksi backend saat halaman load (jika API URL sudah ada di localStorage) */
 async function testApiConnection() {
-  const url = $('#loginApiUrl').value.trim();
-  if (!url) {
-    $('#loginStatus').classList.remove('show');
-    return;
-  }
-  showLoginStatus('Menguji koneksi backend...', '');
+  if (!State.apiUrl) return;
   try {
-    State.apiUrl = url;
     const r = await api('ping');
     if (r.success && r.message === 'pong') {
       showLoginStatus('✓ Backend terhubung. Silakan login.', 'ok');
-    } else {
-      showLoginStatus('⚠ Backend merespon tapi format tidak dikenal', 'err');
     }
   } catch (e) {
-    showLoginStatus('✗ Backend tidak terjangkau: ' + e.message, 'err');
+    showLoginStatus('✗ Backend tidak terjangkau. Set API URL via Settings.', 'err');
   }
 }
 
@@ -1003,6 +1267,12 @@ function showLoginStatus(msg, type) {
   }
 }
 
+/** Buka modal About */
+function openAbout() {
+  $('#aboutModal').classList.add('show');
+}
+function closeAbout() { $('#aboutModal').classList.remove('show'); }
+
 function doLogout() {
   State.token = ''; State.user = '';
   localStorage.removeItem('token');
@@ -1010,8 +1280,6 @@ function doLogout() {
   $('#app').classList.remove('show');
   $('#loginScreen').style.display = 'flex';
   $('#loginPass').value = '';
-  // Pre-fill API URL agar user tidak perlu isi lagi
-  $('#loginApiUrl').value = State.apiUrl || '';
 }
 
 function enterApp() {
@@ -1432,8 +1700,12 @@ function bindEvents() {
   $('#btnLogin').addEventListener('click', doLogin);
   $('#loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   $('#loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginPass').focus(); });
-  $('#loginApiUrl').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginUser').focus(); });
-  $('#loginApiUrl').addEventListener('blur', testApiConnection);
+
+  // About modal — bisa dari halaman login & dari footer aplikasi
+  $('#aboutLinkLogin').addEventListener('click', e => { e.preventDefault(); openAbout(); });
+  $('#aboutLinkApp').addEventListener('click', openAbout);
+  $('#aboutClose').addEventListener('click', closeAbout);
+  $('#aboutModal').addEventListener('click', e => { if (e.target.id === 'aboutModal') closeAbout(); });
 
   $('#btnLogout').addEventListener('click', doLogout);
   $('#btnSettings').addEventListener('click', openSettings);
@@ -1470,9 +1742,8 @@ function bindEvents() {
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   bindEvents();
-  // Pre-fill API URL field di login dan di settings
+  // Pre-fill API URL field di settings
   $('#cfgApiUrl').value = State.apiUrl;
-  $('#loginApiUrl').value = State.apiUrl;
   // Auto-test koneksi jika API URL sudah ada
   if (State.apiUrl) {
     setTimeout(testApiConnection, 500);
