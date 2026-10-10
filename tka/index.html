@@ -472,13 +472,15 @@
         activeDownloadUrl = data.downloadUrl;
 
         if (!activeFileUrl) {
-          throw new Error("File PDF untuk siswa ini belum siap atau ID file di spreadsheet kosong.");
+          throw new Error("URL file PDF untuk siswa ini belum siap.");
         }
 
         $("namaSiswa").textContent = data.namaSiswa || "Siswa TKA";
         $("kelasSiswa").textContent = data.kelas || "-";
-        $("namaFile").textContent = data.namaFile || "Hasil_Try_Out_TKA.pdf";
+        $("namaFile").textContent = data.namaFile || (nisn + ".pdf");
 
+        // Langsung tampilkan URL PDF di iframe
+        $("pdfViewer.src") = activeFileUrl;
         $("pdfViewer").src = activeFileUrl;
 
         $("pesan1").textContent = "";
@@ -508,8 +510,7 @@
 
     $("btnUnduh").addEventListener("click", function () {
       if (!activeDownloadUrl) return;
-      const downloadUrl = activeDownloadUrl.replace("export=view", "export=download");
-      window.open(downloadUrl, "_blank");
+      window.open(activeDownloadUrl, "_blank");
     });
 
     $("btnKembali").addEventListener("click", function () {
