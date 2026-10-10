@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0a192f;
-            --primary-blue: #112240;
-            --accent-yellow: #facc15; /* Kuning OSIS SMP */
-            --accent-green: #4ade80;  /* Hijau Muda Stabillo */
-            --text-white: #ffffff;
-            --text-gray: #94a3b8;
-            --glass-bg: rgba(17, 34, 64, 0.75);
-            --glass-border: rgba(250, 204, 21, 0.25);
+            --bg-gradient: linear-gradient(135deg, #f0f4ff 0%, #e2e8f0 50%, #f8fafc 100%);
+            --primary-blue: #0284c7;  /* Biru Cerah Modern */
+            --accent-yellow: #ca8a04; /* Kuning Emas OSIS */
+            --accent-green: #16a34a;  /* Hijau Segar */
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(2, 132, 199, 0.25);
         }
 
         * {
@@ -27,8 +27,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, #050b14 0%, #0a192f 50%, #112240 100%);
-            color: var(--text-white);
+            background: var(--bg-gradient);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -38,19 +38,18 @@
             position: relative;
         }
 
-        /* Background Animated Glow Elements */
         .glow-circle {
             position: absolute;
             width: 350px;
             height: 350px;
-            background: rgba(74, 222, 128, 0.12);
-            filter: blur(90px);
+            background: rgba(56, 189, 248, 0.25);
+            filter: blur(80px);
             border-radius: 50%;
             z-index: 0;
             animation: float 8s infinite alternate ease-in-out;
         }
         .glow-circle.two {
-            background: rgba(250, 204, 21, 0.12);
+            background: rgba(250, 204, 21, 0.2);
             bottom: -50px;
             right: -50px;
             animation-delay: -4s;
@@ -58,7 +57,7 @@
 
         @keyframes float {
             0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-35px) scale(1.1); }
+            100% { transform: translateY(-30px) scale(1.1); }
         }
 
         .container {
@@ -74,15 +73,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Glassmorphism Card Style */
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 35px 30px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             text-align: center;
             transition: all 0.3s ease;
         }
@@ -92,34 +90,32 @@
             height: 90px;
             object-fit: contain;
             margin-bottom: 15px;
-            filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.4));
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
             animation: pulseLogo 3s infinite ease-in-out;
         }
 
         @keyframes pulseLogo {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
+            50% { transform: scale(1.05); }
         }
 
         h1 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--text-white);
+            color: var(--text-dark);
             margin-bottom: 5px;
-            letter-spacing: 0.5px;
         }
 
         h1 span {
-            color: var(--accent-yellow);
+            color: var(--primary-blue);
         }
 
         p.subtitle {
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             color: var(--text-gray);
             margin-bottom: 25px;
         }
 
-        /* Layer 1: Form Input */
         .form-group {
             margin-bottom: 20px;
             text-align: left;
@@ -128,8 +124,8 @@
         .form-group label {
             display: block;
             font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--accent-yellow);
+            font-weight: 600;
+            color: var(--primary-blue);
             margin-bottom: 8px;
         }
 
@@ -148,33 +144,33 @@
         .input-with-icon input {
             width: 100%;
             padding: 14px 16px 14px 48px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #cbd5e1;
             border-radius: 12px;
-            color: var(--text-white);
+            color: var(--text-dark);
             font-size: 1rem;
             outline: none;
             transition: all 0.3s;
         }
 
         .input-with-icon input:focus {
-            border-color: var(--accent-green);
-            box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
-            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 12px rgba(2, 132, 199, 0.25);
+            background: #ffffff;
         }
 
         .btn-submit {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, var(--accent-yellow), #eab308);
+            background: linear-gradient(135deg, var(--primary-blue), #0369a1);
             border: none;
             border-radius: 12px;
-            color: var(--bg-dark);
+            color: #ffffff;
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(250, 204, 21, 0.35);
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -183,11 +179,10 @@
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(250, 204, 21, 0.55);
-            background: linear-gradient(135deg, #fde047, var(--accent-yellow));
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+            background: linear-gradient(135deg, #0284c7, var(--primary-blue));
         }
 
-        /* Layer 2: Result Data */
         .result-container {
             display: none;
             animation: slideUp 0.5s ease-out;
@@ -199,17 +194,17 @@
         }
 
         .student-info {
-            background: rgba(255, 255, 255, 0.04);
+            background: #f8fafc;
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid #e2e8f0;
             text-align: left;
         }
 
         .student-info h2 {
             font-size: 1.1rem;
-            color: var(--accent-yellow);
+            color: var(--primary-blue);
             margin-bottom: 4px;
         }
 
@@ -226,19 +221,20 @@
         }
 
         .score-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 14px;
             padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .score-card:hover {
             transform: scale(1.02);
-            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
 
         .score-label {
@@ -247,8 +243,8 @@
 
         .score-label h4 {
             font-size: 0.9rem;
-            color: var(--text-white);
-            margin-bottom: 3px;
+            color: var(--text-dark);
+            margin-bottom: 2px;
         }
 
         .score-label span {
@@ -263,28 +259,27 @@
         .score-num {
             font-size: 1.25rem;
             font-weight: 700;
-            color: var(--accent-green);
+            color: var(--primary-blue);
         }
 
         .badge {
             display: inline-block;
-            padding: 3px 9px;
+            padding: 3px 8px;
             font-size: 0.65rem;
             font-weight: 600;
             border-radius: 6px;
             text-transform: uppercase;
-            margin-top: 4px;
-            letter-spacing: 0.5px;
+            margin-top: 3px;
         }
 
-        .badge.memadai { background: rgba(74, 222, 128, 0.2); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.4); }
-        .badge.baik { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
-        .badge.kurang { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+        .badge.memadai { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge.baik { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .badge.kurang { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 
         .btn-back {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: var(--text-white);
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: var(--text-dark);
             padding: 12px;
             width: 100%;
             border-radius: 12px;
@@ -298,17 +293,16 @@
         }
 
         .btn-back:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--text-white);
+            background: #e2e8f0;
+            border-color: #94a3b8;
         }
 
-        /* Loading Spinner Overlay */
         .loader-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 25, 47, 0.85);
-            backdrop-filter: blur(6px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
             z-index: 999;
             justify-content: center;
             align-items: center;
@@ -319,10 +313,10 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(250, 204, 21, 0.2);
-            border-top: 4px solid var(--accent-yellow);
+            border: 4px solid rgba(2, 132, 199, 0.2);
+            border-top: 4px solid var(--primary-blue);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
@@ -331,14 +325,14 @@
         }
 
         .error-msg {
-            color: #f87171;
+            color: #b91c1c;
             font-size: 0.85rem;
             margin-top: 15px;
             display: none;
-            background: rgba(239, 68, 68, 0.1);
+            background: #fee2e2;
             padding: 10px;
             border-radius: 8px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid #fecaca;
         }
 
         footer {
@@ -411,13 +405,13 @@
                     </div>
 
                     <!-- Rata-Rata -->
-                    <div class="score-card" style="border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.03);">
+                    <div class="score-card" style="border-color: #bae6fd; background: #f0f9ff;">
                         <div class="score-label">
                             <h4>Nilai Rata-Rata</h4>
                             <span>Capaian: <span id="resCapaianRata" class="badge">-</span></span>
                         </div>
                         <div class="score-value">
-                            <div class="score-num" id="resRata" style="color: var(--accent-yellow);">0</div>
+                            <div class="score-num" id="resRata" style="color: #0284c7;">0</div>
                         </div>
                     </div>
                 </div>
@@ -433,13 +427,16 @@
         </footer>
     </div>
 
-    <!-- Loader Overlay -->
+    <!-- Loader -->
     <div class="loader-overlay" id="loader">
         <div class="spinner"></div>
-        <p style="color: var(--accent-yellow); font-size: 0.9rem; font-weight: 500;">Memuat Data Siswa...</p>
+        <p style="color: var(--primary-blue); font-size: 0.9rem; font-weight: 600;">Memuat Data Siswa...</p>
     </div>
 
     <script>
+        // Masukkan URL Exec Google Apps Script Anda di sini agar GitHub Pages dapat mengakses datanya
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHLL8m0nZ-VG78PsH6wYjPYo6F0J8I1mrXA8bbT4FJynveGGuWmO0h5WMhFf4Vy8vM/exec";
+
         function handleSearch(event) {
             event.preventDefault();
             const nisn = document.getElementById('nisnInput').value.trim();
@@ -449,23 +446,24 @@
             errorMsg.style.display = 'none';
             loader.style.display = 'flex';
 
-            // Memanggil fungsi Google Apps Script secara asynchronous
-            google.script.run
-                .withSuccessHandler(function(response) {
+            // Menggunakan Fetch API ke Google Apps Script Web App
+            fetch(`${SCRIPT_URL}?nisn=${nisn}`)
+                .then(response => response.json())
+                .then(result => {
                     loader.style.display = 'none';
-                    if (response.status === 'success') {
-                        displayResult(response.data);
+                    if (result && result.status === 'success') {
+                        displayResult(result.data);
                     } else {
-                        errorMsg.textContent = response.message;
+                        errorMsg.textContent = result ? result.message : "Data tidak ditemukan.";
                         errorMsg.style.display = 'block';
                     }
                 })
-                .withFailureHandler(function(error) {
+                .catch(error => {
                     loader.style.display = 'none';
-                    errorMsg.textContent = 'Terjadi kesalahan koneksi server. Silakan coba lagi.';
+                    errorMsg.textContent = 'Gagal terhubung ke server database. Periksa koneksi Anda.';
                     errorMsg.style.display = 'block';
-                })
-                .cariDataSiswa(nisn);
+                    console.error('Error:', error);
+                });
         }
 
         function displayResult(data) {
@@ -482,7 +480,6 @@
             document.getElementById('resRata').textContent = data.rata;
             setBatchBadge('resCapaianRata', data.capaianRata);
 
-            // Transisi Tampilan Layer
             document.getElementById('layer1').style.display = 'none';
             document.getElementById('layer2').style.display = 'block';
         }
