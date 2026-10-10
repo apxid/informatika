@@ -471,16 +471,17 @@
           return;
         }
 
-        if (!data.fileUrl || !data.namaFile || !data.namaSiswa) {
-          throw new Error("Data dokumen dari GAS tidak lengkap.");
+        // Penanganan URL yang lebih fleksibel tanpa error ketat
+        activeFileUrl = data.fileUrl || (data.fileId ? "https://drive.google.com/file/d/" + data.fileId + "/preview" : "");
+        activeDownloadUrl = data.downloadUrl || data.fileUrl || "";
+
+        if (!activeFileUrl) {
+          throw new Error("File PDF untuk siswa ini belum siap atau ID file di spreadsheet kosong.");
         }
 
-        activeFileUrl = data.fileUrl;
-        activeDownloadUrl = data.downloadUrl || data.fileUrl;
-
-        $("namaSiswa").textContent = data.namaSiswa || "-";
+        $("namaSiswa").textContent = data.namaSiswa || "Siswa TKA";
         $("kelasSiswa").textContent = data.kelas || "-";
-        $("namaFile").textContent = data.namaFile;
+        $("namaFile").textContent = data.namaFile || "Hasil_Try_Out_TKA.pdf";
 
         // Memuat preview aman ke dalam iframe
         $("pdfViewer").src = activeFileUrl;
