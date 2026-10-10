@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -381,15 +380,12 @@
 
   <script>
     // URL Web App GAS yang diberikan.
-    // Harus menggunakan deployment aktif dan berakhiran /exec.
     const GAS_URL =
       "https://script.google.com/macros/s/AKfycbztLJptqnFmTGlDc3lDnJaNxdEygXKU25e5xJhjW8C04oE-w3Zvt_jIf22pf7X6-ncN8A/exec";
 
     const $ = id => document.getElementById(id);
 
-    let pdfBlob = null;
-    let pdfUrl = null;
-    let namaFileSaatIni = "Hasil_Try_Out_TKA.pdf";
+    let activeFileUrl = null;
     let callbackCounter = 0;
     let requestCounter = 0;
 
@@ -398,39 +394,26 @@
       this.value = this.value.replace(/\D/g, "").slice(0, 10);
     });
 
-    /**
-     * Memanggil backend GAS melalui JSONP.
-     * Sesuai dengan doGet(e) dan handleJsonp_() di Code.gs.
-     * Tidak menggunakan fetch() atau google.script.run.
-     */
     function cariViaJSONP(nisn) {
       return new Promise((resolve, reject) => {
-        const callbackName =
-          "__tkaCallback" + (++callbackCounter);
-
+        const callbackName = "__tkaCallback" + (++callbackCounter);
         const script = document.createElement("script");
         let selesai = false;
 
         const timer = setTimeout(() => {
           bersihkan();
-          reject(new Error(
-            "Waktu tunggu layanan habis. Periksa deployment GAS dan koneksi internet."
-          ));
+          reject(new Error("Waktu tunggu layanan habis. Periksa deployment GAS dan koneksi internet."));
         }, 30000);
 
         function bersihkan() {
           if (selesai) return;
           selesai = true;
-
           clearTimeout(timer);
           script.onerror = null;
           script.remove();
-
           delete window[callbackName];
         }
 
-        // Nama callback yang diterima backend:
-        // window.__tkaCallback1, window.__tkaCallback2, dst.
         window[callbackName] = function (hasil) {
           bersihkan();
           resolve(hasil);
@@ -438,9 +421,7 @@
 
         script.onerror = function () {
           bersihkan();
-          reject(new Error(
-            "Respons GAS gagal dimuat. Periksa URL deployment dan izin akses."
-          ));
+          reject(new Error("Respons GAS gagal dimuat. Periksa URL deployment dan izin akses."));
         };
 
         const params = new URLSearchParams({
@@ -450,7 +431,6 @@
         });
 
         script.src = GAS_URL + "?" + params.toString();
-
         document.body.appendChild(script);
       });
     }
@@ -461,23 +441,12 @@
       const nisn = $("nisn").value.trim();
 
       if (!/^\d{10}$/.test(nisn)) {
-        tampilPesan(
-          "pesan1",
-          "Masukkan NISN yang terdiri dari 10 digit angka.",
-          true
-        );
+        tampilPesan("pesan1", "Masukkan NISN yang terdiri dari 10 digit angka.", true);
         return;
       }
 
-      if (
-        !GAS_URL.startsWith("https://script.google.com/macros/s/") ||
-        !GAS_URL.endsWith("/exec")
-      ) {
-        tampilPesan(
-          "pesan1",
-          "URL Web App GAS belum dikonfigurasi dengan benar.",
-          true
-        );
+      if (!GAS_URL.startsWith("https://script.google.com/macros/s/") || !GAS_URL.endsWith("/exec")) {
+        tampilPesan("pesan1", "URL Web App GAS belum dikonfigurasi dengan benar.", true);
         return;
       }
 
@@ -485,16 +454,11 @@
 
       $("btnCari").disabled = true;
       $("btnCari").textContent = "MEMERIKSA...";
-      tampilPesan(
-        "pesan1",
-        "Sedang memeriksa data. Mohon tunggu...",
-        false
-      );
+      tampilPesan("pesan1", "Sedang memeriksa data. Mohon tunggu...", false);
 
       try {
         const data = await cariViaJSONP(nisn);
 
-        // Abaikan respons dari permintaan yang sudah tidak berlaku.
         if (requestSaatIni !== requestCounter) return;
 
         if (!data || typeof data.ok !== "boolean") {
@@ -502,46 +466,22 @@
         }
 
         if (!data.ok) {
-          tampilPesan(
-            "pesan1",
-            data.message || "Data tidak ditemukan atau hasil belum tersedia.",
-            true
-          );
+          tampilPesan("pesan1", data.message || "Data tidak ditemukan atau hasil belum tersedia.", true);
           return;
         }
 
-        if (
-          !data.base64 ||
-          !data.namaFile ||
-          !data.namaSiswa
-        ) {
+        if (!data.fileUrl || !data.namaFile || !data.namaSiswa) {
           throw new Error("Data dokumen dari GAS tidak lengkap.");
         }
 
-        // Konversi Base64 menjadi PDF.
-        const raw = atob(data.base64);
-        const bytes = new Uint8Array(raw.length);
-
-        for (let i = 0; i < raw.length; i++) {
-          bytes[i] = raw.charCodeAt(i);
-        }
-
-        hapusPdfLama();
-
-        pdfBlob = new Blob(
-          [bytes],
-          { type: "application/pdf" }
-        );
-
-        pdfUrl = URL.createObjectURL(pdfBlob);
-        namaFileSaatIni = amankanNamaFile(data.namaFile);
+        activeFileUrl = data.fileUrl;
 
         $("namaSiswa").textContent = data.namaSiswa || "-";
         $("kelasSiswa").textContent = data.kelas || "-";
         $("namaFile").textContent = data.namaFile;
 
-        $("pdfViewer").src =
-          pdfUrl + "#toolbar=1&navpanes=0";
+        // Memuat URL langsung dari Google Drive ke iframe
+        $("pdfViewer").src = activeFileUrl;
 
         $("pesan1").textContent = "";
         $("layer1").classList.add("hidden");
@@ -554,14 +494,7 @@
 
       } catch (err) {
         console.error("Portal Try Out TKA:", err);
-
-        tampilPesan(
-          "pesan1",
-          err.message ||
-            "Gagal menghubungi layanan. Silakan coba kembali.",
-          true
-        );
-
+        tampilPesan("pesan1", err.message || "Gagal menghubungi layanan. Silakan coba kembali.", true);
       } finally {
         if (requestSaatIni === requestCounter) {
           $("btnCari").disabled = false;
@@ -572,35 +505,16 @@
 
     // Buka PDF di tab baru.
     $("btnBuka").addEventListener("click", function () {
-      if (!pdfUrl) return;
-
-      const tab = window.open(pdfUrl, "_blank");
-
-      if (!tab) {
-        tampilPesan(
-          "pesan2",
-          "Tab baru diblokir browser. Gunakan tombol Unduh PDF.",
-          true
-        );
-      }
+      if (!activeFileUrl) return;
+      window.open(activeFileUrl, "_blank");
     });
 
     // Unduh PDF.
     $("btnUnduh").addEventListener("click", function () {
-      if (!pdfBlob) return;
-
-      const urlSementara = URL.createObjectURL(pdfBlob);
-      const a = document.createElement("a");
-
-      a.href = urlSementara;
-      a.download = namaFileSaatIni;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      setTimeout(() => {
-        URL.revokeObjectURL(urlSementara);
-      }, 1500);
+      if (!activeFileUrl) return;
+      // Mengubah parameter view menjadi download untuk memaksa unduhan
+      const downloadUrl = activeFileUrl.replace("export=view", "export=download");
+      window.open(downloadUrl, "_blank");
     });
 
     // Kembali ke halaman input NISN.
@@ -608,7 +522,7 @@
       requestCounter++;
 
       $("pdfViewer").removeAttribute("src");
-      hapusPdfLama();
+      activeFileUrl = null;
 
       $("layer2").classList.add("hidden");
       $("layer1").classList.remove("hidden");
@@ -633,34 +547,6 @@
       el.textContent = pesan;
       el.className = "message " + (error ? "error" : "info");
     }
-
-    function amankanNamaFile(nama) {
-      let hasil = String(nama)
-        .replace(/[\\/:*?"<>|]/g, "_")
-        .replace(/[\r\n]/g, "")
-        .slice(0, 180);
-
-      if (!hasil) {
-        hasil = "Hasil_Try_Out_TKA.pdf";
-      }
-
-      if (!/\.pdf$/i.test(hasil)) {
-        hasil += ".pdf";
-      }
-
-      return hasil;
-    }
-
-    function hapusPdfLama() {
-      if (pdfUrl) {
-        URL.revokeObjectURL(pdfUrl);
-      }
-
-      pdfUrl = null;
-      pdfBlob = null;
-    }
-
-    window.addEventListener("beforeunload", hapusPdfLama);
   </script>
 </body>
 </html>
