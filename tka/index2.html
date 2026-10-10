@@ -486,12 +486,18 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHLL8m0nZ-VG78PsH6wYjPYo6F0J8I1mrXA8bbT4FJynveGGuWmO0h5WMhFf4Vy8vM/exec";
 
-        // Fungsi otomatis untuk mengirim tinggi halaman ke website utama (menghilangkan scrollbar iframe)
+        // Fungsi otomatis pengirim tinggi yang disempurnakan agar konten tidak terpotong
         function sendHeightToParent() {
-            const height = document.body.scrollHeight || document.documentElement.scrollHeight;
+            const body = document.body;
+            const html = document.documentElement;
+            const height = Math.max(
+                body.scrollHeight, body.offsetHeight,
+                html.clientHeight, html.scrollHeight, html.offsetHeight
+            );
+            
             window.parent.postMessage({
                 type: 'resizeTkaHeight',
-                height: height + 40
+                height: height + 60 // Tambahan ruang aman (padding ekstra)
             }, "*");
         }
 
@@ -583,6 +589,7 @@
 
             // Perbarui tinggi iframe setelah hasil muncul
             setTimeout(sendHeightToParent, 50);
+            setTimeout(sendHeightToParent, 300); // Ekstra delay untuk memastikan transisi animasi selesai
         }
 
         function setBatchBadge(elementId, text) {
