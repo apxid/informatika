@@ -386,6 +386,7 @@
     const $ = id => document.getElementById(id);
 
     let activeFileUrl = null;
+    let activeDownloadUrl = null;
     let callbackCounter = 0;
     let requestCounter = 0;
 
@@ -475,12 +476,13 @@
         }
 
         activeFileUrl = data.fileUrl;
+        activeDownloadUrl = data.downloadUrl || data.fileUrl;
 
         $("namaSiswa").textContent = data.namaSiswa || "-";
         $("kelasSiswa").textContent = data.kelas || "-";
         $("namaFile").textContent = data.namaFile;
 
-        // Memuat URL langsung dari Google Drive ke iframe
+        // Memuat preview aman ke dalam iframe
         $("pdfViewer").src = activeFileUrl;
 
         $("pesan1").textContent = "";
@@ -505,15 +507,14 @@
 
     // Buka PDF di tab baru.
     $("btnBuka").addEventListener("click", function () {
-      if (!activeFileUrl) return;
-      window.open(activeFileUrl, "_blank");
+      if (!activeDownloadUrl) return;
+      window.open(activeDownloadUrl, "_blank");
     });
 
     // Unduh PDF.
     $("btnUnduh").addEventListener("click", function () {
-      if (!activeFileUrl) return;
-      // Mengubah parameter view menjadi download untuk memaksa unduhan
-      const downloadUrl = activeFileUrl.replace("export=view", "export=download");
+      if (!activeDownloadUrl) return;
+      const downloadUrl = activeDownloadUrl.replace("export=view", "export=download");
       window.open(downloadUrl, "_blank");
     });
 
@@ -523,6 +524,7 @@
 
       $("pdfViewer").removeAttribute("src");
       activeFileUrl = null;
+      activeDownloadUrl = null;
 
       $("layer2").classList.add("hidden");
       $("layer1").classList.remove("hidden");
