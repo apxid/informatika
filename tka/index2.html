@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cek Nilai Try Out TKA - SMP Negeri 1 Moga</title>
     <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Library Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #f0f4ff 0%, #e2e8f0 50%, #f8fafc 100%);
             --primary-blue: #0284c7;  /* Biru Cerah Modern */
             --accent-yellow: #ca8a04; /* Kuning Emas OSIS */
             --accent-green: #16a34a;  /* Hijau Segar */
-            --text-dark: #1e293b;
+            --text-dark: #0f172a;
             --text-gray: #64748b;
-            --glass-bg: rgba(255, 255, 255, 0.88);
-            --glass-border: rgba(2, 132, 199, 0.25);
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: rgba(2, 132, 199, 0.2);
         }
 
         * {
@@ -64,7 +66,7 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 550px;
+            max-width: 520px;
             animation: fadeIn 0.8s ease-out;
         }
 
@@ -79,15 +81,15 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 35px 30px;
+            padding: 35px 28px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             text-align: center;
             transition: all 0.3s ease;
         }
 
         .logo-container img {
-            width: 90px;
-            height: 90px;
+            width: 95px;
+            height: 95px;
             object-fit: contain;
             margin-bottom: 15px;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
@@ -116,6 +118,7 @@
             margin-bottom: 25px;
         }
 
+        /* LAYER 1: FORM INPUT */
         .form-group {
             margin-bottom: 20px;
             text-align: left;
@@ -144,7 +147,7 @@
         .input-with-icon input {
             width: 100%;
             padding: 14px 16px 14px 48px;
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff;
             border: 1px solid #cbd5e1;
             border-radius: 12px;
             color: var(--text-dark);
@@ -156,7 +159,6 @@
         .input-with-icon input:focus {
             border-color: var(--primary-blue);
             box-shadow: 0 0 12px rgba(2, 132, 199, 0.25);
-            background: #ffffff;
         }
 
         .btn-submit {
@@ -180,9 +182,9 @@
         .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
-            background: linear-gradient(135deg, #0284c7, var(--primary-blue));
         }
 
+        /* LAYER 2: HASIL NILAI (TAMPILAN TERBARU) */
         .result-container {
             display: none;
             animation: slideUp 0.5s ease-out;
@@ -193,48 +195,56 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* IDENTITAS SISWA: CENTER & HURUF BESAR */
         .student-info {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 18px;
+            padding: 20px 15px;
+            margin-bottom: 28px; /* JEDA DIBERIKAN DI SINI */
             border: 1px solid #e2e8f0;
-            text-align: left;
+            text-align: center; /* Rata Tengah */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
         .student-info h2 {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 800;
             color: var(--primary-blue);
-            margin-bottom: 4px;
+            text-transform: uppercase; /* Huruf Kapital Semua */
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            line-height: 1.3;
         }
 
         .student-info p {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--text-gray);
+            font-weight: 500;
         }
 
+        /* CARD LIST NILAI */
         .scores-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 25px;
         }
 
         .score-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 15px;
+            border-radius: 16px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .score-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
         }
 
         .score-label {
@@ -242,47 +252,44 @@
         }
 
         .score-label h4 {
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            margin-bottom: 2px;
-        }
-
-        .score-label span {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-        }
-
-        .score-value {
-            text-align: right;
-        }
-
-        .score-num {
-            font-size: 1.25rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            color: var(--primary-blue);
+            color: var(--text-dark);
+            margin-bottom: 4px;
         }
 
         .badge {
             display: inline-block;
-            padding: 3px 8px;
-            font-size: 0.65rem;
-            font-weight: 600;
+            padding: 3px 10px;
+            font-size: 0.68rem;
+            font-weight: 700;
             border-radius: 6px;
             text-transform: uppercase;
-            margin-top: 3px;
+            letter-spacing: 0.5px;
         }
 
         .badge.memadai { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
         .badge.baik { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
         .badge.kurang { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 
+        .score-value {
+            text-align: right;
+        }
+
+        .score-num {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
         .btn-back {
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
             color: var(--text-dark);
-            padding: 12px;
+            padding: 13px;
             width: 100%;
             border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -376,17 +383,21 @@
 
             <!-- LAYER 2: HASIL NILAI -->
             <div id="layer2" class="result-container">
+                <!-- NAMA SISWA KAPITAL & CENTER + KELAS & NISN DI BAWAHNYA -->
                 <div class="student-info">
                     <h2 id="resNama">-</h2>
                     <p>Kelas: <span id="resKelas">-</span> &bull; NISN: <span id="resNisn">-</span></p>
                 </div>
 
+                <!-- JEDA SPASI BARU KE DAFTAR NILAI -->
                 <div class="scores-grid">
                     <!-- Bahasa Indonesia -->
                     <div class="score-card">
                         <div class="score-label">
                             <h4>Bahasa Indonesia</h4>
-                            <span>Capaian: <span id="resCapaianIndo" class="badge">-</span></span>
+                            <div style="margin-top: 4px;">
+                                <span id="resCapaianIndo" class="badge">-</span>
+                            </div>
                         </div>
                         <div class="score-value">
                             <div class="score-num" id="resIndo">0</div>
@@ -397,7 +408,9 @@
                     <div class="score-card">
                         <div class="score-label">
                             <h4>Matematika</h4>
-                            <span>Capaian: <span id="resCapaianMtk" class="badge">-</span></span>
+                            <div style="margin-top: 4px;">
+                                <span id="resCapaianMtk" class="badge">-</span>
+                            </div>
                         </div>
                         <div class="score-value">
                             <div class="score-num" id="resMtk">0</div>
@@ -408,7 +421,9 @@
                     <div class="score-card" style="border-color: #bae6fd; background: #f0f9ff;">
                         <div class="score-label">
                             <h4>Nilai Rata-Rata</h4>
-                            <span>Capaian: <span id="resCapaianRata" class="badge">-</span></span>
+                            <div style="margin-top: 4px;">
+                                <span id="resCapaianRata" class="badge">-</span>
+                            </div>
                         </div>
                         <div class="score-value">
                             <div class="score-num" id="resRata" style="color: #0284c7;">0</div>
@@ -434,7 +449,6 @@
     </div>
 
     <script>
-        // Masukkan URL Exec Google Apps Script Anda di sini agar GitHub Pages dapat mengakses datanya
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHLL8m0nZ-VG78PsH6wYjPYo6F0J8I1mrXA8bbT4FJynveGGuWmO0h5WMhFf4Vy8vM/exec";
 
         function handleSearch(event) {
@@ -446,13 +460,13 @@
             errorMsg.style.display = 'none';
             loader.style.display = 'flex';
 
-            // Menggunakan Fetch API ke Google Apps Script Web App
             fetch(`${SCRIPT_URL}?nisn=${nisn}`)
                 .then(response => response.json())
                 .then(result => {
                     loader.style.display = 'none';
                     if (result && result.status === 'success') {
                         displayResult(result.data);
+                        triggerConfetti();
                     } else {
                         errorMsg.textContent = result ? result.message : "Data tidak ditemukan.";
                         errorMsg.style.display = 'block';
@@ -462,12 +476,38 @@
                     loader.style.display = 'none';
                     errorMsg.textContent = 'Gagal terhubung ke server database. Periksa koneksi Anda.';
                     errorMsg.style.display = 'block';
-                    console.error('Error:', error);
                 });
         }
 
+        function triggerConfetti() {
+            var duration = 2.5 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#0284c7', '#ca8a04', '#16a34a', '#38bdf8']
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#0284c7', '#ca8a04', '#16a34a', '#38bdf8']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
         function displayResult(data) {
-            document.getElementById('resNama').textContent = data.nama;
+            // Nama otomatis kapital & Rata Tengah
+            document.getElementById('resNama').textContent = data.nama ? data.nama.toUpperCase() : '-';
             document.getElementById('resKelas').textContent = data.kelas;
             document.getElementById('resNisn').textContent = data.nisn;
             
