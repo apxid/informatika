@@ -379,9 +379,7 @@
   </footer>
 
   <script>
-    // URL Web App GAS yang diberikan.
-    const GAS_URL =
-      "https://script.google.com/macros/s/AKfycbztLJptqnFmTGlDc3lDnJaNxdEygXKU25e5xJhjW8C04oE-w3Zvt_jIf22pf7X6-ncN8A/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbztLJptqnFmTGlDc3lDnJaNxdEygXKU25e5xJhjW8C04oE-w3Zvt_jIf22pf7X6-ncN8A/exec";
 
     const $ = id => document.getElementById(id);
 
@@ -390,7 +388,6 @@
     let callbackCounter = 0;
     let requestCounter = 0;
 
-    // Hanya izinkan angka, maksimal 10 digit.
     $("nisn").addEventListener("input", function () {
       this.value = this.value.replace(/\D/g, "").slice(0, 10);
     });
@@ -471,9 +468,8 @@
           return;
         }
 
-        // Penanganan URL yang lebih fleksibel tanpa error ketat
-        activeFileUrl = data.fileUrl || (data.fileId ? "https://drive.google.com/file/d/" + data.fileId + "/preview" : "");
-        activeDownloadUrl = data.downloadUrl || data.fileUrl || "";
+        activeFileUrl = data.fileUrl;
+        activeDownloadUrl = data.downloadUrl;
 
         if (!activeFileUrl) {
           throw new Error("File PDF untuk siswa ini belum siap atau ID file di spreadsheet kosong.");
@@ -483,7 +479,6 @@
         $("kelasSiswa").textContent = data.kelas || "-";
         $("namaFile").textContent = data.namaFile || "Hasil_Try_Out_TKA.pdf";
 
-        // Memuat preview aman ke dalam iframe
         $("pdfViewer").src = activeFileUrl;
 
         $("pesan1").textContent = "";
@@ -506,20 +501,17 @@
       }
     });
 
-    // Buka PDF di tab baru.
     $("btnBuka").addEventListener("click", function () {
       if (!activeDownloadUrl) return;
       window.open(activeDownloadUrl, "_blank");
     });
 
-    // Unduh PDF.
     $("btnUnduh").addEventListener("click", function () {
       if (!activeDownloadUrl) return;
       const downloadUrl = activeDownloadUrl.replace("export=view", "export=download");
       window.open(downloadUrl, "_blank");
     });
 
-    // Kembali ke halaman input NISN.
     $("btnKembali").addEventListener("click", function () {
       requestCounter++;
 
