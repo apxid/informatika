@@ -184,7 +184,7 @@
             box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
         }
 
-        /* LAYER 2: HASIL NILAI (TAMPILAN TERBARU) */
+        /* LAYER 2: HASIL NILAI */
         .result-container {
             display: none;
             animation: slideUp 0.5s ease-out;
@@ -195,14 +195,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* IDENTITAS SISWA: CENTER & HURUF BESAR */
+        /* IDENTITAS SISWA */
         .student-info {
             background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
             border-radius: 18px;
             padding: 20px 15px;
-            margin-bottom: 28px; /* JEDA DIBERIKAN DI SINI */
+            margin-bottom: 28px;
             border: 1px solid #e2e8f0;
-            text-align: center; /* Rata Tengah */
+            text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
@@ -210,7 +210,7 @@
             font-size: 1.25rem;
             font-weight: 800;
             color: var(--primary-blue);
-            text-transform: uppercase; /* Huruf Kapital Semua */
+            text-transform: uppercase;
             letter-spacing: 0.8px;
             margin-bottom: 6px;
             line-height: 1.3;
@@ -280,6 +280,37 @@
             font-size: 1.5rem;
             font-weight: 800;
             color: var(--primary-blue);
+        }
+
+        /* TOMBOL AKSI (DOWNLOAD PDF & KEMBALI) */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--accent-green), #15803d);
+            border: none;
+            color: #ffffff;
+            padding: 13px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none; /* Sembunyikan default, muncul jika ada link */
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 163, 74, 0.45);
         }
 
         .btn-back {
@@ -383,13 +414,11 @@
 
             <!-- LAYER 2: HASIL NILAI -->
             <div id="layer2" class="result-container">
-                <!-- NAMA SISWA KAPITAL & CENTER + KELAS & NISN DI BAWAHNYA -->
                 <div class="student-info">
                     <h2 id="resNama">-</h2>
                     <p>Kelas: <span id="resKelas">-</span> &bull; NISN: <span id="resNisn">-</span></p>
                 </div>
 
-                <!-- JEDA SPASI BARU KE DAFTAR NILAI -->
                 <div class="scores-grid">
                     <!-- Bahasa Indonesia -->
                     <div class="score-card">
@@ -431,9 +460,15 @@
                     </div>
                 </div>
 
-                <button class="btn-back" onclick="resetForm()">
-                    <i class="fa-solid fa-arrow-left"></i> Cari NISN Lain
-                </button>
+                <!-- TOMBOL AKSI -->
+                <div class="action-buttons">
+                    <a id="btnDownloadPdf" href="#" target="_blank" class="btn-download">
+                        <i class="fa-solid fa-file-pdf"></i> Download Sertifikat / Laporan PDF
+                    </a>
+                    <button class="btn-back" onclick="resetForm()">
+                        <i class="fa-solid fa-arrow-left"></i> Cari NISN Lain
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -506,7 +541,6 @@
         }
 
         function displayResult(data) {
-            // Nama otomatis kapital & Rata Tengah
             document.getElementById('resNama').textContent = data.nama ? data.nama.toUpperCase() : '-';
             document.getElementById('resKelas').textContent = data.kelas;
             document.getElementById('resNisn').textContent = data.nisn;
@@ -519,6 +553,15 @@
 
             document.getElementById('resRata').textContent = data.rata;
             setBatchBadge('resCapaianRata', data.capaianRata);
+
+            // Pengaturan Tombol Download PDF
+            const btnDownload = document.getElementById('btnDownloadPdf');
+            if (data.pdfLink && data.pdfLink.trim() !== '') {
+                btnDownload.href = data.pdfLink.trim();
+                btnDownload.style.display = 'flex'; // Tampilkan tombol jika link tersedia
+            } else {
+                btnDownload.style.display = 'none'; // Sembunyikan jika kosong
+            }
 
             document.getElementById('layer1').style.display = 'none';
             document.getElementById('layer2').style.display = 'block';
