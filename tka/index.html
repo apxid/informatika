@@ -4,69 +4,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portal Hasil TKA | SMP Negeri 1 Moga</title>
+  <meta name="theme-color" content="#004687">
+  <meta name="description" content="Portal informasi hasil Try Out TKA SMP Negeri 1 Moga Tahun 2026.">
+  <title>Portal Hasil Try Out TKA | SMP Negeri 1 Moga</title>
 
   <style>
     :root {
       --blue: #004687;
+      --blue-dark: #003568;
       --yellow: #FFD700;
       --bg: #f3f6fb;
       --text: #172033;
+      --muted: #64748b;
+      --border: #dbe3ee;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       background: var(--bg);
       color: var(--text);
+      line-height: 1.5;
     }
 
     header {
-      background: var(--blue);
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue));
       color: white;
       text-align: center;
-      padding: 25px 15px;
+      padding: 26px 16px 24px;
       border-bottom: 5px solid var(--yellow);
     }
 
-    header .brand {
+    .school-logo {
+      display: block;
+      width: 94px;
+      height: 94px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 5px;
+      margin: 0 auto 12px;
+      box-shadow: 0 4px 14px #001c3d40;
+    }
+
+    .brand {
       color: var(--yellow);
-      font-weight: bold;
-      letter-spacing: 3px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      font-size: 14px;
     }
 
     header h1 {
-      margin: 10px 0 6px;
-      font-size: clamp(21px, 4vw, 30px);
+      margin: 8px 0;
+      font-size: clamp(22px, 4vw, 31px);
+      line-height: 1.25;
     }
 
     header p {
       margin: 0;
       font-size: 14px;
+      color: #e7efff;
+    }
+
+    .year-label {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 5px 12px;
+      border: 1px solid #ffffff60;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
     }
 
     main {
       width: min(850px, calc(100% - 28px));
       margin: 25px auto;
+      min-height: 40vh;
     }
 
     .card {
       background: white;
       padding: 25px;
       border-radius: 16px;
-      border: 1px solid #dbe3ee;
+      border: 1px solid var(--border);
       box-shadow: 0 6px 22px #1020400c;
     }
 
     .hidden { display: none !important; }
 
-    h2 { margin-top: 0; }
+    h2 {
+      margin: 0 0 8px;
+      color: var(--blue);
+      font-size: 23px;
+    }
 
     .muted {
-      color: #64748b;
-      line-height: 1.6;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 10px;
+      padding: 12px;
+      color: #1e40af;
+      font-size: 13px;
+      margin: 18px 0;
+    }
+
+    .notice-icon {
+      font-size: 18px;
+      flex-shrink: 0;
     }
 
     label {
@@ -81,6 +135,13 @@
       border: 1px solid #b8c5d7;
       border-radius: 9px;
       font-size: 18px;
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px #00468720;
     }
 
     button {
@@ -88,7 +149,13 @@
       border: none;
       border-radius: 9px;
       font-weight: bold;
+      font-size: 14px;
       cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
     }
 
     button:disabled {
@@ -101,7 +168,8 @@
       width: 100%;
       margin-top: 14px;
       background: var(--yellow);
-      color: var(--blue);
+      color: var(--blue-dark);
+      min-height: 48px;
     }
 
     .blue {
@@ -120,30 +188,47 @@
       border-radius: 8px;
       line-height: 1.5;
       font-size: 14px;
+      overflow-wrap: anywhere;
     }
 
     .error {
       color: #9f1239;
       background: #fff1f2;
+      border: 1px solid #fecdd3;
     }
 
     .info {
       color: #1d4ed8;
       background: #eff6ff;
+      border: 1px solid #bfdbfe;
     }
 
     .student {
       background: #f5f8fc;
-      border: 1px solid #dbe3ee;
-      padding: 15px;
+      border: 1px solid var(--border);
+      padding: 16px;
       border-radius: 10px;
       margin: 18px 0;
     }
 
     .student small {
       display: block;
-      color: #64748b;
-      margin-bottom: 5px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: .6px;
+    }
+
+    .student strong {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .file-label {
+      overflow-wrap: anywhere;
+      margin: 16px 0;
+      font-size: 14px;
     }
 
     #pdfViewer {
@@ -151,7 +236,7 @@
       width: 100%;
       height: 70vh;
       min-height: 400px;
-      border: 1px solid #dbe3ee;
+      border: 1px solid var(--border);
       border-radius: 10px;
       background: #eef2f7;
     }
@@ -163,16 +248,27 @@
       margin-top: 14px;
     }
 
-    .actions button { flex: 1; }
+    .actions button {
+      flex: 1;
+      min-width: 120px;
+    }
 
     footer {
       text-align: center;
-      color: #64748b;
-      padding: 15px;
+      color: var(--muted);
+      padding: 18px 12px 25px;
       font-size: 12px;
     }
 
-    @media(max-width: 520px) {
+    footer strong {
+      display: block;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 520px) {
+      header { padding: 22px 12px; }
+      .school-logo { width: 78px; height: 78px; }
       .card { padding: 18px; }
       #pdfViewer { height: 60vh; min-height: 350px; }
       .actions button { flex-basis: 100%; }
@@ -181,247 +277,390 @@
 </head>
 
 <body>
-<header>
-  <div class="brand">SPENSAMO</div>
-  <h1>Portal Pemberitahuan Hasil TKA</h1>
-  <p>SMP Negeri 1 Moga · Tahun 2026</p>
-</header>
+  <header>
+    <img
+      class="school-logo"
+      src="https://smpn1moga.sch.id/wp-content/uploads/2025/08/NEW-LOGO-SMP-1-MOGA-1024x961.jpg"
+      alt="Logo SMP Negeri 1 Moga"
+      onerror="this.style.display='none'"
+    >
+    <div class="brand">SPENSAMO</div>
+    <h1>Portal Hasil Try Out TKA</h1>
+    <p>SMP Negeri 1 Moga</p>
+    <span class="year-label">TAHUN 2026</span>
+  </header>
 
-<main>
-  <!-- LAYER 1: INPUT NISN -->
-  <section id="layer1" class="card">
-    <h2>Cek Hasil TKA</h2>
-    <p class="muted">
-      Masukkan NISN untuk melihat dokumen hasil TKA Anda.
-    </p>
+  <main>
+    <!-- TAHAP 1: INPUT NISN -->
+    <section id="layer1" class="card">
+      <h2>Cek Hasil Try Out TKA</h2>
+      <p class="muted">
+        Masukkan NISN untuk memeriksa dan melihat dokumen hasil Try Out TKA Anda.
+      </p>
 
-    <form id="formNisn">
-      <label for="nisn">Nomor Induk Siswa Nasional (NISN)</label>
-      <input
-        id="nisn"
-        type="text"
-        inputmode="numeric"
-        autocomplete="off"
-        maxlength="10"
-        placeholder="Masukkan 10 digit NISN"
-        required
-      >
+      <div class="notice">
+        <span class="notice-icon" aria-hidden="true">ℹ️</span>
+        <div>
+          Pastikan NISN yang dimasukkan benar. Jika dokumen belum tersedia,
+          silakan hubungi pihak sekolah.
+        </div>
+      </div>
 
-      <button id="btnCari" class="primary" type="submit">
-        PERIKSA HASIL TKA
-      </button>
-    </form>
+      <form id="formNisn">
+        <label for="nisn">Nomor Induk Siswa Nasional (NISN)</label>
+        <input
+          id="nisn"
+          name="nisn"
+          type="text"
+          inputmode="numeric"
+          autocomplete="off"
+          maxlength="10"
+          pattern="[0-9]{10}"
+          placeholder="Masukkan 10 digit NISN"
+          aria-describedby="petunjukNisn"
+          required
+        >
 
-    <div id="pesan1" role="status" aria-live="polite"></div>
-    <p class="muted" style="font-size:12px">
-      Jika hasil belum tersedia, silakan hubungi pihak sekolah.
-    </p>
-  </section>
+        <button id="btnCari" class="primary" type="submit">
+          PERIKSA HASIL TRY OUT
+        </button>
+      </form>
 
-  <!-- LAYER 2: INFORMASI DAN PDF -->
-  <section id="layer2" class="card hidden">
-    <h2>Dokumen Hasil TKA</h2>
-    <p class="muted">Berikut dokumen yang ditemukan.</p>
+      <div id="pesan1" role="status" aria-live="polite"></div>
 
-    <div class="student">
-      <small>NAMA SISWA</small>
-      <strong id="namaSiswa"></strong>
-      <br><br>
-      <small>KELAS</small>
-      <strong id="kelasSiswa"></strong>
-    </div>
+      <p id="petunjukNisn" class="muted" style="font-size:12px">
+        Dokumen yang ditampilkan merupakan hasil Try Out TKA, bukan hasil TKA resmi.
+      </p>
+    </section>
 
-    <p><strong id="namaFile"></strong></p>
+    <!-- TAHAP 2: IDENTITAS SISWA DAN PDF -->
+    <section id="layer2" class="card hidden">
+      <h2>Dokumen Hasil Try Out TKA</h2>
+      <p class="muted">
+        Berikut dokumen yang sesuai dengan data siswa.
+      </p>
 
-    <iframe
-      id="pdfViewer"
-      title="Pratinjau dokumen hasil TKA"
-    ></iframe>
+      <div class="student">
+        <small>NAMA SISWA</small>
+        <strong id="namaSiswa">-</strong>
+        <br>
+        <small>KELAS</small>
+        <strong id="kelasSiswa">-</strong>
+      </div>
 
-    <div class="actions">
-      <button class="blue" id="btnBuka" type="button">
-        Buka PDF
-      </button>
-      <button class="gray" id="btnUnduh" type="button">
-        Unduh PDF
-      </button>
-      <button class="gray" id="btnKembali" type="button">
-        Kembali
-      </button>
-    </div>
+      <p class="file-label">
+        <strong>Nama dokumen:</strong>
+        <span id="namaFile"></span>
+      </p>
 
-    <div id="pesan2" role="status" aria-live="polite"></div>
-  </section>
-</main>
+      <iframe
+        id="pdfViewer"
+        title="Pratinjau dokumen hasil Try Out TKA"
+      ></iframe>
 
-<footer>
-  SMP Negeri 1 Moga · Portal Hasil TKA
-</footer>
+      <div class="actions">
+        <button class="blue" id="btnBuka" type="button">
+          Buka PDF
+        </button>
+        <button class="gray" id="btnUnduh" type="button">
+          Unduh PDF
+        </button>
+        <button class="gray" id="btnKembali" type="button">
+          Kembali
+        </button>
+      </div>
 
-<script>
-  // GANTI DENGAN URL DEPLOYMENT WEB APP GAS YANG BERAKHIR /exec
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbztLJptqnFmTGlDc3lDnJaNxdEygXKU25e5xJhjW8C04oE-w3Zvt_jIf22pf7X6-ncN8A/exec";
+      <div id="pesan2" role="status" aria-live="polite"></div>
+    </section>
+  </main>
 
-  const $ = id => document.getElementById(id);
+  <footer>
+    <strong>SMP Negeri 1 Moga</strong>
+    Portal Informasi Hasil Try Out TKA · 2026
+  </footer>
 
-  let pdfBlob = null;
-  let pdfUrl = null;
-  let namaFileSaatIni = "Hasil_TKA.pdf";
+  <script>
+    // URL Web App GAS yang diberikan.
+    // Harus menggunakan deployment aktif dan berakhiran /exec.
+    const GAS_URL =
+      "https://script.google.com/macros/s/AKfycbztLJptqnFmTGlDc3lDnJaNxdEygXKU25e5xJhjW8C04oE-w3Zvt_jIf22pf7X6-ncN8A/exec";
 
-  $("nisn").addEventListener("input", function () {
-    this.value = this.value.replace(/\D/g, "").slice(0, 10);
-  });
+    const $ = id => document.getElementById(id);
 
-  $("formNisn").addEventListener("submit", async function (e) {
-    e.preventDefault();
+    let pdfBlob = null;
+    let pdfUrl = null;
+    let namaFileSaatIni = "Hasil_Try_Out_TKA.pdf";
+    let callbackCounter = 0;
+    let requestCounter = 0;
 
-    const nisn = $("nisn").value.trim();
+    // Hanya izinkan angka, maksimal 10 digit.
+    $("nisn").addEventListener("input", function () {
+      this.value = this.value.replace(/\D/g, "").slice(0, 10);
+    });
 
-    if (!/^\d{10}$/.test(nisn)) {
-      tampilPesan("pesan1", "Masukkan NISN yang terdiri dari 10 digit.", true);
-      return;
-    }
+    /**
+     * Memanggil backend GAS melalui JSONP.
+     * Sesuai dengan doGet(e) dan handleJsonp_() di Code.gs.
+     * Tidak menggunakan fetch() atau google.script.run.
+     */
+    function cariViaJSONP(nisn) {
+      return new Promise((resolve, reject) => {
+        const callbackName =
+          "__tkaCallback" + (++callbackCounter);
 
-    if (
-      !GAS_URL.startsWith("https://script.google.com/macros/s/") ||
-      !GAS_URL.endsWith("/exec")
-    ) {
-      tampilPesan("pesan1", "URL Web App GAS belum dikonfigurasi.", true);
-      return;
-    }
+        const script = document.createElement("script");
+        let selesai = false;
 
-    $("btnCari").disabled = true;
-    $("btnCari").textContent = "MEMERIKSA...";
-    tampilPesan("pesan1", "Sedang memeriksa data...", false);
+        const timer = setTimeout(() => {
+          bersihkan();
+          reject(new Error(
+            "Waktu tunggu layanan habis. Periksa deployment GAS dan koneksi internet."
+          ));
+        }, 30000);
 
-    try {
-      /*
-       * Backend GAS harus menyediakan API yang mendukung POST JSON,
-       * CORS, dan mengembalikan JSON dengan format:
-       * { ok:true, namaSiswa:"...", kelas:"...",
-       *   namaFile:"...", base64:"..." }
-       *
-       * Code.gs versi google.script.run sebelumnya belum mendukung
-       * endpoint ini. Sesuaikan backend sebelum mengaktifkan HTML ini.
-       */
-      const response = await fetch(GAS_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify({
+        function bersihkan() {
+          if (selesai) return;
+          selesai = true;
+
+          clearTimeout(timer);
+          script.onerror = null;
+          script.remove();
+
+          delete window[callbackName];
+        }
+
+        // Nama callback yang diterima backend:
+        // window.__tkaCallback1, window.__tkaCallback2, dst.
+        window[callbackName] = function (hasil) {
+          bersihkan();
+          resolve(hasil);
+        };
+
+        script.onerror = function () {
+          bersihkan();
+          reject(new Error(
+            "Respons GAS gagal dimuat. Periksa URL deployment dan izin akses."
+          ));
+        };
+
+        const params = new URLSearchParams({
           action: "cariHasilTKA",
-          nisn: nisn
-        }),
-        redirect: "follow"
+          nisn: nisn,
+          callback: "window." + callbackName
+        });
+
+        script.src = GAS_URL + "?" + params.toString();
+
+        document.body.appendChild(script);
       });
+    }
 
-      if (!response.ok) {
-        throw new Error("Layanan tidak dapat diakses.");
-      }
+    $("formNisn").addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-      const data = await response.json();
+      const nisn = $("nisn").value.trim();
 
-      if (!data.ok) {
+      if (!/^\d{10}$/.test(nisn)) {
         tampilPesan(
           "pesan1",
-          data.message || "Data tidak ditemukan atau hasil belum tersedia.",
+          "Masukkan NISN yang terdiri dari 10 digit angka.",
           true
         );
         return;
       }
 
-      if (!data.base64 || !data.namaFile) {
-        throw new Error("Respons dokumen tidak lengkap.");
+      if (
+        !GAS_URL.startsWith("https://script.google.com/macros/s/") ||
+        !GAS_URL.endsWith("/exec")
+      ) {
+        tampilPesan(
+          "pesan1",
+          "URL Web App GAS belum dikonfigurasi dengan benar.",
+          true
+        );
+        return;
       }
 
-      const raw = atob(data.base64);
-      const bytes = new Uint8Array(raw.length);
+      const requestSaatIni = ++requestCounter;
 
-      for (let i = 0; i < raw.length; i++) {
-        bytes[i] = raw.charCodeAt(i);
-      }
-
-      hapusPdfLama();
-
-      pdfBlob = new Blob([bytes], { type: "application/pdf" });
-      pdfUrl = URL.createObjectURL(pdfBlob);
-      namaFileSaatIni = amankanNamaFile(data.namaFile);
-
-      $("namaSiswa").textContent = data.namaSiswa || "-";
-      $("kelasSiswa").textContent = data.kelas || "-";
-      $("namaFile").textContent = data.namaFile;
-
-      $("pdfViewer").src = pdfUrl + "#toolbar=1&navpanes=0";
-
-      $("layer1").classList.add("hidden");
-      $("layer2").classList.remove("hidden");
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-    } catch (err) {
+      $("btnCari").disabled = true;
+      $("btnCari").textContent = "MEMERIKSA...";
       tampilPesan(
         "pesan1",
-        "Gagal menghubungi layanan. Periksa konfigurasi GAS, izin akses, dan dukungan CORS.",
-        true
+        "Sedang memeriksa data. Mohon tunggu...",
+        false
       );
-      console.error(err);
-    } finally {
+
+      try {
+        const data = await cariViaJSONP(nisn);
+
+        // Abaikan respons dari permintaan yang sudah tidak berlaku.
+        if (requestSaatIni !== requestCounter) return;
+
+        if (!data || typeof data.ok !== "boolean") {
+          throw new Error("Format respons dari GAS tidak sesuai.");
+        }
+
+        if (!data.ok) {
+          tampilPesan(
+            "pesan1",
+            data.message || "Data tidak ditemukan atau hasil belum tersedia.",
+            true
+          );
+          return;
+        }
+
+        if (
+          !data.base64 ||
+          !data.namaFile ||
+          !data.namaSiswa
+        ) {
+          throw new Error("Data dokumen dari GAS tidak lengkap.");
+        }
+
+        // Konversi Base64 menjadi PDF.
+        const raw = atob(data.base64);
+        const bytes = new Uint8Array(raw.length);
+
+        for (let i = 0; i < raw.length; i++) {
+          bytes[i] = raw.charCodeAt(i);
+        }
+
+        hapusPdfLama();
+
+        pdfBlob = new Blob(
+          [bytes],
+          { type: "application/pdf" }
+        );
+
+        pdfUrl = URL.createObjectURL(pdfBlob);
+        namaFileSaatIni = amankanNamaFile(data.namaFile);
+
+        $("namaSiswa").textContent = data.namaSiswa || "-";
+        $("kelasSiswa").textContent = data.kelas || "-";
+        $("namaFile").textContent = data.namaFile;
+
+        $("pdfViewer").src =
+          pdfUrl + "#toolbar=1&navpanes=0";
+
+        $("pesan1").textContent = "";
+        $("layer1").classList.add("hidden");
+        $("layer2").classList.remove("hidden");
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      } catch (err) {
+        console.error("Portal Try Out TKA:", err);
+
+        tampilPesan(
+          "pesan1",
+          err.message ||
+            "Gagal menghubungi layanan. Silakan coba kembali.",
+          true
+        );
+
+      } finally {
+        if (requestSaatIni === requestCounter) {
+          $("btnCari").disabled = false;
+          $("btnCari").textContent = "PERIKSA HASIL TRY OUT";
+        }
+      }
+    });
+
+    // Buka PDF di tab baru.
+    $("btnBuka").addEventListener("click", function () {
+      if (!pdfUrl) return;
+
+      const tab = window.open(pdfUrl, "_blank");
+
+      if (!tab) {
+        tampilPesan(
+          "pesan2",
+          "Tab baru diblokir browser. Gunakan tombol Unduh PDF.",
+          true
+        );
+      }
+    });
+
+    // Unduh PDF.
+    $("btnUnduh").addEventListener("click", function () {
+      if (!pdfBlob) return;
+
+      const urlSementara = URL.createObjectURL(pdfBlob);
+      const a = document.createElement("a");
+
+      a.href = urlSementara;
+      a.download = namaFileSaatIni;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setTimeout(() => {
+        URL.revokeObjectURL(urlSementara);
+      }, 1500);
+    });
+
+    // Kembali ke halaman input NISN.
+    $("btnKembali").addEventListener("click", function () {
+      requestCounter++;
+
+      $("pdfViewer").removeAttribute("src");
+      hapusPdfLama();
+
+      $("layer2").classList.add("hidden");
+      $("layer1").classList.remove("hidden");
+
+      $("nisn").value = "";
+      $("pesan1").textContent = "";
+      $("pesan2").textContent = "";
+
       $("btnCari").disabled = false;
-      $("btnCari").textContent = "PERIKSA HASIL TKA";
+      $("btnCari").textContent = "PERIKSA HASIL TRY OUT";
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+      $("nisn").focus();
+    });
+
+    function tampilPesan(id, pesan, error) {
+      const el = $(id);
+      el.textContent = pesan;
+      el.className = "message " + (error ? "error" : "info");
     }
-  });
 
-  $("btnBuka").addEventListener("click", function () {
-    if (pdfUrl) window.open(pdfUrl, "_blank", "noopener");
-  });
+    function amankanNamaFile(nama) {
+      let hasil = String(nama)
+        .replace(/[\\/:*?"<>|]/g, "_")
+        .replace(/[\r\n]/g, "")
+        .slice(0, 180);
 
-  $("btnUnduh").addEventListener("click", function () {
-    if (!pdfBlob) return;
+      if (!hasil) {
+        hasil = "Hasil_Try_Out_TKA.pdf";
+      }
 
-    const url = URL.createObjectURL(pdfBlob);
-    const a = document.createElement("a");
+      if (!/\.pdf$/i.test(hasil)) {
+        hasil += ".pdf";
+      }
 
-    a.href = url;
-    a.download = namaFileSaatIni;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+      return hasil;
+    }
 
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
+    function hapusPdfLama() {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
 
-  $("btnKembali").addEventListener("click", function () {
-    $("pdfViewer").removeAttribute("src");
-    hapusPdfLama();
+      pdfUrl = null;
+      pdfBlob = null;
+    }
 
-    $("layer2").classList.add("hidden");
-    $("layer1").classList.remove("hidden");
-    $("nisn").value = "";
-    $("pesan1").textContent = "";
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  function tampilPesan(id, pesan, error) {
-    const el = $(id);
-    el.textContent = pesan;
-    el.className = "message " + (error ? "error" : "info");
-  }
-
-  function amankanNamaFile(nama) {
-    return String(nama)
-      .replace(/[\\/:*?"<>|]/g, "_")
-      .slice(0, 180) || "Hasil_TKA.pdf";
-  }
-
-  function hapusPdfLama() {
-    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
-    pdfUrl = null;
-    pdfBlob = null;
-  }
-
-  window.addEventListener("beforeunload", hapusPdfLama);
-</script>
+    window.addEventListener("beforeunload", hapusPdfLama);
+  </script>
 </body>
 </html>
