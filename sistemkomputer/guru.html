@@ -131,9 +131,143 @@
       .stat-card { padding: 14px; }
       .stat-card .value { font-size: 22px; }
     }
+
+    /* ============ LOGIN OVERLAY ============ */
+    .login-overlay {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 60%, #60a5fa 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2000; padding: 24px;
+      animation: fadeIn .4s ease;
+    }
+    .login-overlay.hidden { display: none; }
+    .login-card {
+      background: #fff; border-radius: 24px;
+      padding: 40px 32px; max-width: 380px; width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,.5);
+      text-align: center; position: relative;
+    }
+    .login-card .lock-icon {
+      width: 72px; height: 72px; margin: 0 auto 16px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      border-radius: 50%; display: grid; place-items: center;
+      font-size: 36px; color: #fff;
+      box-shadow: 0 10px 25px -5px rgba(30,58,138,.5);
+    }
+    .login-card h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 22px; font-weight: 800; color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .login-card .sub {
+      font-size: 13px; color: var(--muted); margin-bottom: 22px;
+    }
+    .pin-wrap {
+      position: relative; margin-bottom: 14px;
+    }
+    .pin-input {
+      width: 100%; padding: 14px 50px 14px 16px;
+      border: 2px solid var(--border); border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', monospace; font-size: 20px;
+      letter-spacing: 8px; text-align: center;
+      transition: border-color .15s, box-shadow .15s;
+      background: #f8fafc;
+    }
+    .pin-input:focus {
+      outline: none; border-color: var(--primary-2);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.15);
+      background: #fff;
+    }
+    .pin-input.error {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 4px rgba(239,68,68,.15);
+      animation: shake .4s ease;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .pin-toggle {
+      position: absolute; right: 8px; top: 50%;
+      transform: translateY(-50%);
+      background: transparent; border: none; cursor: pointer;
+      font-size: 18px; padding: 6px; border-radius: 6px;
+      color: var(--muted); transition: background .15s;
+    }
+    .pin-toggle:hover { background: #f1f5f9; }
+    .btn-login {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff; border: none; border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; font-weight: 800;
+      cursor: pointer; transition: transform .15s, box-shadow .15s;
+      letter-spacing: .02em;
+    }
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -8px rgba(30,58,138,.5);
+    }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .login-error {
+      display: none; margin-top: 12px;
+      background: #fee2e2; color: #991b1b;
+      padding: 10px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 700;
+      border-left: 4px solid var(--accent-2);
+    }
+    .login-error.show { display: block; animation: shake .4s ease; }
+    .login-hint {
+      margin-top: 14px; font-size: 12px; color: var(--muted);
+      font-style: italic;
+    }
+    .login-attempts {
+      margin-top: 8px; font-size: 12px;
+      color: var(--warn); font-weight: 700;
+    }
   </style>
 </head>
 <body>
+
+<!-- ========================================================= -->
+<!--  LOGIN OVERLAY (PIN masuk guru)                           -->
+<!-- ========================================================= -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="lock-icon">🔐</div>
+    <h2>Akses Dashboard Guru</h2>
+    <p class="sub">Masukkan PIN untuk membuka dashboard</p>
+    <form id="loginForm" onsubmit="event.preventDefault(); submitLogin();">
+      <div class="pin-wrap">
+        <input
+          type="password"
+          class="pin-input"
+          id="pinInput"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          maxlength="10"
+          placeholder="• • • • •"
+          autocomplete="off"
+          required
+          autofocus
+        >
+        <button type="button" class="pin-toggle" id="pinToggle" onclick="togglePinVisibility()" title="Tampilkan/sembunyikan PIN">
+          👁
+        </button>
+      </div>
+      <button type="submit" class="btn-login" id="btnLogin">
+        🔓 Masuk Dashboard
+      </button>
+      <div class="login-error" id="loginError"></div>
+      <div class="login-attempts" id="loginAttempts"></div>
+    </form>
+    <p class="login-hint">
+      PIN default: <strong>54321</strong> (hubungi admin untuk mengganti)
+    </p>
+  </div>
+</div>
 
 <div class="container">
 
@@ -153,6 +287,9 @@
       <a class="btn btn-ghost" id="linkSheet" href="#" target="_blank" rel="noopener">
         📊 Buka Spreadsheet
       </a>
+      <button class="btn btn-ghost" onclick="logout()" title="Keluar dari dashboard">
+        🔒 Logout
+      </button>
     </div>
   </div>
 
@@ -286,15 +423,148 @@
   // URL Spreadsheet langsung dari ID (sudah diisi otomatis dari kode.gs)
   const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1FmlCyt698HUezCxjpJ6LuTbeaTL0qrGSFcLz3O2HN80/edit';
 
+  // === KONFIGURASI PIN GURU ===
+  // Ganti angka di bawah untuk mengubah PIN masuk guru.
+  // PIN ini hanya melindungi tampilan guru.html dari akses sembarang.
+  const GURU_PIN = '54321';
+  // Batas percobaan sebelum lockout sementara
+  const MAX_ATTEMPTS = 5;
+  const LOCKOUT_MS = 30000; // 30 detik
+
+  let loginAttempts = 0;
+  let lockoutUntil = 0;
+
   let allKelompok = [];
   let allSiswa = [];
 
   /* ============ INIT ============ */
   (function init() {
-    // Set link spreadsheet otomatis
     document.getElementById('linkSheet').href = SPREADSHEET_URL;
-    refreshAll();
+    // Cek apakah guru sudah login di session ini
+    if (sessionStorage.getItem('guruAuthed') === 'yes') {
+      showDashboard();
+    } else {
+      showLogin();
+    }
   })();
+
+  function showLogin() {
+    document.getElementById('loginOverlay').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      const inp = document.getElementById('pinInput');
+      if (inp) inp.focus();
+    }, 100);
+  }
+
+  function showDashboard() {
+    document.getElementById('loginOverlay').classList.add('hidden');
+    document.body.style.overflow = '';
+    refreshAll();
+  }
+
+  /* ============ LOGIN LOGIC ============ */
+  function submitLogin() {
+    const now = Date.now();
+    if (now < lockoutUntil) {
+      const wait = Math.ceil((lockoutUntil - now) / 1000);
+      showLoginError('⏳ Coba lagi dalam ' + wait + ' detik (terlalu banyak percobaan salah).');
+      return;
+    }
+
+    const input = document.getElementById('pinInput');
+    const pin = input.value.trim();
+
+    if (pin === GURU_PIN) {
+      // Sukses login
+      loginAttempts = 0;
+      sessionStorage.setItem('guruAuthed', 'yes');
+      input.classList.remove('error');
+      input.value = '';
+      hideLoginError();
+      showDashboard();
+    } else {
+      // Salah PIN
+      loginAttempts++;
+      input.classList.add('error');
+      input.value = '';
+      input.focus();
+
+      const remaining = MAX_ATTEMPTS - loginAttempts;
+      if (remaining > 0) {
+        showLoginError('❌ PIN salah. Sisa percobaan: ' + remaining);
+      } else {
+        // Lockout
+        lockoutUntil = Date.now() + LOCKOUT_MS;
+        loginAttempts = 0;
+        showLoginError('🚫 Terlalu banyak percobaan salah. Tunggu 30 detik.');
+        startLockoutCountdown();
+      }
+    }
+  }
+
+  function showLoginError(msg) {
+    const el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.classList.add('show');
+    // reset animation
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+  }
+
+  function hideLoginError() {
+    const el = document.getElementById('loginError');
+    el.classList.remove('show');
+  }
+
+  function startLockoutCountdown() {
+    const update = () => {
+      const now = Date.now();
+      if (now >= lockoutUntil) {
+        hideLoginError();
+        document.getElementById('pinInput').focus();
+        return;
+      }
+      const wait = Math.ceil((lockoutUntil - now) / 1000);
+      showLoginError('🚫 Tunggu ' + wait + ' detik lagi sebelum mencoba.');
+      setTimeout(update, 1000);
+    };
+    update();
+  }
+
+  function togglePinVisibility() {
+    const inp = document.getElementById('pinInput');
+    const btn = document.getElementById('pinToggle');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      inp.type = 'password';
+      btn.textContent = '👁';
+    }
+    inp.focus();
+  }
+
+  function logout() {
+    if (!confirm('Yakin keluar dari dashboard guru?')) return;
+    sessionStorage.removeItem('guruAuthed');
+    loginAttempts = 0;
+    lockoutUntil = 0;
+    // Reset form
+    const inp = document.getElementById('pinInput');
+    if (inp) { inp.value = ''; inp.classList.remove('error'); }
+    hideLoginError();
+    showLogin();
+  }
+
+  // Hapus class error saat user mulai mengetik lagi
+  document.addEventListener('input', function (e) {
+    if (e.target && e.target.id === 'pinInput') {
+      e.target.classList.remove('error');
+      hideLoginError();
+    }
+  });
 
   async function refreshAll() {
     await loadKelompok();
