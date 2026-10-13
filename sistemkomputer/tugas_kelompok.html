@@ -1,0 +1,356 @@
+<!-- Container Utama -->
+<div class="max-w-5xl mx-auto px-4 py-8">
+    
+    <!-- HEADER / LAYAR 1 -->
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-6 sm:p-8 shadow-xl mb-8 text-center relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl">
+            <i class="fas fa-desktop"></i>
+        </div>
+        <span class="bg-blue-500/30 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Kurikulum Informatika • Kelas IX</span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight">LKPD SISTEM KOMPUTER</h1>
+        <p class="text-blue-100 mt-2 max-w-2xl mx-auto text-sm sm:text-base">
+            Media Pembelajaran Interaktif & Pengundian Tugas Kelompok Berbasis Proyek (PjBL) untuk Meningkatkan Kreativitas & Kemandirian Siswa.
+        </p>
+    </header>
+
+    <!-- LAYAR 2: SETUP & PENGUNDIAN KELOMPOK -->
+    <div id="setup-section" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Panel Input Anggota & Nama Kelompok (6 Kelompok, 32 Siswa) -->
+        <div class="md:col-span-1 bg-white rounded-xl shadow-md p-5 border border-slate-100">
+            <h2 class="text-lg font-bold text-slate-700 mb-3 flex items-center">
+                <i class="fas fa-users text-blue-600 mr-2"></i> Pengaturan Anggota
+            </h2>
+            <p class="text-xs text-slate-500 mb-4">Masukkan nama kelompok (contoh: Anggrek) dan daftar anggota kelompok (pisahkan dengan koma).</p>
+            
+            <div class="space-y-3 max-h-[450px] overflow-y-auto pr-1" id="group-inputs-container">
+                <!-- Javascript akan mengisi 6 kelompok otomatis -->
+            </div>
+            
+            <button onclick="simpanDataSiswa()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold py-2.5 px-4 rounded-lg shadow transition flex items-center justify-center">
+                <i class="fas fa-save mr-2"></i> Simpan Data Kelompok
+            </button>
+        </div>
+
+        <!-- Panel Undian & Distribusi Materi -->
+        <div class="md:col-span-2 bg-white rounded-xl shadow-md p-6 border border-slate-100 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-slate-700 flex items-center">
+                        <i class="fas fa-random text-indigo-600 mr-2"></i> Pengundian Tugas Otomatis
+                    </h2>
+                    <span id="status-undian" class="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full">Belum Diundi</span>
+                </div>
+                
+                <p class="text-sm text-slate-600 mb-6">
+                    Terdapat 6 topik materi utama sistem komputer yang akan didistribusikan secara adil dan acak ke 6 kelompok (Setiap kelompok mendapatkan tugas yang dijamin berbeda).
+                </p>
+
+                <!-- Tombol Aksi Undi -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-dashed border-slate-300 text-center mb-6">
+                    <button onclick="undakSecaraAcak()" id="btn-undi" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 text-base flex items-center justify-center mx-auto">
+                        <i class="fas fa-dice mr-2 text-xl"></i> Undi Materi Kelompok Sekarang!
+                    </button>
+                    <p class="text-xs text-slate-400 mt-2">Sistem otomatis mencocokkan materi unik untuk Kelompok 1 s.d. 6.</p>
+                </div>
+
+                <!-- Hasil Undian Ringkas -->
+                <div id="hasil-undian-preview" class="grid grid-cols-1 sm:grid-cols-2 gap-3 hidden">
+                    <!-- Card hasil undian per kelompok -->
+                </div>
+            </div>
+
+            <!-- Tombol Sinkronisasi ke Spreadsheet -->
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span id="sync-status" class="text-xs text-slate-400">Belum tersinkronisasi ke Google Sheets</span>
+                <button onclick="kirimKeGoogleSheet()" id="btn-sync" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow transition flex items-center">
+                    <i class="fas fa-cloud-upload-alt mr-2"></i> Kirim ke Database Guru
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LAYAR 3: DETAIL TUGAS / LKPD DETAIL PER MATERI -->
+    <div id="detail-section" class="bg-white rounded-xl shadow-md p-6 sm:p-8 border border-slate-100 hidden">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b border-slate-200 mb-6">
+            <div>
+                <button onclick="kembaliKeMenu()" class="text-sm text-blue-600 hover:text-blue-800 font-semibold mb-2 inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-1"></i> Kembali ke Dashboard Utama
+                </button>
+                <h2 id="detail-judul-kelompok" class="text-2xl font-black text-slate-800">Kelompok X</h2>
+                <p id="detail-nama-anggota" class="text-sm text-slate-500 mt-1">Anggota: -</p>
+            </div>
+            <div class="mt-4 sm:mt-0 bg-blue-50 border border-blue-200 rounded-xl p-3 text-right">
+                <span class="text-xs text-blue-600 font-bold block uppercase tracking-wider">Materi Tugas Anda</span>
+                <span id="detail-materi-terpilih" class="text-lg font-extrabold text-blue-900">-</span>
+            </div>
+        </div>
+
+        <!-- Panduan Format Pengerjaan LKPD Siswa -->
+        <div class="space-y-6">
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+                <h4 class="text-sm font-bold text-amber-800 uppercase">Petunjuk Proyek Belajar Mandiri & Kreatif:</h4>
+                <p class="text-xs text-amber-700 mt-1">Setiap kelompok wajib mencari referensi dari internet, buku paket, atau video edukasi, lalu menyusun laporan presentasi dan penjelasan interaktif yang mencakup 6 komponen wajib di bawah ini:</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Komponen 1 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                    <div class="flex items-center text-blue-600 font-bold mb-2">
+                        <span class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center mr-2 text-sm">1</span>
+                        Pengertian
+                    </div>
+                    <p class="text-xs text-slate-600 mb-3">Definisikan konsep materi secara jelas dan ilmiah namun mudah dipahami teman sekelas.</p>
+                    <textarea class="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" rows="3" placeholder="Catat hasil rangkuman pengertian di sini..."></textarea>
+                </div>
+
+                <!-- Komponen 2 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                    <div class="flex items-center text-blue-600 font-bold mb-2">
+                        <span class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center mr-2 text-sm">2</span>
+                        Contoh-contoh Nyata
+                    </div>
+                    <p class="text-xs text-slate-600 mb-3">Sebutkan minimal 3 contoh perangkat atau jenis yang sesuai dengan materi kelompok.</p>
+                    <textarea class="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" rows="3" placeholder="Sebutkan contoh-contohnya di sini..."></textarea>
+                </div>
+
+                <!-- Komponen 3 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                    <div class="flex items-center text-blue-600 font-bold mb-2">
+                        <span class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center mr-2 text-sm">3</span>
+                        Penggunaan / Fungsi Utama
+                    </div>
+                    <p class="text-xs text-slate-600 mb-3">Bagaimana komponen/software ini digunakan dalam kehidupan sehari-hari oleh manusia?</p>
+                    <textarea class="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" rows="3" placeholder="Jelaskan cara penggunaannya di sini..."></textarea>
+                </div>
+
+                <!-- Komponen 4 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                    <div class="flex items-center text-blue-600 font-bold mb-2">
+                        <span class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center mr-2 text-sm">4</span>
+                        Apa yang Terjadi Jika Tidak Berfungsi?
+                    </div>
+                    <p class="text-xs text-slate-600 mb-3">Analisis dampak kerusakan atau ketiadaan komponen ini terhadap keseluruhan sistem komputer.</p>
+                    <textarea class="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" rows="3" placeholder="Analisis dampak kerusakannya di sini..."></textarea>
+                </div>
+            </div>
+
+            <!-- Komponen 5 & 6 (Full Width) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                <div class="flex items-center text-blue-600 font-bold mb-2">
+                    <span class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center mr-2 text-sm">5</span>
+                    Analogi Sederhana (Kreativitas Siswa)
+                </div>
+                <p class="text-xs text-slate-600 mb-3">Buatlah perumpamaan/analogi benda di dunia nyata agar topik ini sangat mudah dimengerti anak-anak.</p>
+                <input type="text" class="w-full text-xs p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: RAM diibaratkan seperti meja kerja... Buku catatan sebagai Storage, dll.">
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                <div class="flex items-center text-blue-600 font-bold mb-2">
+                    <span class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center mr-2 text-sm">6</span>
+                    Diagram / Skema Alur Kerja (Visualisasi)
+                </div>
+                <p class="text-xs text-slate-600 mb-3">Gambarkan alur hubungan atau diagram cara kerja materi ini dalam bentuk teks/flowchart sederhana.</p>
+                <textarea class="w-full text-xs p-3 font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" rows="3" placeholder="[Input] ---> [Processing] ---> [Output] ..."></textarea>
+            </div>
+
+            <!-- Status Progress Pengerjaan -->
+            <div class="flex items-center justify-between pt-4 border-t border-slate-200">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-bold text-slate-700">Status Pengerjaan Kelompok:</span>
+                    <select id="status-pengerjaan-select" class="text-xs border border-slate-300 rounded-lg p-2 bg-white font-semibold">
+                        <option value="Belum">Belum Mengerjakan</option>
+                        <option value="Ya">Sudah Selesai / Siap Presentasi</option>
+                    </select>
+                </div>
+                <button onclick="simpanProgressLokal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-2.5 px-6 rounded-xl shadow transition">
+                    <i class="fas fa-check mr-2"></i> Simpan Catatan & Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Script Javascript Utama -->
+<script>
+    // Daftar 6 Materi Utama Sistem Komputer
+    const daftarMateri = [
+        "HARDWARE (Input, Output, Processing, Storage Device)",
+        "SOFTWARE OPERATING SYSTEM (Sistem Operasi)",
+        "SOFTWARE APLIKASI (Application Software)",
+        "BRAINWARE (Pengguna / Manusia dalam Sistem Komputer)",
+        "CARA KERJA KOMPUTER (Alur Input - Process - Output - Storage)",
+        "PERANGKAT PENYIMPANAN & PEMROSESAN (Storage & Processing Device)"
+    ];
+
+    let stateData = {
+        kelompok: [
+            { id: "Kelompok 1", nama: "Anggrek", anggota: "Dani, Dea, Ilham", materi: "", tanggal: "2026-10-20", status: "Belum" },
+            { id: "Kelompok 2", nama: "Melati", anggota: "Siti, Budi, Rian", materi: "", tanggal: "2026-10-20", status: "Belum" },
+            { id: "Kelompok 3", nama: "Mawar", anggota: "Joko, Ani, Siska", materi: "", tanggal: "2026-10-27", status: "Belum" },
+            { id: "Kelompok 4", nama: "Tulip", anggota: "Roni, Maya, Doni", materi: "", tanggal: "2026-10-27", status: "Belum" },
+            { id: "Kelompok 5", nama: "Kamboja", anggota: "Fitri, Agus, Lina", materi: "", tanggal: "2026-11-03", status: "Belum" },
+            { id: "Kelompok 6", nama: "Kenanga", anggota: "Reza, Tono, Wati", materi: "", tanggal: "2026-11-03", status: "Belum" }
+        ],
+        selectedGroupIndex: null
+    };
+
+    // URL Web App Google Script yang baru
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbYhHRbmWjCtVA-BkLmMj9zSTz4i9YBHDwqhLqTcTl9Jb82X2PFCT3p5SZqEShEeKV4g/exec";
+
+    // Inisialisasi Tampilan Form Anggota
+    function renderGroupInputs() {
+        const container = document.getElementById('group-inputs-container');
+        container.innerHTML = "";
+        
+        stateData.kelompok.forEach((grp, idx) => {
+            container.innerHTML += `
+                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-bold text-blue-700">${grp.id}</span>
+                        <input type="text" id="nama-klp-${idx}" value="${grp.nama}" placeholder="Nama Kelompok" class="text-xs font-semibold w-28 px-2 py-1 border rounded bg-white text-right">
+                    </div>
+                    <input type="text" id="anggota-klp-${idx}" value="${grp.anggota}" placeholder="Anggota (dani, dea, ilham...)" class="w-full text-xs p-2 border rounded bg-white mt-1">
+                    <div class="flex justify-between items-center mt-2 text-[11px] text-slate-500">
+                        <span>Tgl: <input type="date" id="tgl-klp-${idx}" value="${grp.tanggal}" class="border rounded px-1"></span>
+                        <span id="badge-materi-${idx}" class="font-bold text-indigo-600 truncate max-w-[120px]">${grp.materi ? grp.materi : 'Belum diundi'}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function simpanDataSiswa() {
+        stateData.kelompok.forEach((grp, idx) => {
+            const namaKlp = document.getElementById(`nama-klp-${idx}`).value;
+            const anggotaKlp = document.getElementById(`anggota-klp-${idx}`).value;
+            const tglKlp = document.getElementById(`tgl-klp-${idx}`).value;
+            
+            grp.nama = namaKlp;
+            grp.anggota = anggotaKlp;
+            grp.tanggal = tglKlp;
+        });
+        alert("Data nama kelompok dan anggota berhasil disimpan secara lokal!");
+        renderGroupInputs();
+    }
+
+    // Fungsi Undi Materi Secara Acak (Setiap kelompok pasti berbeda)
+    function undakSecaraAcak() {
+        simpanDataSiswa(); // Simpan input terbaru dulu
+        
+        // Acak (Shuffle) array materi
+        let shuffledMateri = [...daftarMateri].sort(() => Math.random() - 0.5);
+        
+        stateData.kelompok.forEach((grp, idx) => {
+            grp.materi = shuffledMateri[idx];
+        });
+
+        document.getElementById('status-undian').innerText = "Sudah Diundi & Unik";
+        document.getElementById('status-undian').className = "bg-emerald-100 text-emerald-800 text-xs font-medium px-2.5 py-1 rounded-full";
+
+        renderGroupInputs();
+        renderPreviewUndian();
+        alert("Undian materi berhasil dilakukan! Semua kelompok mendapatkan tugas yang unik.");
+    }
+
+    function renderPreviewUndian() {
+        const previewContainer = document.getElementById('hasil-undian-preview');
+        previewContainer.classList.remove('hidden');
+        previewContainer.innerHTML = "";
+
+        stateData.kelompok.forEach((grp, idx) => {
+            previewContainer.innerHTML += `
+                <div class="bg-indigo-50/50 border border-indigo-100 p-3 rounded-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-indigo-900">${grp.id} (${grp.nama})</span>
+                            <button onclick="bukaDetailTugas(${idx})" class="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700">Buka LKPD</button>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1"><b>Anggota:</b> ${grp.anggota}</p>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-indigo-100">
+                        <span class="text-[10px] text-slate-400 block uppercase">Materi Terpilih:</span>
+                        <span class="text-xs font-extrabold text-indigo-700">${grp.materi || 'Belum diundi'}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function bukaDetailTugas(index) {
+        stateData.selectedGroupIndex = index;
+        const grp = stateData.kelompok[index];
+
+        if(!grp.materi) {
+            alert("Harap lakukan undian materi terlebih dahulu!");
+            return;
+        }
+
+        document.getElementById('setup-section').classList.add('hidden');
+        document.getElementById('detail-section').classList.remove('hidden');
+
+        document.getElementById('detail-judul-kelompok').innerText = `${grp.id} — ${grp.nama}`;
+        document.getElementById('detail-nama-anggota').innerText = `Daftar Anggota: ${grp.anggota}`;
+        document.getElementById('detail-materi-terpilih').innerText = grp.materi;
+        document.getElementById('status-pengerjaan-select').value = grp.status;
+    }
+
+    function kembaliKeMenu() {
+        document.getElementById('detail-section').classList.add('hidden');
+        document.getElementById('setup-section').classList.remove('hidden');
+    }
+
+    function simpanProgressLokal() {
+        const idx = stateData.selectedGroupIndex;
+        if (idx !== null) {
+            const statusVal = document.getElementById('status-pengerjaan-select').value;
+            stateData.kelompok[idx].status = statusVal;
+            alert("Progress dan status pengerjaan kelompok berhasil diperbarui!");
+            kembaliKeMenu();
+            renderPreviewUndian();
+        }
+    }
+
+    // Sinkronisasi data ke Google Sheets via Google Apps Script (mengirim satu per satu baris agar sesuai dengan skrip backend)
+    async function kirimKeGoogleSheet() {
+        if(GOOGLE_SCRIPT_URL.includes("MASUKKAN_URL")) {
+            alert("Mohon pastikan URL Apps Script sudah benar.");
+            return;
+        }
+
+        const btn = document.getElementById('btn-sync');
+        btn.innerText = "Mengirim...";
+        
+        try {
+            for (let grp of stateData.kelompok) {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        kelompok: grp.id + " (" + grp.nama + ")",
+                        namaAnggota: grp.anggota,
+                        materi: grp.materi || "Belum Diundi",
+                        tanggal: grp.tanggal,
+                        status: grp.status
+                    })
+                });
+            }
+            
+            document.getElementById('sync-status').innerText = "Data berhasil disinkronkan ke Spreadsheet!";
+            document.getElementById('sync-status').className = "text-xs text-emerald-600 font-bold";
+            btn.innerText = "Kirim ke Database Guru";
+            alert("Semua data kelompok berhasil dikirim dan dicatat ke Google Sheets guru!");
+        } catch(err) {
+            console.error(err);
+            alert("Gagal mengirim data. Periksa kembali koneksi internet Anda.");
+            btn.innerText = "Kirim ke Database Guru";
+        }
+    }
+
+    // Jalankan saat halaman dimuat
+    window.onload = function() {
+        renderGroupInputs();
+    };
+</script>
