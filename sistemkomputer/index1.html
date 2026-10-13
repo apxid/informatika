@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Troubleshooting Challenge - Informatika Kelas IX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-dark: #5b21b6;
+      --secondary: #06b6d4;
+      --ink: #172033;
+      --muted: #64748b;
+      --surface: rgba(255,255,255,.92);
+      --line: #e2e8f0;
+      --green: #16a34a;
+      --red: #dc2626;
+      --shadow: 0 22px 60px rgba(30, 41, 59, .18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink); font-family: Poppins, sans-serif;
+      background: radial-gradient(circle at 10% 10%, #c4b5fd 0, transparent 32%),
+                  radial-gradient(circle at 90% 90%, #a5f3fc 0, transparent 35%),
+                  linear-gradient(135deg, #eef2ff, #ecfeff);
+    }
+    .screen { min-height: 100vh; padding: 28px 16px; }
+    .flex-center { display: flex; justify-content: center; align-items: center; }
+    .hidden { display: none !important; }
+    .glass-card { background: var(--surface); border: 1px solid rgba(255,255,255,.8); border-radius: 28px; box-shadow: var(--shadow); backdrop-filter: blur(14px); }
+    .home-card, .result-card { width: min(680px, 100%); text-align: center; padding: 46px 30px; }
+    .splash-content { text-align: center; color: white; animation: fadeUp .7s ease; }
+    .splash-content i { color: #c4b5fd; filter: drop-shadow(0 8px 20px #4c1d95); }
+    .splash-content h1 { letter-spacing: 2px; margin: 22px 0 4px; }
+    .splash-content p { opacity: .85; margin-top: 4px; }
+    #splash-screen { background: linear-gradient(135deg, #312e81, #6d28d9 55%, #0891b2); }
+    .loader { width: 52px; height: 52px; border: 5px solid rgba(255,255,255,.3); border-top-color: white; border-radius: 50%; margin: 28px auto 0; animation: spin 1s linear infinite; }
+    .brand-icon { color: var(--primary); margin-bottom: 12px; }
+    .title { margin: 0; font-size: clamp(2rem, 6vw, 3.3rem); line-height: 1.08; letter-spacing: 1px; }
+    .subtitle { color: var(--primary-dark); margin: 12px 0; font-weight: 600; }
+    .description { color: var(--muted); max-width: 520px; margin: 0 auto 24px; }
+    .info-card { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0; }
+    .info-card p { margin: 0; padding: 13px 8px; background: #f5f3ff; border-radius: 14px; color: var(--primary-dark); font-size: .88rem; }
+    .btn-primary { border: 0; border-radius: 14px; padding: 14px 24px; color: white; background: linear-gradient(135deg, var(--primary), var(--secondary)); font: inherit; font-weight: 700; cursor: pointer; box-shadow: 0 10px 24px rgba(124,58,237,.25); transition: transform .2s, filter .2s; }
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.06); }
+    .quiz-container { width: min(900px, 100%); margin: 0 auto; padding: 26px; }
+    .quiz-header { border-bottom: 1px solid var(--line); padding-bottom: 20px; }
+    .header-info { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .header-info h2 { margin: 0; font-size: clamp(1.15rem, 4vw, 1.7rem); }
+    .score-badge { background: #f5f3ff; color: var(--primary-dark); border-radius: 999px; padding: 7px 13px; font-size: .9rem; font-weight: 700; white-space: nowrap; }
+    .progress-container { height: 11px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-top: 18px; }
+    .progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width .35s ease; }
+    .question-count { text-align: right; color: var(--muted); font-size: .88rem; margin: 9px 0 0; }
+    .question-area { padding: 28px 6px 8px; }
+    .illustration-container { width: 88px; height: 88px; display: grid; place-items: center; margin: 0 auto 18px; color: var(--primary); background: #ede9fe; border-radius: 26px; }
+    .clue-badge { display: inline-block; background: #cffafe; color: #155e75; border-radius: 999px; padding: 7px 13px; font-size: .8rem; font-weight: 600; margin-bottom: 14px; }
+    .question-text { max-width: 760px; margin: 0 auto 24px; font-size: clamp(1.05rem, 2.4vw, 1.35rem); line-height: 1.65; text-align: left; }
+    .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .answer-btn { border: 2px solid var(--line); border-radius: 16px; padding: 16px; text-align: left; background: white; color: var(--ink); font: inherit; cursor: pointer; transition: all .2s; }
+    .answer-btn:hover:not(:disabled) { border-color: var(--primary); background: #faf5ff; transform: translateY(-2px); }
+    .answer-btn:disabled { cursor: default; }
+    .answer-btn.correct { border-color: var(--green); background: #f0fdf4; color: #166534; }
+    .answer-btn.wrong { border-color: var(--red); background: #fef2f2; color: #991b1b; }
+    .option-label { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-right: 9px; border-radius: 9px; background: #f1f5f9; color: var(--primary-dark); font-weight: 700; }
+    .feedback-card { position: fixed; z-index: 5; left: 50%; top: 50%; width: min(570px, calc(100% - 28px)); transform: translate(-50%, -50%); padding: 30px; background: white; border-radius: 24px; box-shadow: 0 28px 80px rgba(15,23,42,.28); text-align: center; animation: fadeUp .25s ease; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 4; background: rgba(15,23,42,.55); backdrop-filter: blur(3px); }
+    .feedback-icon { font-size: 3.4rem; margin-bottom: 9px; }
+    .feedback-card.is-correct .feedback-icon { color: var(--green); }
+    .feedback-card.is-wrong .feedback-icon { color: var(--red); }
+    .feedback-card h4 { margin: 0 0 8px; font-size: 1.4rem; }
+    .feedback-card p { color: var(--muted); line-height: 1.65; margin: 0 0 22px; }
+    .score-display { margin: 22px auto; padding: 20px; background: linear-gradient(135deg, #ede9fe, #cffafe); border-radius: 22px; }
+    .score-number { display: block; color: var(--primary-dark); font-size: 4.4rem; font-weight: 800; line-height: 1; }
+    .score-label { color: var(--muted); }
+    .stats-row { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 20px 0; }
+    .stat-box { padding: 11px 18px; border-radius: 13px; font-weight: 600; }
+    .stat-box.correct { color: #166534; background: #dcfce7; }
+    .stat-box.wrong { color: #991b1b; background: #fee2e2; }
+    .predikat-box { margin: 22px 0; padding: 14px; border: 1px dashed #a78bfa; border-radius: 16px; }
+    .predikat-box h3 { margin: 0; color: var(--muted); font-size: .95rem; }
+    .predikat-box h2 { margin: 5px 0 0; color: var(--primary-dark); }
+    .closing-message { color: var(--muted); line-height: 1.6; font-size: .92rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 650px) { .answer-grid { grid-template-columns: 1fr; } .info-card { grid-template-columns: 1fr; } .quiz-container { padding: 18px; } .home-card, .result-card { padding: 34px 20px; } }
+  </style>
+</head>
+<body>
+  <section id="splash-screen" class="screen flex-center">
+    <div class="splash-content">
+      <i class="fa-solid fa-microchip fa-5x"></i>
+      <div class="loader"></div>
+      <h1>COMPUTER TROUBLESHOOTING</h1>
+      <p>Analisis Sistem Komputer • Informatika SMP Kelas IX</p>
+    </div>
+  </section>
+
+  <section id="home-screen" class="screen flex-center hidden">
+    <div class="glass-card home-card">
+      <i class="fa-solid fa-laptop-code fa-4x brand-icon"></i>
+      <h1 class="title">COMPUTER<br>TROUBLESHOOTING</h1>
+      <h2 class="subtitle">"Selidiki sebelum menyimpulkan!"</h2>
+      <p class="description">Uji kemampuanmu menganalisis kasus komputer lambat dan sistem komputer secara logis.</p>
+      <div class="info-card">
+        <p><i class="fa-solid fa-list-check"></i> 10 Soal</p>
+        <p><i class="fa-solid fa-lightbulb"></i> Pembahasan</p>
+        <p><i class="fa-solid fa-star"></i> Skor Otomatis</p>
+      </div>
+      <button id="btn-start" class="btn-primary"><i class="fa-solid fa-play"></i> MULAI KUIS</button>
+    </div>
+  </section>
+
+  <section id="quiz-screen" class="screen hidden">
+    <div class="quiz-container glass-card">
+      <header class="quiz-header">
+        <div class="header-info">
+          <h2><i class="fa-solid fa-screwdriver-wrench"></i> Tantangan Analisis</h2>
+          <div class="score-badge">Skor: <span id="current-score">0</span></div>
+        </div>
+        <div class="progress-container"><div id="progress-bar" class="progress-bar"></div></div>
+        <p class="question-count">Soal <span id="current-q-num">1</span> dari <span id="total-q-num">10</span></p>
+      </header>
+      <div class="question-area">
+        <div class="illustration-container"><i id="question-icon" class="fa-solid fa-question fa-3x"></i></div>
+        <div id="question-clue" class="clue-badge"><i class="fa-solid fa-lightbulb"></i> <span id="clue-text">CLUE</span></div>
+        <h3 id="question-text" class="question-text">Memuat pertanyaan...</h3>
+        <div id="answer-buttons" class="answer-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+  <div id="feedback-card" class="feedback-card hidden">
+    <div id="feedback-icon" class="feedback-icon"></div>
+    <h4 id="feedback-title">Benar!</h4>
+    <p id="feedback-text"></p>
+    <button id="btn-next" class="btn-primary">Lanjut <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+
+  <section id="result-screen" class="screen flex-center hidden">
+    <div class="glass-card result-card">
+      <i class="fa-solid fa-trophy fa-5x brand-icon"></i>
+      <h1 class="title">KUIS SELESAI!</h1>
+      <div class="score-display"><span id="final-score" class="score-number">0</span><span class="score-label">Total Skor</span></div>
+      <div class="stats-row">
+        <div class="stat-box correct"><i class="fa-solid fa-check-circle"></i> <span id="correct-count">0</span> Benar</div>
+        <div class="stat-box wrong"><i class="fa-solid fa-times-circle"></i> <span id="wrong-count">0</span> Salah</div>
+      </div>
+      <div class="predikat-box"><h3>Predikat Kamu:</h3><h2 id="predikat-text">Teknisi Pemula</h2></div>
+      <div class="closing-message"><p><strong>Ingat!</strong> Jangan langsung menebak penyebab masalah.</p><p>Periksa CPU, RAM, disk, suhu, aplikasi, dan jaringan untuk memperoleh bukti yang cukup.</p></div>
+      <button id="btn-restart" class="btn-primary"><i class="fa-solid fa-rotate-right"></i> Main Lagi</button>
+    </div>
+  </section>
+
+<script>
+const questions = [
+  { clue:'RAM dan multitasking', icon:'fa-layer-group', text:'Sebuah komputer membuka 20 tab browser, konferensi video, dan pengolah kata. SSD masih kosong 180 GB, tetapi sistem sering berpindah aplikasi dengan jeda. Pemeriksaan yang paling tepat untuk menguji dugaan utama adalah...', options:['Membandingkan kapasitas SSD dengan ukuran folder unduhan','Mengamati penggunaan RAM dan aktivitas pemindahan data ke virtual memory','Mengukur resolusi monitor saat jendela aplikasi dipindahkan','Memeriksa apakah browser menggunakan tema terang atau gelap'], answer:1, explanation:'Banyak aplikasi dapat memenuhi RAM. Saat RAM tidak cukup, sistem memakai virtual memory sehingga perpindahan aplikasi terasa lambat, meskipun SSD masih memiliki ruang kosong.' },
+  { clue:'Membaca data Task Manager', icon:'fa-chart-line', text:'Saat komputer lambat, Task Manager menunjukkan CPU 42%, RAM 93%, dan Disk 18%. Setelah browser ditutup, RAM turun menjadi 48% dan komputer kembali responsif. Kesimpulan paling kuat adalah...', options:['SSD mengalami kerusakan karena ruang kosong terlalu banyak','Browser kemungkinan besar membebani RAM, bukan CPU atau disk','CPU terlalu panas karena persentasenya berada di atas 40%','Sistem operasi pasti gagal memuat driver penyimpanan'], answer:1, explanation:'Perubahan RAM yang besar dan pemulihan kinerja setelah browser ditutup merupakan bukti paling kuat bahwa browser menjadi pemakai memori utama.' },
+  { clue:'Startup dan layanan latar', icon:'fa-rocket', text:'Komputer lambat hanya pada 2–3 menit pertama setelah masuk desktop. Setelah itu kinerjanya normal. Manakah langkah diagnosis yang paling informatif?', options:['Menghapus file pribadi berukuran besar dari folder Dokumen','Membandingkan waktu boot dalam Safe Mode dengan boot normal serta memeriksa daftar startup','Mengganti kabel HDMI karena proses masuk desktop tampak lambat','Menjalankan defragmentasi SSD sebelum melihat proses startup'], answer:1, explanation:'Perbedaan Safe Mode dan boot normal membantu mengisolasi layanan atau program startup. Gejala yang hanya muncul di awal mengarah pada proses yang dimuat saat login.' },
+  { clue:'Overheating dan throttling', icon:'fa-temperature-high', text:'Saat baru dinyalakan, gim berjalan lancar pada 60 FPS. Setelah 30 menit, FPS turun dan aplikasi kadang tertutup. Suhu CPU tinggi, sedangkan penggunaan RAM hanya 55%. Analisis yang paling tepat adalah...', options:['RAM pasti rusak karena penggunaan memori tidak mencapai 70%','Suhu tinggi dapat memicu thermal throttling atau ketidakstabilan, sehingga sistem pendingin perlu diperiksa','SSD terlalu kosong sehingga prosesor kehilangan ruang kerja','Koneksi internet menjadi penyebab utama turunnya FPS lokal'], answer:1, explanation:'Suhu tinggi dapat membuat CPU/GPU menurunkan frekuensi kerja atau menyebabkan aplikasi tidak stabil. Periksa kipas, ventilasi, debu, dan pasta termal.' },
+  { clue:'CPU, RAM, atau disk', icon:'fa-gauge-high', text:'Dua komputer memiliki RAM sama. Komputer A menunjukkan CPU 95%, RAM 52%, Disk 15%; komputer B menunjukkan CPU 35%, RAM 94%, Disk 20%. Pernyataan yang paling tepat adalah...', options:['Keduanya pasti memiliki masalah SSD yang sama','Komputer A kemungkinan terikat proses CPU, sedangkan B kekurangan memori aktif','Komputer A pasti kekurangan RAM dan B pasti mengalami overheating','Persentase CPU dan RAM tidak dapat digunakan untuk diagnosis apa pun'], answer:1, explanation:'Data menunjukkan sumber bottleneck berbeda. A perlu ditelusuri berdasarkan proses CPU, sedangkan B perlu dianalisis dari aplikasi pemakai RAM dan kemungkinan paging.' },
+  { clue:'Sumber aplikasi dan keamanan', icon:'fa-shield-virus', text:'Setelah memasang aplikasi gratis, muncul iklan pada browser dan proses asing memakai CPU secara berkala. Sebelum menghapus banyak file sistem, tindakan diagnosis yang paling aman adalah...', options:['Mematikan antivirus agar proses asing dapat berjalan tanpa gangguan','Mencatat aplikasi/ekstensi yang baru muncul, memutus koneksi bila perlu, lalu melakukan pemindaian keamanan','Menghapus seluruh folder Program Files untuk menghilangkan semua kemungkinan malware','Mengganti monitor karena iklan muncul pada layar'], answer:1, explanation:'Catat perubahan, periksa aplikasi dan ekstensi, lalu gunakan pemindaian keamanan. Menghapus folder sistem secara sembarangan dapat merusak sistem operasi.' },
+  { clue:'Driver dan perangkat keras', icon:'fa-print', text:'Printer terdeteksi sebagai perangkat USB, tetapi statusnya “driver unavailable”. Kabel dan printer telah diuji pada komputer lain. Kesimpulan yang paling sesuai adalah...', options:['Masalah utama kemungkinan pada driver atau kompatibilitas perangkat lunak di komputer tersebut','Printer pasti rusak karena perangkat USB selalu memerlukan penggantian kabel','SSD komputer tidak memiliki ruang sehingga printer tidak dapat menerima data','Monitor harus dijadikan printer utama sebelum driver dapat dipasang'], answer:0, explanation:'Jika perangkat dan kabel berfungsi pada komputer lain, fokus pemeriksaan berpindah ke driver, kompatibilitas, antrean cetak, atau konfigurasi pada komputer pertama.' },
+  { clue:'Jaringan atau komputer', icon:'fa-wifi', text:'Video daring tersendat pada tiga perangkat yang memakai Wi-Fi yang sama. Video lokal berjalan lancar dan hasil speed test berubah-ubah. Data tambahan yang paling berguna untuk membedakan penyebabnya adalah...', options:['Jenis font yang digunakan pada aplikasi pemutar video lokal','Kekuatan sinyal, latency, packet loss, jumlah pengguna jaringan, dan hasil uji melalui kabel','Warna indikator baterai pada setiap perangkat','Kapasitas RAM perangkat yang tidak sedang memutar video'], answer:1, explanation:'Tiga perangkat yang terdampak mengarah pada faktor bersama. Sinyal, latency, packet loss, beban router, dan perbandingan Wi-Fi dengan kabel membantu memisahkan masalah jaringan.' },
+  { clue:'Input–proses–output', icon:'fa-right-left', text:'Program menerima panjang dan lebar dari keyboard, menghitung luas, lalu menampilkan hasil. Jika input diterima tetapi hasil salah secara konsisten, lapisan yang paling dahulu diperiksa adalah...', options:['Perangkat output, karena monitor mungkin mengubah rumus','Algoritma atau rumus pada tahap proses serta validasi nilai input','Kabel jaringan, karena semua perhitungan membutuhkan internet','Kapasitas speaker, karena hasil berupa informasi digital'], answer:1, explanation:'Input yang berhasil diterima dan output yang tampil menunjukkan alur dasar berjalan. Kesalahan yang konsisten lebih mungkin berada pada rumus, algoritma, tipe data, atau validasi input.' },
+  { clue:'Analisis terpadu', icon:'fa-brain', text:'Komputer dengan RAM 4 GB dan prosesor lama digunakan untuk 15 tab, konferensi video, pengolah kata, dan pemutar musik. Urutan tindakan yang paling tepat adalah...', options:['Langsung membeli SSD baru tanpa mengukur penggunaan sumber daya','Mengukur CPU/RAM/disk dan suhu, mengurangi beban aplikasi, lalu mempertimbangkan peningkatan RAM berdasarkan hasil','Menghapus semua dokumen agar prosesor lama menjadi lebih cepat','Menambah program startup supaya aplikasi lebih cepat dibuka'], answer:1, explanation:'Troubleshooting yang baik dimulai dari pengukuran dan perubahan berisiko rendah. Jika RAM terbukti menjadi bottleneck, peningkatan RAM lebih relevan daripada sekadar menambah ruang SSD.' }
+];
+
+let current = 0, score = 0, correct = 0, wrong = 0, answered = false;
+const $ = id => document.getElementById(id);
+const screens = ['splash-screen','home-screen','quiz-screen','result-screen'];
+function showScreen(id) { screens.forEach(s => $(s).classList.toggle('hidden', s !== id)); }
+function renderQuestion() {
+  answered = false;
+  const q = questions[current];
+  $('current-q-num').textContent = current + 1;
+  $('total-q-num').textContent = questions.length;
+  $('current-score').textContent = score;
+  $('progress-bar').style.width = `${((current + 1) / questions.length) * 100}%`;
+  $('question-icon').className = `fa-solid ${q.icon} fa-3x`;
+  $('clue-text').textContent = `CLUE: ${q.clue.toUpperCase()}`;
+  $('question-text').textContent = q.text;
+  const box = $('answer-buttons'); box.innerHTML = '';
+  q.options.forEach((option, i) => {
+    const button = document.createElement('button');
+    button.className = 'answer-btn';
+    button.innerHTML = `<span class="option-label">${String.fromCharCode(65+i)}</span>${option}`;
+    button.addEventListener('click', () => chooseAnswer(i, button));
+    box.appendChild(button);
+  });
+}
+function chooseAnswer(index, selectedButton) {
+  if (answered) return; answered = true;
+  const q = questions[current];
+  document.querySelectorAll('.answer-btn').forEach((btn, i) => { btn.disabled = true; if (i === q.answer) btn.classList.add('correct'); });
+  const isCorrect = index === q.answer;
+  if (isCorrect) { score += Math.round(100 / questions.length); correct++; selectedButton.classList.add('correct'); }
+  else { wrong++; selectedButton.classList.add('wrong'); }
+  $('current-score').textContent = score;
+  $('feedback-card').className = `feedback-card ${isCorrect ? 'is-correct' : 'is-wrong'}`;
+  $('feedback-icon').innerHTML = `<i class="fa-solid ${isCorrect ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>`;
+  $('feedback-title').textContent = isCorrect ? 'Jawaban Benar!' : 'Belum Tepat';
+  $('feedback-text').innerHTML = `${isCorrect ? '<strong>Hebat!</strong> ' : `<strong>Jawaban benar: ${String.fromCharCode(65+q.answer)}.</strong> `}${q.explanation}`;
+  $('modal-backdrop').classList.remove('hidden'); $('feedback-card').classList.remove('hidden');
+}
+function nextQuestion() {
+  $('modal-backdrop').classList.add('hidden'); $('feedback-card').classList.add('hidden');
+  if (current < questions.length - 1) { current++; renderQuestion(); } else showResult();
+}
+function showResult() {
+  $('final-score').textContent = score; $('correct-count').textContent = correct; $('wrong-count').textContent = wrong;
+  const percentage = correct / questions.length * 100;
+  $('predikat-text').textContent = percentage >= 86 ? 'Pakar Troubleshooting' : percentage >= 70 ? 'Analis Komputer Hebat' : percentage >= 55 ? 'Teknisi Pemula' : 'Detektif yang Terus Belajar';
+  showScreen('result-screen');
+}
+function startQuiz() { current = 0; score = 0; correct = 0; wrong = 0; showScreen('quiz-screen'); renderQuestion(); }
+$('btn-start').addEventListener('click', startQuiz);
+$('btn-next').addEventListener('click', nextQuestion);
+$('btn-restart').addEventListener('click', startQuiz);
+setTimeout(() => showScreen('home-screen'), 1200);
+</script>
+</body>
+</html>
