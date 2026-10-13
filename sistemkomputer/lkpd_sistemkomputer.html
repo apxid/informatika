@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0EA5E9">
+<title>Tes Penentu Misi + LKPD Interaktif — Sistem Komputer | Informatika Kelas IX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Chakra+Petch:ital,wght@0,400;0,500;0,600;0,700;1,700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root{
+    --sky:#0EA5E9; --sky2:#38BDF8; --sky-deep:#0369A1;
+    --ink:#0F2836; --mut:#5B7286; --line:#D3EBFB; --line2:#B9E0F8;
+    --card:#FFFFFF;
+    --lime:#84CC16; --lime-bg:#F2FBDF; --lime-ink:#3F6212;
+    --rose:#F43F5E; --rose-bg:#FFE9ED; --rose-ink:#9F1239;
+    --amber:#D97706; --slate:#64748B;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Chakra Petch',sans-serif; color:var(--ink);
+    background:linear-gradient(165deg,#F4FBFF 0%,#E3F3FE 60%,#DCF0FD 100%);
+    min-height:100vh; overflow-x:hidden;
+  }
+  .topstrip{position:fixed;top:0;left:0;right:0;height:6px;z-index:100;
+    background:linear-gradient(90deg,#0EA5E9,#22D3EE 40%,#84CC16 75%,#F4FBFF)}
+  .bg-deco{position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(600px 400px at 85% -5%, rgba(56,189,248,.14), transparent 70%),
+      radial-gradient(500px 380px at -5% 40%, rgba(132,204,22,.10), transparent 70%),
+      repeating-linear-gradient(115deg, transparent 0 130px, rgba(14,165,233,.045) 130px 132px);
+  }
+  .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:34px 20px 70px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:0 12px 30px rgba(14,105,161,.08)}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.2em;
+    font-weight:700;color:#fff;background:linear-gradient(120deg,var(--sky),#22D3EE);
+    padding:7px 14px;border-radius:8px;transform:skewX(-8deg)}
+  .kicker i{width:14px;height:14px}
+
+  .btn{display:inline-flex;align-items:center;gap:9px;border:none;cursor:pointer;
+    font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:15.5px;
+    padding:13px 22px;border-radius:13px;color:#fff;
+    background:linear-gradient(135deg,var(--sky),#22B8E8);
+    box-shadow:0 8px 18px rgba(14,165,233,.30);
+    transform:skewX(-4deg);transition:transform .15s,box-shadow .15s}
+  .btn>*{transform:skewX(4deg)}
+  .btn i{width:17px;height:17px}
+  .btn:hover{transform:skewX(-4deg) translateY(-2px);box-shadow:0 12px 24px rgba(14,165,233,.38)}
+  .btn:active{transform:skewX(-4deg)}
+  .btn.ghost{background:#fff;color:var(--sky-deep);border:2px solid var(--line2);box-shadow:none}
+  .btn.ghost:hover{border-color:var(--sky);color:var(--sky)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+  .screen{display:none}
+  .screen.active{display:block;animation:in .4s cubic-bezier(.2,.9,.3,1)}
+  @keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .pill{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid var(--line2);
+    border-radius:999px;padding:7px 13px;font-weight:700;font-size:13px;color:#33526B}
+  .pill i{width:14px;height:14px;color:var(--sky)}
+  .pill.blue{background:var(--sky);border-color:var(--sky);color:#fff}
+  .pill.blue i{color:#fff}
+  .pill.ok{background:var(--lime-bg);border-color:var(--lime);color:var(--lime-ink)}
+  .pill.ok i{color:var(--lime-ink)}
+  .pill.err{background:var(--rose-bg);border-color:var(--rose);color:var(--rose-ink)}
+  .pill.err i{color:var(--rose-ink)}
+  .pill.click{cursor:pointer}
+  .spin{animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ============ INTRO ============ */
+  .hero h1{font-family:'Archivo Black',sans-serif;font-size:clamp(40px,7.6vw,80px);
+    line-height:.98;text-transform:uppercase;margin:20px 0 8px;transform:rotate(-1.2deg);color:var(--ink)}
+  .hero h1 .outline{display:block;color:rgba(14,165,233,.12);-webkit-text-stroke:2.5px var(--sky)}
+  .hero .lede{max-width:620px;color:var(--mut);font-size:16px;line-height:1.65;margin:16px 0 26px}
+  .hero .lede b{color:var(--sky-deep)}
+
+  .stairs{display:flex;flex-direction:column;gap:10px;margin:28px 0 32px;max-width:640px}
+  .stair{display:flex;align-items:center;gap:14px;padding:13px 18px;background:#fff;
+    border:1px solid var(--line);border-left:5px solid var(--line2);border-radius:14px;
+    box-shadow:0 6px 16px rgba(14,105,161,.06);transition:transform .2s}
+  .stair:hover{transform:translateX(8px)}
+  .stair .lv{font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:.05em;
+    padding:5px 12px;border-radius:8px;transform:skewX(-8deg);white-space:nowrap}
+  .stair .mission{font-weight:700;font-size:15px}
+  .stair .rule{margin-left:auto;color:var(--mut);font-size:13px;font-weight:700;white-space:nowrap}
+  .stair.s-emas{border-left-color:var(--lime)} .stair.s-emas .lv{background:var(--lime);color:#1A2E05}
+  .stair.s-perak{border-left-color:var(--slate);margin-left:26px} .stair.s-perak .lv{background:var(--slate);color:#fff}
+  .stair.s-perunggu{border-left-color:var(--amber);margin-left:52px} .stair.s-perunggu .lv{background:var(--amber);color:#fff}
+
+  .start-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:250px}
+  .field.small{min-width:110px;flex:0 0 150px}
+  .field label{font-size:12px;letter-spacing:.16em;font-weight:700;color:var(--mut)}
+  .txt, .field input{background:#fff;border:2px solid var(--line2);color:var(--ink);
+    font-family:'Chakra Petch',sans-serif;font-size:16px;font-weight:600;padding:12px 15px;
+    border-radius:12px;outline:none;transition:border-color .2s}
+  .txt:focus, .field input:focus{border-color:var(--sky)}
+  .field.err input{border-color:var(--rose);animation:shake .35s}
+  .field .msg{font-size:12.5px;color:var(--rose);font-weight:700;display:none}
+  .field.err .msg{display:block}
+  @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  /* ============ KUIS ============ */
+  .quiz-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .ticks{display:flex;gap:6px;margin:4px 0 20px}
+  .tick{flex:1;height:9px;border-radius:6px;background:#DFF0FC;transition:background .3s}
+  .tick.now{background:var(--sky2);animation:blink 1s steps(2) infinite}
+  .tick.ok{background:var(--lime)} .tick.no{background:var(--rose)}
+  @keyframes blink{50%{opacity:.4}}
+
+  .qpanel{padding:30px 30px 26px}
+  .qmeta{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap}
+  .qnum{font-family:'Archivo Black',sans-serif;font-size:clamp(36px,5.6vw,54px);line-height:1;
+    color:rgba(14,165,233,.12);-webkit-text-stroke:2px var(--sky)}
+  .qcount{font-weight:700;letter-spacing:.12em;color:var(--mut);font-size:13px}
+  .qtag{margin-left:auto;font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--sky-deep);
+    border:1.5px solid var(--line2);background:#F2FAFF;padding:4px 11px;border-radius:8px}
+  .qpanel h2{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:clamp(19px,3vw,25px);
+    line-height:1.4;margin:16px 0 22px;max-width:700px;color:var(--ink)}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;align-items:center;gap:15px;text-align:left;width:100%;cursor:pointer;
+    background:#fff;border:2px solid var(--line);border-radius:13px;color:var(--ink);
+    font-family:'Chakra Petch',sans-serif;font-size:16px;font-weight:600;padding:13px 16px;
+    transition:transform .15s,border-color .15s,background .15s}
+  .opt .key{font-family:'Archivo Black',sans-serif;font-size:13px;flex:0 0 auto;width:29px;height:29px;
+    display:grid;place-items:center;border:2px solid var(--line2);border-radius:9px;color:var(--mut);
+    transform:skewX(-6deg);transition:all .15s}
+  .opt:hover:not(:disabled){transform:translateX(8px);border-color:var(--sky2)}
+  .opt:hover:not(:disabled) .key{border-color:var(--sky);color:var(--sky)}
+  .opt:disabled{cursor:default}
+  .opts.locked .opt:not(.correct):not(.wrong){opacity:.4}
+  .opt.correct{background:var(--lime-bg);border-color:var(--lime);color:var(--lime-ink);animation:flash .4s}
+  .opt.correct .key{border-color:var(--lime);color:var(--lime-ink)}
+  .opt.wrong{background:var(--rose-bg);border-color:var(--rose);color:var(--rose-ink)}
+  .opt.wrong .key{border-color:var(--rose);color:var(--rose-ink)}
+  @keyframes flash{0%{filter:brightness(1.5)}}
+
+  .timer-row{display:flex;align-items:center;gap:13px;margin-top:22px}
+  .timer-row i{width:16px;height:16px;color:var(--mut)}
+  .tbar{flex:1;height:8px;border-radius:6px;background:#E3F1FB;overflow:hidden}
+  .tbar>div{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--sky2),var(--sky));width:100%;transition:width .1s linear}
+  .tbar.low>div{background:var(--rose)}
+  .tnum{font-family:'Archivo Black',sans-serif;font-size:18px;min-width:40px;text-align:right;color:var(--sky-deep)}
+  .tnum.low{color:var(--rose)}
+
+  .feedback{margin-top:18px;display:none;align-items:flex-start;gap:10px;font-weight:700;
+    font-size:15px;line-height:1.5;padding:13px 16px;border-radius:13px}
+  .feedback.show{display:flex;animation:in .3s}
+  .feedback i{width:19px;height:19px;flex:0 0 auto;margin-top:1px}
+  .feedback.good{background:var(--lime-bg);color:var(--lime-ink)}
+  .feedback.bad{background:var(--rose-bg);color:var(--rose-ink)}
+  .next-row{margin-top:18px;display:none} .next-row.show{display:block}
+  .pulse{animation:pulse 1s infinite}
+  @keyframes pulse{50%{box-shadow:0 8px 26px rgba(14,165,233,.55)}}
+
+  /* ============ HASIL ============ */
+  .result-head{text-align:center;padding-top:8px}
+  .bigscore{font-family:'Archivo Black',sans-serif;font-size:clamp(64px,13vw,130px);
+    line-height:1;color:var(--sky);text-shadow:5px 5px 0 rgba(14,165,233,.15)}
+  .bigscore small{font-size:.4em;color:var(--mut)}
+  .metarow{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+  .level-card{max-width:640px;margin:26px auto 0;padding:26px 28px;text-align:left;position:relative;overflow:hidden}
+  .level-card::before{content:"";position:absolute;inset:0 auto 0 0;width:7px;background:var(--lc,var(--sky))}
+  .level-card.stamped{animation:stamp .5s cubic-bezier(.25,1.4,.4,1) both}
+  @keyframes stamp{0%{transform:scale(1.4) rotate(-6deg);opacity:0}60%{transform:scale(.97) rotate(1deg);opacity:1}100%{transform:none}}
+  .lc-label{font-size:11px;letter-spacing:.24em;font-weight:700;color:var(--mut)}
+  .lc-name{font-family:'Archivo Black',sans-serif;font-size:clamp(28px,5vw,42px);color:var(--lt,var(--sky-deep));margin:4px 0 2px;transform:skewX(-4deg)}
+  .lc-mission{font-weight:700;font-size:15.5px;margin-bottom:10px}
+  .lc-desc{color:var(--mut);line-height:1.65;font-size:14.5px}
+
+  .review{max-width:640px;margin:26px auto 0;display:none;flex-direction:column;gap:9px}
+  .review.open{display:flex}
+  .rev-item{background:#fff;border:1px solid var(--line);border-left:4px solid var(--lime);
+    border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.55}
+  .rev-item.no{border-left-color:var(--rose)}
+  .rev-item .rq{font-weight:700;margin-bottom:5px;display:flex;gap:8px;align-items:flex-start}
+  .rev-item .rq i{width:15px;height:15px;flex:0 0 auto;margin-top:2px;color:var(--lime)}
+  .rev-item.no .rq i{color:var(--rose)}
+  .rev-item .ra{color:var(--mut)} .rev-item .ra b{color:var(--sky-deep)}
+  .rev-item.no .ra b{color:var(--rose-ink)}
+
+  .result-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+  /* ============ LKPD ============ */
+  .lk-head{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;padding:24px 26px;
+    border-radius:18px;border:1px solid var(--line);border-left:7px solid var(--sky);
+    background:#fff;box-shadow:0 12px 30px rgba(14,105,161,.08)}
+  .lk-badge{display:inline-block;font-family:'Archivo Black',sans-serif;font-size:13px;
+    letter-spacing:.06em;padding:6px 13px;border-radius:9px;transform:skewX(-8deg);color:#fff}
+  .lk-head h2{font-family:'Archivo Black',sans-serif;font-size:clamp(22px,4vw,32px);margin:8px 0 4px;color:var(--ink)}
+  .lk-desc{color:var(--mut);font-size:14.5px;line-height:1.6;max-width:480px}
+  .lk-right{margin-left:auto;display:flex;flex-direction:column;gap:9px;align-items:flex-end}
+  .lk-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0}
+  .guru{display:inline-flex;align-items:center;gap:8px;margin-left:auto;font-size:12.5px;font-weight:700;color:var(--mut)}
+  .guru select{border:2px solid var(--line2);border-radius:9px;padding:6px 10px;font-family:inherit;
+    font-weight:700;color:var(--sky-deep);background:#fff;outline:none}
+
+  .act{padding:22px 24px;margin-top:16px}
+  .act-head{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:14px}
+  .act-num{flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center;border-radius:11px;
+    background:linear-gradient(135deg,var(--sky),#22B8E8);color:#fff;font-family:'Archivo Black',sans-serif;font-size:15px}
+  .act-tt h3{font-size:17.5px} .act-tt p{font-size:13px;color:var(--mut);margin-top:2px;line-height:1.45}
+  .act-time{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--mut)}
+  .act-time i{width:13px;height:13px}
+  .act-status{flex:0 0 auto;width:13px;height:13px;border-radius:50%;background:#DFF0FC;border:2px solid var(--line2);transition:all .3s}
+  .act-status.done{background:var(--lime);border-color:var(--lime);box-shadow:0 0 0 4px var(--lime-bg)}
+
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:640px}
+  .mcol{display:flex;flex-direction:column;gap:9px}
+  .mcard{display:flex;align-items:center;gap:12px;justify-content:center;min-height:56px;cursor:pointer;
+    background:#F7FBFE;border:2px solid var(--line);border-radius:13px;color:var(--ink);
+    font-family:inherit;font-weight:700;font-size:15px;transition:all .15s}
+  .mcard i{width:26px;height:26px;color:var(--sky-deep)}
+  .mcard:hover:not(.done){border-color:var(--sky2);transform:translateY(-2px)}
+  .mcard.sel{border-color:var(--sky);background:#E8F6FE;box-shadow:0 0 0 4px rgba(14,165,233,.15)}
+  .mcard.done{background:var(--lime-bg);border-color:var(--lime);color:var(--lime-ink);cursor:default}
+  .mcard.done i{color:var(--lime-ink)}
+  .mcard.bad{animation:shake .4s;border-color:var(--rose);background:var(--rose-bg)}
+
+  .gpool{display:flex;flex-wrap:wrap;gap:9px;padding:14px;border:2px dashed var(--line2);border-radius:14px;background:#F7FBFE;min-height:64px}
+  .gchip{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:#fff;
+    border:2px solid var(--line2);border-radius:999px;padding:8px 14px;font-family:inherit;
+    font-weight:700;font-size:13.5px;color:var(--ink);transition:all .15s}
+  .gchip i{width:15px;height:15px;color:var(--sky-deep)}
+  .gchip:hover{border-color:var(--sky)}
+  .gchip.sel{border-color:var(--sky);background:#E8F6FE;box-shadow:0 0 0 4px rgba(14,165,233,.15)}
+  .gbins{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}
+  .gbin{border:2px dashed var(--line2);border-radius:14px;background:#FDFEFF;min-height:118px;display:flex;flex-direction:column;transition:border-color .2s}
+  .gbin:hover{border-color:var(--sky2)}
+  .gbin-h{display:flex;align-items:center;gap:8px;padding:10px 13px;font-weight:700;font-size:13px;color:var(--sky-deep);border-bottom:1px dashed var(--line)}
+  .gbin-h i{width:15px;height:15px}
+  .gbin-h small{margin-left:auto;color:var(--mut);font-weight:600}
+  .gbin-body{flex:1;display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;align-content:flex-start}
+
+  .fbank{display:flex;flex-wrap:wrap;gap:9px;padding:14px;border:2px dashed var(--amber);border-radius:14px;background:#FDF7EC;margin-bottom:14px}
+  .fbank .fb-label{flex-basis:100%;font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--amber)}
+  .wchip{display:inline-flex;cursor:pointer;background:#fff;border:2px solid #F0D9AC;border-radius:999px;
+    padding:8px 13px;font-family:inherit;font-weight:600;font-size:12.5px;color:#7C4A03;transition:all .15s;text-align:left}
+  .wchip:hover{border-color:var(--amber)}
+  .wchip.sel{border-color:var(--amber);background:#FDEFD7;box-shadow:0 0 0 4px rgba(217,119,6,.12)}
+  .wchip.used{opacity:.3;pointer-events:none}
+  .fillrows{display:flex;flex-direction:column;gap:9px}
+  .fillrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#F7FBFE;border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+  .fname{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;min-width:150px}
+  .fname i{width:17px;height:17px;color:var(--sky-deep)}
+  .slot{min-width:230px;flex:1;min-height:40px;text-align:left;cursor:pointer;background:#fff;
+    border:2px dashed var(--line2);border-radius:10px;padding:8px 12px;font-family:inherit;
+    font-size:13.5px;font-weight:600;color:var(--mut);transition:all .15s}
+  .slot:hover{border-color:var(--sky)}
+  .slot.filled{border:2px solid var(--lime);background:var(--lime-bg);color:var(--lime-ink)}
+
+  .ttable{width:100%;border-collapse:collapse;font-size:14.5px}
+  .ttable th{text-align:left;font-size:11.5px;letter-spacing:.12em;color:var(--mut);padding:8px 10px;border-bottom:2px solid var(--line)}
+  .ttable td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .ttable td:first-child{font-weight:700;white-space:nowrap}
+  .ttable .ex{color:var(--mut);font-style:italic;font-size:13px}
+  .txt.full{width:100%}
+  .hintxt{font-size:12px;color:var(--mut);margin-top:8px}
+
+  .cllist{display:flex;flex-direction:column;gap:8px}
+  .clrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#F7FBFE;border:1px solid var(--line);border-radius:12px;padding:9px 13px}
+  .clname{font-weight:700;font-size:14px;flex:1;min-width:170px}
+  .hbtns{display:flex;gap:6px}
+  .hbtn{border:2px solid var(--line2);background:#fff;border-radius:9px;padding:6px 12px;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:12.5px;color:var(--mut);transition:all .15s}
+  .hbtn:hover{border-color:var(--sky)}
+  .hbtn.on.h{background:var(--sky);border-color:var(--sky);color:#fff}
+  .hbtn.on.s{background:#8B5CF6;border-color:#8B5CF6;color:#fff}
+  .hbtn.on.b{background:var(--amber);border-color:var(--amber);color:#fff}
+
+  .case{background:#F7FBFE;border:1px solid var(--line);border-radius:13px;padding:15px 16px;margin-top:10px}
+  .case h4{font-size:15px;display:flex;gap:8px;align-items:center}
+  .case h4 i{width:16px;height:16px;color:var(--rose)}
+  .case .kel{font-size:13.5px;color:var(--mut);line-height:1.55;margin:7px 0 11px;font-style:italic}
+  .case .rowline{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .case select{border:2px solid var(--line2);border-radius:10px;padding:8px 10px;font-family:inherit;font-weight:700;font-size:13.5px;color:var(--sky-deep);background:#fff;outline:none}
+  textarea.ta{width:100%;background:#fff;border:2px solid var(--line2);border-radius:12px;padding:11px 13px;
+    font-family:inherit;font-size:14px;font-weight:500;color:var(--ink);outline:none;resize:vertical;min-height:64px;margin-top:9px}
+  textarea.ta:focus{border-color:var(--sky)}
+  .radiopair{display:flex;gap:10px;margin-top:10px}
+  .rbtn{flex:1;border:2px solid var(--line2);background:#fff;border-radius:12px;padding:11px;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:14px;color:var(--mut);transition:all .15s}
+  .rbtn:hover{border-color:var(--sky)}
+  .rbtn.on{background:var(--sky);border-color:var(--sky);color:#fff}
+  .refl{background:#F2FAFF;border:1.5px dashed var(--sky2);border-radius:14px;padding:16px 18px;margin-top:14px}
+  .refl h4{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--sky-deep);margin-bottom:10px}
+  .refl h4 i{width:16px;height:16px}
+  .refl .frow{margin-top:8px}
+  .refl label{display:block;font-size:12.5px;font-weight:700;color:var(--mut);margin-bottom:5px}
+
+  .lk-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;align-items:center}
+  .pc-note{font-size:11.5px;color:var(--mut);margin-top:10px}
+
+  #printCard{display:none;margin-top:26px;padding:28px 30px}
+  #printCard.show{display:block;animation:in .4s}
+  .pc-title{font-family:'Archivo Black',sans-serif;font-size:20px;color:var(--sky-deep);margin-bottom:4px}
+  .pc-sub{font-size:12px;letter-spacing:.14em;color:var(--mut);font-weight:700;margin-bottom:16px}
+  .pc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 22px;
+    background:#F7FBFE;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:8px}
+  .pc-grid b{display:block;font-size:10.5px;letter-spacing:.14em;color:var(--mut)}
+  .pc-grid span{font-weight:700;font-size:15px}
+  .pc-sec{margin-top:16px}
+  .pc-sec h4{font-size:13px;letter-spacing:.1em;color:var(--sky-deep);border-bottom:2px solid var(--line);padding-bottom:6px;margin-bottom:9px}
+  .pc-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px;align-items:flex-start}
+  .pc-row>div{flex:1} .pc-row b{display:block} .pc-row span{color:var(--mut)} .pc-row i{color:var(--mut);font-size:12.5px}
+  .dot{flex:0 0 auto;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;font-size:12px;font-weight:700;margin-top:1px}
+  .dot.ok{background:var(--lime-bg);color:var(--lime-ink);border:1.5px solid var(--lime)}
+  .dot.no{background:var(--rose-bg);color:var(--rose-ink);border:1.5px solid var(--rose)}
+  .dot.na{background:#EEF2F7;color:var(--slate);border:1.5px solid #CBD5E1}
+  .pc-sign{display:flex;gap:26px;margin-top:26px}
+  .pc-sign div{flex:1;border-top:1.5px solid var(--ink);padding-top:6px;text-align:center;font-size:12px;color:var(--mut)}
+
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+  .streak{position:absolute;top:-6%;border-radius:3px;animation:fall linear both}
+  @keyframes fall{to{transform:translateY(115vh) rotate(340deg)}}
+
+  .backdrop{position:fixed;inset:0;background:rgba(15,40,54,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}
+  .backdrop.show{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(410px,92vw);z-index:61;background:#fff;
+    border-left:1px solid var(--line);transform:translateX(103%);transition:transform .3s cubic-bezier(.2,.9,.3,1);display:flex;flex-direction:column}
+  .drawer.show{transform:none}
+  .drawer header{display:flex;align-items:center;gap:10px;padding:19px 22px;border-bottom:1px solid var(--line)}
+  .drawer header h3{font-family:'Archivo Black',sans-serif;font-size:16px;flex:1}
+  .drawer header button{background:#fff;border:2px solid var(--line2);border-radius:10px;color:var(--ink);width:34px;height:34px;cursor:pointer;display:grid;place-items:center}
+  .drawer header button:hover{border-color:var(--sky);color:var(--sky)}
+  .drawer header button i{width:16px;height:16px}
+  .hist-list{flex:1;overflow-y:auto;padding:14px 22px;display:flex;flex-direction:column;gap:8px}
+  .hist-item{display:flex;align-items:center;gap:12px;background:#F7FBFE;border:1px solid var(--line);border-left:4px solid var(--line2);border-radius:12px;padding:11px 13px;font-size:13px}
+  .hist-item .hi-name{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist-item .hi-time{color:var(--mut);font-size:11.5px}
+  .hist-item>div:first-child{flex:1;min-width:0}
+  .hist-item .hi-lv{font-size:10px;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:7px;color:#fff}
+  .hist-item .hi-score{font-family:'Archivo Black',sans-serif;font-size:14px}
+  .hist-empty{color:var(--mut);font-size:14px;text-align:center;padding:44px 12px;line-height:1.7}
+  .drawer footer{padding:15px 22px;border-top:1px solid var(--line)}
+  .btn.red{background:linear-gradient(135deg,#F43F5E,#FB7185)}
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(18px);
+    background:#0F2836;color:#fff;font-weight:700;font-size:14px;padding:12px 20px;border-radius:12px;
+    display:flex;align-items:center;gap:9px;z-index:80;opacity:0;pointer-events:none;transition:all .3s}
+  #toast.show{opacity:1;transform:translateX(-50%)}
+  #toast i{width:16px;height:16px;color:var(--lime)}
+
+  @media print{
+    body{background:#fff}
+    .topstrip,.bg-deco,#fx,#toast,.drawer,.backdrop{display:none!important}
+    body *{visibility:hidden}
+    #printCard,#printCard *{visibility:visible}
+    #printCard{position:absolute;top:0;left:0;width:100%;box-shadow:none;border:2px solid #0EA5E9;border-radius:0}
+  }
+  @media (max-width:600px){
+    .match-grid{grid-template-columns:1fr}
+    .lk-right{margin-left:0;align-items:flex-start}
+    .stair.s-perak,.stair.s-perunggu{margin-left:0}
+    .stair .rule{display:none}
+    .qpanel{padding:22px 17px}
+    .field.small{flex:1}
+  }
+</style>
+</head>
+<body>
+
+<div class="topstrip"></div>
+<div class="bg-deco"></div>
+<div id="fx"></div>
+
+<main class="wrap">
+
+  <!-- ================= LAYAR 1 : INTRO ================= -->
+  <section id="screen-intro" class="screen active hero">
+    <span class="kicker"><i data-lucide="flag"></i>INFORMATIKA · KELAS IX · SISTEM KOMPUTER</span>
+    <h1>Tes Penentu<span class="outline">Misi</span></h1>
+    <p class="lede">
+      <b>8 soal · 30 detik per soal.</b> Hasil tes langsung membawamu ke <b>LKPD-mu sendiri</b> —
+      dikerjakan interaktif di aplikasi ini. Saat dikumpulkan, jawabanmu otomatis
+      <b>tercatat ke Spreadsheet guru</b>. Semua misi sama pentingnya!
+    </p>
+
+    <div class="stairs">
+      <div class="stair s-emas"><span class="lv">LKPD EMAS</span><span class="mission">Detektif Komputer</span><span class="rule">7 – 8 BENAR</span></div>
+      <div class="stair s-perak"><span class="lv">LKPD PERAK</span><span class="mission">Analis Komponen</span><span class="rule">3 – 6 BENAR</span></div>
+      <div class="stair s-perunggu"><span class="lv">LKPD PERUNGGU</span><span class="mission">Penjelajah Komponen</span><span class="rule">0 – 2 BENAR</span></div>
+    </div>
+
+    <div class="start-row">
+      <div class="field" id="nameField">
+        <label for="inpName">NAMA LENGKAP</label>
+        <input id="inpName" type="text" placeholder="Tulis namamu…" maxlength="40" autocomplete="off">
+        <span class="msg">Isi dulu namamu ya, minimal 2 huruf.</span>
+      </div>
+      <div class="field small" id="kelasField">
+        <label for="inpKelas">KELAS</label>
+        <input id="inpKelas" type="text" placeholder="IX-A" maxlength="8" autocomplete="off">
+        <span class="msg">Isi kelasmu.</span>
+      </div>
+      <div class="field small" id="absenField">
+        <label for="inpAbsen">NO. ABSEN</label>
+        <input id="inpAbsen" type="number" placeholder="cth: 12" min="1" max="60">
+        <span class="msg">Isi nomor absen (1–60).</span>
+      </div>
+      <button class="btn" id="btnStart"><span>MULAI TES</span><i data-lucide="chevron-right"></i></button>
+    </div>
+
+    <div class="lk-actions" style="margin-top:26px">
+      <button class="btn ghost" id="btnHistory"><i data-lucide="history"></i><span>Riwayat Hasil</span></button>
+    </div>
+  </section>
+
+  <!-- ================= LAYAR 2 : KUIS ================= -->
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-top">
+      <span class="pill"><i data-lucide="user"></i><span id="qName">—</span></span>
+      <span class="pill"><i data-lucide="graduation-cap"></i><span id="qKelas">—</span> · Absen <span id="qAbsen">—</span></span>
+      <span class="pill blue" id="qScore"><i data-lucide="zap"></i>SKOR&nbsp;<b id="qScoreN">0</b></span>
+      <span class="pill" style="margin-left:auto"><i data-lucide="timer"></i>30 DETIK / SOAL</span>
+    </div>
+    <div class="ticks" id="ticks"></div>
+
+    <div class="qpanel panel">
+      <div class="qmeta">
+        <span class="qnum" id="qNum">01</span>
+        <span class="qcount">/ 08</span>
+        <span class="qtag" id="qTag">HARDWARE</span>
+      </div>
+      <h2 id="qText">…</h2>
+      <div class="opts" id="opts"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="timer-row">
+        <i data-lucide="gauge"></i>
+        <div class="tbar" id="tbar"><div id="tfill"></div></div>
+        <span class="tnum" id="tnum">30</span>
+      </div>
+      <div class="next-row" id="nextRow">
+        <button class="btn" id="btnNext"><span id="btnNextTxt">SOAL BERIKUTNYA</span><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LAYAR 3 : HASIL ================= -->
+  <section id="screen-result" class="screen">
+    <div class="result-head">
+      <span class="kicker"><i data-lucide="flag"></i>FINIS — INI HASILMU!</span>
+      <div class="bigscore"><span id="rScore">0</span><small>/8</small></div>
+      <div class="metarow">
+        <span class="pill"><i data-lucide="user"></i><span id="rName">—</span></span>
+        <span class="pill"><i data-lucide="graduation-cap"></i><span id="rKelas">—</span></span>
+        <span class="pill"><i data-lucide="hash"></i>Absen <span id="rAbsen">—</span></span>
+        <span class="pill"><i data-lucide="clock"></i><span id="rTime">—</span></span>
+      </div>
+    </div>
+
+    <div class="level-card panel" id="levelCard">
+      <div class="lc-label">REKOMENDASI UNTUKMU</div>
+      <div class="lc-name" id="rLevel">LKPD EMAS</div>
+      <div class="lc-mission" id="rMission">“Detektif Komputer”</div>
+      <div class="lc-desc" id="rDesc">…</div>
+    </div>
+
+    <p style="text-align:center;color:var(--mut);font-weight:700;font-size:14px;margin-top:20px">
+      Bersiap — kamu akan <b>otomatis dibawa ke LKPD-mu</b> dalam beberapa detik…
+    </p>
+    <div class="result-actions">
+      <button class="btn pulse" id="btnGoLKPD"><span id="goTxt">BUKA LKPD-KU SEKARANG</span><i data-lucide="arrow-right"></i></button>
+      <button class="btn ghost" id="btnReview"><i data-lucide="list"></i><span>Lihat Rincian Jawaban</span></button>
+      <button class="btn ghost" id="btnRetry"><i data-lucide="rotate-ccw"></i><span>Ulangi Tes</span></button>
+    </div>
+
+    <div class="review" id="review"></div>
+  </section>
+
+  <!-- ================= LAYAR 4 : LKPD INTERAKTIF ================= -->
+  <section id="screen-lkpd" class="screen">
+    <div class="lk-head" id="lkHead">
+      <div>
+        <span class="lk-badge" id="lkBadge">LKPD</span>
+        <h2 id="lkTitle">—</h2>
+        <p class="lk-desc" id="lkDesc">—</p>
+      </div>
+      <div class="lk-right">
+        <span class="pill"><i data-lucide="user"></i><span id="lkName">—</span></span>
+        <span class="pill"><i data-lucide="graduation-cap"></i><span id="lkKelasAbsen">—</span></span>
+        <span class="pill"><i data-lucide="zap"></i>Tes diagnostik:&nbsp;<b id="lkScore">0</b>/8</span>
+      </div>
+    </div>
+
+    <div class="lk-toolbar">
+      <span class="pill"><i data-lucide="list-checks"></i>Kegiatan selesai:&nbsp;<b id="lkProg">0/0</b></span>
+      <label class="guru">🛠 Mode Guru — ganti LKPD:
+        <select id="lkSwitch">
+          <option value="EMAS">Emas</option>
+          <option value="PERAK">Perak</option>
+          <option value="PERUNGGU">Perunggu</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="lkpdArea"></div>
+
+    <div class="lk-actions">
+      <button class="btn" id="btnCollect"><i data-lucide="badge-check"></i><span>Kumpulkan Jawaban</span></button>
+      <button class="btn ghost" id="btnPrintLK" disabled><i data-lucide="printer"></i><span>Cetak Kartu Jawaban</span></button>
+      <button class="btn ghost" id="btnBackResult"><i data-lucide="undo-2"></i><span>Hasil Tes</span></button>
+      <button class="btn ghost" id="btnNewStudent"><i data-lucide="log-out"></i><span>Siswa Berikutnya</span></button>
+      <span class="pill" id="syncPill"><i data-lucide="cloud-off"></i><span>…</span></span>
+    </div>
+
+    <div id="printCard" class="panel"></div>
+  </section>
+</main>
+
+<!-- Drawer riwayat -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer">
+  <header>
+    <h3>Riwayat Hasil Tes</h3>
+    <button id="btnCloseDrawer"><i data-lucide="x"></i></button>
+  </header>
+  <div class="hist-list" id="histList"></div>
+  <footer>
+    <button class="btn red" id="btnClearHist" style="width:100%;justify-content:center">
+      <i data-lucide="trash-2"></i><span id="btnClearTxt">Bersihkan Riwayat</span>
+    </button>
+  </footer>
+</aside>
+
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   ⚙️ KONFIGURASI GURU — WAJIB DISESUAIKAN SEBELUM DIUNGGAH KE GITHUB
+================================================================ */
+/* URL Web App Google Apps Script — HARUS berakhiran /exec
+   Cara mendapatkannya: lihat Panduan Aset 2 (kode.gs) langkah Deploy. */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxe72GiXmMR6wUYBvA0f6LW63rTp-AA1ZM8Z0rixB1-KhcRzjn2H1j4HpF6r_F3rsQTWA/exec";
+/* Terkirim otomatis hanya jika URL sudah diganti (tidak mengandung "GANTI_KODE_INI") */
+const CLOUD_ON = !SCRIPT_URL.includes("GANTI_KODE_INI");
+
+const TIME_PER_Q = 30;
+const LEVEL_CUT  = { EMAS: 7, PERAK: 3, PERUNGGU: 0 };
+
+const QUESTIONS = [
+  { tag:"HARDWARE", q:"Alat untuk mengetik huruf dan angka pada komputer disebut …",
+    opts:["Keyboard","Monitor","Printer","Speaker"], a:0 },
+  { tag:"HARDWARE", q:"Bagian komputer yang menampilkan gambar dan tulisan adalah …",
+    opts:["Mouse","Monitor","RAM","Harddisk"], a:1 },
+  { tag:"HARDWARE", q:"CPU disebut “otak komputer” karena berfungsi …",
+    opts:["menyimpan file secara permanen","mencetak dokumen ke kertas","mengolah semua data dan perintah","mengeluarkan suara dan musik"], a:2 },
+  { tag:"SOFTWARE", q:"Microsoft Word, Windows, dan Google Chrome termasuk golongan …",
+    opts:["Hardware","Software","Brainware","Alat input"], a:1 },
+  { tag:"BRAINWARE", q:"Orang yang mengoperasikan dan mengendalikan komputer disebut …",
+    opts:["Hardware","Software","Brainware","Aplikasi"], a:2 },
+  { tag:"HARDWARE", q:"Memori yang bersifat sementara dan hilang isinya saat komputer dimatikan adalah …",
+    opts:["Harddisk","RAM","Power Supply","Motherboard"], a:1 },
+  { tag:"DIAGNOSIS", q:"Komputer menyala, lampu indikator dan kipas berputar, tetapi layar gelap total. Komponen yang paling mungkin bermasalah adalah …",
+    opts:["Monitor atau kartu grafis (VGA)","Speaker","Keyboard","Mouse"], a:0 },
+  { tag:"KONSEP", q:"Urutan kerja komputer yang benar adalah …",
+    opts:["Output → Proses → Input","Input → Output → Proses","Input → Proses → Output","Proses → Input → Output"], a:2 },
+];
+
+const LEVELS = {
+  EMAS: {
+    name:"LKPD EMAS", mission:"“Detektif Komputer”",
+    bar:"#84CC16", tint:"#F4FBE3", btext:"#1A2E05", nameCol:"#4D7C0F",
+    desc:"Skor luar biasa! Klik tombol di bawah — LKPD Detektif Komputer akan terbuka langsung di aplikasi ini: uji pemanasan, empat kasus diagnosis komputer “sakit”, sidang argumentasi, dan tantangan bonus."
+  },
+  PERAK: {
+    name:"LKPD PERAK", mission:"“Analis Komponen”",
+    bar:"#64748B", tint:"#EEF2F7", btext:"#FFFFFF", nameCol:"#475569",
+    desc:"Dasarmu sudah kuat! LKPD Analis Komponen menantimu di aplikasi ini: tabel fungsi, memilah hardware–software–brainware, analogi tubuh manusia, dan tantangan analis."
+  },
+  PERUNGGU: {
+    name:"LKPD PERUNGGU", mission:"“Penjelajah Komponen”",
+    bar:"#D97706", tint:"#FDF4E5", btext:"#FFFFFF", nameCol:"#92400E",
+    desc:"Santai — semua ahli pernah mulai dari nol! LKPD Penjelajah Komponen menantimu: game menjodohkan gambar & nama, mengelompokkan komponen, dan mengisi fungsi dengan bantuan kata. Ayo mulai menjelajah!"
+  }
+};
+
+/* ---------- data komponen ---------- */
+const M_COMPS = [
+  {name:"Monitor", icon:"monitor"}, {name:"Keyboard", icon:"keyboard"},
+  {name:"Mouse", icon:"mouse"}, {name:"CPU", icon:"cpu"},
+  {name:"Harddisk", icon:"hard-drive"}, {name:"RAM", icon:"memory-stick"},
+  {name:"Printer", icon:"printer"}, {name:"Speaker", icon:"volume-2"},
+];
+const G_ITEMS = [
+  {label:"Keyboard", icon:"keyboard"}, {label:"Mouse", icon:"mouse"},
+  {label:"CPU", icon:"cpu"}, {label:"RAM", icon:"memory-stick"},
+  {label:"Monitor", icon:"monitor"}, {label:"Printer", icon:"printer"},
+  {label:"Speaker", icon:"volume-2"}, {label:"Harddisk", icon:"hard-drive"},
+];
+const G_KEY = {Keyboard:"input", Mouse:"input", CPU:"proses", RAM:"proses",
+               Monitor:"output", Printer:"output", Speaker:"output", Harddisk:"simpan"};
+const G_BINS = [
+  {key:"input",  label:"ALAT INPUT",   hint:"memberi perintah",  icon:"log-in"},
+  {key:"proses", label:"ALAT PROSES",  hint:"mengolah data",     icon:"cpu"},
+  {key:"output", label:"ALAT OUTPUT",  hint:"menampilkan hasil", icon:"monitor"},
+  {key:"simpan", label:"PENYIMPANAN",  hint:"menyimpan data",    icon:"database"},
+];
+const FILL_ITEMS = [
+  {name:"Keyboard", icon:"keyboard", func:"Alat untuk mengetik huruf dan angka"},
+  {name:"Mouse", icon:"mouse", func:"Alat untuk menggerakkan panah dan mengeklik"},
+  {name:"Monitor", icon:"monitor", func:"Tempat menampilkan gambar dan tulisan"},
+  {name:"CPU", icon:"cpu", func:"Tempat mengolah semua perintah (otak komputer)"},
+  {name:"Harddisk", icon:"hard-drive", func:"Tempat menyimpan file secara permanen"},
+  {name:"Speaker", icon:"volume-2", func:"Alat untuk mengeluarkan suara dan musik"},
+];
+const P2_ITEMS = ["Microsoft Word","Monitor","Guru yang mengoperasikan komputer","Windows 11","RAM",
+  "Perancang game","Google Chrome","Keyboard","Siswa yang mengetik tugas","Aplikasi Kalkulator","Mouse","Harddisk"];
+const P2_KEY  = ["S","H","B","S","H","B","S","H","B","S","H","H"];
+const CAT_NAME = {H:"Hardware", S:"Software", B:"Brainware"};
+const AN_ROWS = [
+  {human:"💭 Memori jangka pendek (yang sedang dipikirkan)", key:"RAM"},
+  {human:"📔 Memori jangka panjang (kenangan lama)", key:"Harddisk"},
+  {human:"👀✋ Mata & tangan (menerima info dari luar)", key:"Keyboard & Mouse"},
+  {human:"👄 Mulut (menyampaikan sesuatu ke luar)", key:"Monitor & Speaker"},
+  {human:"❤️ Jantung (memberi energi ke seluruh tubuh)", key:"Power Supply"},
+];
+const AN_OPTS = ["RAM","Harddisk","Keyboard & Mouse","Monitor & Speaker","Power Supply","CPU"];
+const P1_ROWS = ["RAM","Harddisk","Monitor","Keyboard","Power Supply"];
+const E1_ROWS = ["RAM","Harddisk","Motherboard","Power Supply","GPU / VGA Card"];
+const CASES = [
+  {t:"Kasus #1 — “Layar Tak Menyapa”", d:"Pak Budi menyalakan komputer. Lampu CPU menyala, kipas berputar, tapi layar monitor gelap total."},
+  {t:"Kasus #2 — “Hidup-Mati Tak Menentu”", d:"Komputer Andi menyala dan muncul logo, tetapi sebelum masuk Windows tiba-tiba restart sendiri. Berulang terus!"},
+  {t:"Kasus #3 — “Panah Penurut”", d:"Kursor di layar bisa digerakkan dengan mouse, tetapi setiap kali diklik tidak terjadi apa-apa."},
+  {t:"Kasus #4 — “Si Kura-Kura”", d:"Laptop Rara sangat lambat membuka aplikasi. Setiap klik butuh beberapa detik. Dulu tidak seperti ini!"},
+];
+const KW = {
+  perak:{t1:["sementara","temporer"], t2:["permanen","simpan","penyimpan"], t3:["tampil","layar","lihat","gambar"],
+         t4:["ketik","menulis","input","masuk"], t5:["listrik","daya","energi","suplai"]},
+  emas: {q1:["sementara","temporer"], q2:["permanen","simpan","penyimpan"], q3:["papan","induk","hubung","rangka"],
+         q4:["listrik","daya","energi","suplai"], q5:["grafis","gambar","tampilan","vga","3d"]}
+};
+
+/* ================================================================
+   UTIL
+================================================================ */
+const $ = id => document.getElementById(id);
+const screens = {intro:$("screen-intro"), quiz:$("screen-quiz"), result:$("screen-result"), lkpd:$("screen-lkpd")};
+const refreshIcons = () => window.lucide && lucide.createIcons();
+function show(name){ Object.values(screens).forEach(s=>s.classList.remove("active"));
+  screens[name].classList.add("active"); window.scrollTo({top:0}); refreshIcons(); }
+function toast(msg, icon="info"){ const t=$("toast");
+  t.innerHTML=`<i data-lucide="${icon}"></i>${msg}`; refreshIcons(); t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600); }
+function shuffle(arr){ const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nl  = s => esc(s).replace(/\n/g,"<br>");
+const has = (v,arr) => arr.some(k=>String(v).toLowerCase().includes(k));
+function countUp(el,target,ms){ const t0=performance.now();
+  (function step(t){ const p=Math.min((t-t0)/ms,1);
+    el.textContent=Math.round(target*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); })(t0); }
+function confetti(n,colors){ const fx=$("fx");
+  for(let i=0;i<n;i++){ const s=document.createElement("span"); s.className="streak";
+    s.style.cssText=`left:${Math.random()*100}%;width:${22+Math.random()*60}px;height:${3+Math.random()*4}px;
+      background:${colors[i%colors.length]};opacity:${.6+Math.random()*.4};
+      transform:rotate(${Math.random()*360}deg);animation-duration:${1+Math.random()*1.5}s;animation-delay:${Math.random()*.6}s;`;
+    fx.appendChild(s); setTimeout(()=>s.remove(),3400); } }
+
+/* ================================================================
+   KUIS
+================================================================ */
+let S = {name:"", kelas:"", absen:"", idx:0, score:0, answers:[], answered:false,
+         tLeft:TIME_PER_Q, timer:null, tStart:0, durasiTes:0, order:[]};
+
+ $("btnStart").addEventListener("click", startQuiz);
+ $("inpName").addEventListener("keydown", e=>{ if(e.key==="Enter") startQuiz(); });
+ $("inpKelas").addEventListener("keydown", e=>{ if(e.key==="Enter") startQuiz(); });
+ $("inpAbsen").addEventListener("keydown", e=>{ if(e.key==="Enter") startQuiz(); });
+
+function startQuiz(){
+  const name=$("inpName").value.trim();
+  const kelas=$("inpKelas").value.trim().toUpperCase();
+  const absen=$("inpAbsen").value.trim();
+  let ok=true;
+  const flag=(id,bad)=>{ const f=$(id); f.classList.remove("err"); if(bad){void f.offsetWidth; f.classList.add("err"); ok=false;} };
+  flag("nameField", name.length<2);
+  flag("kelasField", kelas.length<1);
+  flag("absenField", !(+absen>=1 && +absen<=60));
+  if(!ok) return;
+  S={name, kelas, absen, idx:0, score:0, answers:[], answered:false,
+     tLeft:TIME_PER_Q, timer:null, tStart:Date.now(), durasiTes:0, order:[]};
+  $("qName").textContent=name; $("qKelas").textContent=kelas; $("qAbsen").textContent=absen;
+  $("qScoreN").textContent="0";
+  buildTicks(); show("quiz"); renderQuestion();
+}
+function buildTicks(){ $("ticks").innerHTML = QUESTIONS.map(()=>`<span class="tick"></span>`).join(""); }
+
+function renderQuestion(){
+  const q=QUESTIONS[S.idx]; S.answered=false;
+  $("qNum").textContent=String(S.idx+1).padStart(2,"0");
+  $("qTag").textContent=q.tag; $("qText").textContent=q.q;
+  $("feedback").className="feedback"; $("nextRow").classList.remove("show");
+  $("btnNextTxt").textContent=(S.idx===QUESTIONS.length-1)?"LIHAT HASIL":"SOAL BERIKUTNYA";
+  S.order=shuffle(q.opts.map((t,i)=>({t,ok:i===q.a})));
+  $("opts").classList.remove("locked");
+  $("opts").innerHTML=S.order.map((o,i)=>`<button class="opt" data-i="${i}"><span class="key">${"ABCD"[i]}</span><span>${o.t}</span></button>`).join("");
+  document.querySelectorAll("#opts .opt").forEach(b=>b.addEventListener("click",()=>answer(+b.dataset.i)));
+  updateTicks(); startTimer();
+}
+function updateTicks(){ document.querySelectorAll("#ticks .tick").forEach((el,i)=>{
+  el.className="tick";
+  if(i<S.idx) el.classList.add(S.answers[i].ok?"ok":"no");
+  if(i===S.idx) el.classList.add("now"); }); }
+
+function startTimer(){
+  clearInterval(S.timer); S.tLeft=TIME_PER_Q;
+  const fill=$("tfill"), num=$("tnum"), bar=$("tbar");
+  bar.classList.remove("low"); num.classList.remove("low");
+  fill.style.width="100%"; num.textContent=TIME_PER_Q;
+  S.timer=setInterval(()=>{ S.tLeft-=0.1;
+    if(S.tLeft<=0){ S.tLeft=0; fill.style.width="0%"; num.textContent="0"; clearInterval(S.timer); answer(-1,true); return; }
+    fill.style.width=(S.tLeft/TIME_PER_Q*100)+"%"; num.textContent=Math.ceil(S.tLeft);
+    if(S.tLeft<=6){ bar.classList.add("low"); num.classList.add("low"); } },100);
+}
+function answer(i,timeout=false){
+  if(S.answered) return; S.answered=true; clearInterval(S.timer);
+  const q=QUESTIONS[S.idx];
+  const chosen=(i>=0)?S.order[i]:null; const ok=!!chosen&&chosen.ok;
+  if(ok) S.score++;
+  S.answers.push({q:q.q, ok, timeout, chosen:chosen?chosen.t:null, key:q.opts[q.a]});
+  $("opts").classList.add("locked");
+  document.querySelectorAll("#opts .opt").forEach((b,bi)=>{ b.disabled=true;
+    if(S.order[bi].ok) b.classList.add("correct"); else if(bi===i) b.classList.add("wrong"); });
+  $("qScoreN").textContent=S.score; updateTicks();
+  const fb=$("feedback"); fb.className="feedback show "+(ok?"good":"bad");
+  if(ok) fb.innerHTML=`<i data-lucide="circle-check"></i>Tepat sekali, ${esc(S.name)}! Skor +1.`;
+  else if(timeout) fb.innerHTML=`<i data-lucide="timer-off"></i>Waktu habis. Jawaban benar: <u>${q.opts[q.a]}</u>.`;
+  else fb.innerHTML=`<i data-lucide="circle-x"></i>Belum tepat. Jawaban benar: <u>${q.opts[q.a]}</u>.`;
+  refreshIcons(); $("nextRow").classList.add("show"); $("btnNext").focus();
+}
+ $("btnNext").addEventListener("click",()=>{ stopCountdown();
+  if(S.idx===QUESTIONS.length-1) showResult(); else { S.idx++; renderQuestion(); } });
+document.addEventListener("keydown",e=>{
+  if(!screens.quiz.classList.contains("active")) return;
+  if(!S.answered){ let i="1234".indexOf(e.key); if(i<0) i="ABCD".indexOf(e.key.toUpperCase());
+    if(i>=0&&i<4){ const b=document.querySelectorAll("#opts .opt")[i]; if(b&&!b.disabled)b.click(); } }
+  else if(e.key==="Enter") $("btnNext").click(); });
+
+/* ================================================================
+   HASIL + AUTO-REDIRECT KE LKPD
+================================================================ */
+const levelOf = sc => sc>=LEVEL_CUT.EMAS?"EMAS":sc>=LEVEL_CUT.PERAK?"PERAK":"PERUNGGU";
+let cd=null;
+function stopCountdown(){ if(cd){clearInterval(cd); cd=null;} }
+
+function showResult(){
+  const dur=Math.round((Date.now()-S.tStart)/1000); S.durasiTes=dur;
+  const mm=String(Math.floor(dur/60)).padStart(2,"0"), ss=String(dur%60).padStart(2,"0");
+  const lv=levelOf(S.score), L=LEVELS[lv];
+  $("rName").textContent=S.name;
+  $("rKelas").textContent=S.kelas; $("rAbsen").textContent=S.absen;
+  $("rTime").textContent=`Waktu ${mm}:${ss}`;
+  $("rLevel").textContent=L.name; $("rMission").textContent=L.mission; $("rDesc").textContent=L.desc;
+  $("levelCard").style.setProperty("--lc",L.bar); $("levelCard").style.setProperty("--lt",L.nameCol);
+  $("review").innerHTML=S.answers.map((a,i)=>`
+    <div class="rev-item ${a.ok?"":"no"}">
+      <div class="rq"><i data-lucide="${a.ok?"circle-check":(a.timeout?"timer-off":"circle-x")}"></i>
+      Soal ${i+1} — ${a.ok?"Benar":(a.timeout?"Waktu habis":"Belum tepat")}</div>
+      <div>${a.q}</div>
+      <div class="ra">Jawabanmu: ${a.chosen?`<b>${esc(a.chosen)}</b>`:"—"} · Kunci: <b>${esc(a.key)}</b></div>
+    </div>`).join("");
+  $("review").classList.remove("open");
+  show("result"); saveHistory({name:S.name,kelas:S.kelas,absen:S.absen,score:S.score,total:QUESTIONS.length,level:lv,at:Date.now()});
+  countUp($("rScore"),S.score,900);
+  const card=$("levelCard"); card.classList.remove("stamped"); void card.offsetWidth; card.classList.add("stamped");
+  const cols={EMAS:["#84CC16","#38BDF8","#FBBF24","#F4FBFF"],PERAK:["#94A3B8","#38BDF8","#E2E8F0"],PERUNGGU:["#F59E0B","#94A3B8","#FCD34D"]};
+  confetti(lv==="EMAS"?70:lv==="PERAK"?40:18, cols[lv]);
+  refreshIcons(); startCountdown();
+}
+function startCountdown(){
+  stopCountdown(); let n=6; const paint=()=>$("goTxt").textContent=`BUKA LKPD-KU (${n})`; paint();
+  cd=setInterval(()=>{ n--; if(n<=0){ stopCountdown(); goLKPD(); } else paint(); },1000);
+}
+function goLKPD(){
+  stopCountdown(); $("goTxt").textContent="BUKA LKPD-KU SEKARANG";
+  openLKPD(levelOf(S.score));
+}
+ $("btnGoLKPD").addEventListener("click",goLKPD);
+ $("btnReview").addEventListener("click",()=>{ stopCountdown(); $("goTxt").textContent="BUKA LKPD-KU SEKARANG";
+  const r=$("review"); r.classList.toggle("open");
+  if(r.classList.contains("open")) r.scrollIntoView({behavior:"smooth",block:"nearest"}); });
+ $("btnRetry").addEventListener("click",()=>{ stopCountdown(); show("quiz"); S.idx=0; S.score=0; S.answers=[];
+  $("qScoreN").textContent="0"; buildTicks(); renderQuestion(); });
+
+/* ================================================================
+   LKPD INTERAKTIF
+================================================================ */
+let LKD=null;
+const val = k => { const el=document.querySelector(`#lkpdArea [data-k="${k}"]`); return el?String(el.value).trim():""; };
+
+function actBlock(id,n,title,desc,time,body){
+  return `<div class="act panel" data-act="${id}">
+    <div class="act-head">
+      <span class="act-num">${n}</span>
+      <div class="act-tt"><h3>${title}</h3><p>${desc}</p></div>
+      <span class="act-time"><i data-lucide="clock"></i>${time}</span>
+      <span class="act-status"></span>
+    </div>${body}</div>`;
+}
+const reflBlock = items => `<div class="refl" data-act="refl">
+  <h4><i data-lucide="sparkles"></i>Refleksiku</h4>
+  ${items.map((t,i)=>`<div class="frow"><label>${t}</label><input class="txt full" data-k="refl${i+1}"></div>`).join("")}</div>`;
+
+function openLKPD(lv){
+  const L=LEVELS[lv];
+  $("lkHead").style.background=L.tint; $("lkHead").style.borderLeftColor=L.bar;
+  $("lkBadge").textContent=L.name; $("lkBadge").style.background=L.bar; $("lkBadge").style.color=L.btext;
+  $("lkTitle").textContent=L.mission.replace(/[“”]/g,"");
+  $("lkDesc").textContent="Kerjakan langsung di layar ini. Setelah selesai, klik “Kumpulkan Jawaban” — data otomatis tercatat ke Spreadsheet guru, lalu cetak kartunya.";
+  $("lkName").textContent=S.name||"(tanpa nama)";
+  $("lkKelasAbsen").textContent=`${S.kelas} · Absen ${S.absen}`;
+  $("lkScore").textContent=S.score;
+  $("lkSwitch").value=lv;
+  $("printCard").classList.remove("show"); $("printCard").innerHTML=""; $("btnPrintLK").disabled=true;
+  setSync(CLOUD_ON ? "idle" : "off");
+
+  if(lv==="PERUNGGU") buildPerunggu();
+  else if(lv==="PERAK") buildPerak();
+  else buildEmas();
+
+  show("lkpd"); updateProgress(); refreshIcons();
+  confetti(20,["#38BDF8","#84CC16","#FBBF24"]);
+  toast(`LKPD ${L.name.split(" ")[1]} siap dikerjakan!`, "sparkles");
+}
+ $("lkSwitch").addEventListener("change",e=>openLKPD(e.target.value));
+ $("btnBackResult").addEventListener("click",()=>{ stopCountdown(); $("goTxt").textContent="BUKA LKPD-KU SEKARANG"; show("result"); });
+ $("btnNewStudent").addEventListener("click",()=>location.reload());
+
+/* ---------- 🥉 PERUNGGU ---------- */
+function buildPerunggu(){
+  LKD={lv:"PERUNGGU", match:{pairs:0,attempts:0,right:shuffle(M_COMPS.map((_,i)=>i)),map:{}},
+       group:{place:{}}, fill:{fills:{}, order:shuffle(FILL_ITEMS.map((_,i)=>i))}};
+  let h="";
+  h+=actBlock("a1",1,"Menjodohkan Komponen","Klik gambar komponen di kiri, lalu klik namanya di kanan. Pasangan benar akan berwarna hijau!","± 8 menit",
+    `<div class="match-grid" id="mWrap">
+      <div class="mcol">${M_COMPS.map((c,i)=>`<button class="mcard" data-side="L" data-i="${i}" title="${c.name}"><i data-lucide="${c.icon}"></i></button>`).join("")}</div>
+      <div class="mcol">${LKD.match.right.map((ci,j)=>`<button class="mcard" data-side="R" data-i="${j}">${M_COMPS[ci].name}</button>`).join("")}</div>
+    </div>`);
+  h+=actBlock("a2",2,"Keluarga Besar Komputer","Klik komponen di kumpulan bawah, lalu klik kotak keluarganya. Klik komponen yang sudah di dalam kotak untuk mengembalikannya.","± 6 menit",
+    `<div id="gWrap">
+      <div class="gpool" id="gPool">${G_ITEMS.map(it=>`<button class="gchip" data-g="${it.label}"><i data-lucide="${it.icon}"></i>${it.label}</button>`).join("")}</div>
+      <div class="gbins">${G_BINS.map(b=>`<div class="gbin" data-bin="${b.key}">
+        <div class="gbin-h"><i data-lucide="${b.icon}"></i>${b.label}<small>${b.hint}</small></div>
+        <div class="gbin-body"></div></div>`).join("")}</div>
+    </div>`);
+  h+=actBlock("a3",3,"Apa Fungsinya?","Klik kata fungsi di Bantuan Kata (kotak kuning), lalu klik kotak kosong di depan komponennya.","± 8 menit",
+    `<div class="fbank"><span class="fb-label">📚 BANTUAN KATA — KLIK SATU</span>
+      ${LKD.fill.order.map(i=>`<button class="wchip" data-w="${esc(FILL_ITEMS[i].func)}">${FILL_ITEMS[i].func}</button>`).join("")}</div>
+     <div class="fillrows">${FILL_ITEMS.map((f,i)=>`<div class="fillrow">
+      <span class="fname"><i data-lucide="${f.icon}"></i>${f.name}</span>
+      <button class="slot" data-si="${i}">… klik & letakkan fungsinya di sini …</button></div>`).join("")}</div>`);
+  h+=reflBlock(["Komponen yang baru saya kenal hari ini:","Satu hal yang ingin saya ketahui lagi:"]);
+  $("lkpdArea").innerHTML=h;
+
+  let mSel=null;
+  $("mWrap").addEventListener("click",e=>{
+    const card=e.target.closest(".mcard"); if(!card||card.classList.contains("done"))return;
+    const side=card.dataset.side, i=+card.dataset.i;
+    if(!mSel){ mSel={side,i,el:card}; card.classList.add("sel"); return; }
+    if(mSel.side===side&&mSel.i===i){ card.classList.remove("sel"); mSel=null; return; }
+    if(mSel.side===side){ mSel.el.classList.remove("sel"); mSel={side,i,el:card}; card.classList.add("sel"); return; }
+    const leftIdx = side==="L"? i : mSel.i;
+    const rightIdx= side==="R"? i : mSel.i;
+    if(leftIdx===LKD.match.right[rightIdx]){
+      mSel.el.classList.remove("sel"); card.classList.add("done"); mSel.el.classList.add("done");
+      LKD.match.map[leftIdx]=true; LKD.match.pairs++;
+    }else{
+      LKD.match.attempts++;
+      const a=card,b=mSel.el; a.classList.add("bad"); b.classList.add("bad");
+      setTimeout(()=>{a.classList.remove("bad");b.classList.remove("bad");},450);
+      mSel.el.classList.remove("sel");
+    }
+    mSel=null; updateProgress();
+  });
+
+  let gSel=null;
+  $("gWrap").addEventListener("click",e=>{
+    const chip=e.target.closest(".gchip");
+    if(chip){
+      if(chip.parentElement.classList.contains("gbin-body")){
+        $("gPool").appendChild(chip); chip.classList.remove("sel"); delete LKD.group.place[chip.dataset.g];
+      }else{
+        document.querySelectorAll(".gchip.sel").forEach(c=>c.classList.remove("sel"));
+        gSel=chip; chip.classList.add("sel");
+      }
+      updateProgress(); return;
+    }
+    const bin=e.target.closest(".gbin");
+    if(bin&&gSel){ bin.querySelector(".gbin-body").appendChild(gSel); gSel.classList.remove("sel");
+      LKD.group.place[gSel.dataset.g]=bin.dataset.bin; gSel=null; updateProgress(); }
+  });
+
+  let wSel=null;
+  $("lkpdArea").addEventListener("click",e=>{
+    const chip=e.target.closest(".wchip");
+    if(chip){ if(wSel)wSel.classList.remove("sel"); wSel=chip; chip.classList.add("sel"); return; }
+    const slot=e.target.closest(".slot"); if(!slot)return;
+    const si=+slot.dataset.si;
+    if(LKD.fill.fills[si]){
+      const w=slot.dataset.w;
+      const chipBack=document.querySelector(`.wchip[data-w="${CSS.escape(w)}"]`);
+      if(chipBack) chipBack.classList.remove("used");
+      delete LKD.fill.fills[si]; slot.textContent="… klik & letakkan fungsinya di sini …";
+      slot.classList.remove("filled"); delete slot.dataset.w; updateProgress(); return;
+    }
+    if(wSel){ const w=wSel.dataset.w;
+      slot.textContent=w; slot.dataset.w=w; slot.classList.add("filled");
+      wSel.classList.add("used"); wSel.classList.remove("sel"); wSel=null;
+      LKD.fill.fills[si]=w; updateProgress(); }
+  });
+}
+
+/* ---------- 🥈 PERAK ---------- */
+function buildPerak(){
+  LKD={lv:"PERAK", cls:Array(P2_ITEMS.length).fill(null)};
+  const opts=AN_OPTS.map(o=>`<option value="${o}">${o}</option>`).join("");
+  let h="";
+  h+=actBlock("a1",1,"Tabel Fungsi Komponen","Lengkapi fungsi tiap komponen dengan kalimatmu sendiri — tanpa melihat catatan teman dulu!","± 6 menit",
+    `<table class="ttable"><tr><th>KOMPONEN</th><th>FUNGSINYA</th></tr>
+     <tr><td>CPU</td><td class="ex">contoh: mengolah semua data dan perintah (otak komputer)</td></tr>
+     ${P1_ROWS.map((r,i)=>`<tr><td>${r}</td><td><input class="txt full" data-k="t${i+1}" placeholder="Tulis fungsinya…"></td></tr>`).join("")}</table>`);
+  h+=actBlock("a2",2,"Tiga Dunia: Hardware · Software · Brainware","Klik H / S / B pada setiap item untuk menggolongkannya.","± 6 menit",
+    `<div class="cllist">${P2_ITEMS.map((it,i)=>`<div class="clrow"><span class="clname">${it}</span>
+      <div class="hbtns">
+        <button class="hbtn h" data-ci="${i}" data-cat="H" title="Hardware">H</button>
+        <button class="hbtn s" data-ci="${i}" data-cat="S" title="Software">S</button>
+        <button class="hbtn b" data-ci="${i}" data-cat="B" title="Brainware">B</button>
+      </div></div>`).join("")}</div>
+     <p class="hintxt">💡 H = Hardware (bisa disentuh) · S = Software (program) · B = Brainware (manusia)</p>`);
+  h+=actBlock("a3",3,"Komputer = Tubuh Manusia?","Pilih komponen yang berpadanan, lalu tulis alasannya dengan kalimat sendiri.","± 10 menit",
+    `<table class="ttable"><tr><th>TUBUH MANUSIA</th><th>KOMPONEN</th><th>ALASANKU</th></tr>
+     <tr><td>🧠 Otak</td><td class="ex">CPU (contoh)</td><td class="ex">sama-sama mengolah informasi & mengambil keputusan</td></tr>
+     ${AN_ROWS.map((r,i)=>`<tr><td>${r.human}</td>
+       <td><select data-k="anS${i}"><option value="">— pilih —</option>${opts}</select></td>
+       <td><input class="txt full" data-k="anR${i}" placeholder="Alasanku…"></td></tr>`).join("")}</table>`);
+  h+=actBlock("a4",4,"Tantangan Analis","Mengapa komputer disebut sebuah “sistem”? Jelaskan dengan 2–3 kalimatmu sendiri, kaitkan dengan analogi di atas.","± 5 menit",
+    `<textarea class="ta" data-k="tantangan" rows="3" placeholder="Menurutku komputer disebut sistem karena…"></textarea>`);
+  h+=reflBlock(["Konsep yang paling menantang bagiku:","Cara saya mengatasinya:","Hal baru yang saya dapat dari teman kelompok:"]);
+  $("lkpdArea").innerHTML=h;
+
+  $("lkpdArea").addEventListener("click",e=>{
+    const b=e.target.closest(".hbtn"); if(!b)return;
+    const ci=+b.dataset.ci;
+    b.parentElement.querySelectorAll(".hbtn").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); LKD.cls[ci]=b.dataset.cat; updateProgress();
+  });
+}
+
+/* ---------- 🥇 EMAS ---------- */
+function buildEmas(){
+  LKD={lv:"EMAS", arg:null};
+  let h="";
+  h+=actBlock("a1",1,"Pemanasan Detektif","Tanpa membuka buku! Tulis fungsi singkat tiap komponen. Jika ragu, tulis tanda (?) — detektif jujur pada batas pengetahuannya.","± 4 menit",
+    `<table class="ttable"><tr><th>KOMPONEN</th><th>FUNGSINYA</th></tr>
+     ${E1_ROWS.map((r,i)=>`<tr><td>${r}</td><td><input class="txt full" data-k="q${i+1}" placeholder="Fungsi singkat…"></td></tr>`).join("")}</table>`);
+  h+=actBlock("a2",2,"Ruang Praktik: Diagnosis Komputer Sakit","Bacalah keluhan “pasien”. Pilih dugaan golongan masalahnya, lalu tulis diagnosis & buktimu.","± 12 menit",
+    CASES.map((c,i)=>`<div class="case">
+      <h4><i data-lucide="file-warning"></i>${c.t}</h4>
+      <p class="kel">“${c.d}”</p>
+      <div class="rowline"><b style="font-size:13px">Dugaan:</b>
+        <select data-k="cC${i}"><option value="">— pilih —</option><option>Hardware</option><option>Software</option><option>Brainware</option><option>Belum pasti</option></select></div>
+      <textarea class="ta" data-k="cT${i}" rows="2" placeholder="Komponen yang dicurigai + bukti/gejalanya…"></textarea></div>`).join(""));
+  h+=actBlock("a3",3,"Sidang Detektif — Argumentasimu","Pilih pendapatmu, lalu pertahankan dengan alur input → proses → output.","± 5 menit",
+    `<p style="font-weight:700;font-size:14.5px">“Jika brainware tidak ada — tidak ada siapa pun yang menyalakan dan mengoperasikan komputer — apakah komputer tetap berguna?”</p>
+     <div class="radiopair"><button class="rbtn" data-arg="Berguna">✔ Tetap berguna</button>
+     <button class="rbtn" data-arg="Tidak berguna">✘ Tidak berguna</button></div>
+     <textarea class="ta" data-k="argR" rows="3" placeholder="Alasanku (kaitkan dengan input → proses → output)…"></textarea>`);
+  h+=actBlock("a4",4,"Tantangan Bonus Detektif","Buat 2 pertanyaanmu sendiri untuk menguji kelompok lain saat presentasi!","± 4 menit",
+    `<input class="txt full" data-k="b1" placeholder="Pertanyaan 1…" style="margin-bottom:9px">
+     <input class="txt full" data-k="b2" placeholder="Pertanyaan 2…">`);
+  h+=reflBlock(["Kasus yang paling sulit didiagnosis:","Apa yang membuatmu berhasil / sulit?","Satu hal yang kupelajari dari teman level lain:"]);
+  $("lkpdArea").innerHTML=h;
+
+  $("lkpdArea").addEventListener("click",e=>{
+    const b=e.target.closest(".rbtn"); if(!b)return;
+    document.querySelectorAll(".rbtn").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); LKD.arg=b.dataset.arg; updateProgress();
+  });
+}
+
+/* ---------- progres ---------- */
+const ACT_IDS = { PERUNGGU:["a1","a2","a3","refl"],
+                  PERAK:["a1","a2","a3","a4","refl"],
+                  EMAS:["a1","a2","a3","a4","refl"] };
+function actDone(){
+  const lv=LKD.lv;
+  if(lv==="PERUNGGU") return [
+    LKD.match.pairs===8,
+    G_ITEMS.every(it=>LKD.group.place[it.label]),
+    FILL_ITEMS.every((_,i)=>LKD.fill.fills[i]),
+    !!val("refl1")||!!val("refl2")];
+  if(lv==="PERAK") return [
+    P1_ROWS.every((_,i)=>val("t"+(i+1))!==""),
+    LKD.cls.every(v=>v!==null),
+    AN_ROWS.every((_,i)=>val("anS"+i)!==""),
+    !!val("tantangan"),
+    !!val("refl1")||!!val("refl2")||!!val("refl3")];
+  return [
+    E1_ROWS.every((_,i)=>val("q"+(i+1))!==""),
+    CASES.every((_,i)=>val("cC"+i)!==""&&val("cT"+i)!==""),
+    !!LKD.arg&&!!val("argR"),
+    !!val("b1")&&!!val("b2"),
+    !!val("refl1")||!!val("refl2")||!!val("refl3")];
+}
+function updateProgress(){
+  if(!LKD)return;
+  const d=actDone(), ids=ACT_IDS[LKD.lv];
+  ids.forEach((id,i)=>{ const act=document.querySelector(`.act[data-act="${id}"]`);
+    if(act) act.querySelector(".act-status").classList.toggle("done",!!d[i]); });
+  $("lkProg").textContent=`${d.filter(Boolean).length}/${d.length}`;
+}
+ $("lkpdArea").addEventListener("input",updateProgress);
+
+/* ================================================================
+   KUMPULKAN + KIRIM KE SPREADSHEET (via Apps Script /exec)
+================================================================ */
+ $("btnCollect").addEventListener("click",()=>{
+  if(!LKD)return;
+  $("printCard").innerHTML=buildSummary();
+  $("printCard").classList.add("show");
+  $("btnPrintLK").disabled=false;
+  $("printCard").scrollIntoView({behavior:"smooth",block:"start"});
+  confetti(34,["#38BDF8","#84CC16","#FBBF24","#F472B6"]);
+  toast("Jawaban terkumpul! Kartu siap dicetak.", "badge-check");
+  submitToSheet();
+});
+ $("btnPrintLK").addEventListener("click",()=>window.print());
+
+function collectAnswers(){
+  const o={};
+  document.querySelectorAll("#lkpdArea [data-k]").forEach(el=>o[el.dataset.k]=el.value);
+  if(LKD.lv==="PERUNGGU"){
+    o.pasanganBenar=LKD.match.pairs; o.pasanganSalahAttempt=LKD.match.attempts;
+    o.pengelompokan=LKD.group.place; o.isiFungsi=LKD.fill.fills;
+  }
+  if(LKD.lv==="PERAK"){ o.klasifikasiHSB=P2_ITEMS.map((it,i)=>LKD.cls[i]?CAT_NAME[LKD.cls[i]]:"-"); }
+  if(LKD.lv==="EMAS"){ o.pendapatSidang=LKD.arg||"-"; }
+  return o;
+}
+function buildPayload(){
+  const now=new Date();
+  return {
+    nama:S.name, kelas:S.kelas, noAbsen:S.absen,
+    level:LKD.lv, levelName:LEVELS[LKD.lv].name,
+    skor:S.score, total:QUESTIONS.length,
+    durasiDetik:S.durasiTes,
+    tanggalSubmit:now.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}),
+    jamSubmit:now.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}),
+    jawaban:collectAnswers()
+  };
+}
+
+let syncState="idle";
+function setSync(st){
+  syncState=st;
+  const p=$("syncPill");
+  p.classList.remove("ok","err","click");
+  if(st==="off")    p.innerHTML=`<i data-lucide="cloud-off"></i><span>Mode Lokal — isi SCRIPT_URL di kode untuk simpan otomatis</span>`;
+  if(st==="idle")   p.innerHTML=`<i data-lucide="cloud-upload"></i><span>Belum terkirim</span>`;
+  if(st==="sending")p.innerHTML=`<i data-lucide="cloud-upload" class="spin"></i><span>Mengirim ke Spreadsheet…</span>`;
+  if(st==="ok")   { p.classList.add("ok");    p.innerHTML=`<i data-lucide="circle-check"></i><span>Tersimpan di Spreadsheet ✓</span>`; }
+  if(st==="fail") { p.classList.add("err","click"); p.innerHTML=`<i data-lucide="circle-alert"></i><span>Gagal terkirim — klik untuk kirim ulang</span>`; }
+  refreshIcons();
+}
+ $("syncPill").addEventListener("click",()=>{ if(syncState==="fail") submitToSheet(); });
+
+function submitToSheet(){
+  if(!CLOUD_ON){ setSync("off"); return; }
+  if(syncState==="sending") return;
+  setSync("sending");
+  const body=JSON.stringify(buildPayload());
+  fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body})
+    .then(r=>r.text())
+    .then(t=>{
+      if(t.includes("success")) setSync("ok");
+      else setSync("fail");
+    })
+    .catch(()=>{ /* fallback: kirim mode no-cors */
+      fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body})
+        .then(()=>setSync("ok"))
+        .catch(()=>setSync("fail"));
+    });
+}
+
+/* ---------- kartu jawaban (cetak) ---------- */
+const dot = ok => ok===true?'<span class="dot ok">✔</span>':ok===false?'<span class="dot no">✘</span>':'<span class="dot na">?</span>';
+const prow = (q,a,ok,extra="") => `<div class="pc-row">${dot(ok)}<div><b>${q}</b><span>${a||"—"}</span>${extra}</div></div>`;
+
+function buildSummary(){
+  const lv=LKD.lv, L=LEVELS[lv];
+  const now=new Date();
+  const tgl=now.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+  const jam=now.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+  let secs="";
+  const sec=(t,rows)=>secs+=`<div class="pc-sec"><h4>${t}</h4>${rows.join("")}</div>`;
+
+  if(lv==="PERUNGGU"){
+    sec("Kegiatan 1 · Menjodohkan Komponen",
+      M_COMPS.map((c,i)=>prow(c.name, LKD.match.map[i]?c.name:"", !!LKD.match.map[i]))
+      .concat([`<div class="pc-note">Salah pasang: ${LKD.match.attempts} kali</div>`]));
+    sec("Kegiatan 2 · Mengelompokkan Komponen",
+      G_ITEMS.map(it=>{ const p=LKD.group.place[it.label];
+        return prow(it.label, p?G_BINS.find(b=>b.key===p).label:"belum ditempatkan", p===G_KEY[it.label]); }));
+    sec("Kegiatan 3 · Apa Fungsinya?",
+      FILL_ITEMS.map((f,i)=>{ const v=LKD.fill.fills[i];
+        return prow(f.name, v||"", v===f.func); }));
+    sec("Refleksi",[prow("Komponen baru yang dikenal",esc(val("refl1")),null),
+                    prow("Ingin mengetahui",esc(val("refl2")),null)]);
+  }
+  if(lv==="PERAK"){
+    sec("Kegiatan 1 · Tabel Fungsi",
+      P1_ROWS.map((r,i)=>{ const v=val("t"+(i+1));
+        return prow(r,esc(v), v?has(v,KW.perak["t"+(i+1)]):false); }));
+    sec("Kegiatan 2 · Hardware / Software / Brainware",
+      P2_ITEMS.map((it,i)=>{ const c=LKD.cls[i];
+        return prow(it, c?CAT_NAME[c]:"belum dipilih", c===P2_KEY[i]); }));
+    sec("Kegiatan 3 · Analogi Tubuh Manusia",
+      AN_ROWS.map((r,i)=>{ const v=val("anS"+i), rr=esc(val("anR"+i));
+        return prow(r.human, v?`<i>pilihan: ${esc(v)}</i> ${rr?"· alasan: "+rr:""}`:"", v===r.key); }));
+    sec("Kegiatan 4 · Tantangan Analis",[prow("Mengapa komputer disebut “sistem”?",nl(val("tantangan")),null)]);
+    sec("Refleksi",[prow("Paling menantang",esc(val("refl1")),null),
+                    prow("Cara mengatasi",esc(val("refl2")),null),
+                    prow("Hal baru dari teman",esc(val("refl3")),null)]);
+  }
+  if(lv==="EMAS"){
+    sec("Kegiatan 1 · Pemanasan Detektif",
+      E1_ROWS.map((r,i)=>{ const v=val("q"+(i+1));
+        return prow(r,esc(v), v?has(v,KW.emas["q"+(i+1)]):false); }));
+    sec("Kegiatan 2 · Diagnosis Komputer Sakit",
+      CASES.map((c,i)=>{ const cat=val("cC"+i), tx=nl(val("cT"+i));
+        return prow(c.t, cat?`<i>${esc(cat)}</i> ${tx?"· "+tx:""}`:"", cat?(tx?null:false):false); }));
+    sec("Kegiatan 3 · Sidang Detektif",[
+      prow("Pendapat: komputer tetap berguna tanpa brainware?",LKD.arg||"",null),
+      prow("Argumentasi (input → proses → output)",nl(val("argR")),null)]);
+    sec("Kegiatan 4 · Pertanyaan Bonus",[
+      prow("Pertanyaan 1 untuk kelompok lain",esc(val("b1")),null),
+      prow("Pertanyaan 2 untuk kelompok lain",esc(val("b2")),null)]);
+    sec("Refleksi",[prow("Kasus tersulit",esc(val("refl1")),null),
+                    prow("Penyebab berhasil/sulit",esc(val("refl2")),null),
+                    prow("Hal dari teman level lain",esc(val("refl3")),null)]);
+  }
+
+  const syncNote = syncState==="ok" ? "✓ Tersimpan ke Spreadsheet guru"
+                 : syncState==="fail" ? "⚠ Gagal terkirim ke Spreadsheet (klik status untuk kirim ulang)"
+                 : "Mode lokal (belum terhubung Spreadsheet)";
+
+  return `<div class="pc-title">Kartu Jawaban LKPD — Sistem Komputer</div>
+    <div class="pc-sub">INFORMATIKA KELAS IX · PERTEMUAN 1 · PEMBELAJARAN BERDIFERENSIASI</div>
+    <div class="pc-grid">
+      <div><b>NAMA</b><span>${esc(S.name)}</span></div>
+      <div><b>KELAS</b><span>${esc(S.kelas)}</span></div>
+      <div><b>NO. ABSEN</b><span>${esc(S.absen)}</span></div>
+      <div><b>TANGGAL SUBMIT</b><span>${tgl}</span></div>
+      <div><b>JAM SUBMIT</b><span>${jam}</span></div>
+      <div><b>TES DIAGNOSTIK</b><span>${S.score}/8 benar</span></div>
+      <div><b>LKPD</b><span>${L.name}</span></div>
+    </div>
+    ${secs}
+    <div class="pc-note">Keterangan: ✔/✘ = pemeriksaan otomatis aplikasi · ? = menunggu penilaian guru.<br>Status cloud: ${syncNote}</div>
+    <div class="pc-sign"><div>Tanda Tangan Siswa</div><div>Tanda Tangan Guru</div></div>`;
+}
+
+/* ================================================================
+   RIWAYAT LOKAL (localStorage)
+================================================================ */
+const HKEY="sk_diagnostic_history";
+const loadHistory=()=>{ try{return JSON.parse(localStorage.getItem(HKEY))||[];}catch(e){return [];} };
+function saveHistory(en){ try{ const h=loadHistory(); h.unshift(en);
+  localStorage.setItem(HKEY,JSON.stringify(h.slice(0,50))); }catch(e){} }
+function renderHistory(){
+  const h=loadHistory(), box=$("histList");
+  if(!h.length){ box.innerHTML=`<div class="hist-empty">Belum ada riwayat.<br>Hasil setiap siswa yang menyelesaikan tes akan tercatat di sini.</div>`; return; }
+  const col={EMAS:"#84CC16",PERAK:"#64748B",PERUNGGU:"#D97706"};
+  box.innerHTML=h.map(e=>`<div class="hist-item" style="border-left-color:${col[e.level]}">
+    <div><div class="hi-name">${esc(e.name)} <small style="color:var(--mut)">${esc(e.kelas||"")}·${esc(e.absen||"")}</small></div>
+    <div class="hi-time">${new Date(e.at).toLocaleString("id-ID",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</div></div>
+    <span class="hi-lv" style="background:${col[e.level]}">${e.level}</span>
+    <span class="hi-score">${e.score}/${e.total}</span></div>`).join("");
+}
+ $("btnHistory").addEventListener("click",()=>{ renderHistory(); $("drawer").classList.add("show"); $("backdrop").classList.add("show"); refreshIcons(); });
+ $("btnCloseDrawer").addEventListener("click",closeDrawer);
+ $("backdrop").addEventListener("click",closeDrawer);
+function closeDrawer(){ $("drawer").classList.remove("show"); $("backdrop").classList.remove("show"); resetClearBtn(); }
+let clearArmed=false;
+ $("btnClearHist").addEventListener("click",function(){
+  if(!clearArmed){ clearArmed=true; $("btnClearTxt").textContent="Yakin? Klik sekali lagi";
+    setTimeout(resetClearBtn,3000); return; }
+  try{ localStorage.removeItem(HKEY); }catch(e){}
+  renderHistory(); toast("Riwayat dibersihkan","trash-2"); resetClearBtn();
+});
+function resetClearBtn(){ clearArmed=false; $("btnClearTxt").textContent="Bersihkan Riwayat"; }
+
+refreshIcons();
+</script>
+</body>
+</html>
