@@ -147,6 +147,58 @@
     .tips { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-top: 14px; color: #155e75; }
     .tips strong { color: #0e7490; }
 
+    /* ============ MODE TOGGLE (Layer 1) ============ */
+    .mode-toggle {
+      display: flex; gap: 4px;
+      background: #e2e8f0; padding: 4px;
+      border-radius: 12px; margin-bottom: 18px;
+    }
+    .mode-toggle button {
+      flex: 1; padding: 11px 14px;
+      border: none; background: transparent; cursor: pointer;
+      font-family: inherit; font-weight: 700; font-size: 14px;
+      color: var(--muted); border-radius: 8px;
+      transition: all .15s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .mode-toggle button.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px -4px rgba(30,58,138,.4); }
+    .mode-toggle button:hover:not(.active) { background: rgba(255,255,255,.5); }
+
+    .mode-panel { display: none; animation: fadeIn .3s ease; }
+    .mode-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ============ LANJUT SESI FORM ============ */
+    .lanjut-info {
+      background: linear-gradient(135deg, #ecfeff 0%, #dbeafe 100%);
+      border-left: 4px solid #06b6d4;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: #155e75;
+    }
+    .lanjut-info strong { color: #0e7490; }
+    .lanjut-info ol { margin: 8px 0 0 18px; line-height: 1.7; }
+    .lanjut-result {
+      display: none;
+      background: #f0fdf4; border: 1.5px solid #16a34a;
+      border-radius: 12px; padding: 14px 18px;
+      margin-top: 14px;
+    }
+    .lanjut-result.show { display: block; animation: pop .3s ease; }
+    .lanjut-result.error { background: #fef2f2; border-color: var(--accent-2); }
+    .lanjut-result .lr-title {
+      font-weight: 800; color: var(--primary); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .lanjut-result.error .lr-title { color: var(--accent-2); }
+    .lanjut-result .lr-detail {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+    }
+    .lanjut-result .lr-detail strong { color: var(--text); }
+    @keyframes pop { 0% { transform: scale(.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
     @media (max-width: 640px) {
       .card-header { padding: 18px 18px; }
       .card-body { padding: 18px; }
@@ -196,50 +248,108 @@
 
           <div class="alert" id="alertLayer1"></div>
 
-          <form id="groupForm" onsubmit="event.preventDefault(); goToLayer2();">
-            <div class="form-grid">
-              <div class="form-field">
-                <label>Pilih Kelas / Rombel <span class="req">*</span></label>
-                <select id="kelas" name="kelas" required onchange="loadStudents()">
-                  <option value="">— Memuat daftar kelas... —</option>
-                </select>
-                <span class="hint">Pilih dulu kelas, kemudian daftar siswa akan muncul.</span>
-              </div>
-              <div class="form-field">
-                <label>Nama Kelompok <span class="req">*</span></label>
-                <input type="text" id="namaKelompok" name="namaKelompok" placeholder="Contoh: Anggrek, Melati, Mawar, Edelweis..." required>
-                <span class="hint">Beri nama unik untuk kelompokmu.</span>
-              </div>
-            </div>
+          <!-- MODE TOGGLE -->
+          <div class="mode-toggle">
+            <button type="button" class="active" id="modeBaruBtn" onclick="switchMode('baru')">
+              📝 Daftar Kelompok Baru
+            </button>
+            <button type="button" id="modeLanjutBtn" onclick="switchMode('lanjut')">
+              🔄 Lanjut Sesi Sebelumnya
+            </button>
+          </div>
 
-            <div class="form-field" style="margin-top: 16px;">
-              <label>
-                Pilih Anggota Kelompok <span class="req">*</span>
-                <span class="selected-count" id="selectedCount" style="margin-left: 8px;">0 dipilih</span>
-              </label>
-              <div class="anggota-box">
-                <input type="text" class="anggota-search" id="anggotaSearch" placeholder="🔍 Cari nama siswa..." oninput="filterAnggota()">
-                <div class="anggota-list" id="anggotaList">
-                  <div class="anggota-empty">Pilih kelas dulu untuk menampilkan daftar siswa.</div>
+          <!-- PANEL: DAFTAR BARU -->
+          <div class="mode-panel active" id="panelBaru">
+            <form id="groupForm" onsubmit="event.preventDefault(); goToLayer2();">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Pilih Kelas / Rombel <span class="req">*</span></label>
+                  <select id="kelas" name="kelas" required onchange="loadStudents()">
+                    <option value="">— Memuat daftar kelas... —</option>
+                  </select>
+                  <span class="hint">Pilih dulu kelas, kemudian daftar siswa akan muncul.</span>
+                </div>
+                <div class="form-field">
+                  <label>Nama Kelompok <span class="req">*</span></label>
+                  <input type="text" id="namaKelompok" name="namaKelompok" placeholder="Contoh: Anggrek, Melati, Mawar, Edelweis..." required>
+                  <span class="hint">Beri nama unik untuk kelompokmu.</span>
                 </div>
               </div>
-              <span class="hint">Centang nama anggota kelompokmu (idealnya 5-6 orang).</span>
+
+              <div class="form-field" style="margin-top: 16px;">
+                <label>
+                  Pilih Anggota Kelompok <span class="req">*</span>
+                  <span class="selected-count" id="selectedCount" style="margin-left: 8px;">0 dipilih</span>
+                </label>
+                <div class="anggota-box">
+                  <input type="text" class="anggota-search" id="anggotaSearch" placeholder="🔍 Cari nama siswa..." oninput="filterAnggota()">
+                  <div class="anggota-list" id="anggotaList">
+                    <div class="anggota-empty">Pilih kelas dulu untuk menampilkan daftar siswa.</div>
+                  </div>
+                </div>
+                <span class="hint">Centang nama anggota kelompokmu (idealnya 5-6 orang).</span>
+              </div>
+
+              <div style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
+                <button type="submit" class="btn btn-primary">
+                  <span>→</span> Lanjut ke Penugasan
+                </button>
+                <button type="button" class="btn btn-ghost" onclick="resetForm()">
+                  ↻ Reset Form
+                </button>
+              </div>
+            </form>
+
+            <div class="tips">
+              <strong>Petunjuk:</strong> Pastikan ketua kelompok yang mengisi form ini.
+              Cek kembali nama anggota sebelum melanjutkan — setelah "Acak Tugas" ditekan,
+              tugas sudah tidak bisa diganti tanpa bantuan guru.
+            </div>
+          </div>
+
+          <!-- PANEL: LANJUT SESI SEBELUMNYA -->
+          <div class="mode-panel" id="panelLanjut">
+            <div class="lanjut-info">
+              <strong>🔒 Cara Lanjut Sesi Sebelumnya:</strong>
+              <ol>
+                <li>Pilih <strong>kelas</strong> yang sama dengan saat pendaftaran sebelumnya.</li>
+                <li>Masukkan <strong>nama kelompok</strong> yang sama persis (huruf besar/kecil sensitif).</li>
+                <li>Klik <strong>"Cari & Lanjutkan"</strong> — sistem akan cari data kelompok Anda.</li>
+                <li>Jika ditemukan, tugas & form pengumpulan langsung muncul di Layer 2.</li>
+              </ol>
             </div>
 
-            <div style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
-              <button type="submit" class="btn btn-primary">
-                <span>→</span> Lanjut ke Penugasan
-              </button>
-              <button type="button" class="btn btn-ghost" onclick="resetForm()">
-                ↻ Reset Form
-              </button>
-            </div>
-          </form>
+            <form id="lanjutForm" onsubmit="event.preventDefault(); findGroupSubmit();">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Pilih Kelas / Rombel <span class="req">*</span></label>
+                  <select id="kelasLanjut" name="kelasLanjut" required>
+                    <option value="">— Memuat daftar kelas... —</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Nama Kelompok <span class="req">*</span></label>
+                  <input type="text" id="namaKelompokLanjut" name="namaKelompokLanjut"
+                         placeholder="Ketik nama kelompok yang sudah terdaftar"
+                         required autocomplete="off">
+                  <span class="hint">Harus sama persis dengan nama yang didaftarkan sebelumnya.</span>
+                </div>
+              </div>
 
-          <div class="tips">
-            <strong>Petunjuk:</strong> Pastikan ketua kelompok yang mengisi form ini.
-            Cek kembali nama anggota sebelum melanjutkan — setelah "Acak Tugas" ditekan,
-            tugas sudah tidak bisa diganti tanpa bantuan guru.
+              <div style="display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;">
+                <button type="submit" class="btn btn-primary" id="btnFindGroup">
+                  <span>🔍</span> Cari & Lanjutkan
+                </button>
+                <button type="button" class="btn btn-ghost" onclick="resetLanjutForm()">
+                  ↻ Reset
+                </button>
+              </div>
+            </form>
+
+            <div class="lanjut-result" id="lanjutResult">
+              <div class="lr-title" id="lrTitle"></div>
+              <div class="lr-detail" id="lrDetail"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -308,7 +418,7 @@
 
           <div style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
             <button type="button" class="btn btn-ghost" onclick="goToLayer1()">
-              ← Kembali ke halaman depan
+              ← Kembali ke Layer 1
             </button>
           </div>
 
@@ -398,18 +508,136 @@
 
     async function loadClasses() {
       const sel = document.getElementById('kelas');
+      const selLanjut = document.getElementById('kelasLanjut');
       try {
         const res = await callAPI('getClasses');
+        let html = '<option value="">— Pilih Kelas / Rombel —</option>';
         if (!res.success || !res.classes || res.classes.length === 0) {
-          sel.innerHTML = '<option value="">— Belum ada data siswa —</option>';
-          return;
+          html = '<option value="">— Belum ada data siswa —</option>';
+        } else {
+          html += res.classes.map(c => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>').join('');
         }
-        sel.innerHTML = '<option value="">— Pilih Kelas / Rombel —</option>' +
-          res.classes.map(c => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>').join('');
+        if (sel) sel.innerHTML = html;
+        if (selLanjut) selLanjut.innerHTML = html;
       } catch (err) {
-        sel.innerHTML = '<option value="">— Gagal memuat kelas —</option>';
+        if (sel) sel.innerHTML = '<option value="">— Gagal memuat kelas —</option>';
+        if (selLanjut) selLanjut.innerHTML = '<option value="">— Gagal memuat kelas —</option>';
         showAlert('alertLayer1', 'error', '❌ ' + err.message);
       }
+    }
+
+    /* ============ MODE TOGGLE ============ */
+    function switchMode(mode) {
+      const btnBaru = document.getElementById('modeBaruBtn');
+      const btnLanjut = document.getElementById('modeLanjutBtn');
+      const panelBaru = document.getElementById('panelBaru');
+      const panelLanjut = document.getElementById('panelLanjut');
+      // Clear alert saat switch
+      document.getElementById('alertLayer1').classList.remove('show');
+      // Reset result box
+      const result = document.getElementById('lanjutResult');
+      if (result) { result.classList.remove('show', 'error'); }
+
+      if (mode === 'lanjut') {
+        btnBaru.classList.remove('active');
+        btnLanjut.classList.add('active');
+        panelBaru.classList.remove('active');
+        panelLanjut.classList.add('active');
+      } else {
+        btnBaru.classList.add('active');
+        btnLanjut.classList.remove('active');
+        panelBaru.classList.add('active');
+        panelLanjut.classList.remove('active');
+      }
+    }
+
+    /* ============ LANJUT SESI - CARI KELOMPOK ============ */
+    async function findGroupSubmit() {
+      const kelas = document.getElementById('kelasLanjut').value;
+      const nama = document.getElementById('namaKelompokLanjut').value.trim();
+      const btn = document.getElementById('btnFindGroup');
+      const result = document.getElementById('lanjutResult');
+      const lrTitle = document.getElementById('lrTitle');
+      const lrDetail = document.getElementById('lrDetail');
+
+      if (!kelas) { showAlert('alertLayer1', 'error', '⚠️ Pilih kelas dulu.'); return; }
+      if (!nama) { showAlert('alertLayer1', 'error', '⚠️ Isi nama kelompok dulu.'); return; }
+
+      // Tampilkan loading
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Mencari...';
+      result.classList.remove('show', 'error');
+      lrTitle.textContent = '';
+      lrDetail.textContent = '';
+
+      try {
+        const res = await callAPI('findGroup', { kelas: kelas, namaKelompok: nama });
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔍</span> Cari & Lanjutkan';
+
+        if (!res.success) {
+          // Error teknis
+          showLanjutResult(true, '❌ Error', res.message || 'Gagal mencari kelompok.');
+          return;
+        }
+
+        if (!res.found) {
+          // Tidak ditemukan
+          showLanjutResult(true, '🔍 Tidak Ditemukan', res.message);
+          return;
+        }
+
+        // DITEMUKAN
+        const k = res.kelompok;
+        if (res.hasTask) {
+          // Sudah punya tugas → tampilkan info & langsung ke Layer 2
+          showLanjutResult(false, '✅ Kelompok Ditemukan',
+            'Nama: <strong>' + escapeHtml(k.namaKelompok) + '</strong> • ' +
+            'Kelas: <strong>' + escapeHtml(k.kelas) + '</strong><br>' +
+            'Tugas: <strong>' + escapeHtml(k.topic.title) + '</strong><br>' +
+            'Anggota: <strong>' + k.anggota.length + ' orang</strong><br>' +
+            '<em style="color: var(--success);">Mengarahkan ke Layer 2...</em>'
+          );
+          // Set state, pindah ke Layer 2 setelah 1.5 detik
+          setTimeout(() => {
+            goToLayer2WithExisting(k);
+          }, 1500);
+        } else {
+          // Tugas sudah dibuka ulang guru → perlu acak baru
+          showLanjutResult(false, '🔄 Kelompok Ditemukan (Tugas Dibuka Ulang)',
+            'Nama: <strong>' + escapeHtml(k.namaKelompok) + '</strong> • ' +
+            'Kelas: <strong>' + escapeHtml(k.kelas) + '</strong><br>' +
+            'Anggota: <strong>' + k.anggota.length + ' orang</strong><br>' +
+            '<em style="color: var(--warn);">' + res.message + '</em><br>' +
+            '<em style="color: var(--success);">Mengarahkan ke Layer 2 untuk acak tugas...</em>'
+          );
+          setTimeout(() => {
+            goToLayer2WithExisting(k);
+          }, 1800);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔍</span> Cari & Lanjutkan';
+        showLanjutResult(true, '❌ Error Jaringan', err.message);
+      }
+    }
+
+    function showLanjutResult(isError, title, detail) {
+      const result = document.getElementById('lanjutResult');
+      const lrTitle = document.getElementById('lrTitle');
+      const lrDetail = document.getElementById('lrDetail');
+      result.classList.remove('error');
+      if (isError) result.classList.add('error');
+      lrTitle.textContent = title;
+      lrDetail.innerHTML = detail;
+      result.classList.add('show');
+      result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetLanjutForm() {
+      document.getElementById('lanjutForm').reset();
+      const result = document.getElementById('lanjutResult');
+      if (result) result.classList.remove('show', 'error');
     }
 
     async function loadStudents() {
@@ -489,7 +717,7 @@
       loadStudents();
     }
 
-    /* ============ GO TO LAYER 2 ============ */
+    /* ============ GO TO LAYER 2 - DAFTAR BARU ============ */
     function goToLayer2() {
       const kelas = document.getElementById('kelas').value;
       const nama = document.getElementById('namaKelompok').value.trim();
@@ -503,12 +731,88 @@
       }
 
       currentGroup = { namaKelompok: nama, kelas: kelas, anggota: checked };
+      currentTask = null;
+      currentRowNum = null;
+      pendingTask = null;
 
+      // Render info box
       document.getElementById('infoNama').textContent = nama;
       document.getElementById('infoKelas').textContent = kelas;
       document.getElementById('infoJumlah').textContent = checked.length + ' orang';
       document.getElementById('infoAnggota').textContent = checked.map((n, i) => (i+1) + '. ' + n).join('\n');
 
+      // Tampilkan tombol Acak, sembunyikan task display
+      document.getElementById('acakCard').style.display = '';
+      document.getElementById('taskDisplay').style.display = 'none';
+      document.getElementById('taskDisplay').innerHTML = '';
+      document.getElementById('submissionForm').style.display = 'none';
+      document.getElementById('submissionForm').innerHTML = '';
+
+      // Show layer 2
+      document.getElementById('layer1').classList.remove('active');
+      document.getElementById('layer2').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    /* ============ GO TO LAYER 2 - LANJUT SESI (data existing) ============ */
+    function goToLayer2WithExisting(k) {
+      // k = data kelompok dari findGroup: { namaKelompok, kelas, anggota, anggotaStr, rowNum, topic, linkGDocs, tanggalPresentasi, status }
+      currentGroup = {
+        namaKelompok: k.namaKelompok,
+        kelas: k.kelas,
+        anggota: k.anggota
+      };
+      currentRowNum = k.rowNum;
+
+      // Render info box
+      document.getElementById('infoNama').textContent = k.namaKelompok;
+      document.getElementById('infoKelas').textContent = k.kelas;
+      document.getElementById('infoJumlah').textContent = k.anggota.length + ' orang';
+      document.getElementById('infoAnggota').textContent = k.anggotaStr ||
+        k.anggota.map((n, i) => (i+1) + '. ' + n).join('\n');
+
+      if (k.topic) {
+        // === PUNYA TUGAS: tampilkan task + form pre-fill ===
+        currentTask = k.topic;
+        pendingTask = null;
+
+        // Sembunyikan tombol acak (sudah punya tugas)
+        document.getElementById('acakCard').style.display = 'none';
+        // Render task card
+        renderTaskCard(k.topic);
+        // Render submission form dengan data existing (pre-fill link, tanggal, status)
+        renderSubmissionForm(k.topic, {
+          linkGDocs: k.linkGDocs,
+          tanggalPresentasi: k.tanggalPresentasi,
+          status: k.status
+        });
+        document.getElementById('taskDisplay').style.display = 'block';
+        document.getElementById('submissionForm').style.display = 'block';
+
+        // Tampilkan alert info
+        showAlert('alertLayer2', 'info',
+          'ℹ️ Anda melanjutkan tugas sesi sebelumnya. ' +
+          'Update link Google Docs jika ada perubahan, lalu klik Simpan.'
+        );
+      } else {
+        // === TUGAS DIBUKA ULANG GURU: tampilkan tombol acak ===
+        currentTask = null;
+        pendingTask = null;
+
+        // Tampilkan tombol acak
+        document.getElementById('acakCard').style.display = '';
+        document.getElementById('taskDisplay').style.display = 'none';
+        document.getElementById('taskDisplay').innerHTML = '';
+        document.getElementById('submissionForm').style.display = 'none';
+        document.getElementById('submissionForm').innerHTML = '';
+
+        showAlert('alertLayer2', 'info',
+          'ℹ️ Kelompok Anda ditemukan. Tugas sudah dibuka ulang oleh guru. ' +
+          'Klik tombol "Acak Tugas" untuk mengundi tugas baru.'
+        );
+      }
+
+      // Pindah ke Layer 2
       document.getElementById('layer1').classList.remove('active');
       document.getElementById('layer2').classList.add('active');
       window.scrollTo(0, 0);
@@ -618,7 +922,14 @@
     }
 
     /* ============ RENDER SUBMISSION FORM ============ */
-    function renderSubmissionForm(task) {
+    function renderSubmissionForm(task, existing) {
+      // existing (optional): { linkGDocs, tanggalPresentasi, status } untuk pre-fill saat lanjut sesi
+      const ex = existing || {};
+      const linkVal = ex.linkGDocs ? ' value="' + escapeHtml(ex.linkGDocs) + '"' : '';
+      const tglVal = ex.tanggalPresentasi ? ' value="' + escapeHtml(ex.tanggalPresentasi) + '"' : '';
+      const statusSelesai = ex.status === 'Selesai' ? 'checked' : '';
+      const statusBelum = (ex.status === 'Belum' || !ex.status) ? 'checked' : '';
+
       document.getElementById('submissionForm').innerHTML = `
         <div class="card">
           <div class="card-header" style="background: linear-gradient(135deg, #16a34a, #4ade80);">
@@ -630,24 +941,24 @@
               <div class="form-grid">
                 <div class="form-field" style="grid-column: 1 / -1;">
                   <label>Link Google Docs <span class="req">*</span></label>
-                  <input type="url" id="linkDocs" placeholder="https://docs.google.com/document/d/XXXXX/edit" required>
-                  <span class="hint">Pastikan akses link di-set "Anyone with link can comment/view".</span>
+                  <input type="url" id="linkDocs" placeholder="https://docs.google.com/document/d/XXXXX/edit" required${linkVal}>
+                  <span class="hint">Pastikan akses link di-set "Anyone with link can comment/view". Mengirim link baru akan otomatis menggantikan link lama.</span>
                 </div>
                 <div class="form-field">
                   <label>Tanggal Presentasi <span class="req">*</span></label>
-                  <input type="date" id="tglPres" required>
+                  <input type="date" id="tglPres" required${tglVal}>
                 </div>
                 <div class="form-field">
                   <label>Status Pengerjaan <span class="req">*</span></label>
                   <div class="radio-group">
-                    <label><input type="radio" name="status" value="Selesai" required> ✅ Selesai</label>
-                    <label><input type="radio" name="status" value="Belum" required> ⏳ Belum</label>
+                    <label><input type="radio" name="status" value="Selesai" ${statusSelesai} required> ✅ Selesai</label>
+                    <label><input type="radio" name="status" value="Belum" ${statusBelum} required> ⏳ Belum</label>
                   </div>
                 </div>
               </div>
               <div style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
                 <button type="submit" class="btn btn-primary">
-                  <span>✈️</span> Kirim Tugas
+                  <span>💾</span> Simpan ke Spreadsheet
                 </button>
                 <a class="btn btn-accent" href="https://docs.new" target="_blank" rel="noopener">
                   <span>+</span> Buat Google Docs Baru
@@ -662,7 +973,7 @@
                 <li>Bagi link dokumen ke <em>"Anyone with the link → Commenter/Viewer"</em>.</li>
                 <li>Salin link dokumen, tempel di kolom Link Google Docs.</li>
                 <li>Tentukan tanggal presentasi & status pengerjaan.</li>
-                <li>Klik <em>"Kirim Tugas"</em>.</li>
+                <li>Klik <em>"Simpan ke Spreadsheet"</em>.</li>
               </ol>
             </div>
           </div>
