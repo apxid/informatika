@@ -145,7 +145,14 @@ sortBy.addEventListener('change',renderTable);
 csvBtn.addEventListener('click',()=>{
  if(!visibleRows.length)return;
  if(!window.XLSX){statusEl.className='status';statusEl.textContent='Pustaka Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.';return;}
- const rows=[['No','Nama','Rombel','Judul Tugas','Nilai'],...visibleRows.map((r,i)=>[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)==='—'?'':formatNilai(r.nilai)])];
+ // Urutan ekspor selalu mengikuti urutan nama pada sheet Siswa,
+ // tidak terpengaruh pilihan pengurutan pada tampilan tabel.
+ const exportRows=[...visibleRows].sort((a,b)=>{
+   const ai=roster.findIndex(s=>s.rombel===a.rombel&&normName(s.nama)===normName(a.nama));
+   const bi=roster.findIndex(s=>s.rombel===b.rombel&&normName(s.nama)===normName(b.nama));
+   return (ai-bi) || ((a.sourceRow||0)-(b.sourceRow||0));
+ });
+ const rows=[['No','Nama','Rombel','Judul Tugas','Nilai'],...exportRows.map((r,i)=>[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)==='—'?'':formatNilai(r.nilai)])];
  const worksheet=XLSX.utils.aoa_to_sheet(rows);
  worksheet['!cols']=[{wch:8},{wch:30},{wch:14},{wch:32},{wch:12}];
  const workbook=XLSX.utils.book_new();
