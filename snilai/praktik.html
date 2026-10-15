@@ -23,7 +23,7 @@
   <header class="hero">
     <div class="eyebrow">Rekap Penilaian • Kelas IX</div>
     <h1>Rekap Nilai Tugas Siswa</h1>
-    <p>Pilih rombel untuk menampilkan nilai setiap siswa berdasarkan daftar pada sheet <b>Siswa</b>. Nama anggota kelompok dibaca dari kolom D dan nilai tugas dari kolom H pada sheet <b>Data</b>.</p>
+    <p>Pilih rombel, filter salah satu dari dua judul tugas, atau urutkan hasil berdasarkan judul tugas dan nilai. Nama anggota kelompok dibaca dari kolom D dan nilai tugas dari kolom H pada sheet <b>Data</b>.</p>
   </header>
 
   <section class="panel">
@@ -47,7 +47,18 @@
       <div class="metric"><span>Baris nilai ditemukan</span><strong id="mRows">0</strong></div>
     </div>
     <div class="toolbar">
-      <input id="search" type="search" placeholder="Cari nama siswa atau judul tugas..." disabled>
+      <input id="search" type="search" placeholder="Cari nama siswa..." disabled>
+      <select id="taskFilter" disabled aria-label="Filter judul tugas" style="flex:1;min-width:210px;border:1px solid #dbe3ef;border-radius:12px;padding:12px 13px;font:inherit;background:white">
+        <option value="">Semua judul tugas</option>
+        <option value="Rancangan Konten Artikel Blog">Rancangan Konten Artikel Blog</option>
+        <option value="Link Artikel Blog">Link Artikel Blog</option>
+      </select>
+      <select id="sortBy" disabled aria-label="Urutkan hasil" style="min-width:190px;border:1px solid #dbe3ef;border-radius:12px;padding:12px 13px;font:inherit;background:white">
+        <option value="roster">Urutkan: Nama siswa</option>
+        <option value="task">Urutkan: Judul tugas A–Z</option>
+        <option value="score-desc">Urutkan: Nilai tertinggi</option>
+        <option value="score-asc">Urutkan: Nilai terendah</option>
+      </select>
       <button class="btn secondary" id="csvBtn" disabled>Unduh CSV</button>
     </div>
     <div class="tablewrap">
@@ -61,7 +72,7 @@
 </div>
 <script>
 const fileInput=document.getElementById('file'),loadBtn=document.getElementById('loadBtn'),statusEl=document.getElementById('status');
-const classBox=document.getElementById('classes'),tbody=document.getElementById('tbody'),search=document.getElementById('search'),csvBtn=document.getElementById('csvBtn');
+const classBox=document.getElementById('classes'),tbody=document.getElementById('tbody'),search=document.getElementById('search'),csvBtn=document.getElementById('csvBtn'),taskFilter=document.getElementById('taskFilter'),sortBy=document.getElementById('sortBy');
 let roster=[],assignments=[],activeClass='',visibleRows=[];
 fileInput.addEventListener('change',()=>{loadBtn.disabled=!fileInput.files.length;statusEl.className='status';statusEl.textContent=fileInput.files.length?'File dipilih: '+fileInput.files[0].name:'Belum ada file yang dimuat.'});
 loadBtn.addEventListener('click',async()=>{
@@ -76,7 +87,7 @@ loadBtn.addEventListener('click',async()=>{
   roster=siswa.slice(1).filter(r=>String(r[1]||'').trim()&&String(r[3]||'').trim()).map(r=>({nama:String(r[1]).trim(),rombel:normalizeClass(r[3]),no:r[0]}));
   assignments=data.slice(1).filter(r=>String(r[3]||'').trim()).map((r,i)=>({anggota:String(r[3]),rombel:normalizeClass(r[2]),judul:String(r[4]||'').trim(),nilai:r[7],row:i+2}));
   if(!roster.length)throw new Error('Data siswa tidak ditemukan pada sheet Siswa.');
-  renderClasses();activeClass='';search.disabled=false;csvBtn.disabled=false;
+  renderClasses();activeClass='';search.disabled=false;csvBtn.disabled=false;taskFilter.disabled=false;sortBy.disabled=false;
   statusEl.className='status ok';statusEl.textContent=`Data berhasil dimuat: ${roster.length} siswa dan ${assignments.length} entri tugas. Silakan pilih rombel.`;
   renderTable();
  }catch(e){statusEl.className='status';statusEl.textContent='Gagal memuat: '+e.message;}
@@ -104,18 +115,33 @@ function makeRows(){
  return rows;
 }
 function renderTable(){
- const all=makeRows();const q=normName(search.value||'');
- visibleRows=all.filter(r=>!q||normName(r.nama+' '+r.judul+' '+r.rombel).includes(q));
+ const all=makeRows();const q=normName(search.value||'');const selectedTask=taskFilter.value;const sort=sortBy.value;
+ visibleRows=all.filter(r=>(!q||normName(r.nama+' '+r.judul+' '+r.rombel).includes(q))&&(!selectedTask||normName(r.judul)===normName(selectedTask)));
+ visibleRows.sort((a,b)=>{
+   if(sort==='task') return (a.judul||'').localeCompare(b.judul||'','id',{numeric:true}) || a.nama.localeCompare(b.nama,'id');
+   if(sort==='score-desc'||sort==='score-asc'){
+     const av=Number(String(a.nilai??'').replace(',','.'));const bv=Number(String(b.nilai??'').replace(',','.'));
+     const aok=String(a.nilai??'').trim()!==''&&Number.isFinite(av),bok=String(b.nilai??'').trim()!==''&&Number.isFinite(bv);
+     if(!aok&&!bok)return a.nama.localeCompare(b.nama,'id');
+     if(!aok)return 1;if(!bok)return -1;
+     return sort==='score-desc'?bv-av:av-bv;
+   }
+   const ai=roster.findIndex(s=>normName(s.nama)===normName(a.nama));
+   const bi=roster.findIndex(s=>normName(s.nama)===normName(b.nama));
+   return (ai-bi) || (a.judul||'').localeCompare(b.judul||'','id');
+ });
  document.getElementById('mClass').textContent=activeClass?activeClass.replace('Kelas ',''):'—';
  document.getElementById('mStudents').textContent=activeClass?roster.filter(s=>s.rombel===activeClass).length:0;
- document.getElementById('mRows').textContent=all.length;
+ document.getElementById('mRows').textContent=visibleRows.length;
  tbody.innerHTML='';
  if(!activeClass){tbody.innerHTML='<tr><td colspan="5" class="empty">Pilih rombel kelas di atas untuk melihat rekap nilai.</td></tr>';return}
- if(!visibleRows.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Tidak ada nilai yang cocok untuk kelas/pencarian ini.</td></tr>';return}
+ if(!visibleRows.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Tidak ada nilai yang cocok untuk filter ini.</td></tr>';return}
  visibleRows.forEach((r,i)=>{const tr=document.createElement('tr');[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)].forEach((v,j)=>{const td=document.createElement('td');td.textContent=v??'';if(j===0)td.className='num';if(j===4)td.className='grade';tr.appendChild(td)});tbody.appendChild(tr)});
 }
 function formatNilai(v){if(v===null||v===undefined||String(v).trim()==='')return '—';return v}
 search.addEventListener('input',renderTable);
+taskFilter.addEventListener('change',renderTable);
+sortBy.addEventListener('change',renderTable);
 csvBtn.addEventListener('click',()=>{
  if(!visibleRows.length)return;
  const rows=[['No','Nama Anak','Rombel','Judul Tugas','Nilai'],...visibleRows.map((r,i)=>[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)])];
