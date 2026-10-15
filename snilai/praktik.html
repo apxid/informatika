@@ -99,18 +99,26 @@ function renderClasses(){
  classBox.innerHTML='';
  classes.forEach(c=>{const b=document.createElement('button');b.className='classbtn';b.textContent=c.replace('Kelas ','');b.title=c;b.addEventListener('click',()=>{activeClass=c;document.querySelectorAll('.classbtn').forEach(x=>x.classList.toggle('active',x===b));renderTable()});classBox.appendChild(b)});
 }
+function getAssignmentsForStudent(student){
+ const key=normName(student.nama);
+ return assignments.filter(a=>{
+   if(a.rombel && student.rombel && a.rombel!==student.rombel) return false;
+   return a.anggota.split(',').map(x=>x.trim()).filter(Boolean).some(n=>normName(n)===key);
+ }).sort((a,b)=>(a.row||0)-(b.row||0));
+}
 function makeRows(){
  if(!activeClass)return [];
  const students=roster.filter(s=>s.rombel===activeClass);
  const rows=[];
- students.forEach(s=>{
-  const key=normName(s.nama);
-  assignments.forEach(a=>{
-   const members=a.anggota.split(',').map(x=>x.trim()).filter(Boolean);
-   if(members.some(n=>normName(n)===key)){
-    rows.push({nama:s.nama,rombel:s.rombel,judul:a.judul,nilai:a.nilai,rosterNo:s.no,sourceRow:a.row});
+ // Sheet Siswa adalah daftar induk: setiap siswa selalu dibuatkan baris,
+ // termasuk siswa yang belum mengirim tugas dan belum tercatat di sheet Data.
+ students.forEach((s,studentIndex)=>{
+   const matched=getAssignmentsForStudent(s);
+   if(!matched.length){
+     rows.push({nama:s.nama,rombel:s.rombel,judul:'',nilai:'',rosterNo:s.no,rosterIndex:studentIndex,sourceRow:0});
+     return;
    }
-  });
+   matched.forEach(a=>rows.push({nama:s.nama,rombel:s.rombel,judul:a.judul,nilai:a.nilai,rosterNo:s.no,rosterIndex:studentIndex,sourceRow:a.row}));
  });
  return rows;
 }
@@ -135,7 +143,7 @@ function renderTable(){
  document.getElementById('mRows').textContent=visibleRows.length;
  tbody.innerHTML='';
  if(!activeClass){tbody.innerHTML='<tr><td colspan="5" class="empty">Pilih rombel kelas di atas untuk melihat rekap nilai.</td></tr>';return}
- if(!visibleRows.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Tidak ada nilai yang cocok untuk filter ini.</td></tr>';return}
+ if(!visibleRows.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Tidak ada siswa yang cocok dengan pencarian ini.</td></tr>';return}
  visibleRows.forEach((r,i)=>{const tr=document.createElement('tr');[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)].forEach((v,j)=>{const td=document.createElement('td');td.textContent=v??'';if(j===0)td.className='num';if(j===4)td.className='grade';tr.appendChild(td)});tbody.appendChild(tr)});
 }
 function formatNilai(v){if(v===null||v===undefined||String(v).trim()==='')return '—';return v}
@@ -143,31 +151,26 @@ search.addEventListener('input',renderTable);
 taskFilter.addEventListener('change',renderTable);
 sortBy.addEventListener('change',renderTable);
 csvBtn.addEventListener('click',()=>{
- if(!visibleRows.length)return;
+ if(!activeClass){statusEl.className='status';statusEl.textContent='Pilih rombel terlebih dahulu sebelum mengekspor.';return;}
  if(!window.XLSX){statusEl.className='status';statusEl.textContent='Pustaka Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.';return;}
- // Urutkan sesuai daftar pada sheet Siswa, lalu gabungkan entri siswa
- // yang sama dalam satu baris. Nilai kedua dan seterusnya ditempatkan
- // di kolom sebelah kanan Nilai (Nilai 2, Nilai 3, dan seterusnya).
- const exportRows=[...visibleRows].sort((a,b)=>{
-   const ai=roster.findIndex(s=>s.rombel===a.rombel&&normName(s.nama)===normName(a.nama));
-   const bi=roster.findIndex(s=>s.rombel===b.rombel&&normName(s.nama)===normName(b.nama));
-   return (ai-bi) || ((a.sourceRow||0)-(b.sourceRow||0));
+ // Ekspor dibangun dari daftar induk sheet Siswa, bukan dari sheet Data.
+ // Dengan demikian siswa yang belum mengirim tugas tetap tercantum dan urutannya baku.
+ const q=normName(search.value||'');
+ const students=roster.filter(s=>s.rombel===activeClass && (!q||normName(s.nama+' '+s.rombel).includes(q)));
+ const grouped=students.map(s=>{
+   const matched=getAssignmentsForStudent(s);
+   const selectedTask=taskFilter.value;
+   const relevant=selectedTask ? matched.filter(a=>normName(a.judul)===normName(selectedTask)) : matched;
+   const tugas=[...new Set(relevant.map(a=>String(a.judul||'').trim()).filter(Boolean))];
+   // Satu nilai untuk setiap entri tugas bernilai; nilai ganda masuk ke kolom berikutnya.
+   const nilai=relevant.map(a=>a.nilai).filter(v=>v!==null&&v!==undefined&&String(v).trim()!=='');
+   return {nama:s.nama,rombel:s.rombel,tugas,nilai};
  });
- const grouped=[];
- exportRows.forEach(r=>{
-   // Gunakan nama + rombel sebagai identitas agar nama sama di rombel lain tidak tercampur.
-   let g=grouped.find(x=>x.rombel===r.rombel&&normName(x.nama)===normName(r.nama));
-   if(!g){g={nama:r.nama,rombel:r.rombel,tugas:[],nilai:[],firstSourceRow:r.sourceRow||0};grouped.push(g);}
-   if(r.judul && !g.tugas.includes(r.judul)) g.tugas.push(r.judul);
-   const nilai=formatNilai(r.nilai)==='—'?'':formatNilai(r.nilai);
-   if(nilai!=='' && !g.nilai.includes(nilai)) g.nilai.push(nilai);
- });
- // Pastikan kolom nilai cukup untuk menampung seluruh nilai ganda yang ditemukan.
  const maxNilai=Math.max(1,...grouped.map(g=>g.nilai.length));
  const headers=['No','Nama','Rombel','Judul Tugas','Nilai'];
- for(let n=2;n<=maxNilai;n++) headers.push('Nilai '+n);
+ for(let n=2;n<=maxNilai;n++)headers.push('Nilai '+n);
  const rows=[headers,...grouped.map((g,i)=>[
-   i+1,g.nama,g.rombel,g.tugas.join(' / '),...Array.from({length:maxNilai},(_,n)=>g.nilai[n]||'')
+   i+1,g.nama,g.rombel,g.tugas.join(' / '),...Array.from({length:maxNilai},(_,n)=>formatNilai(g.nilai[n])==='—'?'':(g.nilai[n]??''))
  ])];
  const worksheet=XLSX.utils.aoa_to_sheet(rows);
  worksheet['!cols']=[{wch:8},{wch:30},{wch:14},{wch:42},...Array(maxNilai).fill({wch:12})];
