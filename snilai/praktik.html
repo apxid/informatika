@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rekap Nilai Tugas Kelas 9</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{--navy:#12213f;--blue:#2855d9;--mint:#dff8ed;--lime:#e8ff70;--orange:#ff9c43;--ink:#1e293b;--muted:#64748b;--line:#e5eaf2;--surface:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(135deg,#eefbf4 0%,#f6f8ff 52%,#fff5e9 100%);color:var(--ink);min-height:100vh}
+.wrap{max-width:1200px;margin:auto;padding:28px 18px 48px}.hero{background:linear-gradient(125deg,#12213f,#2549a8 72%,#1c7c70);color:white;border-radius:26px;padding:28px;position:relative;overflow:hidden;box-shadow:0 18px 45px #17255420}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:#e8ff7020;right:-65px;top:-100px;border:1px solid #ffffff35}.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#d9f99d;font-weight:800}.hero h1{margin:8px 0 8px;font-size:clamp(25px,4vw,38px);line-height:1.1}.hero p{margin:0;color:#e1eaff;max-width:700px;line-height:1.6}.panel{background:#ffffffd9;border:1px solid #ffffff;border-radius:22px;padding:20px;margin-top:18px;box-shadow:0 12px 34px #1523470d;backdrop-filter:blur(12px)}
+.uploadrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.filebox{flex:1;min-width:240px;border:1.5px dashed #a9b9d2;border-radius:15px;padding:15px;background:#f8fbff}.filebox label{font-weight:800;display:block;margin-bottom:6px}.filebox small{display:block;color:var(--muted);margin-top:7px}.filebox input{max-width:100%}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;transition:.18s transform,.18s box-shadow;background:var(--blue);color:white}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px #2855d933}.btn.secondary{background:#e8edf7;color:#23324e}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.status{font-size:13px;color:var(--muted);margin-top:10px}.status.ok{color:#087b52;font-weight:700}.classgrid{display:grid;grid-template-columns:repeat(9,minmax(70px,1fr));gap:9px;margin-top:14px}.classbtn{padding:13px 5px;border-radius:13px;border:1px solid #dce5f3;background:white;color:#263856;font-weight:900;cursor:pointer;transition:.18s}.classbtn:hover{border-color:var(--blue);transform:translateY(-2px)}.classbtn.active{background:var(--lime);border-color:#c5dc36;color:#24320b;box-shadow:0 5px 15px #c4d83c35}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.metric{background:#f8fafc;border:1px solid var(--line);border-radius:15px;padding:14px}.metric span{font-size:12px;color:var(--muted);display:block}.metric strong{font-size:25px;display:block;margin-top:4px;color:var(--navy)}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:15px 0}.toolbar input{flex:1;min-width:190px;border:1px solid #dbe3ef;border-radius:12px;padding:12px 13px;font:inherit;background:white}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:15px;background:white}table{width:100%;border-collapse:collapse;min-width:650px}th{background:#132443;color:white;text-align:left;font-size:12px;letter-spacing:.4px;padding:13px 14px;position:sticky;top:0}td{padding:12px 14px;border-bottom:1px solid #edf0f5;font-size:14px}tbody tr:nth-child(even){background:#f8fafc}tbody tr:hover{background:#f0f8ff}.num{text-align:center;width:55px;color:#64748b}.grade{font-weight:900;color:#087b52}.empty{text-align:center;padding:35px;color:var(--muted)}.foot{text-align:center;color:#718096;font-size:12px;margin-top:22px}
+@media(max-width:760px){.wrap{padding:15px 12px 30px}.hero{padding:22px 19px;border-radius:20px}.panel{padding:15px;border-radius:18px}.classgrid{grid-template-columns:repeat(3,minmax(0,1fr))}.metrics{gap:7px}.metric{padding:11px}.metric strong{font-size:22px}.uploadrow .btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Rekap Penilaian • Kelas IX</div>
+    <h1>Rekap Nilai Tugas Siswa</h1>
+    <p>Pilih rombel untuk menampilkan nilai setiap siswa berdasarkan daftar pada sheet <b>Siswa</b>. Nama anggota kelompok dibaca dari kolom D dan nilai tugas dari kolom H pada sheet <b>Data</b>.</p>
+  </header>
+
+  <section class="panel">
+    <div class="uploadrow">
+      <div class="filebox">
+        <label for="file">1. Pilih file Excel sumber</label>
+        <input id="file" type="file" accept=".xlsx,.xls">
+        <small>Gunakan file yang berisi sheet <b>Data</b> dan <b>Siswa</b>.</small>
+      </div>
+      <button class="btn" id="loadBtn" disabled>Muat Data Excel</button>
+    </div>
+    <div id="status" class="status">Belum ada file yang dimuat.</div>
+  </section>
+
+  <section class="panel">
+    <b>2. Pilih rombel kelas</b>
+    <div id="classes" class="classgrid"></div>
+    <div class="metrics">
+      <div class="metric"><span>Rombel terpilih</span><strong id="mClass">—</strong></div>
+      <div class="metric"><span>Siswa pada daftar kelas</span><strong id="mStudents">0</strong></div>
+      <div class="metric"><span>Baris nilai ditemukan</span><strong id="mRows">0</strong></div>
+    </div>
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Cari nama siswa atau judul tugas..." disabled>
+      <button class="btn secondary" id="csvBtn" disabled>Unduh CSV</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th class="num">No</th><th>Nama Anak</th><th>Rombel</th><th>Judul Tugas</th><th>Nilai</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="5" class="empty">Muat file Excel terlebih dahulu, lalu pilih rombel.</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+  <div class="foot">Rekap dibuat berdasarkan urutan nama di sheet Siswa • Data diproses di browser</div>
+</div>
+<script>
+const fileInput=document.getElementById('file'),loadBtn=document.getElementById('loadBtn'),statusEl=document.getElementById('status');
+const classBox=document.getElementById('classes'),tbody=document.getElementById('tbody'),search=document.getElementById('search'),csvBtn=document.getElementById('csvBtn');
+let roster=[],assignments=[],activeClass='',visibleRows=[];
+fileInput.addEventListener('change',()=>{loadBtn.disabled=!fileInput.files.length;statusEl.className='status';statusEl.textContent=fileInput.files.length?'File dipilih: '+fileInput.files[0].name:'Belum ada file yang dimuat.'});
+loadBtn.addEventListener('click',async()=>{
+ try{
+  if(!window.XLSX) throw new Error('Pustaka Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.');
+  const file=fileInput.files[0];if(!file)return;
+  statusEl.className='status';statusEl.textContent='Membaca workbook...';
+  const bytes=await file.arrayBuffer(),book=XLSX.read(bytes,{type:'array'});
+  if(!book.Sheets.Data||!book.Sheets.Siswa)throw new Error('Sheet Data dan/atau Siswa tidak ditemukan.');
+  const data=XLSX.utils.sheet_to_json(book.Sheets.Data,{header:1,defval:''});
+  const siswa=XLSX.utils.sheet_to_json(book.Sheets.Siswa,{header:1,defval:''});
+  roster=siswa.slice(1).filter(r=>String(r[1]||'').trim()&&String(r[3]||'').trim()).map(r=>({nama:String(r[1]).trim(),rombel:normalizeClass(r[3]),no:r[0]}));
+  assignments=data.slice(1).filter(r=>String(r[3]||'').trim()).map((r,i)=>({anggota:String(r[3]),rombel:normalizeClass(r[2]),judul:String(r[4]||'').trim(),nilai:r[7],row:i+2}));
+  if(!roster.length)throw new Error('Data siswa tidak ditemukan pada sheet Siswa.');
+  renderClasses();activeClass='';search.disabled=false;csvBtn.disabled=false;
+  statusEl.className='status ok';statusEl.textContent=`Data berhasil dimuat: ${roster.length} siswa dan ${assignments.length} entri tugas. Silakan pilih rombel.`;
+  renderTable();
+ }catch(e){statusEl.className='status';statusEl.textContent='Gagal memuat: '+e.message;}
+});
+function normalizeClass(v){let s=String(v??'').trim().toUpperCase().replace(/\s+/g,' ');const m=s.match(/(?:KELAS\s*)?9\s*([A-I])/);return m?'Kelas 9'+m[1]:s;}
+function normName(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim().replace(/\s+/g,' ');}
+function renderClasses(){
+ const classes=[...new Set(roster.map(s=>s.rombel))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
+ classBox.innerHTML='';
+ classes.forEach(c=>{const b=document.createElement('button');b.className='classbtn';b.textContent=c.replace('Kelas ','');b.title=c;b.addEventListener('click',()=>{activeClass=c;document.querySelectorAll('.classbtn').forEach(x=>x.classList.toggle('active',x===b));renderTable()});classBox.appendChild(b)});
+}
+function makeRows(){
+ if(!activeClass)return [];
+ const students=roster.filter(s=>s.rombel===activeClass);
+ const rows=[];
+ students.forEach(s=>{
+  const key=normName(s.nama);
+  assignments.forEach(a=>{
+   const members=a.anggota.split(',').map(x=>x.trim()).filter(Boolean);
+   if(members.some(n=>normName(n)===key)){
+    rows.push({nama:s.nama,rombel:s.rombel,judul:a.judul,nilai:a.nilai,rosterNo:s.no,sourceRow:a.row});
+   }
+  });
+ });
+ return rows;
+}
+function renderTable(){
+ const all=makeRows();const q=normName(search.value||'');
+ visibleRows=all.filter(r=>!q||normName(r.nama+' '+r.judul+' '+r.rombel).includes(q));
+ document.getElementById('mClass').textContent=activeClass?activeClass.replace('Kelas ',''):'—';
+ document.getElementById('mStudents').textContent=activeClass?roster.filter(s=>s.rombel===activeClass).length:0;
+ document.getElementById('mRows').textContent=all.length;
+ tbody.innerHTML='';
+ if(!activeClass){tbody.innerHTML='<tr><td colspan="5" class="empty">Pilih rombel kelas di atas untuk melihat rekap nilai.</td></tr>';return}
+ if(!visibleRows.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Tidak ada nilai yang cocok untuk kelas/pencarian ini.</td></tr>';return}
+ visibleRows.forEach((r,i)=>{const tr=document.createElement('tr');[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)].forEach((v,j)=>{const td=document.createElement('td');td.textContent=v??'';if(j===0)td.className='num';if(j===4)td.className='grade';tr.appendChild(td)});tbody.appendChild(tr)});
+}
+function formatNilai(v){if(v===null||v===undefined||String(v).trim()==='')return '—';return v}
+search.addEventListener('input',renderTable);
+csvBtn.addEventListener('click',()=>{
+ if(!visibleRows.length)return;
+ const rows=[['No','Nama Anak','Rombel','Judul Tugas','Nilai'],...visibleRows.map((r,i)=>[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)])];
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='Rekap_Nilai_'+(activeClass||'Kelas').replace(/\s/g,'_')+'.csv';a.click();URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
