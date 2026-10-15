@@ -59,7 +59,7 @@
         <option value="score-desc">Urutkan: Nilai tertinggi</option>
         <option value="score-asc">Urutkan: Nilai terendah</option>
       </select>
-      <button class="btn secondary" id="csvBtn" disabled>Unduh CSV</button>
+      <button class="btn secondary" id="csvBtn" disabled>Unduh Excel (.xlsx)</button>
     </div>
     <div class="tablewrap">
       <table>
@@ -144,10 +144,14 @@ taskFilter.addEventListener('change',renderTable);
 sortBy.addEventListener('change',renderTable);
 csvBtn.addEventListener('click',()=>{
  if(!visibleRows.length)return;
- const rows=[['No','Nama Anak','Rombel','Judul Tugas','Nilai'],...visibleRows.map((r,i)=>[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)])];
- const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
- const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');
- a.href=url;a.download='Rekap_Nilai_'+(activeClass||'Kelas').replace(/\s/g,'_')+'.csv';a.click();URL.revokeObjectURL(url);
+ if(!window.XLSX){statusEl.className='status';statusEl.textContent='Pustaka Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.';return;}
+ const rows=[['No','Nama','Rombel','Judul Tugas','Nilai'],...visibleRows.map((r,i)=>[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)==='—'?'':formatNilai(r.nilai)])];
+ const worksheet=XLSX.utils.aoa_to_sheet(rows);
+ worksheet['!cols']=[{wch:8},{wch:30},{wch:14},{wch:32},{wch:12}];
+ const workbook=XLSX.utils.book_new();
+ XLSX.utils.book_append_sheet(workbook,worksheet,'Rekap Nilai');
+ const className=(activeClass||'Kelas').replace(/\s/g,'_');
+ XLSX.writeFile(workbook,'Rekap_Nilai_'+className+'.xlsx');
 });
 </script>
 </body>
