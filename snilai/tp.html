@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIMPATIK - Pengolah Nilai Siswa</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f1f5f9;color:#1e293b}
+.header{background:linear-gradient(135deg,#0f4c81,#2563eb);color:#fff;padding:30px 20px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,.15)}
+.header h1{margin:0;font-size:30px;font-weight:800}.header p{margin:8px 0 0;opacity:.92;font-size:15px}
+.container{width:100%;max-width:1400px;margin:25px auto;padding:0 15px}
+.card{background:#fff;border-radius:16px;padding:22px;margin-bottom:20px;box-shadow:0 4px 15px rgba(15,23,42,.08)}
+.upload-box{display:block;border:2px dashed #2563eb;border-radius:14px;padding:38px 20px;text-align:center;background:#eff6ff;cursor:pointer;transition:.2s}
+.upload-box:hover{background:#dbeafe;transform:translateY(-1px)}.upload-icon{font-size:50px;margin-bottom:10px}
+.upload-box h2{margin:5px 0;color:#1d4ed8;font-size:22px}.upload-box p{color:#64748b;margin:7px 0;font-size:14px}#fileInput{display:none}
+.message{display:none;padding:13px 16px;border-radius:9px;margin-bottom:15px;font-size:14px;line-height:1.5;white-space:pre-wrap}
+.message.success,.message.error,.message.warning,.message.info{display:block}
+.message.success{background:#dcfce7;color:#166534}.message.error{background:#fee2e2;color:#991b1b}.message.warning{background:#fef3c7;color:#92400e}.message.info{background:#dbeafe;color:#1e40af}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.control-group{display:flex;flex-direction:column;gap:6px}.control-label{font-size:13px;font-weight:bold;color:#475569}
+select{min-width:190px;padding:11px 13px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;font-size:14px;color:#1e293b;outline:none}
+select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+button{border:none;border-radius:9px;padding:11px 18px;font-weight:bold;cursor:pointer;transition:.2s;font-size:13px}
+button:hover{transform:translateY(-1px)}button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-primary{background:#2563eb;color:#fff}.btn-success,.btn-wa{background:#16a34a;color:#fff}.btn-secondary{background:#64748b;color:#fff}.btn-pdf{background:#b91c1c;color:#fff}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.info{padding:17px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0}
+.info-title{font-size:12px;color:#64748b;margin-bottom:7px}.info-value{font-size:25px;font-weight:bold;color:#1e3a8a}
+.table-wrapper{overflow:auto;border-radius:10px;border:1px solid #e2e8f0}
+table{width:100%;border-collapse:collapse;min-width:1050px}
+th{background:#0f4c81;color:#fff;padding:12px 10px;font-size:13px;white-space:nowrap;position:sticky;top:0;z-index:2}
+td{padding:10px;border-bottom:1px solid #e2e8f0;font-size:13px;text-align:center}td:nth-child(2){text-align:left}tbody tr:hover{background:#f8fafc}
+.nilai-merah{background:#fecaca!important;color:#991b1b;font-weight:bold}.nilai-kuning{background:#fef08a!important;color:#854d0e;font-weight:bold}.nilai-hijau{background:#bbf7d0!important;color:#166534;font-weight:bold}
+.status-tuntas{color:#166534;font-weight:bold}.status-belum{color:#991b1b;font-weight:bold}.kosong{color:#94a3b8;font-style:italic}
+.legend{display:flex;gap:15px;flex-wrap:wrap;margin:12px 0 15px}.legend-item{display:flex;align-items:center;gap:7px;font-size:13px}
+.legend-color{width:20px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,.08)}.red{background:#fecaca}.yellow{background:#fef08a}.green{background:#bbf7d0}
+.remidi-description{color:#64748b;font-size:14px;line-height:1.5;margin:8px 0 12px}
+.jumlah-terpilih{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:bold;margin:5px 0 12px}
+.siswa-check-item{display:flex;align-items:center;gap:11px;padding:12px 13px;margin-bottom:7px;border:1px solid #fecaca;border-radius:9px;background:#fff7f7;cursor:pointer;transition:.15s}
+.siswa-check-item:hover{background:#fee2e2}.siswa-check-item input{width:18px;height:18px;cursor:pointer;accent-color:#16a34a}
+.siswa-check-name{font-size:14px;font-weight:bold;color:#334155}.siswa-check-status{margin-left:auto;font-size:11px;background:#fee2e2;color:#991b1b;padding:4px 7px;border-radius:5px;font-weight:bold}
+.empty-state{text-align:center;padding:30px 15px;color:#64748b}.empty-state-icon{font-size:38px;margin-bottom:8px}
+.footer{text-align:center;padding:25px;color:#64748b;font-size:13px}.hidden{display:none!important}
+@media(max-width:800px){.info-grid{grid-template-columns:repeat(2,1fr)}.header h1{font-size:23px}}
+@media(max-width:550px){.container{padding:0 10px}.card{padding:16px}.info-grid{grid-template-columns:repeat(2,1fr);gap:8px}.info-value{font-size:21px}.controls{flex-direction:column;align-items:stretch}select,button{width:100%}.siswa-check-status{display:none}.header{padding:24px 14px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <h1>📊 SIMPATIK</h1>
+  <p>Sistem Pengolahan &amp; Pengurutan Nilai Siswa</p>
+</header>
+
+<main class="container">
+  <section class="card">
+    <div id="message" class="message"></div>
+    <label for="fileInput" class="upload-box">
+      <div class="upload-icon">📁</div>
+      <h2>Pilih File Excel</h2>
+      <p>Upload file Excel yang memiliki sheet <b>Siswa</b> dan <b>Jawaban</b>.</p>
+      <p>Nilai TP1 dan TP2 dibaca dari kolom M dan N sheet Jawaban.</p>
+      <p>Sistem mengurutkan siswa mengikuti urutan pada sheet Siswa.</p>
+    </label>
+    <input type="file" id="fileInput" accept=".xlsx,.xls">
+  </section>
+
+  <section id="controlCard" class="card hidden">
+    <h3>⚙️ Pengaturan</h3>
+    <div class="controls">
+      <div class="control-group">
+        <label class="control-label" for="kelasSelect">Pilih Kelas</label>
+        <select id="kelasSelect"><option value="SEMUA">Semua Kelas</option></select>
+      </div>
+      <button class="btn-primary" id="processBtn">🔄 PROSES &amp; URUTKAN</button>
+      <button class="btn-success" id="downloadBtn" disabled>📥 DOWNLOAD EXCEL</button>
+      <button class="btn-pdf" id="pdfBtn" disabled>📄 EKSPOR PDF</button>
+      <button class="btn-secondary" id="resetBtn">🔄 RESET</button>
+    </div>
+  </section>
+
+  <section id="infoCard" class="card hidden">
+    <div class="info-grid">
+      <div class="info"><div class="info-title">Total Siswa</div><div class="info-value" id="totalSiswa">0</div></div>
+      <div class="info"><div class="info-title">Sudah Ada Data Nilai</div><div class="info-value" id="totalNilai">0</div></div>
+      <div class="info"><div class="info-title">Belum Tuntas</div><div class="info-value" id="belumNilai">0</div></div>
+      <div class="info"><div class="info-title">Jumlah Kelas</div><div class="info-value" id="jumlahKelas">0</div></div>
+    </div>
+  </section>
+
+  <section id="resultCard" class="card hidden">
+    <h3>📋 Hasil Pengurutan Nilai</h3>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-color red"></span>Nilai &lt; 78</div>
+      <div class="legend-item"><span class="legend-color yellow"></span>Nilai = 78</div>
+      <div class="legend-item"><span class="legend-color green"></span>Nilai &gt; 78</div>
+    </div>
+    <div class="table-wrapper">
+      <table id="resultTable">
+        <thead><tr>
+          <th>NO</th><th>NAMA</th><th>KELAS</th><th>NILAI TP1</th><th>NILAI TP2</th>
+          <th>NILAI AKHIR</th><th>NILAI AWAL</th><th>NILAI REMIDI</th><th>STATUS KETUNTASAN</th>
+        </tr></thead>
+        <tbody id="resultBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="remidiCard" class="card hidden">
+    <h3>📝 Daftar Siswa Belum Tuntas</h3>
+    <div class="remidi-description">Daftar ini dihitung berdasarkan <b>Nilai Akhir hasil perhitungan remidi</b>. Jika Nilai Akhir sudah ≥ 78, siswa otomatis tidak masuk daftar perbaikan.</div>
+    <div id="jumlahTerpilih" class="jumlah-terpilih">0 siswa dipilih</div>
+    <div class="controls">
+      <button class="btn-primary" id="selectAllBtn">☑️ PILIH SEMUA</button>
+      <button class="btn-secondary" id="clearAllBtn">⬜ HAPUS PILIHAN</button>
+      <button class="btn-wa" id="copyWaBtn">📋 COPY UNTUK WA</button>
+    </div>
+    <br>
+    <div id="daftarBelumTuntas"></div>
+  </section>
+</main>
+<footer class="footer">SIMPATIK • Pengolah Nilai Siswa</footer>
+
+<script>
+"use strict";
+let workbook = null, siswaData = [], jawabanData = [], hasilData = [];
+
+function normalisasi(value) {
+  if (value === null || value === undefined) return "";
+  return String(value).trim().replace(/\s+/g, " ").toUpperCase();
+}
+function angkaNilai(value) {
+  if (value === null || value === undefined || String(value).trim() === "") return NaN;
+  const text = String(value).trim().replace(",", ".").replace(/[^0-9.\-]/g, "");
+  return parseFloat(text);
+}
+function hitungNilaiAkhir(nilaiAwal, nilaiRemidi, nilaiAkhirLama) {
+  const awal = angkaNilai(nilaiAwal), remidi = angkaNilai(nilaiRemidi), akhirLama = angkaNilai(nilaiAkhirLama);
+  if (!Number.isNaN(awal) && awal >= 78) return awal;
+  if (!Number.isNaN(awal) && awal < 78 && !Number.isNaN(remidi)) {
+    if (remidi >= 78 && remidi <= 80) return 78;
+    if (remidi >= 81 && remidi <= 89) return 79;
+    if (remidi >= 90 && remidi <= 95) return 80;
+    if (remidi >= 96 && remidi <= 100) return 82;
+  }
+  if (!Number.isNaN(akhirLama)) return akhirLama;
+  if (!Number.isNaN(awal)) return awal;
+  return "";
+}
+function hitungStatusKetuntasan(nilaiAkhir) {
+  const akhir = angkaNilai(nilaiAkhir);
+  return !Number.isNaN(akhir) && akhir >= 78 ? "TUNTAS" : "BELUM TUNTAS";
+}
+function buatHeaderObject(row) {
+  const obj = {};
+  row.forEach((value, index) => {
+    if (value !== null && value !== undefined && String(value).trim() !== "") obj[String(value).trim()] = index;
+  });
+  return obj;
+}
+function cariKolom(header, nama) {
+  const target = normalisasi(nama);
+  for (const key in header) if (normalisasi(key) === target) return header[key];
+  return -1;
+}
+function tampilkanPesan(text, type) {
+  const el = document.getElementById("message");
+  el.textContent = text;
+  el.className = "message " + type;
+}
+document.getElementById("fileInput").addEventListener("change", function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  workbook = null; siswaData = []; jawabanData = []; hasilData = [];
+  document.getElementById("controlCard").classList.add("hidden");
+  document.getElementById("infoCard").classList.add("hidden");
+  document.getElementById("resultCard").classList.add("hidden");
+  document.getElementById("remidiCard").classList.add("hidden");
+  tampilkanPesan("Membaca file Excel…", "info");
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      workbook = XLSX.read(new Uint8Array(e.target.result), {type:"array"});
+      bacaData();
+    } catch(error) {
+      console.error(error);
+      tampilkanPesan("File Excel tidak dapat dibaca. Pastikan file tidak rusak dan berformat XLSX/XLS.", "error");
+    }
+  };
+  reader.onerror = () => tampilkanPesan("Gagal membaca file dari perangkat.", "error");
+  reader.readAsArrayBuffer(file);
+});
+
+function bacaData() {
+  if (!workbook || !workbook.Sheets["Siswa"]) { tampilkanPesan("Sheet 'Siswa' tidak ditemukan.", "error"); return; }
+  if (!workbook.Sheets["Jawaban"]) { tampilkanPesan("Sheet 'Jawaban' tidak ditemukan.", "error"); return; }
+  const siswaRows = XLSX.utils.sheet_to_json(workbook.Sheets["Siswa"], {header:1, defval:""});
+  const jawabanRows = XLSX.utils.sheet_to_json(workbook.Sheets["Jawaban"], {header:1, defval:""});
+  if (!siswaRows.length || !jawabanRows.length) { tampilkanPesan("Sheet Siswa atau Jawaban kosong.", "error"); return; }
+  const siswaHeader = buatHeaderObject(siswaRows[0]), jawabanHeader = buatHeaderObject(jawabanRows[0]);
+  const sNama = cariKolom(siswaHeader, "Nama"), sKelas = cariKolom(siswaHeader, "Kelas");
+  const jNama = cariKolom(jawabanHeader, "Nama"), jKelas = cariKolom(jawabanHeader, "Kelas");
+  const jNilaiAkhir = cariKolom(jawabanHeader, "Nilai Akhir");
+  const jNilaiAwal = cariKolom(jawabanHeader, "Nilai Awal");
+  const jNilaiRemidi = cariKolom(jawabanHeader, "Nilai Remidi");
+  // Kolom M dan N berbasis posisi Excel: M = indeks 12, N = indeks 13.
+  const jNilaiTP1 = 12, jNilaiTP2 = 13;
+  if (sNama < 0 || sKelas < 0) { tampilkanPesan("Sheet Siswa harus memiliki header: Nama dan Kelas.", "error"); return; }
+  if (jNama < 0 || jKelas < 0 || jNilaiAkhir < 0 || jNilaiAwal < 0 || jNilaiRemidi < 0) {
+    tampilkanPesan("Sheet Jawaban harus memiliki header: Nama, Kelas, Nilai Akhir, Nilai Awal, dan Nilai Remidi. Nilai TP1/TP2 dibaca dari kolom M/N.", "error"); return;
+  }
+  siswaData = [];
+  for (let i = 1; i < siswaRows.length; i++) {
+    const nama = siswaRows[i][sNama], kelas = siswaRows[i][sKelas];
+    if (nama === null || nama === undefined || String(nama).trim() === "") continue;
+    siswaData.push({no:siswaData.length+1, nama:String(nama).trim(), kelas:String(kelas ?? "").trim()});
+  }
+  jawabanData = [];
+  for (let i = 1; i < jawabanRows.length; i++) {
+    const row = jawabanRows[i], nama = row[jNama], kelas = row[jKelas];
+    if (nama === null || nama === undefined || String(nama).trim() === "") continue;
+    jawabanData.push({
+      nama:String(nama).trim(), kelas:String(kelas ?? "").trim(),
+      nilaiAkhir:row[jNilaiAkhir], nilaiAwal:row[jNilaiAwal], nilaiRemidi:row[jNilaiRemidi],
+      nilaiTP1:row[jNilaiTP1] ?? "", nilaiTP2:row[jNilaiTP2] ?? ""
+    });
+  }
+  const kelasSet = new Set(siswaData.map(s => s.kelas).filter(Boolean));
+  const kelasSelect = document.getElementById("kelasSelect");
+  kelasSelect.innerHTML = '<option value="SEMUA">Semua Kelas</option>';
+  Array.from(kelasSet).sort((a,b)=>a.localeCompare(b, undefined, {numeric:true})).forEach(kelas => {
+    const option = document.createElement("option"); option.value = kelas; option.textContent = kelas; kelasSelect.appendChild(option);
+  });
+  document.getElementById("controlCard").classList.remove("hidden");
+  document.getElementById("infoCard").classList.remove("hidden");
+  document.getElementById("resultCard").classList.add("hidden");
+  document.getElementById("remidiCard").classList.add("hidden");
+  document.getElementById("totalSiswa").textContent = siswaData.length;
+  document.getElementById("totalNilai").textContent = jawabanData.length;
+  document.getElementById("jumlahKelas").textContent = kelasSet.size;
+  document.getElementById("belumNilai").textContent = "0";
+  tampilkanPesan(`File berhasil dibaca. ${siswaData.length} siswa ditemukan. Nilai TP1 dan TP2 dibaca dari kolom M dan N sheet Jawaban.`, "success");
+}
+document.getElementById("processBtn").addEventListener("click", prosesData);
+function prosesData() {
+  const kelas = document.getElementById("kelasSelect").value;
+  const daftarSiswa = siswaData.filter(s => kelas === "SEMUA" || normalisasi(s.kelas) === normalisasi(kelas));
+  const jawabanMap = new Map();
+  jawabanData.forEach(data => jawabanMap.set(normalisasi(data.nama)+"||"+normalisasi(data.kelas), data));
+  hasilData = daftarSiswa.map((siswa,index) => {
+    const jawaban = jawabanMap.get(normalisasi(siswa.nama)+"||"+normalisasi(siswa.kelas));
+    const nilaiAwal = jawaban ? jawaban.nilaiAwal : "";
+    const nilaiRemidi = jawaban ? jawaban.nilaiRemidi : "";
+    const nilaiAkhir = jawaban ? hitungNilaiAkhir(nilaiAwal,nilaiRemidi,jawaban.nilaiAkhir) : "";
+    return {
+      no:index+1, nama:siswa.nama, kelas:siswa.kelas,
+      nilaiTP1:jawaban ? jawaban.nilaiTP1 : "", nilaiTP2:jawaban ? jawaban.nilaiTP2 : "",
+      nilaiAkhir, nilaiAwal, nilaiRemidi, status:hitungStatusKetuntasan(nilaiAkhir)
+    };
+  });
+  renderTable();
+}
+function kelasNilai(nilai) {
+  const angka = angkaNilai(nilai);
+  if (Number.isNaN(angka)) return "";
+  if (angka < 78) return "nilai-merah";
+  if (angka === 78) return "nilai-kuning";
+  return "nilai-hijau";
+}
+function buatCellNilai(nilai) {
+  const td = document.createElement("td");
+  if (nilai === null || nilai === undefined || String(nilai).trim() === "") { td.textContent = "—"; td.className = "kosong"; return td; }
+  td.textContent = nilai;
+  const kelas = kelasNilai(nilai);
+  if (kelas) td.classList.add(kelas);
+  return td;
+}
+function renderTable() {
+  const tbody = document.getElementById("resultBody");
+  tbody.innerHTML = "";
+  let belumTuntas = 0, sudahAdaNilai = 0;
+  hasilData.forEach(data => {
+    const tr = document.createElement("tr");
+    const tdNo = document.createElement("td"); tdNo.textContent = data.no;
+    const tdNama = document.createElement("td"); tdNama.textContent = data.nama;
+    const tdKelas = document.createElement("td"); tdKelas.textContent = data.kelas;
+    tr.append(tdNo, tdNama, tdKelas, buatCellNilai(data.nilaiTP1), buatCellNilai(data.nilaiTP2),
+      buatCellNilai(data.nilaiAkhir), buatCellNilai(data.nilaiAwal), buatCellNilai(data.nilaiRemidi));
+    const tdStatus = document.createElement("td"); tdStatus.textContent = data.status;
+    tdStatus.className = data.status === "TUNTAS" ? "status-tuntas" : "status-belum";
+    tr.appendChild(tdStatus); tbody.appendChild(tr);
+    if ([data.nilaiTP1,data.nilaiTP2,data.nilaiAwal,data.nilaiRemidi].some(v=>v!=="" && v!==null && v!==undefined)) sudahAdaNilai++;
+    if (data.status === "BELUM TUNTAS") belumTuntas++;
+  });
+  document.getElementById("totalSiswa").textContent = hasilData.length;
+  document.getElementById("totalNilai").textContent = sudahAdaNilai;
+  document.getElementById("belumNilai").textContent = belumTuntas;
+  document.getElementById("resultCard").classList.remove("hidden");
+  document.getElementById("downloadBtn").disabled = hasilData.length === 0;
+  document.getElementById("pdfBtn").disabled = hasilData.length === 0;
+  tampilkanBelumTuntas();
+  tampilkanPesan(`Berhasil memproses ${hasilData.length} siswa sesuai urutan pada sheet Siswa.`, "success");
+}
+function tampilkanBelumTuntas() {
+  const container = document.getElementById("daftarBelumTuntas"), card = document.getElementById("remidiCard");
+  container.innerHTML = "";
+  const belumTuntas = hasilData.filter(data => data.status === "BELUM TUNTAS");
+  card.classList.remove("hidden");
+  if (!belumTuntas.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎉</div><strong>Semua siswa sudah tuntas!</strong><div style="margin-top:6px">Tidak ada siswa yang perlu melakukan perbaikan nilai.</div></div>';
+    updateJumlahTerpilih(); return;
+  }
+  belumTuntas.forEach(data => {
+    const label = document.createElement("label"); label.className = "siswa-check-item";
+    const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.className = "checkbox-belum-tuntas";
+    checkbox.value = data.nama; checkbox.dataset.nama = data.nama; checkbox.dataset.kelas = data.kelas;
+    checkbox.addEventListener("change", updateJumlahTerpilih);
+    const nama = document.createElement("span"); nama.className = "siswa-check-name"; nama.textContent = `${data.no}. ${data.nama} — ${data.kelas}`;
+    const status = document.createElement("span"); status.className = "siswa-check-status"; status.textContent = "BELUM TUNTAS";
+    label.append(checkbox,nama,status); container.appendChild(label);
+  });
+  updateJumlahTerpilih();
+}
+function updateJumlahTerpilih() {
+  const checked = document.querySelectorAll(".checkbox-belum-tuntas:checked");
+  document.getElementById("jumlahTerpilih").textContent = `${checked.length} siswa dipilih`;
+}
+document.getElementById("selectAllBtn").addEventListener("click", () => {
+  document.querySelectorAll(".checkbox-belum-tuntas").forEach(checkbox => checkbox.checked = true); updateJumlahTerpilih();
+});
+document.getElementById("clearAllBtn").addEventListener("click", () => {
+  document.querySelectorAll(".checkbox-belum-tuntas").forEach(checkbox => checkbox.checked = false); updateJumlahTerpilih();
+});
+document.getElementById("copyWaBtn").addEventListener("click", copyDaftarWA);
+async function copyDaftarWA() {
+  const checked = Array.from(document.querySelectorAll(".checkbox-belum-tuntas:checked"));
+  if (!checked.length) { tampilkanPesan("Silakan pilih minimal satu siswa terlebih dahulu.", "warning"); return; }
+  const kelas = document.getElementById("kelasSelect").value;
+  let text = "📢 *PERBAIKAN NILAI INFORMATIKA*\n\n";
+  if (kelas !== "SEMUA") text += `Kelas: *${kelas}*\n\n`;
+  text += "Berikut siswa yang perlu segera melakukan perbaikan nilai:\n\n";
+  checked.forEach((checkbox,index) => { text += `${index+1}. ${checkbox.dataset.nama}\n`; });
+  text += "\nMohon segera melakukan perbaikan nilai, kerjakan = https://look.short.gy/simpatik_bab2\n\nTerima kasih. 🙏";
+  try {
+    await navigator.clipboard.writeText(text);
+    tampilkanPesan(`Berhasil menyalin ${checked.length} nama. Silakan paste ke grup WhatsApp.`, "success");
+  } catch(error) {
+    const textarea = document.createElement("textarea"); textarea.value = text;
+    textarea.style.position = "fixed"; textarea.style.left = "-9999px"; document.body.appendChild(textarea);
+    textarea.focus(); textarea.select(); const ok = document.execCommand("copy"); textarea.remove();
+    tampilkanPesan(ok ? `Berhasil menyalin ${checked.length} nama.` : "Gagal menyalin otomatis. Silakan coba lagi.", ok ? "success" : "error");
+  }
+}
+document.getElementById("downloadBtn").addEventListener("click", downloadExcel);
+function downloadExcel() {
+  if (!hasilData.length) { tampilkanPesan("Belum ada hasil yang dapat di-download.", "warning"); return; }
+  const wb = XLSX.utils.book_new();
+  const rows = [["No","Nama","Kelas","Nilai TP1","Nilai TP2","Nilai Akhir","Nilai Awal","Nilai Remidi","Status Ketuntasan"]];
+  hasilData.forEach(d => rows.push([d.no,d.nama,d.kelas,d.nilaiTP1,d.nilaiTP2,d.nilaiAkhir,d.nilaiAwal,d.nilaiRemidi,d.status]));
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = [{wch:7},{wch:32},{wch:12},{wch:12},{wch:12},{wch:14},{wch:14},{wch:14},{wch:22}];
+  const headerStyle = {fill:{patternType:"solid",fgColor:{rgb:"0F4C81"}},font:{bold:true,color:{rgb:"FFFFFF"}},alignment:{horizontal:"center",vertical:"center"}};
+  for (let col=0; col<9; col++) { const address=XLSX.utils.encode_cell({r:0,c:col}); if(ws[address]) ws[address].s=headerStyle; }
+  for (let row=1; row<rows.length; row++) {
+    [3,4,5,6,7].forEach(col => {
+      const address=XLSX.utils.encode_cell({r:row,c:col}), cell=ws[address]; if(!cell) return;
+      const nilai=angkaNilai(cell.v); if(Number.isNaN(nilai)) return;
+      const warna=nilai<78?"FECACA":nilai===78?"FEF08A":"BBF7D0";
+      cell.s={fill:{patternType:"solid",fgColor:{rgb:warna}},font:{bold:true},alignment:{horizontal:"center"}};
+    });
+    const statusAddress=XLSX.utils.encode_cell({r:row,c:8}), status=hasilData[row-1].status;
+    if(ws[statusAddress]) ws[statusAddress].s={fill:{patternType:"solid",fgColor:{rgb:status==="TUNTAS"?"BBF7D0":"FECACA"}},font:{bold:true,color:{rgb:status==="TUNTAS"?"166534":"991B1B"}},alignment:{horizontal:"center"}};
+  }
+  XLSX.utils.book_append_sheet(wb,ws,"Hasil Nilai");
+  const kelas=document.getElementById("kelasSelect").value;
+  const namaFile=kelas==="SEMUA"?"SIMPATIK_NILAI_SEMUA_KELAS.xlsx":`SIMPATIK_NILAI_${namaAman(kelas)}.xlsx`;
+  XLSX.writeFile(wb,namaFile);
+  tampilkanPesan(`File ${namaFile} berhasil dibuat.`, "success");
+}
+document.getElementById("pdfBtn").addEventListener("click", eksporPDF);
+function eksporPDF() {
+  if (!hasilData.length) { tampilkanPesan("Belum ada hasil yang dapat diekspor.", "warning"); return; }
+  if (!window.jspdf || !window.jspdf.jsPDF) { tampilkanPesan("Pustaka PDF gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.", "error"); return; }
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+    const kelas=document.getElementById("kelasSelect").value;
+    doc.setFont("helvetica","bold"); doc.setFontSize(16);
+    doc.text("SIMPATIK - REKAP NILAI SISWA",14,14);
+    doc.setFont("helvetica","normal"); doc.setFontSize(10);
+    doc.text(`Kelas: ${kelas==="SEMUA"?"Semua Kelas":kelas}  |  Jumlah siswa: ${hasilData.length}`,14,21);
+    const body=hasilData.map(d=>[
+      String(d.no),d.nama,d.kelas,formatNilai(d.nilaiTP1),formatNilai(d.nilaiTP2),
+      formatNilai(d.nilaiAkhir),formatNilai(d.nilaiAwal),formatNilai(d.nilaiRemidi),d.status
+    ]);
+    doc.autoTable({
+      startY:26,
+      head:[["No","Nama","Kelas","Nilai TP1","Nilai TP2","Nilai Akhir","Nilai Awal","Nilai Remidi","Status Ketuntasan"]],
+      body,
+      theme:"grid",
+      styles:{font:"helvetica",fontSize:8,cellPadding:2.2,halign:"center",valign:"middle"},
+      headStyles:{fillColor:[15,76,129],textColor:[255,255,255],fontStyle:"bold"},
+      columnStyles:{1:{halign:"left",cellWidth:55}},
+      didParseCell:function(data){
+        if(data.section==="body" && [3,4,5,6,7].includes(data.column.index)){
+          const v=angkaNilai(data.cell.raw);
+          if(!Number.isNaN(v)){
+            if(v<78){data.cell.styles.fillColor=[254,202,202];data.cell.styles.textColor=[153,27,27];}
+            else if(v===78){data.cell.styles.fillColor=[254,240,138];data.cell.styles.textColor=[133,77,14];}
+            else{data.cell.styles.fillColor=[187,247,208];data.cell.styles.textColor=[22,101,52];}
+            data.cell.styles.fontStyle="bold";
+          }
+        }
+        if(data.section==="body" && data.column.index===8){
+          const t=String(data.cell.raw);
+          data.cell.styles.fillColor=t==="TUNTAS"?[187,247,208]:[254,202,202];
+          data.cell.styles.textColor=t==="TUNTAS"?[22,101,52]:[153,27,27];
+          data.cell.styles.fontStyle="bold";
+        }
+      },
+      didDrawPage:function(){
+        const pageCount=doc.internal.getNumberOfPages();
+        doc.setFontSize(8); doc.setTextColor(100);
+        doc.text(`SIMPATIK • Halaman ${doc.internal.getCurrentPageInfo().pageNumber} dari ${pageCount}`,doc.internal.pageSize.getWidth()-14,doc.internal.pageSize.getHeight()-7,{align:"right"});
+      },
+      margin:{left:14,right:14,bottom:13}
+    });
+    const namaFile=kelas==="SEMUA"?"SIMPATIK_NILAI_SEMUA_KELAS.pdf":`SIMPATIK_NILAI_${namaAman(kelas)}.pdf`;
+    doc.save(namaFile);
+    tampilkanPesan(`PDF ${namaFile} berhasil dibuat.`, "success");
+  } catch(error) {
+    console.error(error);
+    tampilkanPesan("Ekspor PDF gagal. Silakan muat ulang halaman dan coba kembali.", "error");
+  }
+}
+function formatNilai(value) {
+  return value===null || value===undefined || String(value).trim()==="" ? "—" : String(value);
+}
+function namaAman(value) {
+  return String(value).trim().replace(/[\\/:*?"<>|]+/g,"_").replace(/\s+/g,"_");
+}
+document.getElementById("resetBtn").addEventListener("click", resetAplikasi);
+function resetAplikasi() {
+  workbook=null; siswaData=[]; jawabanData=[]; hasilData=[];
+  document.getElementById("fileInput").value="";
+  ["controlCard","infoCard","resultCard","remidiCard"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+  document.getElementById("downloadBtn").disabled=true;
+  document.getElementById("pdfBtn").disabled=true;
+  document.getElementById("resultBody").innerHTML="";
+  document.getElementById("daftarBelumTuntas").innerHTML="";
+  document.getElementById("kelasSelect").innerHTML='<option value="SEMUA">Semua Kelas</option>';
+  const message=document.getElementById("message"); message.className="message"; message.textContent="";
+}
+</script>
+</body>
+</html>
