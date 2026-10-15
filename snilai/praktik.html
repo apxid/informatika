@@ -145,16 +145,32 @@ sortBy.addEventListener('change',renderTable);
 csvBtn.addEventListener('click',()=>{
  if(!visibleRows.length)return;
  if(!window.XLSX){statusEl.className='status';statusEl.textContent='Pustaka Excel belum termuat. Periksa koneksi internet lalu muat ulang halaman.';return;}
- // Urutan ekspor selalu mengikuti urutan nama pada sheet Siswa,
- // tidak terpengaruh pilihan pengurutan pada tampilan tabel.
+ // Urutkan sesuai daftar pada sheet Siswa, lalu gabungkan entri siswa
+ // yang sama dalam satu baris. Nilai kedua dan seterusnya ditempatkan
+ // di kolom sebelah kanan Nilai (Nilai 2, Nilai 3, dan seterusnya).
  const exportRows=[...visibleRows].sort((a,b)=>{
    const ai=roster.findIndex(s=>s.rombel===a.rombel&&normName(s.nama)===normName(a.nama));
    const bi=roster.findIndex(s=>s.rombel===b.rombel&&normName(s.nama)===normName(b.nama));
    return (ai-bi) || ((a.sourceRow||0)-(b.sourceRow||0));
  });
- const rows=[['No','Nama','Rombel','Judul Tugas','Nilai'],...exportRows.map((r,i)=>[i+1,r.nama,r.rombel,r.judul,formatNilai(r.nilai)==='—'?'':formatNilai(r.nilai)])];
+ const grouped=[];
+ exportRows.forEach(r=>{
+   // Gunakan nama + rombel sebagai identitas agar nama sama di rombel lain tidak tercampur.
+   let g=grouped.find(x=>x.rombel===r.rombel&&normName(x.nama)===normName(r.nama));
+   if(!g){g={nama:r.nama,rombel:r.rombel,tugas:[],nilai:[],firstSourceRow:r.sourceRow||0};grouped.push(g);}
+   if(r.judul && !g.tugas.includes(r.judul)) g.tugas.push(r.judul);
+   const nilai=formatNilai(r.nilai)==='—'?'':formatNilai(r.nilai);
+   if(nilai!=='' && !g.nilai.includes(nilai)) g.nilai.push(nilai);
+ });
+ // Pastikan kolom nilai cukup untuk menampung seluruh nilai ganda yang ditemukan.
+ const maxNilai=Math.max(1,...grouped.map(g=>g.nilai.length));
+ const headers=['No','Nama','Rombel','Judul Tugas','Nilai'];
+ for(let n=2;n<=maxNilai;n++) headers.push('Nilai '+n);
+ const rows=[headers,...grouped.map((g,i)=>[
+   i+1,g.nama,g.rombel,g.tugas.join(' / '),...Array.from({length:maxNilai},(_,n)=>g.nilai[n]||'')
+ ])];
  const worksheet=XLSX.utils.aoa_to_sheet(rows);
- worksheet['!cols']=[{wch:8},{wch:30},{wch:14},{wch:32},{wch:12}];
+ worksheet['!cols']=[{wch:8},{wch:30},{wch:14},{wch:42},...Array(maxNilai).fill({wch:12})];
  const workbook=XLSX.utils.book_new();
  XLSX.utils.book_append_sheet(workbook,worksheet,'Rekap Nilai');
  const className=(activeClass||'Kelas').replace(/\s/g,'_');
