@@ -128,7 +128,7 @@
             border-radius: 8px;
             margin: 15px 0;
             letter-spacing: 1px;
-            color: #22c55e;
+            color: #e2e8f0;
             border: 1px dashed rgba(255,255,255,0.3);
         }
         .btn-join {
@@ -230,43 +230,22 @@
         <div class="team-box left-team">
             <h2>KUBERNETES<br>(Kelompok Kiri)</h2>
             <p>Untuk siswa yang duduk di deretan meja sebelah <b>KIRI</b> lab.</p>
-            <div class="code-display">🔢 LIHAT PIN DI LAYAR GURU</div> 
-            <button onclick="askAndJoin('KIRI')" class="btn-join btn-left">MASUK GAME KIRI</button>
-            <div class="hint-text">*Klik tombol ini untuk memasukkan PIN kelompok Kiri</div>
+            <div class="code-display">🔑 TANYAKAN PIN KELOMPOK KIRI KE GURU</div> 
+            <a href="https://gimkit.com" target="_blank" class="btn-join btn-left">MASUK GAME KIRI</a>
+            <div class="hint-text">*Klik untuk membuka halaman login Gimkit</div>
         </div>
 
         <!-- KELOMPOK KANAN -->
         <div class="team-box right-team">
             <h2>CYBERFOX<br>(Kelompok Kanan)</h2>
             <p>Untuk siswa yang duduk di deretan meja sebelah <b>KANAN</b> lab.</p>
-            <div class="code-display">🔢 LIHAT PIN DI LAYAR GURU</div>
-            <button onclick="askAndJoin('KANAN')" class="btn-join btn-right">MASUK GAME KANAN</button>
-            <div class="hint-text">*Klik tombol ini untuk memasukkan PIN kelompok Kanan</div>
+            <div class="code-display">🔑 TANYAKAN PIN KELOMPOK KANAN KE GURU</div>
+            <a href="https://gimkit.com" target="_blank" class="btn-join btn-right">MASUK GAME KANAN</a>
+            <div class="hint-text">*Klik untuk membuka halaman login Gimkit</div>
         </div>
 
     </div>
 </div>
 
-<script>
-    function askAndJoin(namaKelompok) {
-        var pinCode = prompt("Masukkan kode PIN untuk Kelompok " + namaKelompok + " (Lihat di layar proyektor Guru):");
-        
-        if (pinCode === null) {
-            return; 
-        }
-        
-        if (pinCode.trim() === "") {
-            alert("Harap masukkan kode PIN yang valid!");
-            return;
-        }
-
-        navigator.clipboard.writeText(pinCode.trim()).then(function() {
-            alert("PIN Berhasil Disimpan!\n\nSekarang halaman login Gimkit akan terbuka.\nDi kolom kode nanti, silakan tekan tombol 'Ctrl + V' di keyboard lalu ketik namamu.");
-            window.open("https://gimkit.com", "_blank");
-        }).catch(function(err) {
-            alert("Menuju ke halaman Gimkit. Silakan ketik manual kodenya: " + pinCode);
-            window.open("https://gimkit.com", "_blank");
-        });
-    }
-</script>
-
+</body>
+</html>
