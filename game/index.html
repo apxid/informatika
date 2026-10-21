@@ -36,13 +36,13 @@
             font-weight: bold;
         }
         
-        /* PANDUAN LANGKAH BERMAIN */
+        /* SECTION PANDUAN */
         .guide-section {
             text-align: left;
             background: #0f172a;
             padding: 25px;
             border-radius: 10px;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             border-left: 5px solid #3b82f6;
         }
         .guide-section h3 {
@@ -52,41 +52,45 @@
             text-transform: uppercase;
             border-bottom: 1px solid #334155;
             padding-bottom: 8px;
+            margin-bottom: 15px;
         }
-        .step-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .step-card {
+        
+        /* STRUKTUR TABEL PERAN */
+        .role-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
             background: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .role-table th, .role-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        .role-table th {
+            background-color: #1e293b;
+            color: #3b82f6;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        .role-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .builder-color { color: #f59e0b; }
+        .healer-color { color: #10b981; }
+        .attacker-color { color: #ef4444; }
+        .cc-color { color: #06b6d4; }
+
+        .end-game-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px dashed #ef4444;
             padding: 15px;
             border-radius: 8px;
-            border: 1px solid #334155;
-        }
-        .step-number {
-            background: #3b82f6;
-            color: white;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .step-card strong {
-            color: #f1f5f9;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .step-card p {
-            margin: 0;
-            font-size: 0.9em;
-            color: #94a3b8;
-            line-height: 1.4;
+            margin-top: 15px;
         }
 
         /* TOMBOL PILIHAN KELOMPOK */
@@ -117,15 +121,14 @@
             letter-spacing: 1px;
         }
         .code-display {
-            font-size: 2.2em;
+            font-size: 1.3em;
             font-weight: bold;
             background: rgba(0,0,0,0.5);
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             margin: 15px 0;
-            letter-spacing: 3px;
-            font-family: monospace;
-            color: #ffffff;
+            letter-spacing: 1px;
+            color: #22c55e;
             border: 1px dashed rgba(255,255,255,0.3);
         }
         .btn-join {
@@ -140,6 +143,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: all 0.2s;
             width: 80%;
+            border: none;
         }
         .btn-left {
             background: #2563eb;
@@ -169,35 +173,53 @@
     <h1>⚠️ PROJECT APOCALYPSE: SYSTEM FAILURE ⚠️</h1>
     <div class="subtitle">Misi Pertahanan Brankas Data Sistem Komputer</div>
 
-    <!-- PANDUAN LANGKAH BERMAIN (AGAR ANAK TIDAK BINGUNG) -->
+    <!-- PANDUAN PANDUAN TUGAS DAN PERAN -->
     <div class="guide-section">
-        <h3>📋 Panduan Langkah Bermain (Baca Ini Dulu!)</h3>
-        <div class="step-container">
-            
-            <div class="step-card">
-                <div class="step-number">1</div>
-                <strong>Klik Tombol Tim</strong>
-                <p>Klik tombol berwarna di bawah sesuai posisi tempat dudukmu (Kiri/Kanan lab). Kode PIN akan otomatis tersalin.</p>
-            </div>
+        <h3>🛡️ Panduan Peran Tim (Pilih Tugasmu!)</h3>
+        <p>Jawab kuis Sistem Komputer untuk mengisi energi, lalu jalankan tugas sesuai peran yang kamu pilih:</p>
+        
+        <table class="role-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Nama Peran</th>
+                    <th style="width: 35%;">Apa yang Harus Dilakukan?</th>
+                    <th style="width: 40%;">Cara Eksekusinya</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="role-name builder-color">👷 Builder (Tukang)</td>
+                    <td>Membangun dan memperbaiki benteng pelindung.</td>
+                    <td>Gunakan Beliung (Pickaxe) untuk menambang batu di peta, lalu pasang tembok di sekeliling brankas utama agar zombie terhambat.</td>
+                </tr>
+                <tr>
+                    <td class="role-name healer-color">⚕️ Healer (Medis)</td>
+                    <td>Mengisi darah brankas data dan mengobati teman.</td>
+                    <td>Cari dan kumpulkan kristal yang jatuh di tanah. Bawa kristal tersebut ke brankas tengah untuk menambah HP/darah markas yang berkurang.</td>
+                </tr>
+                <tr>
+                    <td class="role-name attacker-color">⚔️ Attacker (Petarung)</td>
+                    <td>Menyerang dan menghancurkan gerombolan zombie.</td>
+                    <td>Maju ke garis depan pertahanan. Tembaki langsung gerombolan zombie menggunakan senjata berat sebelum mereka sempat menyentuh tembok.</td>
+                </tr>
+                <tr>
+                    <td class="role-name cc-color">❄️ Crowd Control</td>
+                    <td>Memperlambat gerakan musuh berukuran besar.</td>
+                    <td>Gunakan senjata khusus atau perangkap es untuk membekukan area. Sangat berguna saat wave tinggi ketika zombie berlari terlalu cepat.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-            <div class="step-card">
-                <div class="step-number">2</div>
-                <strong>Tempel Kode PIN</strong>
-                <p>Setelah halaman baru terbuka, tekan tombol <b>Ctrl + V</b> pada keyboard di kotak PIN, lalu masukkan namamu.</p>
-            </div>
-
-            <div class="step-card">
-                <div class="step-number">3</div>
-                <strong>Jawab Soal = Energi</strong>
-                <p>Saat game dimulai, jawab pertanyaan tentang <b>Sistem Komputer</b> dengan cepat agar kamu punya energi untuk bertarung.</p>
-            </div>
-
-            <div class="step-card">
-                <div class="step-number">4</div>
-                <strong>Gunakan Peranmu</strong>
-                <p><b>Builder:</b> Bikin & perbaiki benteng.<br><b>Healer:</b> Isi darah markas.<br><b>Attacker/CC:</b> Tembak & lambatkan zombie.</p>
-            </div>
-
+    <!-- PANDUAN AKHIR PERMAINAN -->
+    <div class="guide-section">
+        <h3>🏁 Akhir dari Permainan (Bagaimana Cara Menang?)</h3>
+        <div class="end-game-box">
+            <p style="margin-top: 0;">Permainan ini menggunakan sistem <b>Gelombang Serangan (Waves)</b> yang terus meningkat kesulitannya.</p>
+            <ul style="padding-left: 20px; margin-bottom: 0; line-height: 1.6;">
+                <li><strong style="color: #22c55e;">KONDISI MENANG:</strong> Kelompokmu berhasil bertahan hidup bersama-sama melewati target jumlah Wave yang ditentukan Guru, ATAU kelompokmu bertahan lebih lama (Wave lebih tinggi) dibanding kelompok lawan sebelahmu.</li>
+                <li><strong style="color: #ef4444;">KONDISI KALAH:</strong> Jika kalian tidak kompak bekerja sama dan membiarkan gerombolan zombie menghancurkan **Brankas Data Utama (Vault)** di tengah peta sampai darahnya habis (0%), maka game berakhir seketika dan kelompokmu dinyatakan gugur.</li>
+            </ul>
         </div>
     </div>
 
@@ -208,37 +230,43 @@
         <div class="team-box left-team">
             <h2>KUBERNETES<br>(Kelompok Kiri)</h2>
             <p>Untuk siswa yang duduk di deretan meja sebelah <b>KIRI</b> lab.</p>
-            <!-- GANTI PIN DI BAWAH INI SESUAI DI GIMKIT GURU -->
-            <div class="code-display">123456</div> 
-            <button onclick="joinGame('123456')" class="btn-join btn-left">MASUK GAME KIRI</button>
-            <div class="hint-text">*Klik tombol ini akan otomatis menyalin kode PIN</div>
+            <div class="code-display">🔢 LIHAT PIN DI LAYAR GURU</div> 
+            <button onclick="askAndJoin('KIRI')" class="btn-join btn-left">MASUK GAME KIRI</button>
+            <div class="hint-text">*Klik tombol ini untuk memasukkan PIN kelompok Kiri</div>
         </div>
 
         <!-- KELOMPOK KANAN -->
         <div class="team-box right-team">
             <h2>CYBERFOX<br>(Kelompok Kanan)</h2>
             <p>Untuk siswa yang duduk di deretan meja sebelah <b>KANAN</b> lab.</p>
-            <!-- GANTI PIN DI BAWAH INI SESUAI DI GIMKIT GURU -->
-            <div class="code-display">789012</div>
-            <button onclick="joinGame('789012')" class="btn-join btn-right">MASUK GAME KANAN</button>
-            <div class="hint-text">*Klik tombol ini akan otomatis menyalin kode PIN</div>
+            <div class="code-display">🔢 LIHAT PIN DI LAYAR GURU</div>
+            <button onclick="askAndJoin('KANAN')" class="btn-join btn-right">MASUK GAME KANAN</button>
+            <div class="hint-text">*Klik tombol ini untuk memasukkan PIN kelompok Kanan</div>
         </div>
 
     </div>
 </div>
 
 <script>
-    // Fungsi untuk menyalin kode secara otomatis dan membuka tab Gimkit
-    function joinGame(pinCode) {
-        navigator.clipboard.writeText(pinCode).then(function() {
-            alert("Kode PIN (" + pinCode + ") BERHASIL disalin!\nSekarang halaman login akan terbuka. Silakan tekan Ctrl+V di kotak kode.");
+    function askAndJoin(namaKelompok) {
+        var pinCode = prompt("Masukkan kode PIN untuk Kelompok " + namaKelompok + " (Lihat di layar proyektor Guru):");
+        
+        if (pinCode === null) {
+            return; 
+        }
+        
+        if (pinCode.trim() === "") {
+            alert("Harap masukkan kode PIN yang valid!");
+            return;
+        }
+
+        navigator.clipboard.writeText(pinCode.trim()).then(function() {
+            alert("PIN Berhasil Disimpan!\n\nSekarang halaman login Gimkit akan terbuka.\nDi kolom kode nanti, silakan tekan tombol 'Ctrl + V' di keyboard lalu ketik namamu.");
             window.open("https://gimkit.com", "_blank");
         }).catch(function(err) {
-            // Jika browser memblokir fitur clipboard, halaman tetap terbuka
+            alert("Menuju ke halaman Gimkit. Silakan ketik manual kodenya: " + pinCode);
             window.open("https://gimkit.com", "_blank");
         });
     }
 </script>
 
-</body>
-</html>
