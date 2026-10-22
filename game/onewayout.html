@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gimkit One Way Out — Briefing Misi</title>
+<style>
+:root{--bg:#07111f;--panel:#122238;--panel2:#0b1728;--line:#2a405c;--text:#f3f7fc;--muted:#b6c7dc;--blue:#38bdf8;--cyan:#22d3ee;--green:#4ade80;--gold:#facc15;--red:#fb7185;--purple:#a78bfa}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;min-height:100vh;background:radial-gradient(ellipse at top,#163354 0%,#07111f 62%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.65}
+.container{max-width:1000px;margin:auto}
+.hero{text-align:center;padding:22px 10px 18px}
+.tag{display:inline-block;padding:5px 13px;border:1px solid #426283;border-radius:999px;color:#c9e6ff;font-size:.76rem;letter-spacing:1.5px;font-weight:900}
+h1{font-size:clamp(1.7rem,5vw,2.8rem);line-height:1.15;margin:15px 0 8px;color:#7dd3fc}
+.subtitle{color:var(--muted);margin:0}
+.progress-wrap{max-width:700px;margin:24px auto 0}
+.progress-label{display:flex;justify-content:space-between;font-size:.85rem;color:#d1e5fa;margin-bottom:8px}
+.progress-track{height:8px;border-radius:99px;background:#26384d;overflow:hidden}
+.progress-fill{height:100%;width:25%;background:linear-gradient(90deg,#0ea5e9,#8b5cf6);transition:width .3s}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
+.step{padding:10px 5px;text-align:center;border:1px solid var(--line);border-radius:12px;background:#101e31;color:#8fa7c2;font-size:.78rem}
+.step span{display:block;font-size:1.15rem;font-weight:900}
+.step.active{border-color:var(--blue);background:#12324d;color:white}
+.step.done{border-color:#34d399;color:#a7f3d0}
+.layer{display:none;padding:clamp(18px,4vw,32px);background:rgba(18,34,56,.97);border:1px solid var(--line);border-radius:18px;box-shadow:0 20px 55px #0005;animation:show .25s ease}
+.layer.active{display:block}
+@keyframes show{from{opacity:.4;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.kicker{font-size:.8rem;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:#7dd3fc}
+h2{font-size:clamp(1.35rem,3.5vw,1.95rem);line-height:1.3;margin:6px 0 18px}
+h3{margin:0 0 8px}
+.story{background:var(--panel2);border-left:5px solid var(--cyan);padding:18px;border-radius:10px;color:#d6e3f2}
+.story p:first-child{margin-top:0}.story p:last-child{margin-bottom:0}
+.highlight{color:var(--gold);font-weight:900}
+.checkline{display:flex;align-items:flex-start;gap:12px;padding:15px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin-top:20px}
+.checkline input{width:22px;height:22px;flex-shrink:0;margin-top:3px;accent-color:#22c55e}
+.checkline label{cursor:pointer}
+.small{font-size:.9rem;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.card{padding:17px;background:var(--panel2);border:1px solid var(--line);border-radius:13px}
+.card .emoji{font-size:1.8rem}
+.card p{margin:7px 0 0;color:var(--muted);font-size:.94rem}
+.energy{border-top:4px solid var(--gold)}.explore{border-top:4px solid var(--blue)}.teamwork{border-top:4px solid var(--green)}.escape{border-top:4px solid var(--purple)}
+.energy h3{color:var(--gold)}.explore h3{color:#7dd3fc}.teamwork h3{color:var(--green)}.escape h3{color:#c4b5fd}
+.callout{margin-top:16px;padding:15px;border:1px dashed #5280aa;background:#0a1a2d;border-radius:12px}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rule{padding:17px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+.win{color:var(--green)}.avoid{color:var(--red)}
+ol,ul{padding-left:22px}
+li{margin:7px 0}
+.team-container{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}
+.team-box{text-align:center;padding:22px 18px;border-radius:16px}
+.left{background:linear-gradient(145deg,#164e75,#102544);border:2px solid #38bdf8}
+.right{background:linear-gradient(145deg,#4c1d70,#28143f);border:2px solid #a78bfa}
+.team-box h3{font-size:1.35rem;letter-spacing:1px}
+.team-box p{color:#e0eafa}
+.pin{padding:12px;background:#02081788;border:1px dashed #ffffff55;border-radius:9px;font-weight:800;font-size:.9rem;margin:15px 0}
+.btn{display:inline-flex;justify-content:center;align-items:center;border:0;border-radius:10px;padding:13px 18px;font-size:1rem;font-weight:900;cursor:pointer;text-decoration:none;color:white;transition:transform .15s,filter .15s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.primary{background:linear-gradient(90deg,#0284c7,#4f46e5)}
+.secondary{background:#334155}
+.join-left{width:100%;background:#0284c7}.join-right{width:100%;background:#7c3aed}
+.nav{display:flex;align-items:center;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.nav .btn{min-width:145px}.nav .btn[hidden]{display:none}
+.footer{text-align:center;color:#8298b4;font-size:.8rem;padding:22px 0}
+@media(max-width:640px){body{padding:11px}.hero{padding-top:12px}.steps{gap:5px}.step{font-size:.66rem;padding:8px 2px}.step span{font-size:1rem}.cards,.rules,.team-container{grid-template-columns:1fr}.layer{border-radius:14px}.nav .btn{min-width:0;flex:1;padding:12px 9px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="hero">
+  <div class="tag">MISSION BRIEFING • ONE WAY OUT</div>
+  <h1>🚀 ONE WAY OUT: ESCAPE THE SHIP</h1>
+  <p class="subtitle">Pesawat dikuasai tanaman jahat. Semua pemain harus bekerja sama untuk keluar!</p>
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="progressText">Tahap 1 dari 4</span><span id="progressPercent">25%</span></div>
+    <div class="progress-track" id="progressBar" role="progressbar" aria-label="Kemajuan briefing" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <div class="steps">
+    <div class="step active"><span>01</span>Latar Misi</div>
+    <div class="step"><span>02</span>Panduan Main</div>
+    <div class="step"><span>03</span>Cara Menang</div>
+    <div class="step"><span>04</span>Pilih Meja</div>
+  </div>
+</header>
+
+<main>
+<section class="layer active" aria-labelledby="title1">
+  <div class="kicker">Tahap 1 • Baca sampai selesai</div>
+  <h2 id="title1">📖 Latar Belakang Misi: Darurat di Kapal Antariksa</h2>
+  <div class="story">
+    <p>Kalian berada di sebuah pesawat luar angkasa yang mengalami keadaan darurat. Kapal ini telah dikuasai oleh <b>tanaman jahat</b> yang menghalangi perjalanan dan membahayakan seluruh awak.</p>
+    <p>Jalan keluar tidak bisa dicapai hanya dengan berlari sendiri. Kalian harus menjelajahi kapal, menghadapi tanaman musuh, mengumpulkan sumber daya dan kartu kunci, serta membuka akses ke bagian kapal berikutnya.</p>
+    <p>Kalian adalah satu tim penyintas. Misi kalian adalah mencapai <span class="highlight">escape pod (kapsul pelarian)</span> dan memastikan seluruh anggota kelompok berhasil keluar dari kapal dengan selamat.</p>
+  </div>
+  <div class="checkline">
+    <input type="checkbox" id="readStory">
+    <label for="readStory"><b>Saya sudah membaca Latar Belakang Misi sampai selesai.</b><br><span class="small">Centang setelah membaca cerita. Tombol lanjut akan aktif setelah kotak ini dicentang.</span></label>
+  </div>
+</section>
+
+<section class="layer" aria-labelledby="title2">
+  <div class="kicker">Tahap 2 • Pahami cara bermain</div>
+  <h2 id="title2">🧭 Panduan Bermain One Way Out</h2>
+  <p>Baca langkah berikut sebelum mulai. Kalian perlu menjawab soal sekaligus bekerja sama saat menjelajahi kapal.</p>
+  <div class="cards">
+    <article class="card energy"><div class="emoji">⚡</div><h3>1. Jawab Soal</h3><p>Jawab pertanyaan kuis untuk memperoleh energi. Energi membantu kalian bergerak dan melanjutkan petualangan.</p></article>
+    <article class="card explore"><div class="emoji">🧭</div><h3>2. Jelajahi Kapal</h3><p>Jelajahi area kapal, cari jalur yang bisa dibuka, dan temukan akses menuju bagian berikutnya.</p></article>
+    <article class="card teamwork"><div class="emoji">🌱</div><h3>3. Hadapi Musuh</h3><p>Gunakan gadget untuk melawan tanaman jahat. Musuh yang dikalahkan dapat memberikan uang dan kartu kunci.</p></article>
+    <article class="card escape"><div class="emoji">🗝️</div><h3>4. Buka Jalan Keluar</h3><p>Kumpulkan kartu kunci, manfaatkan peningkatan gadget, jembatan dan checkpoint untuk membantu tim maju.</p></article>
+  </div>
+  <div class="callout"><b>🎮 Kontrol dasar:</b><ul><li>Komputer: gunakan tombol <b>W, A, S, D</b> untuk bergerak.</li><li>Sentuh ikon gadget/proyektil untuk beralih ke mode menyerang, lalu klik atau ketuk untuk membidik dan menembak.</li><li>Pada keyboard, tombol <b>1</b> dan <b>2</b> dapat digunakan untuk beralih antara gerakan dan gadget.</li></ul><span class="small">Kontrol bisa terasa berbeda tergantung perangkat yang digunakan.</span></div>
+</section>
+
+<section class="layer" aria-labelledby="title3">
+  <div class="kicker">Tahap 3 • Pahami tujuan akhir</div>
+  <h2 id="title3">🏁 Akhir dari Permainan (Bagaimana Cara Menang?)</h2>
+  <div class="rules">
+    <article class="rule"><h3 class="win">✅ KONDISI MENANG</h3><p><b>Seluruh kelompok</b> berhasil mencapai kapsul pelarian dan keluar dari pesawat dengan selamat. Pemain yang sudah sampai lebih dulu tetap perlu menunggu anggota kelompok lainnya.</p></article>
+    <article class="rule"><h3 class="avoid">⚠️ JANGAN LUPA</h3><p>Tujuan bukan sekadar mengalahkan banyak musuh atau menjawab soal sebanyak-banyaknya. Tim harus terus maju dan memastikan semua anggota sampai ke tempat pelarian.</p></article>
+  </div>
+  <div class="callout">
+    <h3>🧠 Strategi Tim</h3>
+    <ol>
+      <li>Jawab pertanyaan dengan sungguh-sungguh untuk memperoleh energi.</li>
+      <li>Jangan terburu-buru; jelajahi area dan perhatikan jalur yang terkunci.</li>
+      <li>Gunakan uang dan gadget dengan bijak serta bantu teman yang membutuhkan.</li>
+      <li>Koordinasikan langkah tim, manfaatkan checkpoint, dan jangan meninggalkan anggota kelompok.</li>
+      <li>Teruskan perjalanan sampai seluruh anggota berhasil mencapai escape pod.</li>
+    </ol>
+  </div>
+  <p class="small">Catatan: detail peta, musuh, dan pilihan gadget mengikuti pengaturan serta versi permainan Gimkit yang digunakan saat sesi berlangsung.</p>
+</section>
+
+<section class="layer" aria-labelledby="title4">
+  <div class="kicker">Tahap 4 • Pilih sesuai posisi duduk</div>
+  <h2 id="title4">🖥️ Pilih Kelompok dan Masuk ke Gimkit</h2>
+  <p>Periksa posisi dudukmu di laboratorium. Pilih tombol yang sesuai dengan deretan meja. Siapkan kode/PIN permainan yang ditampilkan guru.</p>
+  <div class="team-container">
+    <article class="team-box left">
+      <h3>HARDWARE<br><span style="font-size:.82em;font-weight:600">Kelompok Meja Kiri</span></h3>
+      <p>Untuk siswa yang duduk di deretan meja sebelah <b>KIRI</b> laboratorium.</p>
+      <div class="pin">🔑 Tanyakan kode permainan kepada guru</div>
+      <a class="btn join-left" href="https://www.gimkit.com/join" target="_blank" rel="noopener noreferrer">MASUK GAME KIRI ↗</a>
+    </article>
+    <article class="team-box right">
+      <h3>SOFTWARE<br><span style="font-size:.82em;font-weight:600">Kelompok Meja Kanan</span></h3>
+      <p>Untuk siswa yang duduk di deretan meja sebelah <b>KANAN</b> laboratorium.</p>
+      <div class="pin">🔑 Tanyakan kode permainan kepada guru</div>
+      <a class="btn join-right" href="https://www.gimkit.com/join" target="_blank" rel="noopener noreferrer">MASUK GAME KANAN ↗</a>
+    </article>
+  </div>
+  <p class="small">Kedua tombol membuka halaman join resmi Gimkit. Masukkan kode yang dibagikan guru untuk masuk ke sesi yang benar.</p>
+</section>
+</main>
+
+<nav class="nav" aria-label="Navigasi briefing">
+  <button type="button" class="btn secondary" id="prevBtn" hidden>← Kembali</button>
+  <span style="flex:1"></span>
+  <button type="button" class="btn primary" id="nextBtn" disabled style="opacity:.55">Saya Sudah Membaca →</button>
+</nav>
+<footer class="footer">Baca setiap tahap sebelum melanjutkan • Kompak sampai semua berhasil keluar! 🚀</footer>
+</div>
+<script>
+(() => {
+  const layers = [...document.querySelectorAll('.layer')];
+  const steps = [...document.querySelectorAll('.step')];
+  const readStory = document.getElementById('readStory');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const progressPercent = document.getElementById('progressPercent');
+  const progressBar = document.getElementById('progressBar');
+  let current = 0;
+
+  function render(index) {
+    current = Math.max(0, Math.min(index, layers.length - 1));
+    layers.forEach((el, i) => {
+      el.classList.toggle('active', i === current);
+      el.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+    });
+    steps.forEach((el, i) => {
+      el.classList.toggle('active', i === current);
+      el.classList.toggle('done', i < current);
+    });
+    const pct = Math.round((current + 1) / layers.length * 100);
+    progressFill.style.width = pct + '%';
+    progressText.textContent = `Tahap ${current + 1} dari ${layers.length}`;
+    progressPercent.textContent = pct + '%';
+    progressBar.setAttribute('aria-valuenow', current + 1);
+    prevBtn.hidden = current === 0;
+    nextBtn.hidden = current === layers.length - 1;
+    nextBtn.textContent = current === 0 ? 'Saya Sudah Membaca →' :
+      current === 1 ? 'Saya Paham Cara Bermain →' : 'Saya Paham Cara Menang →';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  readStory.addEventListener('change', () => {
+    nextBtn.disabled = !readStory.checked;
+    nextBtn.style.opacity = readStory.checked ? '1' : '.55';
+  });
+  nextBtn.addEventListener('click', () => {
+    if (current === 0 && !readStory.checked) return;
+    render(current + 1);
+  });
+  prevBtn.addEventListener('click', () => render(current - 1));
+  render(0);
+})();
+</script>
+</body>
+</html>
