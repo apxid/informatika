@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Apocalypse — Briefing Misi</title>
+<style>
+:root {
+  --bg:#08111f; --panel:#111e31; --panel2:#0b1627; --line:#2a3d58;
+  --text:#f1f5f9; --muted:#b6c5d9; --blue:#3b82f6; --purple:#a855f7;
+  --red:#f87171; --gold:#fbbf24; --green:#34d399;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:20px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);
+background:radial-gradient(ellipse at top,#142747 0%,var(--bg) 60%);line-height:1.65}
+.container{max-width:980px;margin:auto}
+.hero{text-align:center;padding:24px 12px 18px}
+.eyebrow{display:inline-block;padding:5px 12px;border:1px solid #456184;border-radius:999px;color:#c5d8f5;font-size:.78rem;letter-spacing:1.5px;font-weight:800}
+h1{font-size:clamp(1.6rem,5vw,2.7rem);line-height:1.2;color:#f87171;margin:15px 0 8px;letter-spacing:.5px}
+.subtitle{color:var(--muted);margin:0}
+.progress-wrap{max-width:680px;margin:24px auto 0}
+.progress-label{display:flex;justify-content:space-between;gap:10px;color:#c5d8f5;font-size:.85rem;margin-bottom:8px}
+.progress-track{height:8px;background:#26364d;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:25%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:99px;transition:width .3s}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
+.step{border:1px solid var(--line);background:#101d30;color:#8fa5c1;border-radius:12px;padding:10px 6px;text-align:center;font-size:.8rem}
+.step span{display:block;font-size:1.15rem;font-weight:900}
+.step.active{border-color:#60a5fa;background:#172e4e;color:#fff}
+.step.done{border-color:#34d399;color:#a7f3d0}
+.layer{display:none;background:rgba(17,30,49,.96);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,32px);box-shadow:0 18px 55px #0005;animation:appear .25s ease}
+.layer.active{display:block}
+@keyframes appear{from{opacity:.35;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.layer-kicker{color:#93c5fd;font-size:.8rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}
+h2{font-size:clamp(1.3rem,3.5vw,1.9rem);line-height:1.3;margin:5px 0 18px}
+h3{margin:0 0 10px;font-size:1.05rem}
+.story{background:var(--panel2);border-left:5px solid var(--red);border-radius:10px;padding:18px;color:#d4deeb}
+.story p:first-child{margin-top:0}.story p:last-child{margin-bottom:0}
+.highlight{color:var(--gold);font-weight:800}
+.read-check{display:flex;align-items:flex-start;gap:12px;margin-top:20px;padding:15px;background:#0b1627;border:1px solid #30435d;border-radius:12px}
+.read-check input{width:22px;height:22px;flex:0 0 auto;margin-top:3px;accent-color:#34d399}
+.read-check label{cursor:pointer}
+.notice{font-size:.9rem;color:var(--muted);margin:12px 0 0}
+.roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.role{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.role .emoji{font-size:1.7rem}
+.role p{margin:7px 0;color:var(--muted);font-size:.94rem}
+.builder{border-top:4px solid var(--gold)}.healer{border-top:4px solid var(--green)}
+.attacker{border-top:4px solid var(--red)}.cc{border-top:4px solid #22d3ee}
+.role-name{font-weight:900;font-size:1.05rem}
+.builder .role-name{color:var(--gold)}.healer .role-name{color:var(--green)}
+.attacker .role-name{color:var(--red)}.cc .role-name{color:#67e8f9}
+.table-wrap{overflow-x:auto;margin-top:18px}
+table{width:100%;border-collapse:collapse;min-width:600px;background:var(--panel2);font-size:.92rem}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:#93c5fd;background:#17263c}
+.end-box{background:#211b26;border:1px dashed #f87171;border-radius:12px;padding:18px;margin-top:16px}
+.end-box ul{padding-left:22px;margin-bottom:0}
+.win{color:#86efac;font-weight:900}.lose{color:#fca5a5;font-weight:900}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rule{padding:16px;border-radius:12px;background:var(--panel2);border:1px solid var(--line)}
+.team-container{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:22px}
+.team-box{padding:22px 18px;text-align:center;border-radius:16px}
+.left-team{background:linear-gradient(145deg,#173b79,#102544);border:2px solid var(--blue)}
+.right-team{background:linear-gradient(145deg,#512078,#29163f);border:2px solid var(--purple)}
+.team-box h3{font-size:1.35rem;letter-spacing:1px}
+.team-box p{color:#e1e8f3}
+.code-display{padding:12px;background:#050b14a8;border:1px dashed #ffffff55;border-radius:9px;font-weight:800;margin:16px 0;font-size:.9rem}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:0;border-radius:10px;padding:13px 20px;font-weight:900;font-size:1rem;cursor:pointer;text-decoration:none;color:white;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn:focus-visible,input:focus-visible{outline:3px solid #fbbf24;outline-offset:3px}
+.btn-primary{background:linear-gradient(90deg,#2563eb,#7c3aed)}
+.btn-secondary{background:#334155;color:#f1f5f9}
+.btn-left{background:#2563eb;width:100%}.btn-right{background:#9333ea;width:100%}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.nav .btn{min-width:130px}
+.nav .btn[hidden]{display:none}
+.footer{text-align:center;color:#7f94af;font-size:.8rem;padding:22px 0}
+@media(max-width:640px){
+ body{padding:12px}.hero{padding-top:15px}.steps{gap:5px}.step{font-size:.68rem;padding:8px 3px}.step span{font-size:1rem}
+ .roles,.rules,.team-container{grid-template-columns:1fr}.layer{border-radius:14px}.nav .btn{min-width:0;flex:1;padding:12px 10px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="hero">
+    <div class="eyebrow">BRIEFING MISI • AGEN CYBER 2026</div>
+    <h1>⚠️ PROJECT APOCALYPSE: SYSTEM FAILURE ⚠️</h1>
+    <p class="subtitle">Misi Pertahanan Brankas Data Sistem Komputer</p>
+    <div class="progress-wrap">
+      <div class="progress-label"><span id="progressText">Tahap 1 dari 4</span><span id="progressPercent">25%</span></div>
+      <div class="progress-track" role="progressbar" aria-label="Kemajuan briefing" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="steps" aria-label="Tahapan briefing">
+      <div class="step active" data-step="0"><span>01</span>Latar Misi</div>
+      <div class="step" data-step="1"><span>02</span>Peran Tim</div>
+      <div class="step" data-step="2"><span>03</span>Cara Menang</div>
+      <div class="step" data-step="3"><span>04</span>Pilih Meja</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="layer active" id="layer1" aria-labelledby="title1">
+      <div class="layer-kicker">Tahap 1 • Baca dengan teliti</div>
+      <h2 id="title1">📜 Latar Belakang Misi: Teror Virus Kegelapan</h2>
+      <div class="story">
+        <p>Tahun 2026. Sebuah serangan cyber dahsyat berjuluk <b>“Giga-Malware”</b> telah menjebol benteng pertahanan digital utama. Virus ini menyebar super cepat, merusak file sistem, dan mengubah data-data penting komputer menjadi monster digital (Zombie Program) yang haus akan informasi.</p>
+        <p>Satu-satunya yang tersisa adalah <span class="highlight">Brankas Data Utama (Data Vault)</span> yang menyimpan cadangan seluruh ilmu pengetahuan Sistem Komputer. Jika Brankas Data ini hancur, seluruh dunia digital akan hancur total dan mengalami kiamat informasi (Apocalypse)!</p>
+        <p>Kalian adalah <b>Agen Cyber</b> yang dipilih untuk menjaga brankas tersebut. Jawab kuis untuk memulihkan energi sistem, pilih peran spesialis-mu, dan bertahanlah dari gelombang serangan monster digital!</p>
+      </div>
+      <div class="read-check">
+        <input type="checkbox" id="readStory">
+        <label for="readStory"><b>Saya sudah membaca Latar Belakang Misi sampai selesai.</b><br><span class="notice">Centang kotak ini setelah kamu benar-benar membaca cerita misi. Setelah dicentang, kamu dapat lanjut ke tahap 2.</span></label>
+      </div>
+    </section>
+
+    <section class="layer" id="layer2" aria-labelledby="title2">
+      <div class="layer-kicker">Tahap 2 • Pahami tugas setiap peran</div>
+      <h2 id="title2">🛡️ Panduan Peran Tim (Pilih Tugasmu!)</h2>
+      <p>Jawab kuis Sistem Komputer untuk mengisi energi, lalu jalankan tugas sesuai peran yang kamu pilih. Baca setiap tugas agar tim dapat bekerja sama.</p>
+      <div class="roles">
+        <article class="role builder"><div class="emoji">👷</div><div class="role-name">Builder (Tukang)</div><p><b>Tugas:</b> Membangun dan memperbaiki benteng pelindung.</p><p><b>Cara:</b> Gunakan Beliung (Pickaxe) untuk menambang batu di peta, lalu pasang tembok di sekeliling brankas utama agar zombie terhambat.</p></article>
+        <article class="role healer"><div class="emoji">⚕️</div><div class="role-name">Healer (Medis)</div><p><b>Tugas:</b> Mengisi darah brankas data dan mengobati teman.</p><p><b>Cara:</b> Cari dan kumpulkan kristal yang jatuh di tanah. Bawa kristal tersebut ke brankas tengah untuk menambah HP/darah markas yang berkurang.</p></article>
+        <article class="role attacker"><div class="emoji">⚔️</div><div class="role-name">Attacker (Petarung)</div><p><b>Tugas:</b> Menyerang dan menghancurkan gerombolan zombie.</p><p><b>Cara:</b> Maju ke garis depan pertahanan. Tembaki gerombolan zombie menggunakan senjata berat sebelum mereka sempat menyentuh tembok.</p></article>
+        <article class="role cc"><div class="emoji">❄️</div><div class="role-name">Crowd Control</div><p><b>Tugas:</b> Memperlambat gerakan musuh berukuran besar.</p><p><b>Cara:</b> Gunakan senjata khusus atau perangkap es untuk membekukan area. Sangat berguna saat wave tinggi ketika zombie berlari terlalu cepat.</p></article>
+      </div>
+      <p class="notice">Ingat: setiap peran punya tugas berbeda. Tim akan lebih kuat jika semua anggota menjalankan tugasnya dan saling membantu.</p>
+    </section>
+
+    <section class="layer" id="layer3" aria-labelledby="title3">
+      <div class="layer-kicker">Tahap 3 • Pastikan kamu tahu tujuan tim</div>
+      <h2 id="title3">🏁 Akhir dari Permainan (Bagaimana Cara Menang?)</h2>
+      <p>Permainan menggunakan sistem <b>Gelombang Serangan (Waves)</b>. Gelombang serangan akan terus meningkat kesulitannya.</p>
+      <div class="rules">
+        <div class="rule"><h3 class="win">✅ KONDISI MENANG</h3><p>Kelompokmu berhasil bertahan hidup bersama-sama melewati target jumlah Wave yang ditentukan Guru, <b>atau</b> kelompokmu bertahan lebih lama (Wave lebih tinggi) dibanding kelompok lawan sebelahmu.</p></div>
+        <div class="rule"><h3 class="lose">❌ KONDISI KALAH</h3><p>Jika kalian tidak kompak bekerja sama dan membiarkan gerombolan zombie menghancurkan <b>Brankas Data Utama (Vault)</b> di tengah peta sampai darahnya habis (0%), game berakhir seketika dan kelompokmu dinyatakan gugur.</p></div>
+      </div>
+      <div class="end-box"><b>🎯 Misi utama:</b> jawab kuis, jalankan peranmu, lindungi Brankas Data Utama, dan bekerja samalah agar tim bertahan selama mungkin.</div>
+    </section>
+
+    <section class="layer" id="layer4" aria-labelledby="title4">
+      <div class="layer-kicker">Tahap 4 • Pilih sesuai tempat dudukmu</div>
+      <h2 id="title4">🖥️ Pilih Meja dan Masuk ke Gimkit</h2>
+      <p>Perhatikan posisi tempat dudukmu di laboratorium. <b>Jangan memilih kelompok yang berbeda dari deretan mejamu.</b> Siapkan PIN kelompok yang diberikan oleh guru.</p>
+      <div class="team-container">
+        <div class="team-box left-team">
+          <h3>HARDWARE<br><span style="font-size:.85em;font-weight:600">(Kelompok Kiri)</span></h3>
+          <p>Untuk siswa yang duduk di deretan meja sebelah <b>KIRI</b> lab.</p>
+          <div class="code-display">🔑 Tanyakan PIN Kelompok Kiri kepada guru</div>
+          <a href="https://gimkit.com/join" target="_blank" rel="noopener noreferrer" class="btn btn-left">MASUK GAME KIRI ↗</a>
+        </div>
+        <div class="team-box right-team">
+          <h3>SOFTWARE<br><span style="font-size:.85em;font-weight:600">(Kelompok Kanan)</span></h3>
+          <p>Untuk siswa yang duduk di deretan meja sebelah <b>KANAN</b> lab.</p>
+          <div class="code-display">🔑 Tanyakan PIN Kelompok Kanan kepada guru</div>
+          <a href="https://gimkit.com/join" target="_blank" rel="noopener noreferrer" class="btn btn-right">MASUK GAME KANAN ↗</a>
+        </div>
+      </div>
+      <p class="notice">Kedua tombol membuka halaman masuk Gimkit. Masukkan PIN yang sesuai dengan kelompokmu.</p>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Navigasi tahapan">
+    <button type="button" class="btn btn-secondary" id="prevBtn" hidden>← Kembali</button>
+    <span style="flex:1"></span>
+    <button type="button" class="btn btn-primary" id="nextBtn">Saya Sudah Membaca →</button>
+  </nav>
+  <footer class="footer">Baca setiap tahap sebelum melanjutkan. Semangat, Agen Cyber! 🛡️</footer>
+</div>
+<script>
+(() => {
+  const layers = [...document.querySelectorAll('.layer')];
+  const steps = [...document.querySelectorAll('.step')];
+  const readStory = document.getElementById('readStory');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const progressPercent = document.getElementById('progressPercent');
+  const progressBar = document.getElementById('progressBar');
+  let current = 0;
+
+  function renderLayer(index) {
+    current = Math.max(0, Math.min(index, layers.length - 1));
+    layers.forEach((layer, i) => {
+      layer.classList.toggle('active', i === current);
+      layer.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+    });
+    steps.forEach((step, i) => {
+      step.classList.toggle('active', i === current);
+      step.classList.toggle('done', i < current);
+    });
+    const percent = Math.round(((current + 1) / layers.length) * 100);
+    progressFill.style.width = percent + '%';
+    progressText.textContent = `Tahap ${current + 1} dari ${layers.length}`;
+    progressPercent.textContent = percent + '%';
+    progressBar.setAttribute('aria-valuenow', current + 1);
+    prevBtn.hidden = current === 0;
+    nextBtn.hidden = current === layers.length - 1;
+    nextBtn.textContent = current === 0 ? 'Saya Sudah Membaca →' :
+      current === 1 ? 'Saya Paham Peran Tim →' : 'Saya Paham Cara Menang →';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  readStory.addEventListener('change', () => {
+    nextBtn.disabled = !readStory.checked;
+    nextBtn.style.opacity = readStory.checked ? '1' : '.55';
+  });
+  nextBtn.disabled = true;
+  nextBtn.style.opacity = '.55';
+
+  nextBtn.addEventListener('click', () => {
+    if (current === 0 && !readStory.checked) {
+      readStory.focus();
+      return;
+    }
+    renderLayer(current + 1);
+  });
+  prevBtn.addEventListener('click', () => renderLayer(current - 1));
+  renderLayer(0);
+})();
+</script>
+</body>
+</html>
