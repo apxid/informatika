@@ -847,8 +847,15 @@ async function gasGet(action, params = {}) {
   const url = new URL(GAS_URL);
   url.searchParams.set('action', action);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  // Add timestamp to prevent browser caching
+  url.searchParams.set('_t', Date.now());
   try {
-    const res = await fetch(url.toString(), { method: 'GET', redirect: 'follow' });
+    const res = await fetch(url.toString(), {
+      method: 'GET',
+      redirect: 'follow',
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+    });
     const txt = await res.text();
     return JSON.parse(txt);
   } catch (e) { console.error('gasGet', action, e); throw e; }
@@ -859,7 +866,8 @@ async function gasPost(action, data = {}) {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ ...data, action }),
-      redirect: 'follow'
+      redirect: 'follow',
+      cache: 'no-store'
     });
     const txt = await res.text();
     return JSON.parse(txt);
@@ -1003,17 +1011,21 @@ async function nextSoal() {
     targetBtn.disabled = true;
     targetBtn.innerHTML = '<span class="spinner"></span> MEMUAT...';
   }
+  console.log('[nextSoal] Admin klik MULAI/NEXT SOAL, mengirim POST ke GAS...');
   try {
     const res = await gasPost('nextSoal', {});
+    console.log('[nextSoal] Response dari GAS:', res);
     if (res.success) {
       A.lastSoal = res.current_soal;
       toast('✓ Soal #' + res.current_soal + ' (' + res.tipe.toUpperCase() + ') ditampilkan ke siswa', 'success', 4000);
       // Refresh status untuk update UI ke state Running
       await refreshStatus();
     } else {
-      toast(res.message || 'Gagal next soal', 'warning');
+      console.warn('[nextSoal] Gagal:', res);
+      toast(res.message || 'Gagal next soal', 'warning', 5000);
     }
   } catch (e) {
+    console.error('[nextSoal] Error:', e);
     toast('Error: ' + e.message, 'error');
   } finally {
     if (targetBtn) {
