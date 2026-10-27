@@ -260,12 +260,40 @@ body {
 }
 .token-box .regen:hover { background: rgba(255,255,255,0.2); }
 .token-display {
-  font-family: 'Courier New', monospace; font-size: 32px; font-weight: 800;
-  text-align: center; padding: 18px; background: rgba(15, 23, 42, 0.6);
-  border-radius: 12px; margin-bottom: 12px; letter-spacing: 6px; color: #fff;
-  text-shadow: 0 0 20px rgba(99,102,241,0.5);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: clamp(48px, 8vw, 96px); font-weight: 900;
+  text-align: center; padding: 24px 12px; background: rgba(15, 23, 42, 0.7);
+  border: 3px solid rgba(255,255,255,0.15); border-radius: 16px;
+  margin-bottom: 14px; letter-spacing: 10px; color: #fff;
+  text-shadow: 0 0 30px rgba(99,102,241,0.7), 0 0 60px rgba(99,102,241,0.3);
+  min-height: 120px; display: flex; align-items: center; justify-content: center;
+  animation: tokenPulse 3s ease-in-out infinite;
 }
-.token-box.right-side .token-display { text-shadow: 0 0 20px rgba(245,158,11,0.5); }
+.token-box.right-side .token-display {
+  text-shadow: 0 0 30px rgba(245,158,11,0.7), 0 0 60px rgba(245,158,11,0.3);
+  border-color: rgba(245,158,11,0.3);
+}
+.token-display.empty {
+  letter-spacing: 4px; opacity: 0.4; font-size: clamp(28px, 4vw, 48px); font-weight: 700;
+}
+@keyframes tokenPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+  50%      { box-shadow: 0 0 30px 8px rgba(99,102,241,0.3); }
+}
+.token-box.right-side .token-display { animation: tokenPulseKiri 3s ease-in-out infinite; }
+@keyframes tokenPulseKiri {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+  50%      { box-shadow: 0 0 30px 8px rgba(245,158,11,0.3); }
+}
+/* Tombol generate baru lebih besar */
+.token-box .regen {
+  font-size: 13px !important; padding: 8px 14px !important;
+  background: linear-gradient(135deg, var(--success), var(--info)) !important;
+  color: #fff !important; border: none !important;
+  font-weight: 700 !important; box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
+}
+/* Header meja lebih besar */
+.token-box .side { font-size: 18px !important; font-weight: 800 !important; }
 .token-actions { display: flex; gap: 8px; }
 .btn-copy {
   flex: 1; background: rgba(99,102,241,0.2); color: #C7D2FE;
@@ -616,10 +644,11 @@ body {
       <div class="token-panel">
         <div class="token-box">
           <div class="header">
-            <div class="side">➡️ Meja Kanan</div>
-            <button class="regen" onclick="regenToken('kanan')">↺ Generate Baru</button>
+            <div class="side">➡️ MEJA KANAN</div>
+            <button class="regen" onclick="regenToken('kanan')">↺ GENERATE BARU</button>
           </div>
-          <div class="token-display" id="tokenKanan">------</div>
+          <div style="text-align: center; font-size: 14px; color: var(--text-dim); font-weight: 700; margin-bottom: 6px; letter-spacing: 4px;">🔑 TOKEN</div>
+          <div class="token-display empty" id="tokenKanan">------</div>
           <div class="token-actions">
             <button class="btn-copy" onclick="copyToken('kanan')">📋 Copy</button>
             <button class="btn-copy" onclick="shareToken('kanan')">📢 Bagikan</button>
@@ -627,10 +656,11 @@ body {
         </div>
         <div class="token-box right-side">
           <div class="header">
-            <div class="side">⬅️ Meja Kiri</div>
-            <button class="regen" onclick="regenToken('kiri')">↺ Generate Baru</button>
+            <div class="side">⬅️ MEJA KIRI</div>
+            <button class="regen" onclick="regenToken('kiri')">↺ GENERATE BARU</button>
           </div>
-          <div class="token-display" id="tokenKiri">------</div>
+          <div style="text-align: center; font-size: 14px; color: var(--text-dim); font-weight: 700; margin-bottom: 6px; letter-spacing: 4px;">🔑 TOKEN</div>
+          <div class="token-display empty" id="tokenKiri">------</div>
           <div class="token-actions">
             <button class="btn-copy" onclick="copyToken('kiri')">📋 Copy</button>
             <button class="btn-copy" onclick="shareToken('kiri')">📢 Bagikan</button>
@@ -862,8 +892,14 @@ async function regenToken(meja) {
   try {
     const res = await gasPost('generateToken', { meja });
     if (res.success) {
-      document.getElementById('token' + (meja === 'kanan' ? 'Kanan' : 'Kiri')).textContent = res.token;
-      toast('✓ Token meja ' + meja + ': ' + res.token, 'success', 4000);
+      const el = document.getElementById('token' + (meja === 'kanan' ? 'Kanan' : 'Kiri'));
+      el.textContent = res.token;
+      el.classList.remove('empty');
+      // Animasi highlight saat generate
+      el.style.transform = 'scale(1.1)';
+      el.style.transition = 'transform 0.4s';
+      setTimeout(() => { el.style.transform = 'scale(1)'; }, 400);
+      toast('✓ Token meja ' + meja + ': ' + res.token, 'success', 5000);
     } else {
       toast(res.message || 'Gagal generate token', 'error');
     }
@@ -896,8 +932,22 @@ function shareToken(meja) {
 async function loadTokens() {
   try {
     const res = await gasGet('getActiveTokens');
-    if (res.kanan) document.getElementById('tokenKanan').textContent = res.kanan;
-    if (res.kiri)  document.getElementById('tokenKiri').textContent = res.kiri;
+    const elKanan = document.getElementById('tokenKanan');
+    const elKiri = document.getElementById('tokenKiri');
+    if (res.kanan) {
+      elKanan.textContent = res.kanan;
+      elKanan.classList.remove('empty');
+    } else {
+      elKanan.textContent = '------';
+      elKanan.classList.add('empty');
+    }
+    if (res.kiri) {
+      elKiri.textContent = res.kiri;
+      elKiri.classList.remove('empty');
+    } else {
+      elKiri.textContent = '------';
+      elKiri.classList.add('empty');
+    }
   } catch (e) { console.warn(e); }
 }
 
