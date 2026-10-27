@@ -887,6 +887,12 @@ html, body {
         Guru akan menampilkan soal literasi satu per satu. Baca skenario dengan teliti sebelum menjawab! 📖
       </div>
       <div class="dots"><span></span><span></span><span></span></div>
+      <button onclick="pollSoal()" style="margin-top: 16px; background: rgba(99,102,241,0.2); color: #C7D2FE; border: 1px solid var(--primary); padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        🔄 Cek Soal Sekarang
+      </button>
+      <div style="margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.4);">
+        Auto-cek setiap 2 detik. Jika soal belum muncul, klik tombol di atas.
+      </div>
     </div>
     <div id="quizView" style="display: none;">
       <div class="q-progress">
@@ -984,8 +990,15 @@ async function gasGet(action, params = {}) {
   const url = new URL(GAS_URL);
   url.searchParams.set('action', action);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  // Add timestamp to prevent browser caching
+  url.searchParams.set('_t', Date.now());
   try {
-    const res = await fetch(url.toString(), { method: 'GET', redirect: 'follow' });
+    const res = await fetch(url.toString(), {
+      method: 'GET',
+      redirect: 'follow',
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+    });
     const txt = await res.text();
     return JSON.parse(txt);
   } catch (e) {
@@ -1001,7 +1014,8 @@ async function gasPost(action, data = {}) {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ ...data, action }),
-      redirect: 'follow'
+      redirect: 'follow',
+      cache: 'no-store'
     });
     const txt = await res.text();
     return JSON.parse(txt);
@@ -1293,7 +1307,7 @@ function showScoreFloat(side, text, positive) {
 function startPolling() {
   if (STATE.pollTimer) clearInterval(STATE.pollTimer);
   pollSoal();
-  STATE.pollTimer = setInterval(pollSoal, 3000); // 3 detik untuk reduce load
+  STATE.pollTimer = setInterval(pollSoal, 2000); // 2 detik untuk respons cepat
 }
 
 function startScoreboardPolling() {
@@ -1306,6 +1320,7 @@ async function pollSoal() {
   if (STATE.locked) return;
   try {
     const res = await gasGet('getCurrentSoal');
+    console.log('[pollSoal] Response:', JSON.stringify(res));
     // Check if quiz is finished - show victory animation
     if (res.quiz_finished && !STATE.victoryShown) {
       STATE.victoryShown = true;
@@ -1316,6 +1331,7 @@ async function pollSoal() {
     }
     if (res.active && res.soal_nomor > 0) {
       if (!STATE.currentSoal || STATE.currentSoal.soal_nomor !== res.soal_nomor) {
+        console.log('[pollSoal] Soal baru ditemukan! #', res.soal_nomor);
         STATE.currentSoal = res;
         STATE.answered = false;
         showSoal(res);
@@ -1349,11 +1365,15 @@ function showWaiting() {
 }
 
 function showSoal(soal) {
+  console.log('[showSoal] Displaying soal:', soal.soal_nomor, soal.tipe);
   document.getElementById('waitingView').style.display = 'none';
   document.getElementById('doneView').style.display = 'none';
   document.getElementById('quizView').style.display = 'block';
   document.getElementById('qNum').textContent = soal.soal_nomor;
-  document.getElementById('qTotal').textContent = STATE.quizConfig.total_pg + STATE.quizConfig.total_essay;
+  // Null-safe: pastikan quizConfig ada, kalau tidak pakai default
+  const totalPg = (STATE.quizConfig && STATE.quizConfig.total_pg) ? STATE.quizConfig.total_pg : 15;
+  const totalEssay = (STATE.quizConfig && STATE.quizConfig.total_essay) ? STATE.quizConfig.total_essay : 5;
+  document.getElementById('qTotal').textContent = totalPg + totalEssay;
   document.getElementById('qQuestion').textContent = soal.pertanyaan;
 
   const badge = document.getElementById('qBadgeType');
