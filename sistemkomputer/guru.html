@@ -264,7 +264,7 @@
       <div class="login-attempts" id="loginAttempts"></div>
     </form>
     <p class="login-hint">
-      © 2026 MB · All Rights Reserved
+      PIN default: <strong>54321</strong> (hubungi admin untuk mengganti)
     </p>
   </div>
 </div>
@@ -334,6 +334,9 @@
           <p class="sub">Update status & nilai langsung di tabel • Export PDF tersedia</p>
         </div>
         <div class="filter-group">
+          <select id="filterKelasKelompok" onchange="filterKelompok()" title="Filter berdasarkan kelas">
+            <option value="">Semua Kelas</option>
+          </select>
           <input type="text" id="searchKelompok" placeholder="🔍 Cari kelompok/anggota..." oninput="filterKelompok()">
           <select id="filterStatus" onchange="filterKelompok()">
             <option value="">Semua Status</option>
@@ -627,6 +630,8 @@
       const res = await callAPI('getGroups');
       if (!res.success) throw new Error(res.message || 'Gagal');
       allKelompok = res.data || [];
+      // Populate dropdown filter kelas (auto dari data kelompok yang ada)
+      populateKelasFilter();
       renderKelompok();
       updateStats();
     } catch (err) {
@@ -635,10 +640,28 @@
     }
   }
 
+  function populateKelasFilter() {
+    const sel = document.getElementById('filterKelasKelompok');
+    if (!sel) return;
+    // Ambil kelas unik dari data kelompok
+    const kelasSet = new Set();
+    allKelompok.forEach(k => {
+      const kls = String(k['Kelas'] || '').trim();
+      if (kls) kelasSet.add(kls);
+    });
+    const kelasList = Array.from(kelasSet).sort();
+    // Preserve current selection
+    const current = sel.value;
+    sel.innerHTML = '<option value="">Semua Kelas</option>' +
+      kelasList.map(k => '<option value="' + escapeHtml(k) + '">' + escapeHtml(k) + '</option>').join('');
+    sel.value = current || '';
+  }
+
   function renderKelompok() {
     const body = document.getElementById('kelompokBody');
     const search = (document.getElementById('searchKelompok').value || '').toLowerCase();
     const statusFilter = document.getElementById('filterStatus').value;
+    const kelasFilter = document.getElementById('filterKelasKelompok').value;
 
     let filtered = allKelompok.filter(k => {
       const matchSearch = !search ||
@@ -646,11 +669,22 @@
         String(k['Anggota'] || '').toLowerCase().indexOf(search) >= 0 ||
         String(k['Tugas'] || '').toLowerCase().indexOf(search) >= 0;
       const matchStatus = !statusFilter || String(k['Status'] || '') === statusFilter;
-      return matchSearch && matchStatus;
+      const matchKelas = !kelasFilter || String(k['Kelas'] || '') === kelasFilter;
+      return matchSearch && matchStatus && matchKelas;
+    });
+
+    // Sort by kelas (A-Z), lalu by nama kelompok (A-Z) untuk tampilan rapi
+    filtered.sort((a, b) => {
+      const kA = String(a['Kelas'] || '');
+      const kB = String(b['Kelas'] || '');
+      if (kA !== kB) return kA.localeCompare(kB);
+      const nA = String(a['Nama Kelompok'] || '');
+      const nB = String(b['Nama Kelompok'] || '');
+      return nA.localeCompare(nB);
     });
 
     if (filtered.length === 0) {
-      body.innerHTML = '<tr class="empty-row"><td colspan="11">Tidak ada data. Minta siswa buka halaman index.html untuk mendaftar kelompok.</td></tr>';
+      body.innerHTML = '<tr class="empty-row"><td colspan="11">Tidak ada data sesuai filter. Minta siswa buka halaman index.html untuk mendaftar kelompok.</td></tr>';
       return;
     }
 
@@ -661,15 +695,19 @@
         : '<span style="color: var(--muted); font-style: italic;">belum ada</span>';
 
       const status = String(k['Status'] || 'Belum');
+      const tugasVal = String(k['Tugas'] || '').trim();
+      const tugasHtml = tugasVal
+        ? escapeHtml(tugasVal)
+        : '<span style="display: inline-block; padding: 4px 10px; background: #fef3c7; color: #92400e; border-radius: 999px; font-size: 11px; font-weight: 800;">⏳ Menunggu Acak</span>';
 
       return `
         <tr data-rownum="${k.rowNum}">
           <td>${i + 1}</td>
           <td style="font-size: 12px; color: var(--muted);">${escapeHtml(k['TimestampStr'] || '')}</td>
           <td><strong>${escapeHtml(k['Nama Kelompok'] || '')}</strong></td>
-          <td>${escapeHtml(k['Kelas'] || '')}</td>
+          <td><strong style="color: var(--primary);">${escapeHtml(k['Kelas'] || '')}</strong></td>
           <td class="anggota-cell">${escapeHtml(k['Anggota'] || '')}</td>
-          <td>${escapeHtml(k['Tugas'] || '')}</td>
+          <td>${tugasHtml}</td>
           <td style="min-width: 100px;">${linkHtml}</td>
           <td style="min-width: 140px;">
             <input type="date" value="${escapeHtml(k['TanggalPresentasiStr'] || '')}"
@@ -687,7 +725,10 @@
           </td>
           <td>
             <div class="btn-row">
-              <button class="btn btn-danger btn-sm" onclick="deleteKelompok(${k.rowNum})" title="Hapus">
+              <button class="btn btn-accent btn-sm" onclick="reopenKelompok(${k.rowNum})" title="Buka ulang untuk lanjut di pertemuan berikutnya">
+                🔓
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="deleteKelompok(${k.rowNum})" title="Hapus kelompok">
                 🗑
               </button>
             </div>
@@ -745,6 +786,25 @@
       await loadKelompok();
     } catch (err) {
       showAlert('error', '❌ Gagal menghapus: ' + err.message);
+    }
+  }
+
+  async function reopenKelompok(rowNum) {
+    if (!confirm(
+      '🔓 Buka ulang kelompok ini?\n\n' +
+      'Efek:\n' +
+      '• Tugas, Link Google Docs, Tanggal Presentasi, Status, Nilai akan DIHAPUS\n' +
+      '• Nama Kelompok, Kelas, dan Anggota TETAP (tidak hilang)\n' +
+      '• Siswa dapat mengundi tugas baru di pertemuan berikutnya\n\n' +
+      'Lanjutkan?'
+    )) return;
+    try {
+      const res = await callAPI('reopenGroup', { rowNum }, 'POST');
+      if (!res.success) throw new Error(res.message || 'Gagal');
+      showAlert('success', '✅ ' + res.message);
+      await loadKelompok();
+    } catch (err) {
+      showAlert('error', '❌ Gagal membuka ulang: ' + err.message);
     }
   }
 
@@ -827,16 +887,25 @@
       return;
     }
 
-    // Filter data sesuai kondisi filter saat ini
+    // Filter data sesuai kondisi filter saat ini (search, status, kelas)
     const search = (document.getElementById('searchKelompok').value || '').toLowerCase();
     const statusFilter = document.getElementById('filterStatus').value;
+    const kelasFilter = document.getElementById('filterKelasKelompok').value;
     const filtered = allKelompok.filter(k => {
       const matchSearch = !search ||
         String(k['Nama Kelompok'] || '').toLowerCase().indexOf(search) >= 0 ||
         String(k['Anggota'] || '').toLowerCase().indexOf(search) >= 0 ||
         String(k['Tugas'] || '').toLowerCase().indexOf(search) >= 0;
       const matchStatus = !statusFilter || String(k['Status'] || '') === statusFilter;
-      return matchSearch && matchStatus;
+      const matchKelas = !kelasFilter || String(k['Kelas'] || '') === kelasFilter;
+      return matchSearch && matchStatus && matchKelas;
+    });
+    // Sort by kelas lalu nama kelompok
+    filtered.sort((a, b) => {
+      const kA = String(a['Kelas'] || '');
+      const kB = String(b['Kelas'] || '');
+      if (kA !== kB) return kA.localeCompare(kB);
+      return String(a['Nama Kelompok'] || '').localeCompare(String(b['Nama Kelompok'] || ''));
     });
 
     if (filtered.length === 0) {
@@ -865,10 +934,13 @@
       pageWidth / 2, 30, { align: 'center' }
     );
 
-    if (statusFilter) {
+    if (statusFilter || kelasFilter) {
       doc.setFontSize(9);
       doc.setTextColor(100);
-      doc.text('Filter: Status = ' + statusFilter, 14, 38);
+      const filters = [];
+      if (kelasFilter) filters.push('Kelas = ' + kelasFilter);
+      if (statusFilter) filters.push('Status = ' + statusFilter);
+      doc.text('Filter: ' + filters.join(' • '), 14, 38);
       doc.setTextColor(0);
     }
 
@@ -890,7 +962,7 @@
     doc.autoTable({
       head: head,
       body: body,
-      startY: statusFilter ? 42 : 36,
+      startY: (statusFilter || kelasFilter) ? 42 : 36,
       styles: {
         fontSize: 7.5,
         cellPadding: 1.5,
