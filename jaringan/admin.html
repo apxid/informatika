@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Quiz Literasi Jaringan Komputer</title>
+<style>
+:root {
+  --primary: #6366F1; --primary-dark: #4F46E5;
+  --accent: #EC4899; --success: #10B981; --warning: #F59E0B;
+  --danger: #EF4444; --info: #06B6D4;
+  --bg-card: #1E293B; --bg-card-2: #334155;
+  --border: #334155; --text: #F1F5F9; --text-dim: #94A3B8;
+  --kanan: #6366F1; --kiri: #F59E0B;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
+  color: var(--text); min-height: 100vh; padding: 20px;
+}
+/* Header */
+.app-header {
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px);
+  border: 1px solid var(--border); border-radius: 18px;
+  padding: 18px 24px; margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.app-header .brand { display: flex; align-items: center; gap: 14px; }
+.app-header .brand .logo {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+}
+.app-header .brand h1 {
+  font-size: 18px; font-weight: 800;
+  background: linear-gradient(135deg, #fff, #C7D2FE);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.app-header .brand small { color: var(--text-dim); font-size: 12px; }
+.app-header .actions { display: flex; gap: 10px; align-items: center; }
+.app-header .quiz-status {
+  background: rgba(16,185,129,0.15); color: #6EE7B7;
+  padding: 6px 14px; border-radius: 10px;
+  font-size: 12px; font-weight: 700;
+  border: 1px solid var(--success);
+}
+.app-header .quiz-status.inactive { background: rgba(239,68,68,0.15); color: #FCA5A5; border-color: var(--danger); }
+.app-header .quiz-status.finished { background: rgba(245,158,11,0.15); color: #FCD34D; border-color: var(--warning); }
+
+/* Live PK bar (mini version for admin) */
+.live-pk {
+  background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px);
+  border: 1px solid var(--border); border-radius: 18px;
+  padding: 16px 24px; margin-bottom: 20px;
+}
+.live-pk h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--text-dim); }
+.live-pk .bars {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center;
+}
+.live-pk .team { display: flex; align-items: center; gap: 10px; }
+.live-pk .team.left { justify-content: flex-end; }
+.live-pk .avatar {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800;
+}
+.live-pk .team.right .avatar { background: linear-gradient(135deg, var(--kanan), #818CF8); color: #fff; box-shadow: 0 0 16px rgba(99,102,241,0.5); }
+.live-pk .team.left .avatar { background: linear-gradient(135deg, var(--kiri), #FBBF24); color: #1E293B; box-shadow: 0 0 16px rgba(245,158,11,0.5); }
+.live-pk .team-info { flex: 1; }
+.live-pk .team.left .team-info { text-align: right; }
+.live-pk .team-name { font-size: 11px; color: var(--text-dim); font-weight: 600; }
+.live-pk .team-score { font-size: 22px; font-weight: 900; font-family: 'Courier New', monospace; }
+.live-pk .team.right .team-score { color: #C7D2FE; }
+.live-pk .team.left .team-score { color: #FCD34D; }
+.live-pk .vs {
+  font-size: 16px; font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--warning));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Login */
+.login-card {
+  max-width: 420px; margin: 80px auto;
+  background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(20px);
+  border: 1px solid var(--border); border-radius: 24px;
+  padding: 40px; box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  animation: cardPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes cardPop {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-card .icon {
+  width: 64px; height: 64px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; margin: 0 auto 20px;
+  box-shadow: 0 12px 30px rgba(99,102,241,0.5);
+}
+.login-card h2 { text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+.login-card p { text-align: center; color: var(--text-dim); margin-bottom: 28px; font-size: 14px; }
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 6px; }
+.input-group input {
+  width: 100%; padding: 14px 16px;
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
+  border-radius: 12px; color: var(--text); font-size: 15px;
+  font-family: inherit; outline: none; transition: all 0.3s;
+}
+.input-group input:focus {
+  border-color: var(--primary); background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.2);
+}
+.input-group .toggle-pw {
+  position: absolute; right: 16px; top: 38px; cursor: pointer;
+  color: var(--text-dim); font-size: 18px;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff; border: none; cursor: pointer;
+  padding: 14px 28px; border-radius: 14px;
+  font-size: 15px; font-weight: 700;
+  box-shadow: 0 12px 30px rgba(99,102,241,0.4);
+  transition: all 0.3s; width: 100%;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(99,102,241,0.6); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-ghost {
+  background: rgba(255,255,255,0.05); color: var(--text);
+  border: 1px solid var(--border); padding: 10px 18px;
+  border-radius: 10px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.3s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+/* Dashboard */
+.dashboard { display: none; }
+.dashboard.show { display: block; animation: cardPop 0.5s; }
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; margin-bottom: 20px;
+}
+.stat-card {
+  background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 18px; position: relative; overflow: hidden;
+  transition: all 0.3s;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; background: var(--primary);
+}
+.stat-card.accent::before { background: var(--accent); }
+.stat-card.success::before { background: var(--success); }
+.stat-card.warning::before { background: var(--warning); }
+.stat-card.danger::before { background: var(--danger); }
+.stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.stat-card .lbl { font-size: 12px; color: var(--text-dim); font-weight: 600; margin-bottom: 6px; }
+.stat-card .num { font-size: 28px; font-weight: 800; line-height: 1; }
+.stat-card .ico { position: absolute; top: 14px; right: 14px; font-size: 22px; opacity: 0.3; }
+.stat-card .sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+/* Tabs */
+.tabs {
+  display: flex; gap: 8px; margin-bottom: 20px;
+  background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 14px; padding: 6px;
+}
+.tab {
+  flex: 1; padding: 12px 16px; text-align: center;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--text-dim); font-weight: 600; font-size: 14px;
+  border-radius: 10px; transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.tab.active {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff; box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+}
+.tab-content { display: none; animation: cardPop 0.4s; }
+.tab-content.active { display: block; }
+
+/* Panels */
+.panel {
+  background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 18px;
+  padding: 24px; margin-bottom: 16px;
+}
+.panel h3 {
+  font-size: 18px; font-weight: 700; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.panel h3 .badge-count {
+  background: var(--accent); color: #fff;
+  padding: 2px 10px; border-radius: 12px; font-size: 12px;
+}
+
+/* Control panel */
+.control-panel { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 14px; }
+.control-box {
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px;
+}
+.control-box .lbl { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; font-weight: 600; }
+.control-box .val { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+.control-box .desc { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.4; }
+.btn-next {
+  width: 100%; background: linear-gradient(135deg, var(--success), var(--info));
+  color: #fff; border: none; padding: 14px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 10px 25px rgba(16,185,129,0.4);
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(16,185,129,0.6); }
+.btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-end {
+  width: 100%; background: linear-gradient(135deg, var(--warning), var(--accent));
+  color: #fff; border: none; padding: 14px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 10px 25px rgba(245,158,11,0.4);
+  margin-top: 8px;
+}
+.btn-end:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(245,158,11,0.6); }
+.btn-stop {
+  width: 100%; background: linear-gradient(135deg, var(--danger), #DC2626);
+  color: #fff; border: none; padding: 12px; border-radius: 12px;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+  margin-top: 8px;
+}
+.btn-stop:hover { transform: translateY(-2px); }
+.btn-reset {
+  width: 100%; background: rgba(245, 158, 11, 0.15);
+  color: #FCD34D; border: 1px solid var(--warning);
+  padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.3s; margin-top: 8px;
+}
+.btn-reset:hover { background: rgba(245, 158, 11, 0.25); }
+
+/* Token */
+.token-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.token-box {
+  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.1));
+  border: 1px solid var(--border); border-radius: 16px;
+  padding: 18px; position: relative; overflow: hidden;
+}
+.token-box.right-side { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(16,185,129,0.1)); }
+.token-box .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.token-box .side { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.token-box .regen {
+  background: rgba(255,255,255,0.1); border: 1px solid var(--border);
+  color: var(--text); padding: 4px 10px; border-radius: 8px;
+  font-size: 11px; cursor: pointer; transition: all 0.3s;
+}
+.token-box .regen:hover { background: rgba(255,255,255,0.2); }
+.token-display {
+  font-family: 'Courier New', monospace; font-size: 32px; font-weight: 800;
+  text-align: center; padding: 18px; background: rgba(15, 23, 42, 0.6);
+  border-radius: 12px; margin-bottom: 12px; letter-spacing: 6px; color: #fff;
+  text-shadow: 0 0 20px rgba(99,102,241,0.5);
+}
+.token-box.right-side .token-display { text-shadow: 0 0 20px rgba(245,158,11,0.5); }
+.token-actions { display: flex; gap: 8px; }
+.btn-copy {
+  flex: 1; background: rgba(99,102,241,0.2); color: #C7D2FE;
+  border: 1px solid var(--primary); padding: 10px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+}
+.btn-copy:hover { background: rgba(99,102,241,0.4); }
+.token-box.right-side .btn-copy {
+  background: rgba(245,158,11,0.2); color: #FCD34D; border-color: var(--warning);
+}
+.token-box.right-side .btn-copy:hover { background: rgba(245,158,11,0.4); }
+
+/* Filter */
+.filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+.filter-bar .lbl { font-size: 12px; color: var(--text-dim); font-weight: 600; margin-right: 4px; }
+.filter-select {
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 14px; border-radius: 10px;
+  font-size: 13px; outline: none; cursor: pointer; font-family: inherit;
+}
+.filter-select option { background: #0F172A; }
+
+/* Siswa lists */
+.siswa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.siswa-list-box {
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px;
+}
+.siswa-list-box.right { border-top: 3px solid var(--kanan); }
+.siswa-list-box.left { border-top: 3px solid var(--kiri); }
+.siswa-list-box h4 {
+  font-size: 14px; font-weight: 700; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.siswa-list-box h4 .count {
+  background: var(--kanan); color: #fff;
+  padding: 2px 10px; border-radius: 10px; font-size: 12px;
+}
+.siswa-list-box.left h4 .count { background: var(--kiri); color: #1E293B; }
+.siswa-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px;
+  margin-bottom: 6px; background: rgba(255,255,255,0.04);
+  border-radius: 10px; transition: all 0.3s; font-size: 13px;
+}
+.siswa-row:hover { background: rgba(255,255,255,0.08); transform: translateX(4px); }
+.siswa-row .rank {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--bg-card-2); display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 12px; flex-shrink: 0;
+}
+.siswa-row.rank-1 .rank { background: linear-gradient(135deg, #FCD34D, #F59E0B); color: #1E293B; }
+.siswa-row.rank-2 .rank { background: linear-gradient(135deg, #E2E8F0, #94A3B8); color: #1E293B; }
+.siswa-row.rank-3 .rank { background: linear-gradient(135deg, #FCA5A5, #EF4444); color: #fff; }
+.siswa-row .nama { flex: 1; font-weight: 600; }
+.siswa-row .meta { font-size: 11px; color: var(--text-dim); }
+.siswa-row .score {
+  background: linear-gradient(135deg, var(--success), var(--info));
+  color: #fff; padding: 4px 10px; border-radius: 8px;
+  font-weight: 800; font-size: 13px;
+}
+.siswa-row.negative .score { background: linear-gradient(135deg, var(--danger), #DC2626); }
+.siswa-row.locked { opacity: 0.6; }
+.siswa-row.locked .nama::after { content: ' 🔒'; }
+.siswa-row .pel {
+  background: rgba(239, 68, 68, 0.2); color: #FCA5A5;
+  padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
+}
+.siswa-row .actions { display: flex; gap: 4px; }
+.siswa-row .actions button {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text); padding: 4px 8px; border-radius: 6px;
+  font-size: 11px; cursor: pointer;
+}
+.siswa-row .actions button:hover { background: rgba(255,255,255,0.15); }
+.siswa-row .actions .unlock { color: var(--success); border-color: var(--success); }
+.siswa-row .actions .del { color: var(--danger); border-color: var(--danger); }
+.empty-state {
+  text-align: center; padding: 40px 20px; color: var(--text-dim); font-size: 13px;
+}
+.empty-state .ico { font-size: 40px; opacity: 0.3; margin-bottom: 8px; }
+
+/* Pelanggaran log */
+.pel-log { max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.pel-item {
+  display: flex; gap: 12px; padding: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px; animation: cardPop 0.4s;
+}
+.pel-item .ico {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(239, 68, 68, 0.2); color: #FCA5A5;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.pel-item .info { flex: 1; }
+.pel-item .nama { font-size: 13px; font-weight: 700; }
+.pel-item .meta { font-size: 11px; color: var(--text-dim); }
+.pel-item .jenis {
+  display: inline-block; background: var(--danger); color: #fff;
+  padding: 2px 8px; border-radius: 6px; font-size: 10px;
+  font-weight: 700; margin-top: 4px;
+}
+
+/* Toast */
+.toast {
+  position: fixed; top: 20px; right: 20px;
+  background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px);
+  border: 1px solid var(--border); color: var(--text);
+  padding: 14px 20px; border-radius: 12px; font-weight: 600;
+  z-index: 1000; font-size: 14px;
+  transform: translateX(400px); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4); max-width: 360px;
+}
+.toast.show { transform: translateX(0); }
+.toast.success { border-left: 4px solid var(--success); }
+.toast.error { border-left: 4px solid var(--danger); }
+.toast.warning { border-left: 4px solid var(--warning); }
+.toast.info { border-left: 4px solid var(--info); }
+
+/* Live dot */
+.live-dot {
+  display: inline-block; width: 8px; height: 8px;
+  background: var(--success); border-radius: 50%;
+  margin-right: 6px; animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%     { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-card-2));
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 28px; max-width: 420px; width: 90%;
+  animation: cardPop 0.4s;
+}
+.modal h3 { font-size: 18px; margin-bottom: 8px; }
+.modal p { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions button {
+  flex: 1; padding: 12px; border-radius: 12px;
+  font-weight: 700; cursor: pointer; border: none;
+  font-size: 14px; transition: all 0.3s;
+}
+.modal-actions .cancel { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); }
+.modal-actions .confirm { background: linear-gradient(135deg, var(--danger), #DC2626); color: #fff; }
+
+/* Spinner */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .control-panel { grid-template-columns: 1fr; }
+  .token-panel, .siswa-grid { grid-template-columns: 1fr; }
+  .app-header { flex-direction: column; gap: 12px; align-items: stretch; }
+  .app-header .actions { justify-content: center; }
+}
+@media (max-width: 600px) {
+  body { padding: 12px; }
+  .panel { padding: 16px; }
+  .tabs { overflow-x: auto; }
+  .tab { font-size: 12px; padding: 10px 12px; white-space: nowrap; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.4); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- PENTING: GANTI URL INI DENGAN URL WEB APP GAS -->
+<!-- ============================================ -->
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwn6Dc7MgH4rhgoYIsbXqlffzqHFiD0n07CgzsRfLSRBgrmvQyJTT3p_c19h2hrOgY5/exec';
+// ==============================================
+
+const A = {
+  session: null, refreshTimer: null,
+  pelanggaranSeen: 0, lastSoal: 0, ctrlTotalSoal: 20
+};
+
+// GAS API wrapper (fetch-based, seperti index.html)
+async function gasGet(action, params = {}) {
+  const url = new URL(GAS_URL);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  try {
+    const res = await fetch(url.toString(), { method: 'GET', redirect: 'follow' });
+    const txt = await res.text();
+    return JSON.parse(txt);
+  } catch (e) { console.error('gasGet', action, e); throw e; }
+}
+async function gasPost(action, data = {}) {
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ ...data, action }),
+      redirect: 'follow'
+    });
+    const txt = await res.text();
+    return JSON.parse(txt);
+  } catch (e) { console.error('gasPost', action, e); throw e; }
+}
+
+function toast(msg, type = 'info', dur = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => { t.className = 'toast ' + type; }, dur);
+}
+
+// LOGIN
+function togglePw() {
+  const inp = document.getElementById('loginPass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+async function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (!u || !p) return toast('Isi username dan password', 'error');
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> MASUK...';
+  try {
+    const res = await gasPost('adminLogin', { username: u, password: p });
+    if (res.success) {
+      A.session = res.token;
+      document.getElementById('loginCard').style.display = 'none';
+      document.getElementById('dashboard').classList.add('show');
+      toast('✓ Login berhasil! Selamat datang, Guru.', 'success');
+      refreshAll();
+      startAutoRefresh();
+    } else {
+      toast(res.message || 'Login gagal', 'error');
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'MASUK ➜';
+  }
+}
+function doLogout() {
+  A.session = null;
+  if (A.refreshTimer) clearInterval(A.refreshTimer);
+  document.getElementById('dashboard').classList.remove('show');
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('loginPass').value = '';
+  toast('Logout berhasil', 'info');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginCard').style.display !== 'none') {
+    if (document.activeElement.id === 'loginPass' || document.activeElement.id === 'loginUser') doLogin();
+  }
+});
+
+// TABS
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+  });
+});
+
+// TOKEN
+async function regenToken(meja) {
+  try {
+    const res = await gasPost('generateToken', { meja });
+    if (res.success) {
+      document.getElementById('token' + (meja === 'kanan' ? 'Kanan' : 'Kiri')).textContent = res.token;
+      toast('✓ Token meja ' + meja + ': ' + res.token, 'success', 4000);
+    } else {
+      toast(res.message || 'Gagal generate token', 'error');
+    }
+  } catch (e) { toast('Error: ' + e.message, 'error'); }
+}
+function copyToken(meja) {
+  const el = document.getElementById('token' + (meja === 'kanan' ? 'Kanan' : 'Kiri'));
+  const token = el.textContent;
+  if (token === '------') return toast('Generate token dulu', 'warning');
+  navigator.clipboard.writeText(token).then(() => {
+    toast('📋 Token ' + meja + ' tersalin: ' + token, 'success');
+  }).catch(() => {
+    toast('Gagal menyalin. Token: ' + token, 'warning');
+  });
+}
+function shareToken(meja) {
+  const el = document.getElementById('token' + (meja === 'kanan' ? 'Kanan' : 'Kiri'));
+  const token = el.textContent;
+  if (token === '------') return toast('Generate token dulu', 'warning');
+  if (navigator.share) {
+    navigator.share({
+      title: 'Token Quiz - Meja ' + meja,
+      text: 'Token meja ' + meja + ': ' + token,
+      url: window.location.href
+    }).catch(() => {});
+  } else {
+    copyToken(meja);
+  }
+}
+async function loadTokens() {
+  try {
+    const res = await gasGet('getActiveTokens');
+    if (res.kanan) document.getElementById('tokenKanan').textContent = res.kanan;
+    if (res.kiri)  document.getElementById('tokenKiri').textContent = res.kiri;
+  } catch (e) { console.warn(e); }
+}
+
+// NEXT SOAL
+async function nextSoal() {
+  const btn = document.getElementById('btnNext');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> MEMUAT...';
+  try {
+    const res = await gasPost('nextSoal', {});
+    if (res.success) {
+      A.lastSoal = res.current_soal;
+      toast('✓ Soal #' + res.current_soal + ' (' + res.tipe.toUpperCase() + ') ditampilkan ke siswa', 'success', 4000);
+      updateControlUI(res);
+    } else {
+      toast(res.message || 'Gagal next soal', 'warning');
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '➜ NEXT SOAL';
+  }
+}
+
+// END KUIS + SHOW WINNER (NEW)
+async function endKuis() {
+  showModal('Tutup Kuis & Tampilkan Pemenang?',
+    'Kuis akan dihentikan, skor akhir dihitung, dan animasi pemenang akan tampil ke semua siswa. Yakin?',
+    async () => {
+      const btn = document.getElementById('btnEnd');
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> MENGHITUNG...';
+      try {
+        const res = await gasPost('endKuis');
+        if (res.success) {
+          toast('🏆 ' + res.message + ' (Kanan: ' + res.final_kanan + ' | Kiri: ' + res.final_kiri + ')', 'success', 6000);
+          refreshAll();
+        } else {
+          toast(res.message || 'Gagal end kuis', 'error');
+        }
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false; btn.innerHTML = '🏆 TUTUP & TAMPILKAN PEMENANG';
+      }
+    });
+}
+
+async function stopKuis() {
+  showModal('Stop Kuis (Pause)?', 'Kuis akan dihentikan sementara. Skor siswa tetap tersimpan. Klik Next Soal untuk lanjut.', async () => {
+    try {
+      const res = await gasPost('stopKuis', {});
+      if (res.success) {
+        toast('⏸ Kuis di-pause', 'info');
+        A.lastSoal = 0;
+        refreshStatus();
+      } else toast(res.message || 'Gagal stop', 'error');
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  });
+}
+
+function confirmReset() {
+  showModal('Reset Kuis?',
+    'Semua skor siswa akan dikembalikan ke 0, status pending, dan pelanggaran di-reset. Token tetap aktif. Lanjut?',
+    async () => {
+      try {
+        const res = await gasPost('resetKuis', {});
+        if (res.success) {
+          toast('↺ Kuis direset. Semua siswa kembali ke 0.', 'success', 4000);
+          A.lastSoal = 0;
+          refreshAll();
+        } else toast(res.message || 'Gagal reset', 'error');
+      } catch (e) { toast('Error: ' + e.message, 'error'); }
+    });
+}
+
+function updateControlUI(res) {
+  document.getElementById('ctrlSoal').textContent = '#' + res.current_soal;
+  document.getElementById('ctrlSoalDesc').textContent = res.pertanyaan ? ('Tipe: ' + res.tipe.toUpperCase() + ' • ' + (res.pertanyaan.length > 100 ? res.pertanyaan.slice(0, 100) + '...' : res.pertanyaan)) : 'Klik Next Soal untuk lanjut';
+  document.getElementById('ctrlStatus').textContent = 'Berjalan';
+  document.getElementById('ctrlStatusDesc').textContent = 'Soal #' + res.current_soal + ' sedang aktif. Siswa sedang menjawab (literasi).';
+  document.getElementById('ctrlStatus').style.color = 'var(--success)';
+  const progress = (res.current_soal / res.total_soal) * 100;
+  document.getElementById('ctrlProgress').style.width = progress + '%';
+  document.getElementById('ctrlProgressTxt').textContent = res.current_soal + '/' + res.total_soal;
+  document.getElementById('stSoal').textContent = res.current_soal;
+  document.getElementById('stSoalSub').textContent = 'Tipe: ' + res.tipe.toUpperCase();
+  document.getElementById('btnStop').style.display = 'block';
+  document.getElementById('quizStatus').textContent = '🔴 KUIS BERJALAN';
+  document.getElementById('quizStatus').className = 'quiz-status';
+}
+
+async function refreshStatus() {
+  try {
+    const status = await gasGet('getQuizStatus');
+    A.lastSoal = status.current_soal || 0;
+    if (status.quiz_finished) {
+      document.getElementById('ctrlStatus').textContent = 'Selesai';
+      document.getElementById('ctrlStatus').style.color = 'var(--warning)';
+      document.getElementById('ctrlStatusDesc').textContent = 'KUIS SUDAH SELESAI. Pemenang: ' + (status.winner === 'tie' ? 'SERI' : 'TIM ' + status.winner.toUpperCase());
+      document.getElementById('ctrlSoal').textContent = '🏆';
+      document.getElementById('ctrlSoalDesc').textContent = 'Skor akhir - Kanan: ' + status.final_kanan + ' | Kiri: ' + status.final_kiri;
+      document.getElementById('quizStatus').textContent = '🏆 KUIS SELESAI';
+      document.getElementById('quizStatus').className = 'quiz-status finished';
+      document.getElementById('btnStop').style.display = 'none';
+    } else if (status.quiz_active && status.current_soal > 0) {
+      // Re-fetch info soal
+      try {
+        const soalRes = await gasGet('getCurrentSoal');
+        if (soalRes.active) {
+          updateControlUI({
+            current_soal: soalRes.soal_nomor,
+            total_soal: 20, // assume
+            tipe: soalRes.tipe,
+            pertanyaan: soalRes.pertanyaan
+          });
+        }
+      } catch (e) {}
+    } else {
+      document.getElementById('ctrlSoal').textContent = '—';
+      document.getElementById('ctrlSoalDesc').textContent = 'Klik "Next Soal" untuk menampilkan soal literasi pertama';
+      document.getElementById('ctrlStatus').textContent = 'Belum Mulai';
+      document.getElementById('ctrlStatus').style.color = '';
+      document.getElementById('ctrlStatusDesc').textContent = 'Kuis akan aktif setelah tombol Next Soal diklik';
+      document.getElementById('btnStop').style.display = 'none';
+      document.getElementById('ctrlProgress').style.width = '0%';
+      document.getElementById('ctrlProgressTxt').textContent = '0/' + A.ctrlTotalSoal;
+      document.getElementById('stSoal').textContent = '0';
+      document.getElementById('stSoalSub').textContent = 'Belum dimulai';
+      document.getElementById('quizStatus').textContent = '⏸ KUIS BERHENTI';
+      document.getElementById('quizStatus').className = 'quiz-status inactive';
+    }
+    if (status.token_kanan) document.getElementById('tokenKanan').textContent = status.token_kanan;
+    if (status.token_kiri)  document.getElementById('tokenKiri').textContent = status.token_kiri;
+  } catch (e) { console.warn(e); }
+}
+
+// DAFTAR SISWA
+async function loadDaftarSiswa() {
+  const kelas = document.getElementById('filterKelas').value;
+  const meja = document.getElementById('filterMeja').value;
+  try {
+    const res = await gasGet('getDaftarSiswa', { kelas, meja });
+    if (res.success) {
+      renderSiswaList('siswaKanan', res.siswa_kanan);
+      renderSiswaList('siswaKiri', res.siswa_kiri);
+      renderSiswaList('lbKanan', res.siswa_kanan.slice(0, 5));
+      renderSiswaList('lbKiri', res.siswa_kiri.slice(0, 5));
+      document.getElementById('siswaKananCount').textContent = res.siswa_kanan.length;
+      document.getElementById('siswaKiriCount').textContent = res.siswa_kiri.length;
+      document.getElementById('lbKananCount').textContent = res.siswa_kanan.length;
+      document.getElementById('lbKiriCount').textContent = res.siswa_kiri.length;
+      document.getElementById('totalSiswaBadge').textContent = res.summary.total;
+      document.getElementById('avgKanan').textContent = res.summary.avg_kanan;
+      document.getElementById('avgKiri').textContent = res.summary.avg_kiri;
+      document.getElementById('totalTerkunci').textContent = res.summary.terkunci;
+      document.getElementById('totalPelanggaran').textContent = res.summary.pelanggaran_total;
+      document.getElementById('stTotal').textContent = res.summary.total;
+      document.getElementById('stTotalSub').textContent = (res.summary.kanan + ' kanan • ' + res.summary.kiri + ' kiri');
+      // Top scorer
+      const allSiswa = res.siswa_kanan.concat(res.siswa_kiri).sort((a,b) => (b.score||0)-(a.score||0));
+      if (allSiswa.length > 0 && allSiswa[0].score > 0) {
+        document.getElementById('stTop').textContent = allSiswa[0].score;
+        document.getElementById('stTopSub').textContent = allSiswa[0].nama + ' (' + allSiswa[0].kelas + ')';
+      } else {
+        document.getElementById('stTop').textContent = '0';
+        document.getElementById('stTopSub').textContent = 'Belum ada';
+      }
+      // Update live PK
+      document.getElementById('liveKananScore').textContent = res.summary.sum_kanan;
+      document.getElementById('liveKiriScore').textContent = res.summary.sum_kiri;
+    }
+  } catch (e) { console.warn(e); }
+}
+
+function renderSiswaList(targetId, list) {
+  const el = document.getElementById(targetId);
+  if (!list || list.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="ico">📭</div>Belum ada siswa</div>';
+    return;
+  }
+  el.innerHTML = list.map((s, i) => {
+    const rankClass = i === 0 ? 'rank-1' : (i === 1 ? 'rank-2' : (i === 2 ? 'rank-3' : ''));
+    const lockedClass = s.status === 'terkunci' ? 'locked' : '';
+    const negClass = (s.score || 0) < 0 ? 'negative' : '';
+    const pelBadge = s.pelanggaran > 0 ? '<span class="pel">⚠ ' + s.pelanggaran + '</span>' : '';
+    let actions = '';
+    if (s.status === 'terkunci') {
+      actions = '<div class="actions"><button class="unlock" onclick="unlockSiswa(' + s.id + ')">🔓 Unlock</button></div>';
+    } else {
+      actions = '<div class="actions"><button class="del" onclick="confirmDelete(' + s.id + ', \'' + String(s.nama).replace(/'/g, "\\'") + '\')">🗑</button></div>';
+    }
+    return '<div class="siswa-row ' + rankClass + ' ' + lockedClass + ' ' + negClass + '">' +
+      '<div class="rank">' + (i + 1) + '</div>' +
+      '<div style="flex: 1; min-width: 0;">' +
+        '<div class="nama">' + s.nama + '</div>' +
+        '<div class="meta">' + s.kelas + ' • Absen ' + s.no_absen + '</div>' +
+      '</div>' +
+      pelBadge +
+      '<div class="score">' + (s.score || 0) + '</div>' +
+      actions +
+    '</div>';
+  }).join('');
+}
+
+async function unlockSiswa(id) {
+  try {
+    const res = await gasPost('unlockSiswa', { id });
+    if (res.success) {
+      toast('🔓 ' + res.message, 'success');
+      loadDaftarSiswa();
+    } else toast(res.message || 'Gagal unlock', 'error');
+  } catch (e) { toast('Error: ' + e.message, 'error'); }
+}
+
+function confirmDelete(id, nama) {
+  showModal('Hapus Siswa?', 'Yakin hapus data "' + nama + '"? Skor & jawaban siswa ini akan tetap tersimpan di sheet hasil.', async () => {
+    try {
+      const res = await gasPost('deleteSiswa', { id });
+      if (res.success) {
+        toast('🗑 ' + res.message, 'success');
+        loadDaftarSiswa();
+      } else toast(res.message || 'Gagal hapus', 'error');
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  });
+}
+
+// PELANGGARAN
+async function loadPelanggaran() {
+  try {
+    const res = await gasGet('getDaftarPelanggaran');
+    if (res.success) {
+      const el = document.getElementById('pelLog');
+      document.getElementById('pelCount').textContent = res.pelanggaran.length;
+      document.getElementById('stPel').textContent = res.pelanggaran.length;
+      document.getElementById('stPelSub').textContent = res.pelanggaran.length > 0 ? 'Total kasus' : 'Tidak ada';
+      if (res.pelanggaran.length > A.pelanggaranSeen && A.pelanggaranSeen > 0) {
+        const latest = res.pelanggaran[0];
+        toast('⚠️ PELANGGARAN BARU: ' + latest.nama + ' (' + latest.kelas + ') - ' + latest.jenis, 'error', 6000);
+        beep();
+      }
+      A.pelanggaranSeen = res.pelanggaran.length;
+      if (res.pelanggaran.length === 0) {
+        el.innerHTML = '<div class="empty-state"><div class="ico">✓</div>Belum ada pelanggaran tercatat</div>';
+        return;
+      }
+      el.innerHTML = res.pelanggaran.map(p => {
+        const ico = p.jenis === 'exit_fullscreen' ? '🖥' : '🚪';
+        const jenisLabel = p.jenis === 'exit_fullscreen' ? 'KELUAR FULLSCREEN' : 'BUKA TAB BARU';
+        let waktuStr = '';
+        if (p.waktu) {
+          try { waktuStr = new Date(p.waktu).toLocaleString('id-ID'); } catch(e) {}
+        }
+        return '<div class="pel-item">' +
+          '<div class="ico">' + ico + '</div>' +
+          '<div class="info">' +
+            '<div class="nama">' + p.nama + ' <span style="color: var(--text-dim); font-weight: 400; font-size: 11px;">— Kelas ' + p.kelas + ' • Meja ' + (p.meja || '?').toUpperCase() + '</span></div>' +
+            '<div class="meta">' + (p.detail || '') + ' • ' + waktuStr + '</div>' +
+            '<div class="jenis">' + jenisLabel + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  } catch (e) { console.warn(e); }
+}
+
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880; osc.type = 'square';
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc.start(); osc.stop(ctx.currentTime + 0.3);
+  } catch (e) {}
+}
+
+// AUTO REFRESH - 4 seconds for 32-client traffic
+function startAutoRefresh() {
+  if (A.refreshTimer) clearInterval(A.refreshTimer);
+  A.refreshTimer = setInterval(() => {
+    refreshStatus();
+    loadDaftarSiswa();
+    loadPelanggaran();
+  }, 4000);
+}
+function refreshAll() {
+  loadTokens();
+  refreshStatus();
+  loadDaftarSiswa();
+  loadPelanggaran();
+}
+
+// MODAL
+function showModal(title, msg, onConfirm) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalMsg').textContent = msg;
+  document.getElementById('modal').classList.add('show');
+  const btn = document.getElementById('modalConfirmBtn');
+  const newBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn, btn);
+  newBtn.addEventListener('click', () => {
+    closeModal();
+    onConfirm();
+  });
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+</script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-card" id="loginCard">
+  <div class="icon">🔐</div>
+  <h2>Login Admin</h2>
+  <p>Masukkan kredensial untuk mengelola Quiz Literasi Jaringan Komputer</p>
+  <div class="input-group">
+    <label>Username</label>
+    <input type="text" id="loginUser" placeholder="Contoh: guruTI" autocomplete="off">
+  </div>
+  <div class="input-group" style="position: relative;">
+    <label>Password</label>
+    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="off">
+    <span class="toggle-pw" onclick="togglePw()">👁</span>
+  </div>
+  <button class="btn-primary" id="loginBtn" onclick="doLogin()">MASUK ➜</button>
+  <div style="margin-top: 16px; padding: 12px; background: rgba(245,158,11,0.1); border: 1px solid var(--warning); border-radius: 10px; font-size: 11px; color: #FCD34D; text-align: center;">
+    Default: <strong>guruTI / TI2024#</strong> — ubah di sheet config!
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="app-header">
+    <div class="brand">
+      <div class="logo">🎯</div>
+      <div>
+        <h1>Quiz Literasi Jaringan Komputer</h1>
+        <small>Panel Admin • SMP Kelas 9</small>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="quiz-status inactive" id="quizStatus">⏸ KUIS BERHENTI</div>
+      <button class="btn-ghost" onclick="refreshAll()">🔄 Refresh</button>
+      <button class="btn-ghost" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- LIVE PK BATTLE BAR -->
+  <div class="live-pk">
+    <h3>⚔️ LIVE BATTLE - Skor Tim Real-Time</h3>
+    <div class="bars">
+      <div class="team right">
+        <div class="avatar">R</div>
+        <div class="team-info">
+          <div class="team-name">MEJA KANAN</div>
+          <div class="team-score" id="liveKananScore">0</div>
+        </div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="team left">
+        <div class="team-info">
+          <div class="team-name">MEJA KIRI</div>
+          <div class="team-score" id="liveKiriScore">0</div>
+        </div>
+        <div class="avatar">L</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="lbl">TOTAL SISWA</div>
+      <div class="num" id="stTotal">0</div>
+      <div class="sub" id="stTotalSub">Terdaftar</div>
+      <div class="ico">👥</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="lbl">SKOR TERTINGGI</div>
+      <div class="num" id="stTop">0</div>
+      <div class="sub" id="stTopSub">Belum ada</div>
+      <div class="ico">🏆</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="lbl">SOAL SAAT INI</div>
+      <div class="num" id="stSoal">0</div>
+      <div class="sub" id="stSoalSub">Belum dimulai</div>
+      <div class="ico">📝</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="lbl">PELANGGARAN</div>
+      <div class="num" id="stPel">0</div>
+      <div class="sub" id="stPelSub">Total kasus</div>
+      <div class="ico">⚠️</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="control">⚡ Kontrol Kuis</button>
+    <button class="tab" data-tab="token">🔑 Token</button>
+    <button class="tab" data-tab="siswa">👥 Daftar Siswa</button>
+    <button class="tab" data-tab="pelanggaran">⚠️ Pelanggaran</button>
+  </div>
+
+  <!-- Tab: Control -->
+  <div class="tab-content active" id="tab-control">
+    <div class="panel">
+      <h3>⚡ Kontrol Soal Kuis Literasi</h3>
+      <div class="control-panel">
+        <div class="control-box">
+          <div class="lbl">SOAL SAAT INI</div>
+          <div class="val" id="ctrlSoal">—</div>
+          <div class="desc" id="ctrlSoalDesc">Klik "Next Soal" untuk menampilkan soal literasi pertama ke seluruh siswa</div>
+          <button class="btn-next" id="btnNext" onclick="nextSoal()">➜ NEXT SOAL</button>
+          <button class="btn-end" id="btnEnd" onclick="endKuis()">🏆 TUTUP & TAMPILKAN PEMENANG</button>
+          <button class="btn-stop" id="btnStop" onclick="stopKuis()" style="display:none;">⏹ PAUSE KUIS</button>
+          <button class="btn-reset" onclick="confirmReset()">↺ RESET KUIS (Bersihkan Skor)</button>
+        </div>
+        <div class="control-box">
+          <div class="lbl">STATUS</div>
+          <div class="val" id="ctrlStatus">Belum Mulai</div>
+          <div class="desc" id="ctrlStatusDesc">Kuis akan aktif setelah tombol Next Soal diklik</div>
+          <div style="background: rgba(16,185,129,0.15); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
+            <span class="live-dot"></span>
+            <span style="font-size: 13px; font-weight: 600;">Auto-refresh 4 detik</span>
+          </div>
+        </div>
+        <div class="control-box">
+          <div class="lbl">TOTAL SOAL</div>
+          <div class="val" id="ctrlTotalSoal">20</div>
+          <div class="desc">Soal literasi tersedia (15 PG + 5 Essay)</div>
+          <div style="margin-top: 12px;">
+            <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">PROGRES KUIS</div>
+            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+              <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s;"></div>
+            </div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px; text-align: right;" id="ctrlProgressTxt">0/20</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>🏆 Leaderboard Top 5 (Per Meja)</h3>
+      <div class="siswa-grid" id="leaderboardGrid">
+        <div class="siswa-list-box right">
+          <h4>Meja Kanan <span class="count" id="lbKananCount">0</span></h4>
+          <div id="lbKanan"></div>
+        </div>
+        <div class="siswa-list-box left">
+          <h4>Meja Kiri <span class="count" id="lbKiriCount">0</span></h4>
+          <div id="lbKiri"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Token -->
+  <div class="tab-content" id="tab-token">
+    <div class="panel">
+      <h3>🔑 Generate Token Meja</h3>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 18px;">
+        Token berbeda untuk meja kanan dan kiri. Bagikan token ke masing-masing meja secara terpisah.
+      </p>
+      <div class="token-panel">
+        <div class="token-box">
+          <div class="header">
+            <div class="side">➡️ Meja Kanan</div>
+            <button class="regen" onclick="regenToken('kanan')">↺ Generate Baru</button>
+          </div>
+          <div class="token-display" id="tokenKanan">------</div>
+          <div class="token-actions">
+            <button class="btn-copy" onclick="copyToken('kanan')">📋 Copy</button>
+            <button class="btn-copy" onclick="shareToken('kanan')">📢 Bagikan</button>
+          </div>
+        </div>
+        <div class="token-box right-side">
+          <div class="header">
+            <div class="side">⬅️ Meja Kiri</div>
+            <button class="regen" onclick="regenToken('kiri')">↺ Generate Baru</button>
+          </div>
+          <div class="token-display" id="tokenKiri">------</div>
+          <div class="token-actions">
+            <button class="btn-copy" onclick="copyToken('kiri')">📋 Copy</button>
+            <button class="btn-copy" onclick="shareToken('kiri')">📢 Bagikan</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; padding: 14px; background: rgba(99,102,241,0.1); border-radius: 12px; font-size: 13px; color: #C7D2FE;">
+        💡 <strong>Tips:</strong> Generate token baru akan menghapus token lama. Siswa yang sudah login tetap bisa main. Token baru hanya untuk siswa yang belum login.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Siswa -->
+  <div class="tab-content" id="tab-siswa">
+    <div class="panel">
+      <h3>👥 Daftar Siswa Per Meja <span class="badge-count" id="totalSiswaBadge">0</span></h3>
+      <div class="filter-bar">
+        <div class="lbl">Filter Kelas:</div>
+        <select class="filter-select" id="filterKelas" onchange="loadDaftarSiswa()">
+          <option value="ALL">Semua Kelas</option>
+          <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option>
+          <option value="9D">9D</option><option value="9E">9E</option><option value="9F">9F</option>
+          <option value="9G">9G</option><option value="9H">9H</option><option value="9I">9I</option>
+        </select>
+        <div class="lbl" style="margin-left: 14px;">Filter Meja:</div>
+        <select class="filter-select" id="filterMeja" onchange="loadDaftarSiswa()">
+          <option value="ALL">Semua Meja</option>
+          <option value="kanan">Meja Kanan</option>
+          <option value="kiri">Meja Kiri</option>
+        </select>
+      </div>
+      <div class="siswa-grid" id="siswaGrid">
+        <div class="siswa-list-box right">
+          <h4>Meja Kanan <span class="count" id="siswaKananCount">0</span></h4>
+          <div id="siswaKanan">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa</div>
+          </div>
+        </div>
+        <div class="siswa-list-box left">
+          <h4>Meja Kiri <span class="count" id="siswaKiriCount">0</span></h4>
+          <div id="siswaKiri">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 18px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
+        <strong style="font-size: 14px;">📊 Ringkasan:</strong>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px;">
+          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kanan</div><div style="font-size: 18px; font-weight: 800; color: var(--kanan);" id="avgKanan">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kiri</div><div style="font-size: 18px; font-weight: 800; color: var(--kiri);" id="avgKiri">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Terkunci</div><div style="font-size: 18px; font-weight: 800; color: var(--danger);" id="totalTerkunci">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Total Pelanggaran</div><div style="font-size: 18px; font-weight: 800; color: var(--accent);" id="totalPelanggaran">0</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Pelanggaran -->
+  <div class="tab-content" id="tab-pelanggaran">
+    <div class="panel">
+      <h3>⚠️ Log Pelanggaran Siswa <span class="badge-count" id="pelCount" style="background: var(--danger);">0</span></h3>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 16px;">
+        Pelanggaran tercatat otomatis: keluar mode fullscreen, pindah tab baru. Akun terkunci permanen setelah 3x.
+      </p>
+      <div class="pel-log" id="pelLog">
+        <div class="empty-state"><div class="ico">✓</div>Belum ada pelanggaran tercatat</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">Konfirmasi</h3>
+    <p id="modalMsg">Apakah Anda yakin?</p>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeModal()">Batal</button>
+      <button class="confirm" id="modalConfirmBtn">Ya, Lanjut</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
