@@ -777,6 +777,7 @@ html, body {
   <div class="name" id="pInfoName"></div>
   <div class="meta" id="pInfoMeta"></div>
   <div class="score" id="pInfoScore">0</div>
+  <button onclick="siswaLogout()" style="margin-top: 8px; background: rgba(239,68,68,0.2); color: #FCA5A5; border: 1px solid var(--danger); padding: 4px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; font-weight: 600;">🚪 Keluar</button>
 </div>
 
 <!-- ============== LAYER 1: WELCOME ============== -->
@@ -1019,7 +1020,46 @@ function toast(msg, type = 'info', duration = 3000) {
 }
 
 // ============== INIT ==============
+// ============== SESSION RESTORE (siswa tetap login setelah reload) ==============
+function restoreSiswaSession() {
+  try {
+    const saved = localStorage.getItem('quiz_siswa_session');
+    if (saved) {
+      const siswaData = JSON.parse(saved);
+      if (siswaData && siswaData.id && siswaData.nama) {
+        STATE.siswa = siswaData;
+        showPlayerInfo();
+        showPkBar();
+        showLayer(4);
+        startPolling();
+        startScoreboardPolling();
+        toast('✓ Sesi dipulihkan. Selamat datang kembali, ' + siswaData.nama, 'info', 3000);
+        console.log('Sesi siswa dipulihkan:', siswaData);
+        return true;
+      }
+    }
+  } catch (e) {
+    console.warn('Gagal restore sesi:', e);
+    localStorage.removeItem('quiz_siswa_session');
+  }
+  return false;
+}
+
+// Fungsi logout manual siswa (jika perlu)
+function siswaLogout() {
+  if (confirm('Yakin keluar dari kuis? Sesi akan dihapus.')) {
+    localStorage.removeItem('quiz_siswa_session');
+    if (STATE.pollTimer) clearInterval(STATE.pollTimer);
+    if (STATE.scoreboardTimer) clearInterval(STATE.scoreboardTimer);
+    if (STATE.countdownTimer) clearInterval(STATE.countdownTimer);
+    exitFullscreen();
+    location.reload();
+  }
+}
+
 async function init() {
+  // Cek apakah ada session tersimpan - jika ya, langsung restore
+  const restored = restoreSiswaSession();
   try {
     STATE.quizConfig = await gasGet('getConfig');
     document.getElementById('welcomeTitle').textContent = STATE.quizConfig.quiz_title || 'Quiz Literasi Jaringan Komputer';
@@ -1152,13 +1192,19 @@ async function submitRegistration() {
 
 // ============== TOKEN SUBMIT ==============
 async function submitToken() {
-  const token = STATE.tokenInput.join('');
+  // Ambil langsung dari input value - lebih reliable daripada STATE array
+  const digits = document.querySelectorAll('.token-digit');
+  let token = '';
+  digits.forEach(d => { token += (d.value || '').toUpperCase(); });
+  // Bersihkan karakter non-alphanumeric
+  token = token.replace(/[^A-Z0-9]/g, '');
+  console.log('Token input:', JSON.stringify(token), 'length:', token.length);
   if (token.length !== 6) {
-    document.querySelectorAll('.token-digit').forEach(d => {
+    digits.forEach(d => {
       if (!d.value) d.classList.add('error');
       setTimeout(() => d.classList.remove('error'), 600);
     });
-    return toast('Token harus 6 karakter', 'error');
+    return toast('Token harus 6 karakter (saat ini: ' + token.length + '/6)', 'error', 4000);
   }
   toast('Memverifikasi token...', 'info', 1500);
   try {
@@ -1169,6 +1215,8 @@ async function submitToken() {
     if (res.success) {
       STATE.siswa.id = res.id;
       STATE.siswa.token = token;
+      // Simpan session ke localStorage untuk persist saat reload
+      localStorage.setItem('quiz_siswa_session', JSON.stringify(STATE.siswa));
       showPlayerInfo();
       showPkBar();
       showLayer(4);
