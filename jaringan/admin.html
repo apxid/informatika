@@ -760,8 +760,47 @@ async function loadDaftarSiswa() {
       // Update live PK
       document.getElementById('liveKananScore').textContent = res.summary.sum_kanan;
       document.getElementById('liveKiriScore').textContent = res.summary.sum_kiri;
+      // Update tab Token - siswa yang sudah login per meja
+      renderTokenSiswaList('tokenSiswaKanan', res.siswa_kanan);
+      renderTokenSiswaList('tokenSiswaKiri', res.siswa_kiri);
+      document.getElementById('tokenSiswaKananCount').textContent = res.siswa_kanan.length;
+      document.getElementById('tokenSiswaKiriCount').textContent = res.siswa_kiri.length;
+      document.getElementById('tokenSiswaTotalBadge').textContent = res.summary.total;
+      document.getElementById('tokenStatTotal').textContent = res.summary.total;
+      document.getElementById('tokenStatKanan').textContent = res.siswa_kanan.length;
+      document.getElementById('tokenStatKiri').textContent = res.siswa_kiri.length;
     }
   } catch (e) { console.warn(e); }
+}
+
+function renderTokenSiswaList(targetId, list) {
+  const el = document.getElementById(targetId);
+  if (!list || list.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="ico">📭</div>Belum ada siswa masuk</div>';
+    return;
+  }
+  // Sort by score desc (yang main lebih aktif muncul lebih atas)
+  const sorted = list.slice().sort((a, b) => (b.score || 0) - (a.score || 0));
+  el.innerHTML = sorted.map((s, i) => {
+    const rankClass = i === 0 ? 'rank-1' : (i === 1 ? 'rank-2' : (i === 2 ? 'rank-3' : ''));
+    const lockedClass = s.status === 'terkunci' ? 'locked' : '';
+    const negClass = (s.score || 0) < 0 ? 'negative' : '';
+    // Status badge (Aktif / Pending / Terkunci / Selesai)
+    let statusBadge = '';
+    if (s.status === 'terkunci') statusBadge = '<span class="pel" style="background: rgba(239,68,68,0.3);">🔒 Terkunci</span>';
+    else if (s.status === 'aktif') statusBadge = '<span class="pel" style="background: rgba(16,185,129,0.3); color: #6EE7B7;">● Aktif</span>';
+    else if (s.status === 'selesai') statusBadge = '<span class="pel" style="background: rgba(99,102,241,0.3); color: #C7D2FE;">✓ Selesai</span>';
+    else statusBadge = '<span class="pel" style="background: rgba(245,158,11,0.3); color: #FCD34D;">⏳ Pending</span>';
+    return '<div class="siswa-row ' + rankClass + ' ' + lockedClass + ' ' + negClass + '">' +
+      '<div class="rank">' + (i + 1) + '</div>' +
+      '<div style="flex: 1; min-width: 0;">' +
+        '<div class="nama">' + s.nama + '</div>' +
+        '<div class="meta">' + s.kelas + ' • Absen ' + s.no_absen + '</div>' +
+      '</div>' +
+      statusBadge +
+      '<div class="score">' + (s.score || 0) + '</div>' +
+    '</div>';
+  }).join('');
 }
 
 function renderSiswaList(targetId, list) {
@@ -919,9 +958,6 @@ function closeModal() {
     <span class="toggle-pw" onclick="togglePw()">👁</span>
   </div>
   <button class="btn-primary" id="loginBtn" onclick="doLogin()">MASUK ➜</button>
-  <div style="margin-top: 16px; padding: 12px; background: rgba(245,158,11,0.1); border: 1px solid var(--warning); border-radius: 10px; font-size: 11px; color: #FCD34D; text-align: center;">
-    Default: <strong>guruTI / TI2024#</strong> — ubah di sheet config!
-  </div>
 </div>
 
 <!-- DASHBOARD -->
@@ -1085,6 +1121,45 @@ function closeModal() {
       </div>
       <div style="margin-top: 16px; padding: 14px; background: rgba(99,102,241,0.1); border-radius: 12px; font-size: 13px; color: #C7D2FE;">
         💡 <strong>Tips:</strong> Generate token baru akan menghapus token lama. Siswa yang sudah login tetap bisa main. Token baru hanya untuk siswa yang belum login.
+      </div>
+    </div>
+
+    <!-- Tabel siswa yang sudah berhasil masuk per meja menggunakan token -->
+    <div class="panel">
+      <h3>👥 Siswa yang Sudah Masuk per Meja <span class="badge-count" id="tokenSiswaTotalBadge">0</span></h3>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 18px;">
+        Daftar siswa yang telah berhasil memasukkan token &amp; login. Update otomatis setiap 4 detik.
+      </p>
+      <div class="siswa-grid">
+        <div class="siswa-list-box right">
+          <h4>➡️ Meja Kanan <span class="count" id="tokenSiswaKananCount">0</span></h4>
+          <div id="tokenSiswaKanan">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa masuk</div>
+          </div>
+        </div>
+        <div class="siswa-list-box left">
+          <h4>⬅️ Meja Kiri <span class="count" id="tokenSiswaKiriCount">0</span></h4>
+          <div id="tokenSiswaKiri">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa masuk</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
+        <strong style="font-size: 14px;">📊 Statistik Login:</strong>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px;">
+          <div>
+            <div style="color: var(--text-dim); font-size: 11px;">Total Siswa Login</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--success);" id="tokenStatTotal">0</div>
+          </div>
+          <div>
+            <div style="color: var(--text-dim); font-size: 11px;">Tim Kanan</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--kanan);" id="tokenStatKanan">0</div>
+          </div>
+          <div>
+            <div style="color: var(--text-dim); font-size: 11px;">Tim Kiri</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--kiri);" id="tokenStatKiri">0</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
