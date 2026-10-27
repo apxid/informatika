@@ -722,6 +722,16 @@ html, body {
 }
 
 #confetti-host { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
+
+/* Connection Error Modal */
+#connErrorModal.show { display: flex !important; animation: layerIn 0.4s; }
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
 </style>
 </head>
 <body>
@@ -960,6 +970,55 @@ html, body {
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Connection Error Modal -->
+<div id="connErrorModal" style="position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: linear-gradient(135deg, #1E1B4B, #0F172A); border: 2px solid var(--danger); border-radius: 24px; padding: 32px; max-width: 580px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 80px rgba(239,68,68,0.3);">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div style="font-size: 70px; margin-bottom: 12px;">⚠️</div>
+      <h2 style="font-size: 24px; font-weight: 800; color: #FCA5A5; margin-bottom: 8px;">Gagal Koneksi ke Server</h2>
+      <p style="color: rgba(255,255,255,0.7); font-size: 14px;">Aplikasi tidak bisa terhubung ke Google Apps Script backend.</p>
+    </div>
+
+    <div style="background: rgba(239,68,68,0.1); padding: 16px; border-radius: 12px; margin-bottom: 18px; border: 1px solid rgba(239,68,68,0.3);">
+      <div style="font-size: 11px; color: #FCA5A5; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px;">GAS_URL YANG SEDANG DIPAKAI:</div>
+      <code id="connErrorUrl" style="font-family: 'Courier New', monospace; font-size: 12px; color: #FCD34D; word-break: break-all; display: block;">-</code>
+    </div>
+
+    <div style="background: rgba(239,68,68,0.1); padding: 16px; border-radius: 12px; margin-bottom: 18px; border: 1px solid rgba(239,68,68,0.3);">
+      <div style="font-size: 11px; color: #FCA5A5; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px;">PESAN ERROR DETAIL:</div>
+      <code id="connErrorDetail" style="font-family: 'Courier New', monospace; font-size: 12px; color: #FCD34D; word-break: break-word; display: block; white-space: pre-wrap;">-</code>
+    </div>
+
+    <div style="background: rgba(99,102,241,0.1); padding: 16px; border-radius: 12px; margin-bottom: 18px; border: 1px solid rgba(99,102,241,0.3);">
+      <div style="font-size: 13px; font-weight: 700; color: #C7D2FE; margin-bottom: 10px;">📋 Checklist Solusi:</div>
+      <ol style="font-size: 12px; color: rgba(255,255,255,0.85); padding-left: 20px; line-height: 1.7;">
+        <li><strong>GAS_URL sudah benar?</strong> Pastikan berakhir <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #FCD34D;">/exec</code> (bukan <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #FCA5A5;">/dev</code>)</li>
+        <li><strong>HTML sudah di-push ke GitHub?</strong> Tunggu 1-2 menit untuk GitHub Pages update (atau hard refresh dengan Ctrl+Shift+R)</li>
+        <li><strong>Deployment GAS benar?</strong> "Who has access" harus <strong>Anyone</strong> (bukan "Anyone with Google account")</li>
+        <li><strong>Kode.gs sudah di-re-deploy?</strong> Setiap kali edit Kode.gs, harus Deploy > Manage deployments > Edit > version baru</li>
+        <li><strong>SPREADSHEET_ID benar?</strong> Cek baris 18 di Kode.gs - harus sesuai URL spreadsheet Anda</li>
+        <li><strong>Autorisasi sudah?</strong> Saat deploy pertama, klik "Authorize" dan izinkan semua permission</li>
+      </ol>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <button id="btnTestConn" onclick="testConnection()" style="width: 100%; background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(16,185,129,0.4); transition: all 0.3s;">
+        🔄 Tes Koneksi Sekarang
+      </button>
+      <div id="connTestResult" style="margin-top: 12px;"></div>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button onclick="location.reload()" style="flex: 1; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; border: none; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;">
+        🔄 Reload Halaman
+      </button>
+      <button onclick="closeConnErrorModal()" style="flex: 1; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;">
+        Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Confetti Host -->
 <div id="confetti-host"></div>
 
@@ -987,41 +1046,67 @@ const STATE = {
 
 // ============== GAS API WRAPPER (fetch-based) ==============
 async function gasGet(action, params = {}) {
+  // Deteksi apakah GAS_URL masih placeholder
+  if (GAS_URL.includes('PASTE_GAS_WEB_APP_URL_HERE')) {
+    throw new Error('GAS_URL belum diisi. Edit file index.html baris paling atas script, ganti PASTE_GAS_WEB_APP_URL_HERE dengan URL Web App Anda (akhiran /exec).');
+  }
+  if (!GAS_URL.endsWith('/exec')) {
+    throw new Error('GAS_URL harus berakhir dengan /exec (bukan /dev). URL Anda: ' + GAS_URL);
+  }
   const url = new URL(GAS_URL);
   url.searchParams.set('action', action);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   // Add timestamp to prevent browser caching
   url.searchParams.set('_t', Date.now());
+  let res;
   try {
-    const res = await fetch(url.toString(), {
+    res = await fetch(url.toString(), {
       method: 'GET',
       redirect: 'follow',
       cache: 'no-store',
       headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
     });
-    const txt = await res.text();
+  } catch (fetchErr) {
+    throw new Error('Network/CORS error: ' + fetchErr.message + '. Pastikan deployment "Who has access: Anyone" (bukan "Anyone with Google account").');
+  }
+  const txt = await res.text();
+  if (!res.ok) {
+    throw new Error('HTTP ' + res.status + ' ' + res.statusText + '. Response: ' + txt.substring(0, 200));
+  }
+  try {
     return JSON.parse(txt);
-  } catch (e) {
-    console.error('gasGet error', action, e);
-    throw e;
+  } catch (parseErr) {
+    throw new Error('Response bukan JSON valid. Mungkin GAS redirect ke login Google. Response: ' + txt.substring(0, 200));
   }
 }
 
 async function gasPost(action, data = {}) {
+  if (GAS_URL.includes('PASTE_GAS_WEB_APP_URL_HERE')) {
+    throw new Error('GAS_URL belum diisi. Edit file index.html, ganti PASTE_GAS_WEB_APP_URL_HERE dengan URL Web App Anda.');
+  }
+  if (!GAS_URL.endsWith('/exec')) {
+    throw new Error('GAS_URL harus berakhir dengan /exec. URL Anda: ' + GAS_URL);
+  }
+  let res;
   try {
-    // IMPORTANT: Use text/plain to avoid CORS preflight (GAS doesn't handle OPTIONS)
-    const res = await fetch(GAS_URL, {
+    res = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ ...data, action }),
       redirect: 'follow',
       cache: 'no-store'
     });
-    const txt = await res.text();
+  } catch (fetchErr) {
+    throw new Error('Network/CORS error: ' + fetchErr.message);
+  }
+  const txt = await res.text();
+  if (!res.ok) {
+    throw new Error('HTTP ' + res.status + '. Response: ' + txt.substring(0, 200));
+  }
+  try {
     return JSON.parse(txt);
-  } catch (e) {
-    console.error('gasPost error', action, e);
-    throw e;
+  } catch (parseErr) {
+    throw new Error('Response bukan JSON. Response: ' + txt.substring(0, 200));
   }
 }
 
@@ -1075,19 +1160,62 @@ async function init() {
   // Cek apakah ada session tersimpan - jika ya, langsung restore
   const restored = restoreSiswaSession();
   try {
+    console.log('[init] GAS_URL:', GAS_URL);
     STATE.quizConfig = await gasGet('getConfig');
+    console.log('[init] Config loaded:', STATE.quizConfig);
     document.getElementById('welcomeTitle').textContent = STATE.quizConfig.quiz_title || 'Quiz Literasi Jaringan Komputer';
     document.getElementById('welcomeSubtitle').textContent = STATE.quizConfig.quiz_subtitle || 'SMP Kelas 9 - Informatika';
     document.getElementById('totalPg').textContent = STATE.quizConfig.total_pg || 15;
     document.getElementById('totalEssay').textContent = STATE.quizConfig.total_essay || 5;
   } catch (e) {
-    console.warn('Gagal ambil config:', e);
-    toast('⚠ Gagal koneksi ke server. Cek konfigurasi GAS_URL.', 'error', 5000);
+    console.error('[init] Gagal ambil config:', e);
+    showConnectionError(e.message);
   }
   setTimeout(() => {
     document.getElementById('appLoader').classList.add('hide');
     setTimeout(() => document.getElementById('appLoader').remove(), 500);
   }, 800);
+}
+
+// ============== ERROR MODAL - TAMPILKAN DETAIL KONEKSI ==============
+function showConnectionError(errMsg) {
+  const modal = document.getElementById('connErrorModal');
+  const detail = document.getElementById('connErrorDetail');
+  const urlSpan = document.getElementById('connErrorUrl');
+  // Tampilkan URL yang sedang dipakai (sebagian untuk security)
+  let displayUrl = GAS_URL;
+  if (displayUrl.length > 70) displayUrl = displayUrl.substring(0, 40) + '...' + displayUrl.substring(displayUrl.length - 25);
+  urlSpan.textContent = displayUrl;
+  detail.textContent = errMsg;
+  modal.classList.add('show');
+  // Toast juga
+  toast('⚠ Gagal koneksi ke server. Klik untuk lihat solusi.', 'error', 8000);
+}
+
+function closeConnErrorModal() {
+  document.getElementById('connErrorModal').classList.remove('show');
+}
+
+async function testConnection() {
+  const btn = document.getElementById('btnTestConn');
+  const result = document.getElementById('connTestResult');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Menguji...';
+  result.innerHTML = '';
+  try {
+    const res = await gasGet('getConfig');
+    if (res && res.quiz_title) {
+      result.innerHTML = '<div style="background: rgba(16,185,129,0.2); padding: 14px; border-radius: 10px; color: #6EE7B7; font-weight: 700;">✓ BERHASIL! Server merespons. Quiz: ' + res.quiz_title + '</div>';
+      toast('✓ Koneksi berhasil!', 'success', 3000);
+    } else {
+      result.innerHTML = '<div style="background: rgba(245,158,11,0.2); padding: 14px; border-radius: 10px; color: #FCD34D;">⚠ Server respons tapi format tidak sesuai: ' + JSON.stringify(res).substring(0, 200) + '</div>';
+    }
+  } catch (e) {
+    result.innerHTML = '<div style="background: rgba(239,68,68,0.2); padding: 14px; border-radius: 10px; color: #FCA5A5;">✗ GAGAL: ' + e.message + '</div>';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔄 Tes Koneksi Sekarang';
+  }
 }
 
 // ============== LAYER NAVIGATION ==============
