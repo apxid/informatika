@@ -457,6 +457,311 @@ body {
 <!-- ============================================ -->
 <!-- PENTING: GANTI URL INI DENGAN URL WEB APP GAS -->
 <!-- ============================================ -->
+
+<!-- LOGIN -->
+<div class="login-card" id="loginCard">
+  <div class="icon">🔐</div>
+  <h2>Login Admin</h2>
+  <p>Masukkan kredensial untuk mengelola Quiz Literasi Jaringan Komputer</p>
+  <div class="input-group">
+    <label>Username</label>
+    <input type="text" id="loginUser" placeholder="Contoh: guruTI" autocomplete="off">
+  </div>
+  <div class="input-group" style="position: relative;">
+    <label>Password</label>
+    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="off">
+    <span class="toggle-pw" onclick="togglePw()">👁</span>
+  </div>
+  <button class="btn-primary" id="loginBtn" onclick="doLogin()">MASUK ➜</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="app-header">
+    <div class="brand">
+      <div class="logo">🎯</div>
+      <div>
+        <h1>Quiz Literasi Jaringan Komputer</h1>
+        <small>Panel Admin • SMP Kelas 9</small>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="quiz-status inactive" id="quizStatus">⏸ KUIS BERHENTI</div>
+      <button class="btn-ghost" onclick="refreshAll()">🔄 Refresh</button>
+      <button class="btn-ghost" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- LIVE PK BATTLE BAR -->
+  <div class="live-pk">
+    <h3>⚔️ LIVE BATTLE - Skor Tim Real-Time</h3>
+    <div class="bars">
+      <div class="team right">
+        <div class="avatar">R</div>
+        <div class="team-info">
+          <div class="team-name">MEJA KANAN</div>
+          <div class="team-score" id="liveKananScore">0</div>
+        </div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="team left">
+        <div class="team-info">
+          <div class="team-name">MEJA KIRI</div>
+          <div class="team-score" id="liveKiriScore">0</div>
+        </div>
+        <div class="avatar">L</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="lbl">TOTAL SISWA</div>
+      <div class="num" id="stTotal">0</div>
+      <div class="sub" id="stTotalSub">Terdaftar</div>
+      <div class="ico">👥</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="lbl">SKOR TERTINGGI</div>
+      <div class="num" id="stTop">0</div>
+      <div class="sub" id="stTopSub">Belum ada</div>
+      <div class="ico">🏆</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="lbl">SOAL SAAT INI</div>
+      <div class="num" id="stSoal">0</div>
+      <div class="sub" id="stSoalSub">Belum dimulai</div>
+      <div class="ico">📝</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="lbl">PELANGGARAN</div>
+      <div class="num" id="stPel">0</div>
+      <div class="sub" id="stPelSub">Total kasus</div>
+      <div class="ico">⚠️</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="control">⚡ Kontrol Kuis</button>
+    <button class="tab" data-tab="token">🔑 Token</button>
+    <button class="tab" data-tab="siswa">👥 Daftar Siswa</button>
+    <button class="tab" data-tab="pelanggaran">⚠️ Pelanggaran</button>
+  </div>
+
+  <!-- Tab: Control -->
+  <div class="tab-content active" id="tab-control">
+    <div class="panel">
+      <h3>⚡ Kontrol Soal Kuis Literasi</h3>
+      <div class="control-panel">
+        <div class="control-box">
+          <div class="lbl">SOAL SAAT INI</div>
+          <div class="val" id="ctrlSoal">—</div>
+          <div class="desc" id="ctrlSoalDesc">Klik "Next Soal" untuk menampilkan soal literasi pertama ke seluruh siswa</div>
+          <button class="btn-next" id="btnNext" onclick="nextSoal()">➜ NEXT SOAL</button>
+          <button class="btn-end" id="btnEnd" onclick="endKuis()">🏆 TUTUP & TAMPILKAN PEMENANG</button>
+          <button class="btn-stop" id="btnStop" onclick="stopKuis()" style="display:none;">⏹ PAUSE KUIS</button>
+          <button class="btn-reset" onclick="confirmReset()">↺ RESET KUIS (Bersihkan Skor)</button>
+        </div>
+        <div class="control-box">
+          <div class="lbl">STATUS</div>
+          <div class="val" id="ctrlStatus">Belum Mulai</div>
+          <div class="desc" id="ctrlStatusDesc">Kuis akan aktif setelah tombol Next Soal diklik</div>
+          <div style="background: rgba(16,185,129,0.15); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
+            <span class="live-dot"></span>
+            <span style="font-size: 13px; font-weight: 600;">Auto-refresh 4 detik</span>
+          </div>
+        </div>
+        <div class="control-box">
+          <div class="lbl">TOTAL SOAL</div>
+          <div class="val" id="ctrlTotalSoal">20</div>
+          <div class="desc">Soal literasi tersedia (15 PG + 5 Essay)</div>
+          <div style="margin-top: 12px;">
+            <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">PROGRES KUIS</div>
+            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+              <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s;"></div>
+            </div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px; text-align: right;" id="ctrlProgressTxt">0/20</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>🏆 Leaderboard Top 5 (Per Meja)</h3>
+      <div class="siswa-grid" id="leaderboardGrid">
+        <div class="siswa-list-box right">
+          <h4>Meja Kanan <span class="count" id="lbKananCount">0</span></h4>
+          <div id="lbKanan"></div>
+        </div>
+        <div class="siswa-list-box left">
+          <h4>Meja Kiri <span class="count" id="lbKiriCount">0</span></h4>
+          <div id="lbKiri"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Token -->
+  <div class="tab-content" id="tab-token">
+    <div class="panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+        <h3 style="margin: 0;">🔑 Generate Token Meja</h3>
+        <button class="btn-ghost" onclick="loadTokens(); loadDaftarSiswa();" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none;">🔄 Refresh Token &amp; Siswa</button>
+      </div>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 18px;">
+        Token berbeda untuk meja kanan dan kiri. Bagikan token ke masing-masing meja secara terpisah. Klik <strong>Refresh</strong> untuk update daftar siswa yang sudah login.
+      </p>
+      <div class="token-panel">
+        <div class="token-box">
+          <div class="header">
+            <div class="side">➡️ Meja Kanan</div>
+            <button class="regen" onclick="regenToken('kanan')">↺ Generate Baru</button>
+          </div>
+          <div class="token-display" id="tokenKanan">------</div>
+          <div class="token-actions">
+            <button class="btn-copy" onclick="copyToken('kanan')">📋 Copy</button>
+            <button class="btn-copy" onclick="shareToken('kanan')">📢 Bagikan</button>
+          </div>
+        </div>
+        <div class="token-box right-side">
+          <div class="header">
+            <div class="side">⬅️ Meja Kiri</div>
+            <button class="regen" onclick="regenToken('kiri')">↺ Generate Baru</button>
+          </div>
+          <div class="token-display" id="tokenKiri">------</div>
+          <div class="token-actions">
+            <button class="btn-copy" onclick="copyToken('kiri')">📋 Copy</button>
+            <button class="btn-copy" onclick="shareToken('kiri')">📢 Bagikan</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; padding: 14px; background: rgba(99,102,241,0.1); border-radius: 12px; font-size: 13px; color: #C7D2FE;">
+        💡 <strong>Tips:</strong> Generate token baru akan menghapus token lama. Siswa yang sudah login tetap bisa main. Token baru hanya untuk siswa yang belum login.
+      </div>
+    </div>
+
+    <!-- Tabel siswa yang sudah berhasil masuk per meja menggunakan token -->
+    <div class="panel">
+      <h3>👥 Siswa yang Sudah Masuk per Meja <span class="badge-count" id="tokenSiswaTotalBadge">0</span></h3>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 18px;">
+        Daftar siswa yang telah berhasil memasukkan token &amp; login. Update otomatis setiap 4 detik.
+      </p>
+      <div class="siswa-grid">
+        <div class="siswa-list-box right">
+          <h4>➡️ Meja Kanan <span class="count" id="tokenSiswaKananCount">0</span></h4>
+          <div id="tokenSiswaKanan">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa masuk</div>
+          </div>
+        </div>
+        <div class="siswa-list-box left">
+          <h4>⬅️ Meja Kiri <span class="count" id="tokenSiswaKiriCount">0</span></h4>
+          <div id="tokenSiswaKiri">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa masuk</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
+        <strong style="font-size: 14px;">📊 Statistik Login:</strong>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px;">
+          <div>
+            <div style="color: var(--text-dim); font-size: 11px;">Total Siswa Login</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--success);" id="tokenStatTotal">0</div>
+          </div>
+          <div>
+            <div style="color: var(--text-dim); font-size: 11px;">Tim Kanan</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--kanan);" id="tokenStatKanan">0</div>
+          </div>
+          <div>
+            <div style="color: var(--text-dim); font-size: 11px;">Tim Kiri</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--kiri);" id="tokenStatKiri">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Siswa -->
+  <div class="tab-content" id="tab-siswa">
+    <div class="panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+        <h3 style="margin: 0;">👥 Daftar Siswa Per Meja <span class="badge-count" id="totalSiswaBadge">0</span></h3>
+        <button class="btn-ghost" onclick="loadDaftarSiswa()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none;">🔄 Refresh</button>
+      </div>
+      <div class="filter-bar">
+        <div class="lbl">Filter Kelas:</div>
+        <select class="filter-select" id="filterKelas" onchange="loadDaftarSiswa()">
+          <option value="ALL">Semua Kelas</option>
+          <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option>
+          <option value="9D">9D</option><option value="9E">9E</option><option value="9F">9F</option>
+          <option value="9G">9G</option><option value="9H">9H</option><option value="9I">9I</option>
+        </select>
+        <div class="lbl" style="margin-left: 14px;">Filter Meja:</div>
+        <select class="filter-select" id="filterMeja" onchange="loadDaftarSiswa()">
+          <option value="ALL">Semua Meja</option>
+          <option value="kanan">Meja Kanan</option>
+          <option value="kiri">Meja Kiri</option>
+        </select>
+      </div>
+      <div class="siswa-grid" id="siswaGrid">
+        <div class="siswa-list-box right">
+          <h4>Meja Kanan <span class="count" id="siswaKananCount">0</span></h4>
+          <div id="siswaKanan">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa</div>
+          </div>
+        </div>
+        <div class="siswa-list-box left">
+          <h4>Meja Kiri <span class="count" id="siswaKiriCount">0</span></h4>
+          <div id="siswaKiri">
+            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 18px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
+        <strong style="font-size: 14px;">📊 Ringkasan:</strong>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px;">
+          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kanan</div><div style="font-size: 18px; font-weight: 800; color: var(--kanan);" id="avgKanan">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kiri</div><div style="font-size: 18px; font-weight: 800; color: var(--kiri);" id="avgKiri">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Terkunci</div><div style="font-size: 18px; font-weight: 800; color: var(--danger);" id="totalTerkunci">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Total Pelanggaran</div><div style="font-size: 18px; font-weight: 800; color: var(--accent);" id="totalPelanggaran">0</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Pelanggaran -->
+  <div class="tab-content" id="tab-pelanggaran">
+    <div class="panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+        <h3 style="margin: 0;">⚠️ Log Pelanggaran Siswa <span class="badge-count" id="pelCount" style="background: var(--danger);">0</span></h3>
+        <button class="btn-ghost" onclick="loadPelanggaran()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none;">🔄 Refresh</button>
+      </div>
+      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 16px;">
+        Pelanggaran tercatat otomatis: keluar mode fullscreen, pindah tab baru. Akun terkunci permanen setelah 3x. Klik <strong>Refresh</strong> untuk update log.
+      </p>
+      <div class="pel-log" id="pelLog">
+        <div class="empty-state"><div class="ico">✓</div>Belum ada pelanggaran tercatat</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">Konfirmasi</h3>
+    <p id="modalMsg">Apakah Anda yakin?</p>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeModal()">Batal</button>
+      <button class="confirm" id="modalConfirmBtn">Ya, Lanjut</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwn6Dc7MgH4rhgoYIsbXqlffzqHFiD0n07CgzsRfLSRBgrmvQyJTT3p_c19h2hrOgY5/exec';
 // ==============================================
@@ -512,11 +817,12 @@ async function doLogin() {
     const res = await gasPost('adminLogin', { username: u, password: p });
     if (res.success) {
       A.session = res.token;
+      localStorage.setItem('quiz_admin_session', res.token);
       document.getElementById('loginCard').style.display = 'none';
       document.getElementById('dashboard').classList.add('show');
       toast('✓ Login berhasil! Selamat datang, Guru.', 'success');
       refreshAll();
-      startAutoRefresh();
+      toast('ℹ Auto-refresh dimatikan. Klik tombol Refresh untuk update data.', 'info', 4000);
     } else {
       toast(res.message || 'Login gagal', 'error');
     }
@@ -528,6 +834,7 @@ async function doLogin() {
 }
 function doLogout() {
   A.session = null;
+  localStorage.removeItem('quiz_admin_session');
   if (A.refreshTimer) clearInterval(A.refreshTimer);
   document.getElementById('dashboard').classList.remove('show');
   document.getElementById('loginCard').style.display = 'block';
@@ -907,15 +1214,7 @@ function beep() {
   } catch (e) {}
 }
 
-// AUTO REFRESH - 4 seconds for 32-client traffic
-function startAutoRefresh() {
-  if (A.refreshTimer) clearInterval(A.refreshTimer);
-  A.refreshTimer = setInterval(() => {
-    refreshStatus();
-    loadDaftarSiswa();
-    loadPelanggaran();
-  }, 4000);
-}
+// Auto-refresh dimatikan (untuk hemat quota GAS) - gunakan tombol Refresh manual
 function refreshAll() {
   loadTokens();
   refreshStatus();
@@ -939,304 +1238,25 @@ function showModal(title, msg, onConfirm) {
 function closeModal() {
   document.getElementById('modal').classList.remove('show');
 }
+
+// ============== AUTO RESTORE SESSION (persist after reload) ==============
+function autoRestoreSession() {
+  const saved = localStorage.getItem('quiz_admin_session');
+  if (saved) {
+    A.session = saved;
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('dashboard').classList.add('show');
+    toast('✓ Sesi login dipulihkan', 'info', 2000);
+    refreshAll();
+  }
+}
+
+// Run after DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', autoRestoreSession);
+} else {
+  autoRestoreSession();
+}
 </script>
-</head>
-<body>
-
-<!-- LOGIN -->
-<div class="login-card" id="loginCard">
-  <div class="icon">🔐</div>
-  <h2>Login Admin</h2>
-  <p>Masukkan kredensial untuk mengelola Quiz Literasi Jaringan Komputer</p>
-  <div class="input-group">
-    <label>Username</label>
-    <input type="text" id="loginUser" placeholder="Contoh: guruTI" autocomplete="off">
-  </div>
-  <div class="input-group" style="position: relative;">
-    <label>Password</label>
-    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="off">
-    <span class="toggle-pw" onclick="togglePw()">👁</span>
-  </div>
-  <button class="btn-primary" id="loginBtn" onclick="doLogin()">MASUK ➜</button>
-</div>
-
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard">
-  <div class="app-header">
-    <div class="brand">
-      <div class="logo">🎯</div>
-      <div>
-        <h1>Quiz Literasi Jaringan Komputer</h1>
-        <small>Panel Admin • SMP Kelas 9</small>
-      </div>
-    </div>
-    <div class="actions">
-      <div class="quiz-status inactive" id="quizStatus">⏸ KUIS BERHENTI</div>
-      <button class="btn-ghost" onclick="refreshAll()">🔄 Refresh</button>
-      <button class="btn-ghost" onclick="doLogout()">Logout</button>
-    </div>
-  </div>
-
-  <!-- LIVE PK BATTLE BAR -->
-  <div class="live-pk">
-    <h3>⚔️ LIVE BATTLE - Skor Tim Real-Time</h3>
-    <div class="bars">
-      <div class="team right">
-        <div class="avatar">R</div>
-        <div class="team-info">
-          <div class="team-name">MEJA KANAN</div>
-          <div class="team-score" id="liveKananScore">0</div>
-        </div>
-      </div>
-      <div class="vs">VS</div>
-      <div class="team left">
-        <div class="team-info">
-          <div class="team-name">MEJA KIRI</div>
-          <div class="team-score" id="liveKiriScore">0</div>
-        </div>
-        <div class="avatar">L</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stats Grid -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="lbl">TOTAL SISWA</div>
-      <div class="num" id="stTotal">0</div>
-      <div class="sub" id="stTotalSub">Terdaftar</div>
-      <div class="ico">👥</div>
-    </div>
-    <div class="stat-card accent">
-      <div class="lbl">SKOR TERTINGGI</div>
-      <div class="num" id="stTop">0</div>
-      <div class="sub" id="stTopSub">Belum ada</div>
-      <div class="ico">🏆</div>
-    </div>
-    <div class="stat-card warning">
-      <div class="lbl">SOAL SAAT INI</div>
-      <div class="num" id="stSoal">0</div>
-      <div class="sub" id="stSoalSub">Belum dimulai</div>
-      <div class="ico">📝</div>
-    </div>
-    <div class="stat-card danger">
-      <div class="lbl">PELANGGARAN</div>
-      <div class="num" id="stPel">0</div>
-      <div class="sub" id="stPelSub">Total kasus</div>
-      <div class="ico">⚠️</div>
-    </div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" data-tab="control">⚡ Kontrol Kuis</button>
-    <button class="tab" data-tab="token">🔑 Token</button>
-    <button class="tab" data-tab="siswa">👥 Daftar Siswa</button>
-    <button class="tab" data-tab="pelanggaran">⚠️ Pelanggaran</button>
-  </div>
-
-  <!-- Tab: Control -->
-  <div class="tab-content active" id="tab-control">
-    <div class="panel">
-      <h3>⚡ Kontrol Soal Kuis Literasi</h3>
-      <div class="control-panel">
-        <div class="control-box">
-          <div class="lbl">SOAL SAAT INI</div>
-          <div class="val" id="ctrlSoal">—</div>
-          <div class="desc" id="ctrlSoalDesc">Klik "Next Soal" untuk menampilkan soal literasi pertama ke seluruh siswa</div>
-          <button class="btn-next" id="btnNext" onclick="nextSoal()">➜ NEXT SOAL</button>
-          <button class="btn-end" id="btnEnd" onclick="endKuis()">🏆 TUTUP & TAMPILKAN PEMENANG</button>
-          <button class="btn-stop" id="btnStop" onclick="stopKuis()" style="display:none;">⏹ PAUSE KUIS</button>
-          <button class="btn-reset" onclick="confirmReset()">↺ RESET KUIS (Bersihkan Skor)</button>
-        </div>
-        <div class="control-box">
-          <div class="lbl">STATUS</div>
-          <div class="val" id="ctrlStatus">Belum Mulai</div>
-          <div class="desc" id="ctrlStatusDesc">Kuis akan aktif setelah tombol Next Soal diklik</div>
-          <div style="background: rgba(16,185,129,0.15); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
-            <span class="live-dot"></span>
-            <span style="font-size: 13px; font-weight: 600;">Auto-refresh 4 detik</span>
-          </div>
-        </div>
-        <div class="control-box">
-          <div class="lbl">TOTAL SOAL</div>
-          <div class="val" id="ctrlTotalSoal">20</div>
-          <div class="desc">Soal literasi tersedia (15 PG + 5 Essay)</div>
-          <div style="margin-top: 12px;">
-            <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">PROGRES KUIS</div>
-            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
-              <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s;"></div>
-            </div>
-            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px; text-align: right;" id="ctrlProgressTxt">0/20</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>🏆 Leaderboard Top 5 (Per Meja)</h3>
-      <div class="siswa-grid" id="leaderboardGrid">
-        <div class="siswa-list-box right">
-          <h4>Meja Kanan <span class="count" id="lbKananCount">0</span></h4>
-          <div id="lbKanan"></div>
-        </div>
-        <div class="siswa-list-box left">
-          <h4>Meja Kiri <span class="count" id="lbKiriCount">0</span></h4>
-          <div id="lbKiri"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tab: Token -->
-  <div class="tab-content" id="tab-token">
-    <div class="panel">
-      <h3>🔑 Generate Token Meja</h3>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 18px;">
-        Token berbeda untuk meja kanan dan kiri. Bagikan token ke masing-masing meja secara terpisah.
-      </p>
-      <div class="token-panel">
-        <div class="token-box">
-          <div class="header">
-            <div class="side">➡️ Meja Kanan</div>
-            <button class="regen" onclick="regenToken('kanan')">↺ Generate Baru</button>
-          </div>
-          <div class="token-display" id="tokenKanan">------</div>
-          <div class="token-actions">
-            <button class="btn-copy" onclick="copyToken('kanan')">📋 Copy</button>
-            <button class="btn-copy" onclick="shareToken('kanan')">📢 Bagikan</button>
-          </div>
-        </div>
-        <div class="token-box right-side">
-          <div class="header">
-            <div class="side">⬅️ Meja Kiri</div>
-            <button class="regen" onclick="regenToken('kiri')">↺ Generate Baru</button>
-          </div>
-          <div class="token-display" id="tokenKiri">------</div>
-          <div class="token-actions">
-            <button class="btn-copy" onclick="copyToken('kiri')">📋 Copy</button>
-            <button class="btn-copy" onclick="shareToken('kiri')">📢 Bagikan</button>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top: 16px; padding: 14px; background: rgba(99,102,241,0.1); border-radius: 12px; font-size: 13px; color: #C7D2FE;">
-        💡 <strong>Tips:</strong> Generate token baru akan menghapus token lama. Siswa yang sudah login tetap bisa main. Token baru hanya untuk siswa yang belum login.
-      </div>
-    </div>
-
-    <!-- Tabel siswa yang sudah berhasil masuk per meja menggunakan token -->
-    <div class="panel">
-      <h3>👥 Siswa yang Sudah Masuk per Meja <span class="badge-count" id="tokenSiswaTotalBadge">0</span></h3>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 18px;">
-        Daftar siswa yang telah berhasil memasukkan token &amp; login. Update otomatis setiap 4 detik.
-      </p>
-      <div class="siswa-grid">
-        <div class="siswa-list-box right">
-          <h4>➡️ Meja Kanan <span class="count" id="tokenSiswaKananCount">0</span></h4>
-          <div id="tokenSiswaKanan">
-            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa masuk</div>
-          </div>
-        </div>
-        <div class="siswa-list-box left">
-          <h4>⬅️ Meja Kiri <span class="count" id="tokenSiswaKiriCount">0</span></h4>
-          <div id="tokenSiswaKiri">
-            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa masuk</div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top: 16px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
-        <strong style="font-size: 14px;">📊 Statistik Login:</strong>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px;">
-          <div>
-            <div style="color: var(--text-dim); font-size: 11px;">Total Siswa Login</div>
-            <div style="font-size: 22px; font-weight: 800; color: var(--success);" id="tokenStatTotal">0</div>
-          </div>
-          <div>
-            <div style="color: var(--text-dim); font-size: 11px;">Tim Kanan</div>
-            <div style="font-size: 22px; font-weight: 800; color: var(--kanan);" id="tokenStatKanan">0</div>
-          </div>
-          <div>
-            <div style="color: var(--text-dim); font-size: 11px;">Tim Kiri</div>
-            <div style="font-size: 22px; font-weight: 800; color: var(--kiri);" id="tokenStatKiri">0</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tab: Siswa -->
-  <div class="tab-content" id="tab-siswa">
-    <div class="panel">
-      <h3>👥 Daftar Siswa Per Meja <span class="badge-count" id="totalSiswaBadge">0</span></h3>
-      <div class="filter-bar">
-        <div class="lbl">Filter Kelas:</div>
-        <select class="filter-select" id="filterKelas" onchange="loadDaftarSiswa()">
-          <option value="ALL">Semua Kelas</option>
-          <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option>
-          <option value="9D">9D</option><option value="9E">9E</option><option value="9F">9F</option>
-          <option value="9G">9G</option><option value="9H">9H</option><option value="9I">9I</option>
-        </select>
-        <div class="lbl" style="margin-left: 14px;">Filter Meja:</div>
-        <select class="filter-select" id="filterMeja" onchange="loadDaftarSiswa()">
-          <option value="ALL">Semua Meja</option>
-          <option value="kanan">Meja Kanan</option>
-          <option value="kiri">Meja Kiri</option>
-        </select>
-      </div>
-      <div class="siswa-grid" id="siswaGrid">
-        <div class="siswa-list-box right">
-          <h4>Meja Kanan <span class="count" id="siswaKananCount">0</span></h4>
-          <div id="siswaKanan">
-            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa</div>
-          </div>
-        </div>
-        <div class="siswa-list-box left">
-          <h4>Meja Kiri <span class="count" id="siswaKiriCount">0</span></h4>
-          <div id="siswaKiri">
-            <div class="empty-state"><div class="ico">📭</div>Belum ada siswa</div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top: 18px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
-        <strong style="font-size: 14px;">📊 Ringkasan:</strong>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px;">
-          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kanan</div><div style="font-size: 18px; font-weight: 800; color: var(--kanan);" id="avgKanan">0</div></div>
-          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kiri</div><div style="font-size: 18px; font-weight: 800; color: var(--kiri);" id="avgKiri">0</div></div>
-          <div><div style="color: var(--text-dim); font-size: 11px;">Terkunci</div><div style="font-size: 18px; font-weight: 800; color: var(--danger);" id="totalTerkunci">0</div></div>
-          <div><div style="color: var(--text-dim); font-size: 11px;">Total Pelanggaran</div><div style="font-size: 18px; font-weight: 800; color: var(--accent);" id="totalPelanggaran">0</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tab: Pelanggaran -->
-  <div class="tab-content" id="tab-pelanggaran">
-    <div class="panel">
-      <h3>⚠️ Log Pelanggaran Siswa <span class="badge-count" id="pelCount" style="background: var(--danger);">0</span></h3>
-      <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 16px;">
-        Pelanggaran tercatat otomatis: keluar mode fullscreen, pindah tab baru. Akun terkunci permanen setelah 3x.
-      </p>
-      <div class="pel-log" id="pelLog">
-        <div class="empty-state"><div class="ico">✓</div>Belum ada pelanggaran tercatat</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<!-- Modal -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <h3 id="modalTitle">Konfirmasi</h3>
-    <p id="modalMsg">Apakah Anda yakin?</p>
-    <div class="modal-actions">
-      <button class="cancel" onclick="closeModal()">Batal</button>
-      <button class="confirm" id="modalConfirmBtn">Ya, Lanjut</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
