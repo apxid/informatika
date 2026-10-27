@@ -581,38 +581,79 @@ body {
   <!-- Tab: Control -->
   <div class="tab-content active" id="tab-control">
     <div class="panel">
-      <h3>⚡ Kontrol Soal Kuis Literasi</h3>
-      <div class="control-panel">
-        <div class="control-box">
-          <div class="lbl">SOAL SAAT INI</div>
-          <div class="val" id="ctrlSoal">—</div>
-          <div class="desc" id="ctrlSoalDesc">Klik "Next Soal" untuk menampilkan soal literasi pertama ke seluruh siswa</div>
-          <button class="btn-next" id="btnNext" onclick="nextSoal()">➜ NEXT SOAL</button>
-          <button class="btn-end" id="btnEnd" onclick="endKuis()">🏆 TUTUP & TAMPILKAN PEMENANG</button>
-          <button class="btn-stop" id="btnStop" onclick="stopKuis()" style="display:none;">⏹ PAUSE KUIS</button>
-          <button class="btn-reset" onclick="confirmReset()">↺ RESET KUIS (Bersihkan Skor)</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+        <h3 style="margin: 0;">⚡ Kontrol Soal Kuis Literasi</h3>
+        <button class="btn-ghost" onclick="refreshStatus(); loadDaftarSiswa();" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none;">🔄 Refresh Status</button>
+      </div>
+
+      <!-- STATE 1: KUIS BELUM DIMULAI - tampilkan tombol MULAI KUIS yang besar -->
+      <div id="ctrlStateStart" style="text-align: center; padding: 32px 16px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.1)); border: 2px dashed rgba(99,102,241,0.4); border-radius: 16px; margin-bottom: 18px;">
+        <div style="font-size: 80px; margin-bottom: 12px;">🎬</div>
+        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">KUIS SIAP DIMULAI</h2>
+        <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto;">
+          Pastikan semua siswa sudah login dengan token. Klik tombol di bawah untuk menampilkan <strong>Soal #1</strong> ke seluruh siswa secara bersamaan.
+        </p>
+        <button class="btn-mulai-kuis" id="btnMulaiKuis" onclick="nextSoal()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 22px 56px; border-radius: 18px; font-size: 22px; font-weight: 800; cursor: pointer; box-shadow: 0 16px 40px rgba(16,185,129,0.5); transition: all 0.3s; letter-spacing: 2px;">
+          🚀 MULAI KUIS
+        </button>
+        <div style="margin-top: 16px; font-size: 12px; color: var(--text-dim);">
+          Total soal: <strong>20</strong> (15 PG + 5 Essay) • Timer: 45s PG / 90s Essay
         </div>
-        <div class="control-box">
-          <div class="lbl">STATUS</div>
-          <div class="val" id="ctrlStatus">Belum Mulai</div>
-          <div class="desc" id="ctrlStatusDesc">Kuis akan aktif setelah tombol Next Soal diklik</div>
-          <div style="background: rgba(16,185,129,0.15); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
-            <span class="live-dot"></span>
-            <span style="font-size: 13px; font-weight: 600;">Auto-refresh 4 detik</span>
+      </div>
+
+      <!-- STATE 2: KUIS BERJALAN - tampilkan kontrol next/stop/end -->
+      <div id="ctrlStateRunning" style="display: none;">
+        <div class="control-panel">
+          <div class="control-box">
+            <div class="lbl">SOAL SAAT INI</div>
+            <div class="val" id="ctrlSoal">—</div>
+            <div class="desc" id="ctrlSoalDesc">Klik "Next Soal" untuk menampilkan soal berikutnya ke seluruh siswa</div>
+            <button class="btn-next" id="btnNext" onclick="nextSoal()">➜ NEXT SOAL</button>
+            <button class="btn-stop" id="btnStop" onclick="stopKuis()">⏸ PAUSE KUIS</button>
+            <button class="btn-end" id="btnEnd" onclick="endKuis()">🏆 TUTUP &amp; TAMPILKAN PEMENANG</button>
+            <button class="btn-reset" onclick="confirmReset()">↺ RESET KUIS (Bersihkan Skor)</button>
           </div>
-        </div>
-        <div class="control-box">
-          <div class="lbl">TOTAL SOAL</div>
-          <div class="val" id="ctrlTotalSoal">20</div>
-          <div class="desc">Soal literasi tersedia (15 PG + 5 Essay)</div>
-          <div style="margin-top: 12px;">
-            <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">PROGRES KUIS</div>
-            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
-              <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s;"></div>
+          <div class="control-box">
+            <div class="lbl">STATUS</div>
+            <div class="val" id="ctrlStatus" style="color: var(--success);">Berjalan</div>
+            <div class="desc" id="ctrlStatusDesc">Siswa sedang menjawab soal literasi.</div>
+            <div style="background: rgba(16,185,129,0.15); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
+              <span class="live-dot"></span>
+              <span style="font-size: 13px; font-weight: 600;">Kuis Aktif</span>
             </div>
-            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px; text-align: right;" id="ctrlProgressTxt">0/20</div>
+          </div>
+          <div class="control-box">
+            <div class="lbl">TOTAL SOAL</div>
+            <div class="val" id="ctrlTotalSoal">20</div>
+            <div class="desc">Soal literasi tersedia (15 PG + 5 Essay)</div>
+            <div style="margin-top: 12px;">
+              <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">PROGRES KUIS</div>
+              <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s;"></div>
+              </div>
+              <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px; text-align: right;" id="ctrlProgressTxt">0/20</div>
+            </div>
           </div>
         </div>
+      </div>
+
+      <!-- STATE 3: KUIS SELESAI - tampilkan winner + tombol reset -->
+      <div id="ctrlStateFinished" style="display: none; text-align: center; padding: 32px 16px; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.1)); border: 2px solid rgba(245,158,11,0.4); border-radius: 16px;">
+        <div style="font-size: 80px; margin-bottom: 12px;" id="ctrlFinishEmoji">🏆</div>
+        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #FCD34D, #F59E0B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;" id="ctrlFinishTitle">KUIS SELESAI</h2>
+        <p style="color: var(--text); font-size: 16px; margin-bottom: 20px;" id="ctrlFinishWinner">Pemenang: -</p>
+        <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+          <div style="background: rgba(99,102,241,0.2); padding: 16px 28px; border-radius: 14px; border: 1px solid var(--kanan);">
+            <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KANAN</div>
+            <div style="font-size: 36px; font-weight: 900; color: #C7D2FE; font-family: 'Courier New', monospace;" id="ctrlFinishKanan">0</div>
+          </div>
+          <div style="font-size: 28px; font-weight: 900; align-self: center; background: linear-gradient(135deg, var(--accent), var(--warning)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">VS</div>
+          <div style="background: rgba(245,158,11,0.2); padding: 16px 28px; border-radius: 14px; border: 1px solid var(--kiri);">
+            <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KIRI</div>
+            <div style="font-size: 36px; font-weight: 900; color: #FCD34D; font-family: 'Courier New', monospace;" id="ctrlFinishKiri">0</div>
+          </div>
+        </div>
+        <button class="btn-reset" onclick="confirmReset()" style="display: inline-block; width: auto; padding: 14px 32px; font-size: 15px;">↺ MULAI KUIS BARU (Reset Skor)</button>
       </div>
     </div>
 
@@ -951,23 +992,34 @@ async function loadTokens() {
   } catch (e) { console.warn(e); }
 }
 
-// NEXT SOAL
+// NEXT SOAL (juga dipakai untuk tombol MULAI KUIS pertama kali)
 async function nextSoal() {
-  const btn = document.getElementById('btnNext');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> MEMUAT...';
+  // Support kedua tombol: btnMulaiKuis (state Start) dan btnNext (state Running)
+  const btnMulai = document.getElementById('btnMulaiKuis');
+  const btnNext = document.getElementById('btnNext');
+  const targetBtn = btnMulai || btnNext;
+  const originalText = targetBtn ? targetBtn.innerHTML : '';
+  if (targetBtn) {
+    targetBtn.disabled = true;
+    targetBtn.innerHTML = '<span class="spinner"></span> MEMUAT...';
+  }
   try {
     const res = await gasPost('nextSoal', {});
     if (res.success) {
       A.lastSoal = res.current_soal;
       toast('✓ Soal #' + res.current_soal + ' (' + res.tipe.toUpperCase() + ') ditampilkan ke siswa', 'success', 4000);
-      updateControlUI(res);
+      // Refresh status untuk update UI ke state Running
+      await refreshStatus();
     } else {
       toast(res.message || 'Gagal next soal', 'warning');
     }
   } catch (e) {
     toast('Error: ' + e.message, 'error');
   } finally {
-    btn.disabled = false; btn.innerHTML = '➜ NEXT SOAL';
+    if (targetBtn) {
+      targetBtn.disabled = false;
+      targetBtn.innerHTML = originalText;
+    }
   }
 }
 
@@ -1028,14 +1080,19 @@ function updateControlUI(res) {
   document.getElementById('ctrlStatus').textContent = 'Berjalan';
   document.getElementById('ctrlStatusDesc').textContent = 'Soal #' + res.current_soal + ' sedang aktif. Siswa sedang menjawab (literasi).';
   document.getElementById('ctrlStatus').style.color = 'var(--success)';
-  const progress = (res.current_soal / res.total_soal) * 100;
+  const total = res.total_soal || A.ctrlTotalSoal || 20;
+  const progress = (res.current_soal / total) * 100;
   document.getElementById('ctrlProgress').style.width = progress + '%';
-  document.getElementById('ctrlProgressTxt').textContent = res.current_soal + '/' + res.total_soal;
+  document.getElementById('ctrlProgressTxt').textContent = res.current_soal + '/' + total;
   document.getElementById('stSoal').textContent = res.current_soal;
   document.getElementById('stSoalSub').textContent = 'Tipe: ' + res.tipe.toUpperCase();
   document.getElementById('btnStop').style.display = 'block';
   document.getElementById('quizStatus').textContent = '🔴 KUIS BERJALAN';
   document.getElementById('quizStatus').className = 'quiz-status';
+  // Tampilkan state Running, sembunyikan state lain
+  document.getElementById('ctrlStateStart').style.display = 'none';
+  document.getElementById('ctrlStateRunning').style.display = 'block';
+  document.getElementById('ctrlStateFinished').style.display = 'none';
 }
 
 async function refreshStatus() {
@@ -1043,43 +1100,60 @@ async function refreshStatus() {
     const status = await gasGet('getQuizStatus');
     A.lastSoal = status.current_soal || 0;
     if (status.quiz_finished) {
-      document.getElementById('ctrlStatus').textContent = 'Selesai';
-      document.getElementById('ctrlStatus').style.color = 'var(--warning)';
-      document.getElementById('ctrlStatusDesc').textContent = 'KUIS SUDAH SELESAI. Pemenang: ' + (status.winner === 'tie' ? 'SERI' : 'TIM ' + status.winner.toUpperCase());
-      document.getElementById('ctrlSoal').textContent = '🏆';
-      document.getElementById('ctrlSoalDesc').textContent = 'Skor akhir - Kanan: ' + status.final_kanan + ' | Kiri: ' + status.final_kiri;
+      // STATE 3: KUIS SELESAI - tampilkan pemenang
+      const winnerText = status.winner === 'tie' ? '🤝 PERMAINAN SERI!' :
+                          status.winner === 'kanan' ? '🏆 TIM KANAN MENANG!' :
+                          status.winner === 'kiri' ? '🏆 TIM KIRI MENANG!' :
+                          'KUIS SELESAI';
+      const winnerEmoji = status.winner === 'tie' ? '🤝' : '🏆';
+      document.getElementById('ctrlFinishEmoji').textContent = winnerEmoji;
+      document.getElementById('ctrlFinishTitle').textContent = status.winner === 'tie' ? 'PERMAINAN SERI' : 'KUIS SELESAI';
+      document.getElementById('ctrlFinishWinner').textContent = winnerText;
+      document.getElementById('ctrlFinishKanan').textContent = status.final_kanan || 0;
+      document.getElementById('ctrlFinishKiri').textContent = status.final_kiri || 0;
       document.getElementById('quizStatus').textContent = '🏆 KUIS SELESAI';
       document.getElementById('quizStatus').className = 'quiz-status finished';
-      document.getElementById('btnStop').style.display = 'none';
+      // Tampilkan state Finished
+      document.getElementById('ctrlStateStart').style.display = 'none';
+      document.getElementById('ctrlStateRunning').style.display = 'none';
+      document.getElementById('ctrlStateFinished').style.display = 'block';
+      // Update stats
+      document.getElementById('stSoal').textContent = '✓';
+      document.getElementById('stSoalSub').textContent = 'Kuis selesai';
     } else if (status.quiz_active && status.current_soal > 0) {
-      // Re-fetch info soal
+      // STATE 2: KUIS BERJALAN
       try {
         const soalRes = await gasGet('getCurrentSoal');
         if (soalRes.active) {
           updateControlUI({
             current_soal: soalRes.soal_nomor,
-            total_soal: 20, // assume
+            total_soal: A.ctrlTotalSoal || 20,
             tipe: soalRes.tipe,
             pertanyaan: soalRes.pertanyaan
           });
         }
       } catch (e) {}
     } else {
-      document.getElementById('ctrlSoal').textContent = '—';
-      document.getElementById('ctrlSoalDesc').textContent = 'Klik "Next Soal" untuk menampilkan soal literasi pertama';
-      document.getElementById('ctrlStatus').textContent = 'Belum Mulai';
-      document.getElementById('ctrlStatus').style.color = '';
-      document.getElementById('ctrlStatusDesc').textContent = 'Kuis akan aktif setelah tombol Next Soal diklik';
-      document.getElementById('btnStop').style.display = 'none';
-      document.getElementById('ctrlProgress').style.width = '0%';
-      document.getElementById('ctrlProgressTxt').textContent = '0/' + A.ctrlTotalSoal;
+      // STATE 1: KUIS BELUM DIMULAI (atau pause)
+      document.getElementById('quizStatus').textContent = '⏸ KUIS BELUM DIMULAI';
+      document.getElementById('quizStatus').className = 'quiz-status inactive';
       document.getElementById('stSoal').textContent = '0';
       document.getElementById('stSoalSub').textContent = 'Belum dimulai';
-      document.getElementById('quizStatus').textContent = '⏸ KUIS BERHENTI';
-      document.getElementById('quizStatus').className = 'quiz-status inactive';
+      // Tampilkan state Start
+      document.getElementById('ctrlStateStart').style.display = 'block';
+      document.getElementById('ctrlStateRunning').style.display = 'none';
+      document.getElementById('ctrlStateFinished').style.display = 'none';
     }
-    if (status.token_kanan) document.getElementById('tokenKanan').textContent = status.token_kanan;
-    if (status.token_kiri)  document.getElementById('tokenKiri').textContent = status.token_kiri;
+    if (status.token_kanan) {
+      const el = document.getElementById('tokenKanan');
+      el.textContent = status.token_kanan;
+      el.classList.remove('empty');
+    }
+    if (status.token_kiri) {
+      const el = document.getElementById('tokenKiri');
+      el.textContent = status.token_kiri;
+      el.classList.remove('empty');
+    }
   } catch (e) { console.warn(e); }
 }
 
