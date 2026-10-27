@@ -729,6 +729,233 @@ html, body {
 <!-- ============================================ -->
 <!-- PENTING: GANTI URL INI DENGAN URL WEB APP GAS -->
 <!-- ============================================ -->
+
+<!-- Animated Background -->
+<div class="bg-anim">
+  <div class="orb"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div>
+</div>
+
+<!-- App Loader -->
+<div class="app-loader" id="appLoader">
+  <div class="logo">📚</div>
+  <div class="text">Memuat Quiz Literasi Jaringan Komputer...</div>
+</div>
+
+<!-- TIKTOK PK SCORE BAR -->
+<div class="pk-bar" id="pkBar">
+  <div class="pk-container">
+    <div class="pk-team right">
+      <div class="pk-avatar">R</div>
+      <div class="pk-info">
+        <div class="pk-team-name">MEJA KANAN</div>
+        <div class="pk-team-score" id="pkKananScore">0</div>
+        <div class="pk-health-bar"><div class="pk-health-fill" id="pkKananHealth" style="width: 0%"></div></div>
+      </div>
+    </div>
+    <div class="pk-vs">
+      <div class="pk-vs-text">VS</div>
+      <div class="pk-vs-sub">LIVE BATTLE</div>
+    </div>
+    <div class="pk-team left">
+      <div class="pk-info">
+        <div class="pk-team-name">MEJA KIRI</div>
+        <div class="pk-team-score" id="pkKiriScore">0</div>
+        <div class="pk-health-bar"><div class="pk-health-fill" id="pkKiriHealth" style="width: 0%"></div></div>
+      </div>
+      <div class="pk-avatar">L</div>
+    </div>
+  </div>
+</div>
+
+<!-- Fullscreen Banner -->
+<div class="fs-banner" id="fsBanner">
+  <span class="dot"></span> Mode Layar Penuh Aktif
+</div>
+
+<!-- Player Info -->
+<div class="player-info" id="playerInfo">
+  <div class="name" id="pInfoName"></div>
+  <div class="meta" id="pInfoMeta"></div>
+  <div class="score" id="pInfoScore">0</div>
+</div>
+
+<!-- ============== LAYER 1: WELCOME ============== -->
+<div class="layer active" id="layer1">
+  <div class="title-card">
+    <div class="badge">SMP KELAS 9 • LITERASI INFORMATIKA</div>
+    <h1 id="welcomeTitle">Quiz Literasi Jaringan Komputer</h1>
+    <p class="subtitle" id="welcomeSubtitle">HTTP / HTTPS • TCP/IP • UDP • DNS</p>
+    <div class="info-grid">
+      <div class="info-pill"><span class="num" id="totalPg">15</span><span class="lbl">Soal Pilihan Ganda</span></div>
+      <div class="info-pill"><span class="num" id="totalEssay">5</span><span class="lbl">Soal Essay</span></div>
+      <div class="info-pill"><span class="num">2</span><span class="lbl">Tim (Kanan vs Kiri)</span></div>
+    </div>
+    <div class="feature-list">
+      <div class="feature"><div class="ico">📖</div><div>Soal literasi (skenario) - bukan hafalan</div></div>
+      <div class="feature"><div class="ico">⚔️</div><div>Battle Tim ala TikTok PK</div></div>
+      <div class="feature"><div class="ico">🎉</div><div>Confetti & animasi kemenangan</div></div>
+      <div class="feature"><div class="ico">🔒</div><div>Fullscreen wajib + anti mencontek</div></div>
+      <div class="feature"><div class="ico">⚠️</div><div>Salah jawab = skor dikurangi</div></div>
+      <div class="feature"><div class="ico">🏆</div><div>Pemenang ditampilkan dramatis</div></div>
+    </div>
+    <button class="btn-primary" onclick="goToLayer2()">🚀 MULAI QUIZ</button>
+    <div style="margin-top: 14px; font-size: 11px; color: rgba(255,255,255,0.5);">
+      Pastikan kamu didampingi guru. Mode layar penuh wajib aktif.
+    </div>
+  </div>
+</div>
+
+<!-- ============== LAYER 2: REGISTRATION ============== -->
+<div class="layer" id="layer2">
+  <div class="form-card">
+    <h2>📝 Pendaftaran Siswa</h2>
+    <p>Lengkapi data diri dan pilih meja permainanmu</p>
+    <div class="form-group">
+      <label>Nama Lengkap</label>
+      <input type="text" class="form-input" id="nama" placeholder="Contoh: Ahmad Fauzi" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Kelas</label>
+      <select class="form-select" id="kelas">
+        <option value="">-- Pilih Kelas --</option>
+        <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option>
+        <option value="9D">9D</option><option value="9E">9E</option><option value="9F">9F</option>
+        <option value="9G">9G</option><option value="9H">9H</option><option value="9I">9I</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Nomor Absen</label>
+      <input type="number" class="form-input" id="noAbsen" placeholder="Contoh: 1" min="1" max="40">
+    </div>
+    <div class="form-group">
+      <label>Pilih Meja Permainan</label>
+      <div class="table-picker">
+        <label class="table-option" data-side="kanan">
+          <input type="radio" name="meja" value="kanan">
+          <span class="ico">➡️</span>
+          <span class="lbl">Meja Kanan</span>
+          <span class="sub">Tim Kanan</span>
+        </label>
+        <label class="table-option" data-side="kiri">
+          <input type="radio" name="meja" value="kiri">
+          <span class="ico">⬅️</span>
+          <span class="lbl">Meja Kiri</span>
+          <span class="sub">Tim Kiri</span>
+        </label>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="submitRegistration()" style="width:100%;">LANJUT ➜</button>
+    <div style="margin-top: 12px; text-align: center;">
+      <button class="btn-secondary" onclick="backToLayer1()">← Kembali</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== LAYER 3: TOKEN ============== -->
+<div class="layer" id="layer3">
+  <div class="token-card">
+    <h2>🔐 Masukkan Kode Token</h2>
+    <p>Masukkan 6 karakter kode token yang diberikan oleh guru untuk mejamu</p>
+    <div class="token-display">
+      Siswa <strong id="tDispName">-</strong><br>
+      Kelas <strong id="tDispKelas">-</strong> • No. Absen <strong id="tDispAbsen">-</strong><br>
+      Meja <strong id="tDispMeja">-</strong>
+    </div>
+    <div class="token-input-grid" id="tokenGrid">
+      <input class="token-digit" maxlength="1" data-idx="0">
+      <input class="token-digit" maxlength="1" data-idx="1">
+      <input class="token-digit" maxlength="1" data-idx="2">
+      <input class="token-digit" maxlength="1" data-idx="3">
+      <input class="token-digit" maxlength="1" data-idx="4">
+      <input class="token-digit" maxlength="1" data-idx="5">
+    </div>
+    <button class="btn-primary" onclick="submitToken()" style="width:100%;">VERIFIKASI TOKEN ✓</button>
+    <div style="margin-top: 12px; text-align: center;">
+      <button class="btn-secondary" onclick="backToLayer2()">← Kembali</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== LAYER 4: QUIZ ============== -->
+<div class="layer" id="layer4">
+  <div class="quiz-card">
+    <div class="waiting" id="waitingView">
+      <div class="loader"></div>
+      <div style="font-size: 18px; font-weight: 700;">Menunggu Guru Memulai Soal...</div>
+      <div style="color: rgba(255,255,255,0.7); font-size: 14px; text-align: center;">
+        Guru akan menampilkan soal literasi satu per satu. Baca skenario dengan teliti sebelum menjawab! 📖
+      </div>
+      <div class="dots"><span></span><span></span><span></span></div>
+    </div>
+    <div id="quizView" style="display: none;">
+      <div class="q-progress">
+        <span class="num" id="qNum">0</span>
+        <span style="color: rgba(255,255,255,0.5);">/ <span id="qTotal">20</span></span>
+        <span class="timer" id="qTimer">⏱ 45s</span>
+      </div>
+      <div class="literacy-tag">📖 SOAL LITERASI - Pahami skenarionya</div>
+      <div class="q-badge-type" id="qBadgeType">PILIHAN GANDA</div>
+      <div class="q-question" id="qQuestion"></div>
+      <div class="q-options" id="qOptions"></div>
+      <div id="qEssayWrap" style="display: none;">
+        <textarea class="q-essay" id="qEssay" placeholder="Tulis jawabanmu di sini... (jelaskan dengan kalimat lengkap)"></textarea>
+      </div>
+      <button class="btn-submit" id="btnSubmit" onclick="submitJawaban()">KIRIM JAWABAN ✓</button>
+    </div>
+    <div id="doneView" style="display: none; text-align: center; padding: 20px 0;">
+      <div style="font-size: 60px; margin-bottom: 16px;">✅</div>
+      <div style="font-size: 22px; font-weight: 700; margin-bottom: 8px;">Jawaban Terkirim!</div>
+      <div style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Menunggu soal berikutnya dari guru...</div>
+      <div class="dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="feedback" id="feedback">
+  <div class="ico" id="fbIcon">✅</div>
+  <div class="title" id="fbTitle">Benar!</div>
+  <div class="sub" id="fbSub">+10 poin</div>
+</div>
+
+<!-- Victory Screen -->
+<div class="victory-screen" id="victoryScreen">
+  <div class="vs-tag">★ FINAL BATTLE RESULT ★</div>
+  <div class="crown" id="victoryCrown">👑</div>
+  <div class="winner-text" id="victoryWinner">TIM KANAN MENANG!</div>
+  <div class="winner-sub" id="victorySub">Selamat untuk tim Meja Kanan!</div>
+  <div class="final-score">
+    <div class="final-team right" id="victoryTeamKanan">
+      <div class="lbl">MEJA KANAN</div>
+      <div class="score" id="victoryKanan">0</div>
+    </div>
+    <div class="vs-separator">VS</div>
+    <div class="final-team left" id="victoryTeamKiri">
+      <div class="lbl">MEJA KIRI</div>
+      <div class="score" id="victoryKiri">0</div>
+    </div>
+  </div>
+  <div class="trophy-tag">🏆 Powered by Quiz Literasi Informatika SMP • Kelas 9</div>
+</div>
+
+<!-- Lock Screen -->
+<div class="lock-screen" id="lockScreen">
+  <div class="ico">🔒</div>
+  <h2>Layar Terkunci!</h2>
+  <p>Kamu keluar dari mode Layar Penuh atau membuka tab baru. Pelanggaran tercatat. Akun akan terkunci permanen setelah 3 pelanggaran.</p>
+  <div class="pel-count">Pelanggaran: <span class="num" id="lockPelCount">1</span>/3</div>
+  <button class="btn-primary" onclick="retryFullscreen()">🔄 KEMBALI KE LAYAR PENUH</button>
+  <div style="margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.5);">
+    Hubungi guru jika merasa ini kesalahan
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Confetti Host -->
+<div id="confetti-host"></div>
+
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwn6Dc7MgH4rhgoYIsbXqlffzqHFiD0n07CgzsRfLSRBgrmvQyJTT3p_c19h2hrOgY5/exec';  // Contoh: https://script.google.com/macros/s/AKfyc.../exec
 // ==============================================
@@ -1358,237 +1585,12 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// START
-init();
+// START - wrapped to ensure DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() { init(); });
+} else {
+  init();
+}
 </script>
-</head>
-<body>
-
-<!-- Animated Background -->
-<div class="bg-anim">
-  <div class="orb"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div>
-</div>
-
-<!-- App Loader -->
-<div class="app-loader" id="appLoader">
-  <div class="logo">📚</div>
-  <div class="text">Memuat Quiz Literasi Jaringan Komputer...</div>
-</div>
-
-<!-- TIKTOK PK SCORE BAR -->
-<div class="pk-bar" id="pkBar">
-  <div class="pk-container">
-    <div class="pk-team right">
-      <div class="pk-avatar">R</div>
-      <div class="pk-info">
-        <div class="pk-team-name">MEJA KANAN</div>
-        <div class="pk-team-score" id="pkKananScore">0</div>
-        <div class="pk-health-bar"><div class="pk-health-fill" id="pkKananHealth" style="width: 0%"></div></div>
-      </div>
-    </div>
-    <div class="pk-vs">
-      <div class="pk-vs-text">VS</div>
-      <div class="pk-vs-sub">LIVE BATTLE</div>
-    </div>
-    <div class="pk-team left">
-      <div class="pk-info">
-        <div class="pk-team-name">MEJA KIRI</div>
-        <div class="pk-team-score" id="pkKiriScore">0</div>
-        <div class="pk-health-bar"><div class="pk-health-fill" id="pkKiriHealth" style="width: 0%"></div></div>
-      </div>
-      <div class="pk-avatar">L</div>
-    </div>
-  </div>
-</div>
-
-<!-- Fullscreen Banner -->
-<div class="fs-banner" id="fsBanner">
-  <span class="dot"></span> Mode Layar Penuh Aktif
-</div>
-
-<!-- Player Info -->
-<div class="player-info" id="playerInfo">
-  <div class="name" id="pInfoName"></div>
-  <div class="meta" id="pInfoMeta"></div>
-  <div class="score" id="pInfoScore">0</div>
-</div>
-
-<!-- ============== LAYER 1: WELCOME ============== -->
-<div class="layer active" id="layer1">
-  <div class="title-card">
-    <div class="badge">SMP KELAS 9 • LITERASI INFORMATIKA</div>
-    <h1 id="welcomeTitle">Quiz Literasi Jaringan Komputer</h1>
-    <p class="subtitle" id="welcomeSubtitle">HTTP / HTTPS • TCP/IP • UDP • DNS</p>
-    <div class="info-grid">
-      <div class="info-pill"><span class="num" id="totalPg">15</span><span class="lbl">Soal Pilihan Ganda</span></div>
-      <div class="info-pill"><span class="num" id="totalEssay">5</span><span class="lbl">Soal Essay</span></div>
-      <div class="info-pill"><span class="num">2</span><span class="lbl">Tim (Kanan vs Kiri)</span></div>
-    </div>
-    <div class="feature-list">
-      <div class="feature"><div class="ico">📖</div><div>Soal literasi (skenario) - bukan hafalan</div></div>
-      <div class="feature"><div class="ico">⚔️</div><div>Battle Tim ala TikTok PK</div></div>
-      <div class="feature"><div class="ico">🎉</div><div>Confetti & animasi kemenangan</div></div>
-      <div class="feature"><div class="ico">🔒</div><div>Fullscreen wajib + anti mencontek</div></div>
-      <div class="feature"><div class="ico">⚠️</div><div>Salah jawab = skor dikurangi</div></div>
-      <div class="feature"><div class="ico">🏆</div><div>Pemenang ditampilkan dramatis</div></div>
-    </div>
-    <button class="btn-primary" onclick="goToLayer2()">🚀 MULAI QUIZ</button>
-    <div style="margin-top: 14px; font-size: 11px; color: rgba(255,255,255,0.5);">
-      Pastikan kamu didampingi guru. Mode layar penuh wajib aktif.
-    </div>
-  </div>
-</div>
-
-<!-- ============== LAYER 2: REGISTRATION ============== -->
-<div class="layer" id="layer2">
-  <div class="form-card">
-    <h2>📝 Pendaftaran Siswa</h2>
-    <p>Lengkapi data diri dan pilih meja permainanmu</p>
-    <div class="form-group">
-      <label>Nama Lengkap</label>
-      <input type="text" class="form-input" id="nama" placeholder="Contoh: Ahmad Fauzi" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <label>Kelas</label>
-      <select class="form-select" id="kelas">
-        <option value="">-- Pilih Kelas --</option>
-        <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option>
-        <option value="9D">9D</option><option value="9E">9E</option><option value="9F">9F</option>
-        <option value="9G">9G</option><option value="9H">9H</option><option value="9I">9I</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Nomor Absen</label>
-      <input type="number" class="form-input" id="noAbsen" placeholder="Contoh: 1" min="1" max="40">
-    </div>
-    <div class="form-group">
-      <label>Pilih Meja Permainan</label>
-      <div class="table-picker">
-        <label class="table-option" data-side="kanan">
-          <input type="radio" name="meja" value="kanan">
-          <span class="ico">➡️</span>
-          <span class="lbl">Meja Kanan</span>
-          <span class="sub">Tim Kanan</span>
-        </label>
-        <label class="table-option" data-side="kiri">
-          <input type="radio" name="meja" value="kiri">
-          <span class="ico">⬅️</span>
-          <span class="lbl">Meja Kiri</span>
-          <span class="sub">Tim Kiri</span>
-        </label>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="submitRegistration()" style="width:100%;">LANJUT ➜</button>
-    <div style="margin-top: 12px; text-align: center;">
-      <button class="btn-secondary" onclick="backToLayer1()">← Kembali</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============== LAYER 3: TOKEN ============== -->
-<div class="layer" id="layer3">
-  <div class="token-card">
-    <h2>🔐 Masukkan Kode Token</h2>
-    <p>Masukkan 6 karakter kode token yang diberikan oleh guru untuk mejamu</p>
-    <div class="token-display">
-      Siswa <strong id="tDispName">-</strong><br>
-      Kelas <strong id="tDispKelas">-</strong> • No. Absen <strong id="tDispAbsen">-</strong><br>
-      Meja <strong id="tDispMeja">-</strong>
-    </div>
-    <div class="token-input-grid" id="tokenGrid">
-      <input class="token-digit" maxlength="1" data-idx="0">
-      <input class="token-digit" maxlength="1" data-idx="1">
-      <input class="token-digit" maxlength="1" data-idx="2">
-      <input class="token-digit" maxlength="1" data-idx="3">
-      <input class="token-digit" maxlength="1" data-idx="4">
-      <input class="token-digit" maxlength="1" data-idx="5">
-    </div>
-    <button class="btn-primary" onclick="submitToken()" style="width:100%;">VERIFIKASI TOKEN ✓</button>
-    <div style="margin-top: 12px; text-align: center;">
-      <button class="btn-secondary" onclick="backToLayer2()">← Kembali</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============== LAYER 4: QUIZ ============== -->
-<div class="layer" id="layer4">
-  <div class="quiz-card">
-    <div class="waiting" id="waitingView">
-      <div class="loader"></div>
-      <div style="font-size: 18px; font-weight: 700;">Menunggu Guru Memulai Soal...</div>
-      <div style="color: rgba(255,255,255,0.7); font-size: 14px; text-align: center;">
-        Guru akan menampilkan soal literasi satu per satu. Baca skenario dengan teliti sebelum menjawab! 📖
-      </div>
-      <div class="dots"><span></span><span></span><span></span></div>
-    </div>
-    <div id="quizView" style="display: none;">
-      <div class="q-progress">
-        <span class="num" id="qNum">0</span>
-        <span style="color: rgba(255,255,255,0.5);">/ <span id="qTotal">20</span></span>
-        <span class="timer" id="qTimer">⏱ 45s</span>
-      </div>
-      <div class="literacy-tag">📖 SOAL LITERASI - Pahami skenarionya</div>
-      <div class="q-badge-type" id="qBadgeType">PILIHAN GANDA</div>
-      <div class="q-question" id="qQuestion"></div>
-      <div class="q-options" id="qOptions"></div>
-      <div id="qEssayWrap" style="display: none;">
-        <textarea class="q-essay" id="qEssay" placeholder="Tulis jawabanmu di sini... (jelaskan dengan kalimat lengkap)"></textarea>
-      </div>
-      <button class="btn-submit" id="btnSubmit" onclick="submitJawaban()">KIRIM JAWABAN ✓</button>
-    </div>
-    <div id="doneView" style="display: none; text-align: center; padding: 20px 0;">
-      <div style="font-size: 60px; margin-bottom: 16px;">✅</div>
-      <div style="font-size: 22px; font-weight: 700; margin-bottom: 8px;">Jawaban Terkirim!</div>
-      <div style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Menunggu soal berikutnya dari guru...</div>
-      <div class="dots"><span></span><span></span><span></span></div>
-    </div>
-  </div>
-</div>
-
-<!-- Feedback Modal -->
-<div class="feedback" id="feedback">
-  <div class="ico" id="fbIcon">✅</div>
-  <div class="title" id="fbTitle">Benar!</div>
-  <div class="sub" id="fbSub">+10 poin</div>
-</div>
-
-<!-- Victory Screen -->
-<div class="victory-screen" id="victoryScreen">
-  <div class="vs-tag">★ FINAL BATTLE RESULT ★</div>
-  <div class="crown" id="victoryCrown">👑</div>
-  <div class="winner-text" id="victoryWinner">TIM KANAN MENANG!</div>
-  <div class="winner-sub" id="victorySub">Selamat untuk tim Meja Kanan!</div>
-  <div class="final-score">
-    <div class="final-team right" id="victoryTeamKanan">
-      <div class="lbl">MEJA KANAN</div>
-      <div class="score" id="victoryKanan">0</div>
-    </div>
-    <div class="vs-separator">VS</div>
-    <div class="final-team left" id="victoryTeamKiri">
-      <div class="lbl">MEJA KIRI</div>
-      <div class="score" id="victoryKiri">0</div>
-    </div>
-  </div>
-  <div class="trophy-tag">🏆 Powered by Quiz Literasi Informatika SMP • Kelas 9</div>
-</div>
-
-<!-- Lock Screen -->
-<div class="lock-screen" id="lockScreen">
-  <div class="ico">🔒</div>
-  <h2>Layar Terkunci!</h2>
-  <p>Kamu keluar dari mode Layar Penuh atau membuka tab baru. Pelanggaran tercatat. Akun akan terkunci permanen setelah 3 pelanggaran.</p>
-  <div class="pel-count">Pelanggaran: <span class="num" id="lockPelCount">1</span>/3</div>
-  <button class="btn-primary" onclick="retryFullscreen()">🔄 KEMBALI KE LAYAR PENUH</button>
-  <div style="margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.5);">
-    Hubungi guru jika merasa ini kesalahan
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<!-- Confetti Host -->
-<div id="confetti-host"></div>
-
 </body>
 </html>
