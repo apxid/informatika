@@ -1056,15 +1056,16 @@ async function gasGet(action, params = {}) {
   const url = new URL(GAS_URL);
   url.searchParams.set('action', action);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-  // Add timestamp to prevent browser caching
+  // Add timestamp to prevent browser caching (anti-cache buster via query param)
   url.searchParams.set('_t', Date.now());
   let res;
   try {
+    // JANGAN pakai custom headers seperti Cache-Control - akan trigger CORS preflight (OPTIONS) yang GAS tidak handle
+    // Cukup pakai cache: 'no-store' (built-in fetch option, tidak trigger preflight)
     res = await fetch(url.toString(), {
       method: 'GET',
       redirect: 'follow',
-      cache: 'no-store',
-      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      cache: 'no-store'
     });
   } catch (fetchErr) {
     throw new Error('Network/CORS error: ' + fetchErr.message + '. Pastikan deployment "Who has access: Anyone" (bukan "Anyone with Google account").');
