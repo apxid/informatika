@@ -599,6 +599,22 @@ body {
         <div style="margin-top: 16px; font-size: 12px; color: var(--text-dim);">
           Total soal: <strong>20</strong> (15 PG + 5 Essay) • Timer: 45s PG / 90s Essay
         </div>
+
+        <!-- Debug info: status server -->
+        <div id="ctrlDebugInfo" style="margin-top: 20px; padding: 12px; background: rgba(15,23,42,0.7); border: 1px solid rgba(99,102,241,0.3); border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; text-align: left; max-width: 480px; margin: 20px auto 0;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <span style="color: #C7D2FE; font-weight: 700; font-size: 12px;">📊 STATUS SERVER</span>
+            <span id="ctrlStatusBadge" style="background: rgba(245,158,11,0.3); color: #FCD34D; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 10px;">● MENUNGGU</span>
+          </div>
+          <div style="color: #94A3B8; margin-bottom: 4px;">Current soal: <span id="ctrlDebugSoal" style="color: #FCD34D;">0</span></div>
+          <div style="color: #94A3B8; margin-bottom: 4px;">Quiz active: <span id="ctrlDebugActive" style="color: #FCA5A5;">false</span></div>
+          <div style="color: #94A3B8; margin-bottom: 4px;">Quiz finished: <span id="ctrlDebugFinished" style="color: #FCA5A5;">false</span></div>
+          <div style="color: #94A3B8;">Siswa login: <span id="ctrlDebugSiswa" style="color: #FCD34D;">0</span></div>
+          <div id="ctrlDebugError" style="display: none; margin-top: 6px; padding: 6px; background: rgba(239,68,68,0.15); border-radius: 6px; color: #FCA5A5; font-size: 10px;"></div>
+          <button onclick="cekStateSheet()" style="margin-top: 10px; width: 100%; background: rgba(99,102,241,0.2); color: #C7D2FE; border: 1px solid var(--primary); padding: 8px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+            🔍 Cek State Sheet (Diagnostik)
+          </button>
+        </div>
       </div>
 
       <!-- STATE 2: KUIS BERJALAN - tampilkan kontrol next/stop/end -->
@@ -1049,7 +1065,28 @@ async function nextSoal() {
     console.log('[nextSoal] Response dari GAS:', res);
     if (res.success) {
       A.lastSoal = res.current_soal;
-      toast('✓ Soal #' + res.current_soal + ' (' + res.tipe.toUpperCase() + ') ditampilkan ke siswa', 'success', 4000);
+      // Cek apakah verify berhasil (state benar-benar tersimpan ke sheet)
+      if (res.verified === false) {
+        // VERIFY GAGAL - state tidak tersimpan dengan benar
+        console.error('[nextSoal] VERIFY GAGAL:', res.warnings);
+        toast('⚠ ' + res.message, 'error', 8000);
+        toast('🔧 Kemungkinan: Kode.gs belum di-re-deploy, atau SPREADSHEET_ID salah', 'error', 8000);
+        // Update debug panel dengan warning
+        const dbgErr = document.getElementById('ctrlDebugError');
+        if (dbgErr) {
+          dbgErr.style.display = 'block';
+          dbgErr.innerHTML = '<strong>⚠ VERIFY GAGAL:</strong><br>' +
+            'Warnings: ' + (res.warnings || []).join('; ') + '<br>' +
+            'Verify result: ' + JSON.stringify(res.verify_after) + '<br><br>' +
+            '<strong>Kemungkinan solusi:</strong><br>' +
+            '1. Re-deploy Kode.gs: Deploy > Manage deployments > Edit > version baru<br>' +
+            '2. Cek SPREADSHEET_ID di Kode.gs baris 25<br>' +
+            '3. Cek sheet "current_state" - apakah row current_soal quiz_active bisa diedit?';
+        }
+      } else {
+        // Verify sukses - state benar-benar tersimpan
+        toast('✓ Soal #' + res.current_soal + ' (' + res.tipe.toUpperCase() + ') ditampilkan & diverifikasi tersimpan ke sheet', 'success', 4000);
+      }
       // Refresh status untuk update UI ke state Running
       await refreshStatus();
     } else {
@@ -1064,6 +1101,32 @@ async function nextSoal() {
       targetBtn.disabled = false;
       targetBtn.innerHTML = originalText;
     }
+  }
+}
+
+// Cek state langsung dari sheet (untuk diagnostik mendalam)
+async function cekStateSheet() {
+  toast('🔍 Mengecek state dari sheet...', 'info', 2000);
+  try {
+    const status = await gasGet('getQuizStatus');
+    console.log('[cekStateSheet] Status:', status);
+    const dbgErr = document.getElementById('ctrlDebugError');
+    if (dbgErr) {
+      dbgErr.style.display = 'block';
+      dbgErr.innerHTML = '<strong>📊 STATE SAAT INI (dari sheet):</strong><br>' +
+        'current_soal: ' + status.current_soal + '<br>' +
+        'quiz_active: ' + status.quiz_active + '<br>' +
+        'quiz_finished: ' + status.quiz_finished + '<br>' +
+        'tipe: ' + (status.tipe || '-') + '<br>' +
+        'token_kanan: ' + (status.token_kanan || '-') + '<br>' +
+        'token_kiri: ' + (status.token_kiri || '-') + '<br>' +
+        'last_updated: ' + (status.last_updated || '-');
+      dbgErr.style.background = 'rgba(99,102,241,0.15)';
+      dbgErr.style.color = '#C7D2FE';
+    }
+    toast('current_soal=' + status.current_soal + ', quiz_active=' + status.quiz_active, 'info', 5000);
+  } catch (e) {
+    toast('✗ Gagal cek state: ' + e.message, 'error', 5000);
   }
 }
 
@@ -1143,6 +1206,30 @@ async function refreshStatus() {
   try {
     const status = await gasGet('getQuizStatus');
     A.lastSoal = status.current_soal || 0;
+    console.log('[refreshStatus] Status:', status);
+
+    // Update debug info di state Start
+    const dbgSoal = document.getElementById('ctrlDebugSoal');
+    const dbgActive = document.getElementById('ctrlDebugActive');
+    const dbgFinished = document.getElementById('ctrlDebugFinished');
+    const dbgBadge = document.getElementById('ctrlStatusBadge');
+    const dbgErr = document.getElementById('ctrlDebugError');
+    if (dbgSoal) dbgSoal.textContent = status.current_soal || 0;
+    if (dbgActive) {
+      dbgActive.textContent = status.quiz_active ? 'true ✓' : 'false';
+      dbgActive.style.color = status.quiz_active ? '#6EE7B7' : '#FCA5A5';
+    }
+    if (dbgFinished) {
+      dbgFinished.textContent = status.quiz_finished ? 'true ✓' : 'false';
+      dbgFinished.style.color = status.quiz_finished ? '#6EE7B7' : '#FCA5A5';
+    }
+    if (dbgBadge) {
+      if (status.quiz_finished) { dbgBadge.textContent = '● SELESAI'; dbgBadge.style.background = 'rgba(245,158,11,0.3)'; dbgBadge.style.color = '#FCD34D'; }
+      else if (status.quiz_active) { dbgBadge.textContent = '● BERJALAN'; dbgBadge.style.background = 'rgba(16,185,129,0.3)'; dbgBadge.style.color = '#6EE7B7'; }
+      else { dbgBadge.textContent = '● MENUNGGU'; dbgBadge.style.background = 'rgba(245,158,11,0.3)'; dbgBadge.style.color = '#FCD34D'; }
+    }
+    if (dbgErr) dbgErr.style.display = 'none';
+
     if (status.quiz_finished) {
       // STATE 3: KUIS SELESAI - tampilkan pemenang
       const winnerText = status.winner === 'tie' ? '🤝 PERMAINAN SERI!' :
@@ -1198,7 +1285,13 @@ async function refreshStatus() {
       el.textContent = status.token_kiri;
       el.classList.remove('empty');
     }
-  } catch (e) { console.warn(e); }
+  } catch (e) {
+    console.error('[refreshStatus] Error:', e);
+    const dbgErr = document.getElementById('ctrlDebugError');
+    if (dbgErr) { dbgErr.style.display = 'block'; dbgErr.textContent = 'Error: ' + e.message; }
+    const dbgBadge = document.getElementById('ctrlStatusBadge');
+    if (dbgBadge) { dbgBadge.textContent = '● ERROR'; dbgBadge.style.background = 'rgba(239,68,68,0.3)'; dbgBadge.style.color = '#FCA5A5'; }
+  }
 }
 
 // DAFTAR SISWA
@@ -1244,6 +1337,9 @@ async function loadDaftarSiswa() {
       document.getElementById('tokenStatTotal').textContent = res.summary.total;
       document.getElementById('tokenStatKanan').textContent = res.siswa_kanan.length;
       document.getElementById('tokenStatKiri').textContent = res.siswa_kiri.length;
+      // Update debug info: Siswa login count
+      const dbgSiswa = document.getElementById('ctrlDebugSiswa');
+      if (dbgSiswa) dbgSiswa.textContent = res.summary.total + ' (Kanan: ' + res.siswa_kanan.length + ' | Kiri: ' + res.siswa_kiri.length + ')';
     }
   } catch (e) { console.warn(e); }
 }
