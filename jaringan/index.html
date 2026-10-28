@@ -897,11 +897,37 @@ html, body {
         Guru akan menampilkan soal literasi satu per satu. Baca skenario dengan teliti sebelum menjawab! 📖
       </div>
       <div class="dots"><span></span><span></span><span></span></div>
-      <button onclick="pollSoal()" style="margin-top: 16px; background: rgba(99,102,241,0.2); color: #C7D2FE; border: 1px solid var(--primary); padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-        🔄 Cek Soal Sekarang
-      </button>
-      <div style="margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.4);">
-        Auto-cek setiap 2 detik. Jika soal belum muncul, klik tombol di atas.
+
+      <!-- LIVE DEBUG PANEL - tampilkan status polling real-time -->
+      <div id="pollDebugPanel" style="margin-top: 18px; padding: 14px; background: rgba(15,23,42,0.7); border: 1px solid rgba(99,102,241,0.4); border-radius: 12px; max-width: 480px; width: 100%; font-family: 'Courier New', monospace; font-size: 11px; color: #94A3B8; text-align: left;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <span style="color: #C7D2FE; font-weight: 700; font-size: 12px;">📊 STATUS POLLING</span>
+          <span id="pollStatusBadge" style="background: rgba(16,185,129,0.3); color: #6EE7B7; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 10px;">● AKTIF</span>
+        </div>
+        <div style="margin-bottom: 6px;">
+          <span style="color: #64748B;">Poll ke:</span> <span id="pollCount" style="color: #FCD34D;">0</span>
+          <span style="color: #64748B; margin-left: 12px;">Last:</span> <span id="pollLastTime" style="color: #FCD34D;">-</span>
+        </div>
+        <div style="margin-bottom: 6px;">
+          <span style="color: #64748B;">Server:</span> <span id="pollServerStatus" style="color: #94A3B8;">menunggu...</span>
+        </div>
+        <div style="margin-bottom: 6px;">
+          <span style="color: #64748B;">Soal aktif:</span> <span id="pollSoalNomor" style="color: #94A3B8;">#0</span>
+          <span style="color: #64748B; margin-left: 8px;">Quiz:</span> <span id="pollQuizActive" style="color: #FCA5A5;">false</span>
+        </div>
+        <div id="pollLastError" style="display: none; padding: 8px; background: rgba(239,68,68,0.15); border-radius: 6px; color: #FCA5A5; font-size: 10px; word-break: break-word;"></div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; justify-content: center;">
+        <button onclick="pollSoal(true)" style="background: rgba(99,102,241,0.2); color: #C7D2FE; border: 1px solid var(--primary); padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+          🔄 Cek Soal Sekarang
+        </button>
+        <button onclick="testServerConnection()" style="background: rgba(16,185,129,0.2); color: #6EE7B7; border: 1px solid var(--success); padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">
+          🌐 Tes Koneksi Server
+        </button>
+      </div>
+      <div style="margin-top: 8px; font-size: 11px; color: rgba(255,255,255,0.4); text-align: center;">
+        Auto-cek setiap 2 detik. Jika soal belum muncul, klik "Cek Soal Sekarang".
       </div>
     </div>
     <div id="quizView" style="display: none;">
@@ -1041,8 +1067,66 @@ const STATE = {
   quizConfig: null,
   teamScores: { kanan: 0, kiri: 0 },
   prevTeamScores: { kanan: 0, kiri: 0 },
-  victoryShown: false
+  victoryShown: false,
+  pollCount: 0  // counter untuk debug
 };
+
+// ============== DEBUG PANEL HELPERS ==============
+function updateDebugPanel(res, error) {
+  // Update poll count
+  STATE.pollCount++;
+  const countEl = document.getElementById('pollCount');
+  if (countEl) countEl.textContent = STATE.pollCount;
+  // Update last time
+  const lastEl = document.getElementById('pollLastTime');
+  if (lastEl) lastEl.textContent = new Date().toLocaleTimeString('id-ID');
+  // Update server status
+  const serverEl = document.getElementById('pollServerStatus');
+  const badgeEl = document.getElementById('pollStatusBadge');
+  if (error) {
+    if (serverEl) { serverEl.textContent = '✗ ERROR'; serverEl.style.color = '#FCA5A5'; }
+    if (badgeEl) { badgeEl.textContent = '● ERROR'; badgeEl.style.background = 'rgba(239,68,68,0.3)'; badgeEl.style.color = '#FCA5A5'; }
+    const errEl = document.getElementById('pollLastError');
+    if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Error: ' + error.message; }
+  } else if (res) {
+    if (serverEl) { serverEl.textContent = '✓ TERHUBUNG'; serverEl.style.color = '#6EE7B7'; }
+    if (badgeEl) { badgeEl.textContent = '● AKTIF'; badgeEl.style.background = 'rgba(16,185,129,0.3)'; badgeEl.style.color = '#6EE7B7'; }
+    const errEl = document.getElementById('pollLastError');
+    if (errEl) errEl.style.display = 'none';
+    // Soal status
+    const soalEl = document.getElementById('pollSoalNomor');
+    const quizEl = document.getElementById('pollQuizActive');
+    if (soalEl) {
+      soalEl.textContent = '#' + (res.soal_nomor || 0);
+      soalEl.style.color = res.active ? '#6EE7B7' : '#94A3B8';
+    }
+    if (quizEl) {
+      quizEl.textContent = res.active ? 'true ✓' : 'false';
+      quizEl.style.color = res.active ? '#6EE7B7' : '#FCA5A5';
+    }
+  }
+}
+
+// Tes koneksi server (untuk diagnostik)
+async function testServerConnection() {
+  toast('🌐 Menguji koneksi ke server...', 'info', 1500);
+  try {
+    const res = await gasGet('getCurrentSoal');
+    console.log('[testServer] Response:', res);
+    updateDebugPanel(res, null);
+    if (res.active) {
+      toast('✓ Server OK! Soal #' + res.soal_nomor + ' sedang aktif', 'success', 4000);
+    } else if (res.quiz_finished) {
+      toast('✓ Server OK! Kuis sudah selesai. Winner: ' + (res.winner || 'tie'), 'success', 4000);
+    } else {
+      toast('✓ Server OK, tapi kuis belum dimulai. Status: ' + (res.message || 'menunggu'), 'info', 4000);
+    }
+  } catch (e) {
+    console.error('[testServer] Error:', e);
+    updateDebugPanel(null, e);
+    toast('✗ Gagal: ' + e.message, 'error', 6000);
+  }
+}
 
 // ============== GAS API WRAPPER (fetch-based) ==============
 async function gasGet(action, params = {}) {
@@ -1445,11 +1529,12 @@ function startScoreboardPolling() {
   STATE.scoreboardTimer = setInterval(pollScoreboard, 3000);
 }
 
-async function pollSoal() {
+async function pollSoal(verbose) {
   if (STATE.locked) return;
   try {
     const res = await gasGet('getCurrentSoal');
-    console.log('[pollSoal] Response:', JSON.stringify(res));
+    console.log('[pollSoal #' + (STATE.pollCount + 1) + '] Response:', JSON.stringify(res));
+    updateDebugPanel(res, null);
     // Check if quiz is finished - show victory animation
     if (res.quiz_finished && !STATE.victoryShown) {
       STATE.victoryShown = true;
@@ -1464,14 +1549,22 @@ async function pollSoal() {
         STATE.currentSoal = res;
         STATE.answered = false;
         showSoal(res);
+        if (verbose) toast('✓ Soal #' + res.soal_nomor + ' ditemukan!', 'success', 3000);
+      } else if (verbose) {
+        toast('Sudah di soal #' + res.soal_nomor, 'info', 2000);
       }
     } else {
       if (!STATE.answered && document.getElementById('quizView').style.display !== 'none') {
         showWaiting();
       }
+      if (verbose) {
+        toast('Kuis belum dimulai. Admin perlu klik MULAI KUIS.', 'info', 3000);
+      }
     }
   } catch (e) {
-    console.warn('Poll error:', e);
+    console.warn('[pollSoal] Error:', e);
+    updateDebugPanel(null, e);
+    if (verbose) toast('✗ Poll gagal: ' + e.message, 'error', 4000);
   }
 }
 
