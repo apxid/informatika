@@ -6,61 +6,54 @@
 <title>Admin - Quiz Literasi Jaringan Komputer</title>
 <style>
 :root {
-  /* Palet baru: Putih + Biru SMP + Kuning OSIS + Abu */
-  --primary: #1E40AF; --primary-dark: #1E3A8A;        /* Biru SMP */
-  --primary-light: #3B82F6; --primary-lighter: #DBEAFE;
-  --accent: #F59E0B; --accent-dark: #D97706;          /* Kuning OSIS */
-  --accent-light: #FBBF24; --accent-lighter: #FEF3C7;
-  --success: #10B981; --warning: #F59E0B;
-  --danger: #DC2626; --info: #0891B2;
-  --bg-page: #F3F4F6;                                /* Abu background */
-  --bg-card: #FFFFFF; --bg-card-2: #F9FAFB;
-  --bg-soft: #F3F4F6;
-  --border: #E5E7EB; --border-strong: #D1D5DB;
-  --text: #111827; --text-dim: #6B7280; --text-muted: #9CA3AF;
-  --kanan: #1E40AF; --kiri: #F59E0B;
+  --primary: #6366F1; --primary-dark: #4F46E5;
+  --accent: #EC4899; --success: #10B981; --warning: #F59E0B;
+  --danger: #EF4444; --info: #06B6D4;
+  --bg-card: #1E293B; --bg-card-2: #334155;
+  --border: #334155; --text: #F1F5F9; --text-dim: #94A3B8;
+  --kanan: #6366F1; --kiri: #F59E0B;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
-  background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+  background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
   color: var(--text); min-height: 100vh; padding: 20px;
 }
 /* Header */
 .app-header {
   display: flex; justify-content: space-between; align-items: center;
-  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+  background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(20px);
   border: 1px solid var(--border); border-radius: 18px;
   padding: 18px 24px; margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.08);
+  box-shadow: 0 4px 12px rgba(255,255,255,0.08);
 }
 .app-header .brand { display: flex; align-items: center; gap: 14px; }
 .app-header .brand .logo {
   width: 48px; height: 48px; border-radius: 14px;
-  background: linear-gradient(135deg, #1E40AF, #F59E0B);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+  font-size: 24px; box-shadow: 0 4px 12px rgba(99,102,241,0.3);
 }
 .app-header .brand h1 {
   font-size: 18px; font-weight: 800;
-  background: linear-gradient(135deg, #1E40AF, #F59E0B);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .app-header .brand small { color: var(--text-dim); font-size: 12px; }
 .app-header .actions { display: flex; gap: 10px; align-items: center; }
 .app-header .quiz-status {
-  background: rgba(16, 185, 129, 0.1); color: #059669;
+  background: rgba(16,185,129,0.15); color: #6EE7B7;
   padding: 6px 14px; border-radius: 10px;
   font-size: 12px; font-weight: 700;
   border: 1px solid var(--success);
 }
-.app-header .quiz-status.inactive { background: rgba(239,68,68,0.15); color: #DC2626; border-color: #DC2626; }
-.app-header .quiz-status.finished { background: rgba(245,158,11,0.15); color: #D97706; border-color: #F59E0B; }
+.app-header .quiz-status.inactive { background: rgba(239,68,68,0.15); color: #FCA5A5; border-color: #FCA5A5; }
+.app-header .quiz-status.finished { background: rgba(245,158,11,0.15); color: #FCD34D; border-color: var(--warning); }
 
 /* Live PK bar (mini version for admin) */
 .live-pk {
-  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+  background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(20px);
   border: 1px solid var(--border); border-radius: 18px;
   padding: 16px 24px; margin-bottom: 20px;
 }
@@ -75,14 +68,14 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; font-weight: 800;
 }
-.live-pk .team.right .avatar { background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #FFFFFF; box-shadow: 0 0 16px rgba(30, 64, 175, 0.35); }
-.live-pk .team.left .avatar { background: linear-gradient(135deg, #F59E0B, #D97706); color: #1E293B; box-shadow: 0 0 16px rgba(245,158,11,0.5); }
+.live-pk .team.right .avatar { background: linear-gradient(135deg, var(--success), var(--info)); color: #C7D2FE; box-shadow: 0 0 16px rgba(99,102,241,0.5); }
+.live-pk .team.left .avatar { background: linear-gradient(135deg, var(--warning), var(--accent)); color: #1E293B; box-shadow: 0 0 16px rgba(245,158,11,0.5); }
 .live-pk .team-info { flex: 1; }
 .live-pk .team.left .team-info { text-align: right; }
 .live-pk .team-name { font-size: 11px; color: var(--text-dim); font-weight: 600; }
 .live-pk .team-score { font-size: 22px; font-weight: 900; font-family: 'Courier New', monospace; }
-.live-pk .team.right .team-score { color: #1E40AF; }
-.live-pk .team.left .team-score { color: #D97706; }
+.live-pk .team.right .team-score { color: #C7D2FE; }
+.live-pk .team.left .team-score { color: #FCD34D; }
 .live-pk .vs {
   font-size: 16px; font-weight: 900;
   background: linear-gradient(135deg, var(--accent), var(--warning));
@@ -93,9 +86,9 @@ body {
 /* Login */
 .login-card {
   max-width: 420px; margin: 80px auto;
-  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+  background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(20px);
   border: 1px solid var(--border); border-radius: 24px;
-  padding: 40px; box-shadow: 0 12px 40px rgba(17, 24, 39, 0.12);
+  padding: 40px; box-shadow: 0 12px 40px rgba(255,255,255,0.12);
   animation: cardPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 @keyframes cardPop {
@@ -104,10 +97,10 @@ body {
 }
 .login-card .icon {
   width: 64px; height: 64px; border-radius: 18px;
-  background: linear-gradient(135deg, #1E40AF, #F59E0B);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   display: flex; align-items: center; justify-content: center;
   font-size: 30px; margin: 0 auto 20px;
-  box-shadow: 0 12px 30px rgba(30, 64, 175, 0.35);
+  box-shadow: 0 18px 44px rgba(16,185,129,0.5);
 }
 .login-card h2 { text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
 .login-card p { text-align: center; color: var(--text-dim); margin-bottom: 28px; font-size: 14px; }
@@ -115,13 +108,13 @@ body {
 .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 6px; }
 .input-group input {
   width: 100%; padding: 14px 16px;
-  background: rgba(249, 250, 251, 0.9); border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
   border-radius: 12px; color: var(--text); font-size: 15px;
   font-family: inherit; outline: none; transition: all 0.3s;
 }
 .input-group input:focus {
-  border-color: #1E40AF; background: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.15);
+  border-color: #C7D2FE; background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.2);
 }
 .input-group .toggle-pw {
   position: absolute; right: 16px; top: 38px; cursor: pointer;
@@ -130,22 +123,22 @@ body {
 
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  background: linear-gradient(135deg, #1E40AF, #F59E0B);
-  color: #FFFFFF; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #C7D2FE; border: none; cursor: pointer;
   padding: 14px 28px; border-radius: 14px;
   font-size: 15px; font-weight: 700;
-  box-shadow: 0 12px 30px rgba(30, 64, 175, 0.3);
+  box-shadow: 0 12px 30px rgba(99,102,241,0.4);
   transition: all 0.3s; width: 100%;
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(30, 64, 175, 0.4); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(16,185,129,0.6); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 .btn-ghost {
-  background: rgba(17, 24, 39, 0.05); color: var(--text);
+  background: rgba(255,255,255,0.05); color: var(--text);
   border: 1px solid var(--border); padding: 10px 18px;
   border-radius: 10px; font-size: 13px; font-weight: 600;
   cursor: pointer; transition: all 0.3s;
 }
-.btn-ghost:hover { background: rgba(17, 24, 39, 0.1); transform: translateY(-2px); }
+.btn-ghost:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
 
 /* Dashboard */
 .dashboard { display: none; }
@@ -155,20 +148,20 @@ body {
   gap: 14px; margin-bottom: 20px;
 }
 .stat-card {
-  background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+  background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px);
   border: 1px solid var(--border); border-radius: 16px;
   padding: 18px; position: relative; overflow: hidden;
   transition: all 0.3s;
 }
 .stat-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 4px; background: #1E40AF;
+  height: 4px; background: var(--primary);
 }
-.stat-card.accent::before { background: #F59E0B; }
-.stat-card.success::before { background: #10B981; }
-.stat-card.warning::before { background: #F59E0B; }
-.stat-card.danger::before { background: #DC2626; }
-.stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(17, 24, 39, 0.1); }
+.stat-card.accent::before { background: var(--accent); }
+.stat-card.success::before { background: var(--success); }
+.stat-card.warning::before { background: var(--accent); }
+.stat-card.danger::before { background: var(--danger); }
+.stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(255,255,255,0.1); }
 .stat-card .lbl { font-size: 12px; color: var(--text-dim); font-weight: 600; margin-bottom: 6px; }
 .stat-card .num { font-size: 28px; font-weight: 800; line-height: 1; }
 .stat-card .ico { position: absolute; top: 14px; right: 14px; font-size: 22px; opacity: 0.3; }
@@ -177,7 +170,7 @@ body {
 /* Tabs */
 .tabs {
   display: flex; gap: 8px; margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+  background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px);
   border: 1px solid var(--border); border-radius: 14px; padding: 6px;
 }
 .tab {
@@ -187,17 +180,17 @@ body {
   border-radius: 10px; transition: all 0.3s;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.tab:hover { color: var(--text); background: rgba(17, 24, 39, 0.05); }
+.tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
 .tab.active {
-  background: linear-gradient(135deg, #1E40AF, #F59E0B);
-  color: #FFFFFF; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #C7D2FE; box-shadow: 0 4px 12px rgba(99,102,241,0.3);
 }
 .tab-content { display: none; animation: cardPop 0.4s; }
 .tab-content.active { display: block; }
 
 /* Panels */
 .panel {
-  background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+  background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px);
   border: 1px solid var(--border); border-radius: 18px;
   padding: 24px; margin-bottom: 16px;
 }
@@ -206,96 +199,96 @@ body {
   display: flex; align-items: center; gap: 10px;
 }
 .panel h3 .badge-count {
-  background: #F59E0B; color: #FFFFFF;
+  background: var(--accent); color: #C7D2FE;
   padding: 2px 10px; border-radius: 12px; font-size: 12px;
 }
 
 /* Control panel */
 .control-panel { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 14px; }
 .control-box {
-  background: rgba(249, 250, 251, 0.9); border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
   border-radius: 14px; padding: 18px;
 }
 .control-box .lbl { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; font-weight: 600; }
 .control-box .val { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
 .control-box .desc { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.4; }
 .btn-next {
-  width: 100%; background: linear-gradient(135deg, #1E40AF, #3B82F6);
-  color: #FFFFFF; border: none; padding: 14px; border-radius: 12px;
+  width: 100%; background: linear-gradient(135deg, var(--success), var(--info));
+  color: #C7D2FE; border: none; padding: 14px; border-radius: 12px;
   font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s;
-  box-shadow: 0 6px 16px rgba(30, 64, 175, 0.3);
+  box-shadow: 0 10px 25px rgba(16,185,129,0.4);
 }
-.btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4); }
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(16,185,129,0.6); }
 .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-end {
-  width: 100%; background: linear-gradient(135deg, #F59E0B, #D97706);
-  color: #FFFFFF; border: none; padding: 14px; border-radius: 12px;
+  width: 100%; background: linear-gradient(135deg, var(--warning), var(--accent));
+  color: #C7D2FE; border: none; padding: 14px; border-radius: 12px;
   font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s;
-  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 10px 25px rgba(245,158,11,0.4);
   margin-top: 8px;
 }
-.btn-end:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4); }
+.btn-end:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(245,158,11,0.6); }
 .btn-stop {
-  width: 100%; background: linear-gradient(135deg, #DC2626, #B91C1C);
-  color: #FFFFFF; border: none; padding: 12px; border-radius: 12px;
+  width: 100%; background: linear-gradient(135deg, var(--danger), #DC2626);
+  color: #C7D2FE; border: none; padding: 12px; border-radius: 12px;
   font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s;
   margin-top: 8px;
 }
 .btn-stop:hover { transform: translateY(-2px); }
 .btn-reset {
-  width: 100%; background: #FEF3C7;
-  color: #D97706; border: 1px solid var(--warning);
+  width: 100%; background: rgba(245,158,11,0.15);
+  color: #FCD34D; border: 1px solid var(--warning);
   padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700;
   cursor: pointer; transition: all 0.3s; margin-top: 8px;
 }
-.btn-reset:hover { background: #FDE68A; }
+.btn-reset:hover { background: rgba(245,158,11,0.3); }
 
 /* Token */
 .token-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .token-box {
-  background: linear-gradient(135deg, #DBEAFE, #FEF3C7);
+  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.1));
   border: 1px solid var(--border); border-radius: 16px;
   padding: 18px; position: relative; overflow: hidden;
 }
-.token-box.right-side { background: linear-gradient(135deg, #FEF3C7, #FFFBEB); }
+.token-box.right-side { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.1)); }
 .token-box .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .token-box .side { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
 .token-box .regen {
-  background: rgba(17, 24, 39, 0.1); border: 1px solid var(--border);
-  color: #FFFFFF; padding: 4px 10px; border-radius: 8px;
+  background: rgba(255,255,255,0.1); border: 1px solid var(--border);
+  color: #C7D2FE; padding: 4px 10px; border-radius: 8px;
   font-size: 11px; cursor: pointer; transition: all 0.3s;
 }
-.token-box .regen:hover { background: rgba(17, 24, 39, 0.2); }
+.token-box .regen:hover { background: rgba(255,255,255,0.2); }
 .token-display {
   font-family: 'Courier New', 'Consolas', monospace;
   font-size: clamp(48px, 8vw, 96px); font-weight: 900;
-  text-align: center; padding: 24px 12px; background: rgba(249, 250, 251, 0.95);
-  border: 3px solid rgba(17, 24, 39, 0.15); border-radius: 16px;
-  margin-bottom: 14px; letter-spacing: 10px; color: #FFFFFF;
-  text-shadow: 0 0 30px rgba(99,102,241,0.7), 0 0 60px rgba(30, 64, 175, 0.2);
+  text-align: center; padding: 24px 12px; background: rgba(15, 23, 42, 0.7);
+  border: 3px solid rgba(255,255,255,0.15); border-radius: 16px;
+  margin-bottom: 14px; letter-spacing: 10px; color: #C7D2FE;
+  text-shadow: 0 0 30px rgba(99,102,241,0.7), 0 0 60px rgba(99,102,241,0.3);
   min-height: 120px; display: flex; align-items: center; justify-content: center;
   animation: tokenPulse 3s ease-in-out infinite;
 }
 .token-box.right-side .token-display {
-  text-shadow: 0 0 30px rgba(245,158,11,0.7), 0 0 60px rgba(245, 158, 11, 0.25);
-  border-color: rgba(245, 158, 11, 0.25);
+  text-shadow: 0 0 30px rgba(245,158,11,0.7), 0 0 60px rgba(245,158,11,0.3);
+  border-color: rgba(245,158,11,0.3);
 }
 .token-display.empty {
   letter-spacing: 4px; opacity: 0.4; font-size: clamp(28px, 4vw, 48px); font-weight: 700;
 }
 @keyframes tokenPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.3); }
-  50%      { box-shadow: 0 0 30px 8px rgba(30, 64, 175, 0.2); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+  50%      { box-shadow: 0 0 30px 8px rgba(99,102,241,0.3); }
 }
 .token-box.right-side .token-display { animation: tokenPulseKiri 3s ease-in-out infinite; }
 @keyframes tokenPulseKiri {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
-  50%      { box-shadow: 0 0 30px 8px rgba(245, 158, 11, 0.25); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+  50%      { box-shadow: 0 0 30px 8px rgba(245,158,11,0.3); }
 }
 /* Tombol generate baru lebih besar */
 .token-box .regen {
   font-size: 13px !important; padding: 8px 14px !important;
-  background: linear-gradient(135deg, #1E40AF, #3B82F6) !important;
+  background: linear-gradient(135deg, var(--success), var(--info)) !important;
   color: #FFFFFF !important; border: none !important;
   font-weight: 700 !important; box-shadow: 0 4px 12px rgba(16,185,129,0.4) !important;
 }
@@ -303,80 +296,80 @@ body {
 .token-box .side { font-size: 18px !important; font-weight: 800 !important; }
 .token-actions { display: flex; gap: 8px; }
 .btn-copy {
-  flex: 1; background: rgba(30, 64, 175, 0.15); color: #1E40AF;
+  flex: 1; background: rgba(99,102,241,0.1); color: #C7D2FE;
   border: 1px solid #1E3A8A; padding: 10px; border-radius: 10px;
   font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;
 }
-.btn-copy:hover { background: rgba(30, 64, 175, 0.3); }
+.btn-copy:hover { background: rgba(99,102,241,0.4); }
 .token-box.right-side .btn-copy {
-  background: #FEF3C7; color: #D97706; border-color: #F59E0B;
+  background: rgba(245,158,11,0.15); color: #FCD34D; border-color: var(--warning);
 }
-.token-box.right-side .btn-copy:hover { background: rgba(245, 158, 11, 0.3); }
+.token-box.right-side .btn-copy:hover { background: rgba(245,158,11,0.4); }
 
 /* Filter */
 .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
 .filter-bar .lbl { font-size: 12px; color: var(--text-dim); font-weight: 600; margin-right: 4px; }
 .filter-select {
-  background: rgba(249, 250, 251, 0.9); border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
   color: var(--text); padding: 8px 14px; border-radius: 10px;
   font-size: 13px; outline: none; cursor: pointer; font-family: inherit;
 }
-.filter-select option { background: #FFFFFF; }
+.filter-select option { background: var(--bg-card); }
 
 /* Siswa lists */
 .siswa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .siswa-list-box {
-  background: rgba(249, 250, 251, 0.9); border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
   border-radius: 14px; padding: 16px;
 }
-.siswa-list-box.right { border-top: 3px solid #1E40AF; }
-.siswa-list-box.left { border-top: 3px solid #F59E0B; }
+.siswa-list-box.right { border-top: 3px solid var(--kanan); }
+.siswa-list-box.left { border-top: 3px solid var(--kiri); }
 .siswa-list-box h4 {
   font-size: 14px; font-weight: 700; margin-bottom: 12px;
   display: flex; align-items: center; justify-content: space-between;
 }
 .siswa-list-box h4 .count {
-  background: #1E40AF; color: #FFFFFF;
+  background: var(--primary); color: #C7D2FE;
   padding: 2px 10px; border-radius: 10px; font-size: 12px;
 }
-.siswa-list-box.left h4 .count { background: #F59E0B; color: #FFFFFF; }
+.siswa-list-box.left h4 .count { background: var(--accent); color: #C7D2FE; }
 .siswa-row {
   display: flex; align-items: center; gap: 10px; padding: 10px;
-  margin-bottom: 6px; background: rgba(17, 24, 39, 0.04);
+  margin-bottom: 6px; background: rgba(255,255,255,0.04);
   border-radius: 10px; transition: all 0.3s; font-size: 13px;
 }
-.siswa-row:hover { background: rgba(17, 24, 39, 0.08); transform: translateX(4px); }
+.siswa-row:hover { background: rgba(255,255,255,0.08); transform: translateX(4px); }
 .siswa-row .rank {
   width: 28px; height: 28px; border-radius: 8px;
-  background: #F9FAFB; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 12px; flex-shrink: 0;
 }
 .siswa-row.rank-1 .rank { background: linear-gradient(135deg, #D97706, #F59E0B); color: #1E293B; }
 .siswa-row.rank-2 .rank { background: linear-gradient(135deg, #9CA3AF, #6B7280); color: #1E293B; }
-.siswa-row.rank-3 .rank { background: linear-gradient(135deg, #F59E0B, #D97706); color: #FFFFFF; }
+.siswa-row.rank-3 .rank { background: linear-gradient(135deg, var(--warning), var(--accent)); color: #C7D2FE; }
 .siswa-row .nama { flex: 1; font-weight: 600; }
 .siswa-row .meta { font-size: 11px; color: var(--text-dim); }
 .siswa-row .score {
-  background: linear-gradient(135deg, #1E40AF, #3B82F6);
-  color: #FFFFFF; padding: 4px 10px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--success), var(--info));
+  color: #C7D2FE; padding: 4px 10px; border-radius: 8px;
   font-weight: 800; font-size: 13px;
 }
-.siswa-row.negative .score { background: linear-gradient(135deg, #DC2626, #B91C1C); }
+.siswa-row.negative .score { background: linear-gradient(135deg, var(--danger), #DC2626); }
 .siswa-row.locked { opacity: 0.6; }
 .siswa-row.locked .nama::after { content: ' 🔒'; }
 .siswa-row .pel {
-  background: #FEE2E2; color: #DC2626;
+  background: rgba(239,68,68,0.08); color: #FCA5A5;
   padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
 }
 .siswa-row .actions { display: flex; gap: 4px; }
 .siswa-row .actions button {
-  background: rgba(17, 24, 39, 0.05); border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
   color: var(--text); padding: 4px 8px; border-radius: 6px;
   font-size: 11px; cursor: pointer;
 }
-.siswa-row .actions button:hover { background: rgba(17, 24, 39, 0.15); }
-.siswa-row .actions .unlock { color: #10B981; border-color: #10B981; }
-.siswa-row .actions .del { color: #DC2626; border-color: #DC2626; }
+.siswa-row .actions button:hover { background: rgba(255,255,255,0.15); }
+.siswa-row .actions .unlock { color: var(--success); border-color: var(--success); }
+.siswa-row .actions .del { color: #FCA5A5; border-color: #FCA5A5; }
 .empty-state {
   text-align: center; padding: 40px 20px; color: var(--text-dim); font-size: 13px;
 }
@@ -387,12 +380,12 @@ body {
 .pel-item {
   display: flex; gap: 12px; padding: 12px;
   background: rgba(220, 38, 38, 0.06);
-  border: 1px solid rgba(220, 38, 38, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 10px; animation: cardPop 0.4s;
 }
 .pel-item .ico {
   width: 36px; height: 36px; border-radius: 10px;
-  background: #FEE2E2; color: #DC2626;
+  background: rgba(239,68,68,0.08); color: #FCA5A5;
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; flex-shrink: 0;
 }
@@ -400,7 +393,7 @@ body {
 .pel-item .nama { font-size: 13px; font-weight: 700; }
 .pel-item .meta { font-size: 11px; color: var(--text-dim); }
 .pel-item .jenis {
-  display: inline-block; background: #DC2626; color: #FFFFFF;
+  display: inline-block; background: var(--danger); color: #C7D2FE;
   padding: 2px 8px; border-radius: 6px; font-size: 10px;
   font-weight: 700; margin-top: 4px;
 }
@@ -408,12 +401,12 @@ body {
 /* Toast */
 .toast {
   position: fixed; top: 20px; right: 20px;
-  background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px);
+  background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(20px);
   border: 1px solid var(--border); color: var(--text);
   padding: 14px 20px; border-radius: 12px; font-weight: 600;
   z-index: 1000; font-size: 14px;
   transform: translateX(400px); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.1); max-width: 360px;
+  box-shadow: 0 10px 30px rgba(255,255,255,0.1); max-width: 360px;
 }
 .toast.show { transform: translateX(0); }
 .toast.success { border-left: 4px solid var(--success); }
@@ -424,7 +417,7 @@ body {
 /* Live dot */
 .live-dot {
   display: inline-block; width: 8px; height: 8px;
-  background: #10B981; border-radius: 50%;
+  background: var(--success); border-radius: 50%;
   margin-right: 6px; animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
@@ -440,7 +433,7 @@ body {
 }
 .modal-overlay.show { display: flex; }
 .modal {
-  background: #FFFFFF;
+  background: var(--bg-card);
   border: 1px solid var(--border); border-radius: 20px;
   padding: 28px; max-width: 420px; width: 90%;
   animation: cardPop 0.4s;
@@ -453,14 +446,14 @@ body {
   font-weight: 700; cursor: pointer; border: none;
   font-size: 14px; transition: all 0.3s;
 }
-.modal-actions .cancel { background: rgba(17, 24, 39, 0.05); color: var(--text); border: 1px solid var(--border); }
-.modal-actions .confirm { background: linear-gradient(135deg, #DC2626, #B91C1C); color: #FFFFFF; }
+.modal-actions .cancel { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); }
+.modal-actions .confirm { background: linear-gradient(135deg, var(--danger), #DC2626); color: #C7D2FE; }
 
 /* Spinner */
 .spinner {
   display: inline-block; width: 18px; height: 18px;
-  border: 2px solid rgba(17, 24, 39, 0.2);
-  border-top-color: #FFFFFF; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #C7D2FE; border-radius: 50%;
   animation: spin 0.8s linear infinite;
   vertical-align: middle; margin-right: 6px;
 }
@@ -482,9 +475,9 @@ body {
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: rgba(243, 244, 246, 0.5); }
-::-webkit-scrollbar-thumb { background: #1E40AF; border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: #1E3A8A; }
+::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.4); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
 </style>
 </head>
 <body>
@@ -523,11 +516,11 @@ body {
     <div class="actions">
       <div class="quiz-status inactive" id="quizStatus">⏸ KUIS BELUM DIMULAI</div>
       <!-- Tombol End Kuis di header - tampil hanya saat kuis berjalan -->
-      <button id="headerEndBtn" onclick="endKuis()" style="display: none; background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); transition: all 0.3s;">
+      <button id="headerEndBtn" onclick="endKuis()" style="display: none; background: linear-gradient(135deg, var(--warning), var(--accent)); color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(245,158,11,0.4); transition: all 0.3s;">
         🏆 END KUIS
       </button>
       <!-- Tombol Reset di header - tampil hanya saat kuis selesai -->
-      <button id="headerResetBtn" onclick="confirmReset()" style="display: none; background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3); transition: all 0.3s;">
+      <button id="headerResetBtn" onclick="confirmReset()" style="display: none; background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 30px rgba(99,102,241,0.5); transition: all 0.3s;">
         🔄 KUIS BARU
       </button>
       <button class="btn-ghost" onclick="refreshAll()">🔄 Refresh</button>
@@ -598,13 +591,13 @@ body {
     <div class="panel">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
         <h3 style="margin: 0;">⚡ Kontrol Kuis Literasi</h3>
-        <button class="btn-ghost" onclick="refreshStatus(); loadDaftarSiswa();" style="background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #FFFFFF; border: none;">🔄 Refresh Status</button>
+        <button class="btn-ghost" onclick="refreshStatus(); loadDaftarSiswa();" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #C7D2FE; border: none;">🔄 Refresh Status</button>
       </div>
 
       <!-- WIZARD STEPS - progress indicator -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; padding: 14px; background: #F9FAFB; border-radius: 14px; border: 1px solid var(--border);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; padding: 14px; background: rgba(255,255,255,0.05); border-radius: 14px; border: 1px solid var(--border);">
         <div id="step1Indicator" class="step-indicator active" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #1E40AF, #F59E0B); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #FFFFFF; flex-shrink: 0;">1</div>
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #C7D2FE; flex-shrink: 0;">1</div>
           <div style="min-width: 0;">
             <div style="font-size: 13px; font-weight: 700;">SETUP TOKEN</div>
             <div style="font-size: 11px; color: var(--text-dim);">Generate & tunggu siswa</div>
@@ -612,7 +605,7 @@ body {
         </div>
         <div style="font-size: 18px; opacity: 0.3;">→</div>
         <div id="step2Indicator" class="step-indicator" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px; opacity: 0.4;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(17, 24, 39, 0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">2</div>
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">2</div>
           <div style="min-width: 0;">
             <div style="font-size: 13px; font-weight: 700;">MULAI KUIS</div>
             <div style="font-size: 11px; color: var(--text-dim);">Tampilkan Soal #1</div>
@@ -620,7 +613,7 @@ body {
         </div>
         <div style="font-size: 18px; opacity: 0.3;">→</div>
         <div id="step3Indicator" class="step-indicator" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px; opacity: 0.4;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(17, 24, 39, 0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">3</div>
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">3</div>
           <div style="min-width: 0;">
             <div style="font-size: 13px; font-weight: 700;">SOAL BERJALAN</div>
             <div style="font-size: 11px; color: var(--text-dim);">Next soal sampai selesai</div>
@@ -628,7 +621,7 @@ body {
         </div>
         <div style="font-size: 18px; opacity: 0.3;">→</div>
         <div id="step4Indicator" class="step-indicator" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px; opacity: 0.4;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(17, 24, 39, 0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">4</div>
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">4</div>
           <div style="min-width: 0;">
             <div style="font-size: 13px; font-weight: 700;">SELESAI</div>
             <div style="font-size: 11px; color: var(--text-dim);">Pemenang & reset</div>
@@ -637,9 +630,9 @@ body {
       </div>
 
       <!-- STATE 1: STEP 1 - SETUP TOKEN (kuis belum mulai, belum ada siswa) -->
-      <div id="ctrlStateSetup" style="text-align: center; padding: 28px 16px; background: linear-gradient(135deg, #DBEAFE, #FEF3C7); border: 2px dashed rgba(30, 64, 175, 0.3); border-radius: 16px; margin-bottom: 18px;">
+      <div id="ctrlStateSetup" style="text-align: center; padding: 28px 16px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.1)); border: 2px dashed rgba(99,102,241,0.4); border-radius: 16px; margin-bottom: 18px;">
         <div style="font-size: 60px; margin-bottom: 8px;">🔑</div>
-        <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #1E40AF, #F59E0B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 1: SETUP TOKEN</h2>
+        <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 1: SETUP TOKEN</h2>
         <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 20px; max-width: 480px; margin-left: auto; margin-right: auto;">
           1. Buka tab <strong>🔑 Token</strong> di atas & klik <strong>GENERATE BARU</strong> untuk meja kanan & kiri.<br>
           2. Bagikan token ke siswa sesuai meja.<br>
@@ -647,60 +640,66 @@ body {
         </p>
 
         <div style="display: flex; justify-content: center; gap: 24px; margin: 18px 0; flex-wrap: wrap;">
-          <div style="background: rgba(30, 64, 175, 0.15); padding: 16px 24px; border-radius: 14px; min-width: 140px;">
+          <div style="background: rgba(99,102,241,0.1); padding: 16px 24px; border-radius: 14px; min-width: 140px;">
             <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KANAN</div>
-            <div style="font-size: 32px; font-weight: 900; color: #1E40AF;" id="setupSiswaKanan">0</div>
+            <div style="font-size: 32px; font-weight: 900; color: #C7D2FE;" id="setupSiswaKanan">0</div>
             <div style="font-size: 10px; color: var(--text-dim);">siswa login</div>
           </div>
-          <div style="background: #FEF3C7; padding: 16px 24px; border-radius: 14px; min-width: 140px;">
+          <div style="background: rgba(245,158,11,0.15); padding: 16px 24px; border-radius: 14px; min-width: 140px;">
             <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KIRI</div>
-            <div style="font-size: 32px; font-weight: 900; color: #D97706;" id="setupSiswaKiri">0</div>
+            <div style="font-size: 32px; font-weight: 900; color: #FCD34D;" id="setupSiswaKiri">0</div>
             <div style="font-size: 10px; color: var(--text-dim);">siswa login</div>
           </div>
         </div>
 
-        <button onclick="document.querySelector('[data-tab=token]').click()" style="background: linear-gradient(135deg, #1E40AF, #F59E0B); color: #FFFFFF; border: none; padding: 14px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 24px rgba(30, 64, 175, 0.3); margin-bottom: 12px;">
+        <button onclick="document.querySelector('[data-tab=token]').click()" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: #C7D2FE; border: none; padding: 14px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 24px rgba(99,102,241,0.4); margin-bottom: 12px;">
           🔑 Buka Tab Token
         </button>
         <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 14px;">
           Setelah siswa masuk, klik tombol di bawah untuk lanjut ke Langkah 2
         </div>
-        <button id="btnLanjutMulai" onclick="goToStep2()" style="background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #FFFFFF; border: none; padding: 18px 44px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2); transition: all 0.3s; letter-spacing: 1px;">
+        <button id="btnLanjutMulai" onclick="goToStep2()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #C7D2FE; border: none; padding: 18px 44px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(99,102,241,0.3); transition: all 0.3s; letter-spacing: 1px;">
           ➜ LANJUT KE MULAI KUIS
         </button>
 
         <!-- Debug info: status server -->
-        <div id="ctrlDebugInfo" style="margin-top: 20px; padding: 12px; background: rgba(15,23,42,0.7); border: 1px solid rgba(30, 64, 175, 0.2); border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; text-align: left; max-width: 480px; margin: 20px auto 0;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(17, 24, 39, 0.1);">
-            <span style="color: #1E40AF; font-weight: 700; font-size: 12px;">📊 STATUS SERVER</span>
-            <span id="ctrlStatusBadge" style="background: #FDE68A; color: #D97706; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 10px;">● MENUNGGU</span>
+        <div id="ctrlDebugInfo" style="margin-top: 20px; padding: 12px; background: rgba(15,23,42,0.7); border: 1px solid rgba(99,102,241,0.3); border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; text-align: left; max-width: 480px; margin: 20px auto 0;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <span style="color: #C7D2FE; font-weight: 700; font-size: 12px;">📊 STATUS SERVER</span>
+            <span id="ctrlStatusBadge" style="background: rgba(245,158,11,0.3); color: #FCD34D; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 10px;">● MENUNGGU</span>
           </div>
-          <div style="color: #94A3B8; margin-bottom: 4px;">Current soal: <span id="ctrlDebugSoal" style="color: #D97706;">0</span></div>
-          <div style="color: #94A3B8; margin-bottom: 4px;">Quiz active: <span id="ctrlDebugActive" style="color: #DC2626;">false</span></div>
-          <div style="color: #94A3B8; margin-bottom: 4px;">Quiz finished: <span id="ctrlDebugFinished" style="color: #DC2626;">false</span></div>
-          <div style="color: #94A3B8;">Siswa login: <span id="ctrlDebugSiswa" style="color: #D97706;">0</span></div>
-          <div id="ctrlDebugError" style="display: none; margin-top: 6px; padding: 6px; background: rgba(239,68,68,0.15); border-radius: 6px; color: #DC2626; font-size: 10px;"></div>
-          <button onclick="cekStateSheet()" style="margin-top: 10px; width: 100%; background: rgba(30, 64, 175, 0.15); color: #1E40AF; border: 1px solid var(--primary); padding: 8px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+          <div style="color: #94A3B8; margin-bottom: 4px;">Current soal: <span id="ctrlDebugSoal" style="color: #FCD34D;">0</span></div>
+          <div style="color: #94A3B8; margin-bottom: 4px;">Quiz active: <span id="ctrlDebugActive" style="color: #FCA5A5;">false</span></div>
+          <div style="color: #94A3B8; margin-bottom: 4px;">Quiz finished: <span id="ctrlDebugFinished" style="color: #FCA5A5;">false</span></div>
+          <div style="color: #94A3B8;">Siswa login: <span id="ctrlDebugSiswa" style="color: #FCD34D;">0</span></div>
+          <div id="ctrlDebugError" style="display: none; margin-top: 6px; padding: 6px; background: rgba(239,68,68,0.15); border-radius: 6px; color: #FCA5A5; font-size: 10px;"></div>
+          <button onclick="cekStateSheet()" style="margin-top: 10px; width: 100%; background: rgba(99,102,241,0.1); color: #C7D2FE; border: 1px solid var(--primary); padding: 8px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
             🔍 Cek State Sheet (Diagnostik)
           </button>
+          <button onclick="testKuisFlow()" style="margin-top: 6px; width: 100%; background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
+            🧪 TEST FLOW KUIS (MULAI → Soal Muncul?)
+          </button>
+          <div style="margin-top: 6px; font-size: 10px; color: var(--text-dim); text-align: center;">
+            Klik tombol hijau untuk simulate MULAI KUIS & cek apakah siswa akan lihat soal
+          </div>
         </div>
       </div>
 
       <!-- STATE 2: STEP 2 - MULAI KUIS (siswa sudah ada, kuis belum mulai) -->
-      <div id="ctrlStateStart" style="display: none; text-align: center; padding: 36px 16px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6,182,212,0.1)); border: 2px solid #1E40AF; border-radius: 16px; margin-bottom: 18px;">
+      <div id="ctrlStateStart" style="display: none; text-align: center; padding: 36px 16px; background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1)); border: 2px solid rgba(16,185,129,0.4); border-radius: 16px; margin-bottom: 18px;">
         <div style="font-size: 80px; margin-bottom: 12px;">🎬</div>
-        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #1E40AF, #3B82F6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 2: MULAI KUIS</h2>
+        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--success), var(--info)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 2: MULAI KUIS</h2>
         <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto;">
           Siswa sudah siap! Klik tombol di bawah untuk menampilkan <strong>Soal #1</strong> ke seluruh siswa secara bersamaan.
         </p>
-        <button class="btn-mulai-kuis" id="btnMulaiKuis" onclick="nextSoal()" style="background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #FFFFFF; border: none; padding: 26px 64px; border-radius: 20px; font-size: 24px; font-weight: 800; cursor: pointer; box-shadow: 0 12px 30px rgba(30, 64, 175, 0.35); transition: all 0.3s; letter-spacing: 2px;">
+        <button class="btn-mulai-kuis" id="btnMulaiKuis" onclick="nextSoal()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #C7D2FE; border: none; padding: 26px 64px; border-radius: 20px; font-size: 24px; font-weight: 800; cursor: pointer; box-shadow: 0 18px 44px rgba(16,185,129,0.5); transition: all 0.3s; letter-spacing: 2px;">
           🚀 MULAI KUIS - TAMPILKAN SOAL #1
         </button>
         <div style="margin-top: 16px; font-size: 12px; color: var(--text-dim);">
           Total soal: <strong>20</strong> (15 PG + 5 Essay) • Timer: 45s PG / 90s Essay
         </div>
         <div style="margin-top: 14px;">
-          <button onclick="goToStep1()" style="background: rgba(17, 24, 39, 0.05); color: var(--text-dim); border: 1px solid var(--border); padding: 10px 24px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
+          <button onclick="goToStep1()" style="background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border); padding: 10px 24px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
             ← Kembali ke Langkah 1
           </button>
         </div>
@@ -708,13 +707,13 @@ body {
 
       <!-- STATE 3: STEP 3 - SOAL BERJALAN (kuis aktif, soal #1+) -->
       <div id="ctrlStateRunning" style="display: none;">
-        <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6,182,212,0.1)); border: 2px solid #1E40AF; border-radius: 16px; margin-bottom: 18px;">
+        <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1)); border: 2px solid rgba(16,185,129,0.4); border-radius: 16px; margin-bottom: 18px;">
           <div style="font-size: 60px; margin-bottom: 8px;">📝</div>
-          <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #1E40AF, #3B82F6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 3: SOAL BERJALAN</h2>
+          <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--success), var(--info)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 3: SOAL BERJALAN</h2>
           <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 24px;">
             Siswa sedang menjawab soal. Klik <strong>Next Soal</strong> untuk pindah ke soal berikutnya.
           </p>
-          <button class="btn-next" id="btnNext" onclick="nextSoal()" style="background: linear-gradient(135deg, #1E40AF, #F59E0B); color: #FFFFFF; border: none; padding: 22px 56px; border-radius: 18px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 14px 36px rgba(30, 64, 175, 0.35); transition: all 0.3s; letter-spacing: 2px;">
+          <button class="btn-next" id="btnNext" onclick="nextSoal()" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: #C7D2FE; border: none; padding: 22px 56px; border-radius: 18px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 14px 36px rgba(99,102,241,0.5); transition: all 0.3s; letter-spacing: 2px;">
             ➜ NEXT SOAL
           </button>
         </div>
@@ -727,9 +726,9 @@ body {
           </div>
           <div class="control-box">
             <div class="lbl">STATUS</div>
-            <div class="val" id="ctrlStatus" style="color: #10B981;">Berjalan</div>
+            <div class="val" id="ctrlStatus" style="color: var(--success);">Berjalan</div>
             <div class="desc" id="ctrlStatusDesc">Siswa sedang menjawab.</div>
-            <div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
+            <div style="background: rgba(16,185,129,0.15); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
               <span class="live-dot"></span>
               <span style="font-size: 13px; font-weight: 600;">Kuis Aktif</span>
             </div>
@@ -738,8 +737,8 @@ body {
             <div class="lbl">PROGRES</div>
             <div class="val" id="ctrlTotalSoal">0/20</div>
             <div style="margin-top: 12px;">
-              <div style="background: rgba(17, 24, 39, 0.1); height: 8px; border-radius: 4px; overflow: hidden;">
-                <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, #1E40AF, #F59E0B); width: 0%; transition: width 0.5s;"></div>
+              <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s;"></div>
               </div>
               <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px; text-align: right;" id="ctrlProgressTxt">0/20</div>
             </div>
@@ -747,8 +746,8 @@ body {
         </div>
 
         <!-- Tombol End Kuis dipisah dengan jelas + warning -->
-        <div style="margin-top: 16px; padding: 16px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px;">
-          <div style="font-size: 13px; font-weight: 700; color: #D97706; margin-bottom: 8px;">
+        <div style="margin-top: 16px; padding: 16px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px;">
+          <div style="font-size: 13px; font-weight: 700; color: #FCD34D; margin-bottom: 8px;">
             ⚠ TUTUP KUIS (opsional - klik setelah soal terakhir selesai)
           </div>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -759,23 +758,23 @@ body {
       </div>
 
       <!-- STATE 4: STEP 4 - KUIS SELESAI - pemenang + tombol reset -->
-      <div id="ctrlStateFinished" style="display: none; text-align: center; padding: 36px 16px; background: linear-gradient(135deg, #FEF3C7, #FFFBEB); border: 2px solid rgba(245, 158, 11, 0.3); border-radius: 16px;">
+      <div id="ctrlStateFinished" style="display: none; text-align: center; padding: 36px 16px; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.1)); border: 2px solid rgba(245,158,11,0.4); border-radius: 16px;">
         <div style="font-size: 80px; margin-bottom: 12px;" id="ctrlFinishEmoji">🏆</div>
         <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #D97706, #F59E0B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 4: KUIS SELESAI</h2>
         <p style="color: var(--text); font-size: 16px; margin-bottom: 20px; font-weight: 700;" id="ctrlFinishWinner">Pemenang: -</p>
         <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
-          <div style="background: rgba(30, 64, 175, 0.15); padding: 16px 28px; border-radius: 14px; border: 1px solid var(--kanan);">
+          <div style="background: rgba(99,102,241,0.1); padding: 16px 28px; border-radius: 14px; border: 1px solid var(--kanan);">
             <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KANAN</div>
-            <div style="font-size: 36px; font-weight: 900; color: #1E40AF; font-family: 'Courier New', monospace;" id="ctrlFinishKanan">0</div>
+            <div style="font-size: 36px; font-weight: 900; color: #C7D2FE; font-family: 'Courier New', monospace;" id="ctrlFinishKanan">0</div>
           </div>
           <div style="font-size: 28px; font-weight: 900; align-self: center; background: linear-gradient(135deg, var(--accent), var(--warning)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">VS</div>
-          <div style="background: #FEF3C7; padding: 16px 28px; border-radius: 14px; border: 1px solid var(--kiri);">
+          <div style="background: rgba(245,158,11,0.15); padding: 16px 28px; border-radius: 14px; border: 1px solid var(--kiri);">
             <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KIRI</div>
-            <div style="font-size: 36px; font-weight: 900; color: #D97706; font-family: 'Courier New', monospace;" id="ctrlFinishKiri">0</div>
+            <div style="font-size: 36px; font-weight: 900; color: #FCD34D; font-family: 'Courier New', monospace;" id="ctrlFinishKiri">0</div>
           </div>
         </div>
-        <div style="margin-bottom: 18px; padding: 14px; background: #DBEAFE; border-radius: 10px; max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 18px;">
-          <div style="font-size: 13px; color: #1E40AF; margin-bottom: 4px;">
+        <div style="margin-bottom: 18px; padding: 14px; background: rgba(99,102,241,0.15); border-radius: 10px; max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 18px;">
+          <div style="font-size: 13px; color: #C7D2FE; margin-bottom: 4px;">
             🔄 Klik tombol di bawah untuk <strong>mulai kuis baru</strong> (kelas lain atau ulang).
           </div>
           <div style="font-size: 11px; color: var(--text-dim);">
@@ -783,7 +782,7 @@ body {
             <em>(Jika masih ada siswa login, akan kembali ke Langkah 2 - Mulai Kuis. Jika semua siswa logout, kembali ke Langkah 1 - Setup Token.)</em>
           </div>
         </div>
-        <button onclick="confirmReset()" style="background: linear-gradient(135deg, #1E40AF, #F59E0B); color: #FFFFFF; border: none; padding: 22px 48px; border-radius: 18px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 16px 40px rgba(30, 64, 175, 0.35); transition: all 0.3s; letter-spacing: 1px;">
+        <button onclick="confirmReset()" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: #C7D2FE; border: none; padding: 22px 48px; border-radius: 18px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 16px 40px rgba(99,102,241,0.5); transition: all 0.3s; letter-spacing: 1px;">
           🔄 COBA KUIS LAGI DARI AWAL
         </button>
         <div style="margin-top: 14px; font-size: 11px; color: var(--text-dim);">
@@ -812,7 +811,7 @@ body {
     <div class="panel">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
         <h3 style="margin: 0;">🔑 Generate Token Meja</h3>
-        <button class="btn-ghost" onclick="loadTokens(); loadDaftarSiswa();" style="background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #FFFFFF; border: none;">🔄 Refresh Token &amp; Siswa</button>
+        <button class="btn-ghost" onclick="loadTokens(); loadDaftarSiswa();" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #C7D2FE; border: none;">🔄 Refresh Token &amp; Siswa</button>
       </div>
       <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 18px;">
         Token berbeda untuk meja kanan dan kiri. Bagikan token ke masing-masing meja secara terpisah. Klik <strong>Refresh</strong> untuk update daftar siswa yang sudah login.
@@ -843,7 +842,7 @@ body {
           </div>
         </div>
       </div>
-      <div style="margin-top: 16px; padding: 14px; background: #DBEAFE; border-radius: 12px; font-size: 13px; color: #1E40AF;">
+      <div style="margin-top: 16px; padding: 14px; background: rgba(99,102,241,0.15); border-radius: 12px; font-size: 13px; color: #C7D2FE;">
         💡 <strong>Tips:</strong> Generate token baru akan menghapus token lama. Siswa yang sudah login tetap bisa main. Token baru hanya untuk siswa yang belum login.
       </div>
     </div>
@@ -868,20 +867,20 @@ body {
           </div>
         </div>
       </div>
-      <div style="margin-top: 16px; padding: 14px; background: rgba(17, 24, 39, 0.04); border-radius: 12px; font-size: 13px;">
+      <div style="margin-top: 16px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
         <strong style="font-size: 14px;">📊 Statistik Login:</strong>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px;">
           <div>
             <div style="color: var(--text-dim); font-size: 11px;">Total Siswa Login</div>
-            <div style="font-size: 22px; font-weight: 800; color: #10B981;" id="tokenStatTotal">0</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--success);" id="tokenStatTotal">0</div>
           </div>
           <div>
             <div style="color: var(--text-dim); font-size: 11px;">Tim Kanan</div>
-            <div style="font-size: 22px; font-weight: 800; color: #1E40AF;" id="tokenStatKanan">0</div>
+            <div style="font-size: 22px; font-weight: 800; color: #C7D2FE;" id="tokenStatKanan">0</div>
           </div>
           <div>
             <div style="color: var(--text-dim); font-size: 11px;">Tim Kiri</div>
-            <div style="font-size: 22px; font-weight: 800; color: #F59E0B;" id="tokenStatKiri">0</div>
+            <div style="font-size: 22px; font-weight: 800; color: var(--accent);" id="tokenStatKiri">0</div>
           </div>
         </div>
       </div>
@@ -893,7 +892,7 @@ body {
     <div class="panel">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
         <h3 style="margin: 0;">👥 Daftar Siswa Per Meja <span class="badge-count" id="totalSiswaBadge">0</span></h3>
-        <button class="btn-ghost" onclick="loadDaftarSiswa()" style="background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #FFFFFF; border: none;">🔄 Refresh</button>
+        <button class="btn-ghost" onclick="loadDaftarSiswa()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #C7D2FE; border: none;">🔄 Refresh</button>
       </div>
       <div class="filter-bar">
         <div class="lbl">Filter Kelas:</div>
@@ -924,13 +923,13 @@ body {
           </div>
         </div>
       </div>
-      <div style="margin-top: 18px; padding: 14px; background: rgba(17, 24, 39, 0.04); border-radius: 12px; font-size: 13px;">
+      <div style="margin-top: 18px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px;">
         <strong style="font-size: 14px;">📊 Ringkasan:</strong>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px;">
-          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kanan</div><div style="font-size: 18px; font-weight: 800; color: #1E40AF;" id="avgKanan">0</div></div>
-          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kiri</div><div style="font-size: 18px; font-weight: 800; color: #F59E0B;" id="avgKiri">0</div></div>
-          <div><div style="color: var(--text-dim); font-size: 11px;">Terkunci</div><div style="font-size: 18px; font-weight: 800; color: #DC2626;" id="totalTerkunci">0</div></div>
-          <div><div style="color: var(--text-dim); font-size: 11px;">Total Pelanggaran</div><div style="font-size: 18px; font-weight: 800; color: #F59E0B;" id="totalPelanggaran">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kanan</div><div style="font-size: 18px; font-weight: 800; color: #C7D2FE;" id="avgKanan">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Rata-rata Kiri</div><div style="font-size: 18px; font-weight: 800; color: var(--accent);" id="avgKiri">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Terkunci</div><div style="font-size: 18px; font-weight: 800; color: #FCA5A5;" id="totalTerkunci">0</div></div>
+          <div><div style="color: var(--text-dim); font-size: 11px;">Total Pelanggaran</div><div style="font-size: 18px; font-weight: 800; color: var(--accent);" id="totalPelanggaran">0</div></div>
         </div>
       </div>
     </div>
@@ -940,8 +939,8 @@ body {
   <div class="tab-content" id="tab-pelanggaran">
     <div class="panel">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-        <h3 style="margin: 0;">⚠️ Log Pelanggaran Siswa <span class="badge-count" id="pelCount" style="background: #DC2626;">0</span></h3>
-        <button class="btn-ghost" onclick="loadPelanggaran()" style="background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #FFFFFF; border: none;">🔄 Refresh</button>
+        <h3 style="margin: 0;">⚠️ Log Pelanggaran Siswa <span class="badge-count" id="pelCount" style="background: var(--danger);">0</span></h3>
+        <button class="btn-ghost" onclick="loadPelanggaran()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #C7D2FE; border: none;">🔄 Refresh</button>
       </div>
       <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 16px;">
         Pelanggaran tercatat otomatis: keluar mode fullscreen, pindah tab baru. Akun terkunci permanen setelah 3x. Klik <strong>Refresh</strong> untuk update log.
@@ -973,21 +972,21 @@ body {
   <div class="modal" style="max-width: 500px;">
     <div style="text-align: center; margin-bottom: 18px;">
       <div style="font-size: 60px; margin-bottom: 8px;">🎯</div>
-      <h3 style="font-size: 20px; color: #1E40AF; margin-bottom: 6px;">Sudah Soal Terakhir!</h3>
-      <p style="color: #6B7280; font-size: 13px;">Semua 20 soal sudah ditampilkan. Pilih aksi selanjutnya:</p>
+      <h3 style="font-size: 20px; color: #C7D2FE; margin-bottom: 6px;">Sudah Soal Terakhir!</h3>
+      <p style="color: var(--text-dim); font-size: 13px;">Semua 20 soal sudah ditampilkan. Pilih aksi selanjutnya:</p>
     </div>
     <div style="display: flex; flex-direction: column; gap: 10px;">
-      <button onclick="closeLastSoalModal(); endKuis();" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+      <button onclick="closeLastSoalModal(); endKuis();" style="background: linear-gradient(135deg, var(--warning), var(--accent)); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(245,158,11,0.4);">
         🏆 TUTUP KUIS &amp; TAMPILKAN PEMENANG
       </button>
-      <button onclick="closeLastSoalModal(); confirmReset();" style="background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);">
+      <button onclick="closeLastSoalModal(); confirmReset();" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 30px rgba(99,102,241,0.5);">
         🔄 KUIS BARU (Reset Skor ke 0)
       </button>
-      <button onclick="closeLastSoalModal()" style="background: #F3F4F6; color: #6B7280; border: 1px solid #E5E7EB; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">
+      <button onclick="closeLastSoalModal()" style="background: var(--bg-soft); color: var(--text-dim); border: 1px solid #E5E7EB; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">
         Batal (tetap di soal terakhir)
       </button>
     </div>
-    <div style="margin-top: 12px; padding: 10px; background: #FEF3C7; border-radius: 8px; font-size: 11px; color: #92400E; text-align: center;">
+    <div style="margin-top: 12px; padding: 10px; background: rgba(245,158,11,0.15); border-radius: 8px; font-size: 11px; color: #92400E; text-align: center;">
       💡 Tips: Pilih <strong>TUTUP KUIS</strong> untuk lihat pemenang & tampilkan animasi kemenangan ke siswa.<br>
       Pilih <strong>KUIS BARU</strong> untuk reset skor & mulai dari awal (kelas lain atau ulang).
     </div>
@@ -1291,6 +1290,103 @@ async function cekStateSheet() {
   }
 }
 
+// === TEST FLOW LENGKAP - diagnostik MULAI KUIS → siswa lihat soal ===
+async function testKuisFlow() {
+  const dbgErr = document.getElementById('ctrlDebugError');
+  if (dbgErr) {
+    dbgErr.style.display = 'block';
+    dbgErr.style.background = 'rgba(99,102,241,0.15)';
+    dbgErr.style.color = '#C7D2FE';
+    dbgErr.innerHTML = '<strong>🧪 TEST FLOW KUIS - Diagnostik Lengkap</strong><br><br>' +
+      '<strong>Step 1: Cek state sebelum MULAI KUIS</strong><br>' +
+      '...mengirim getQuizStatus...';
+  }
+  let log = '🧪 TEST FLOW KUIS - Diagnostik Lengkap\n\n';
+  log += 'GAS_URL: ' + GAS_URL.substring(0, 50) + '...\n\n';
+
+  // Step 1: Cek state awal
+  log += '=== Step 1: Cek state AWAL ===\n';
+  try {
+    const statusBefore = await gasGet('getQuizStatus');
+    log += 'current_soal: ' + statusBefore.current_soal + '\n';
+    log += 'quiz_active: ' + statusBefore.quiz_active + '\n';
+    log += 'quiz_finished: ' + statusBefore.quiz_finished + '\n\n';
+  } catch (e) {
+    log += '❌ ERROR: ' + e.message + '\n\n';
+    showFlowTestResult(log);
+    return;
+  }
+
+  // Step 2: Simulate MULAI KUIS (POST nextSoal)
+  log += '=== Step 2: POST nextSoal (simulate MULAI KUIS) ===\n';
+  try {
+    const res = await gasPost('nextSoal', {});
+    log += 'success: ' + res.success + '\n';
+    log += 'verified: ' + (res.verified === undefined ? 'N/A' : res.verified) + '\n';
+    if (res.warnings && res.warnings.length) log += 'warnings: ' + res.warnings.join('; ') + '\n';
+    if (res.current_soal) log += 'current_soal returned: ' + res.current_soal + '\n';
+    if (res.message) log += 'message: ' + res.message + '\n';
+    log += '\n';
+  } catch (e) {
+    log += '❌ ERROR POST: ' + e.message + '\n\n';
+    showFlowTestResult(log);
+    return;
+  }
+
+  // Step 3: Tunggu 2 detik, cek state lagi
+  log += '=== Step 3: Tunggu 2 detik, cek state SETELAH MULAI ===\n';
+  await new Promise(r => setTimeout(r, 2000));
+  try {
+    const statusAfter = await gasGet('getQuizStatus');
+    log += 'current_soal: ' + statusAfter.current_soal + '\n';
+    log += 'quiz_active: ' + statusAfter.quiz_active + '\n';
+    if (statusAfter.current_soal > 0 && statusAfter.quiz_active) {
+      log += '✓ State BERHASIL tersimpan!\n\n';
+    } else {
+      log += '⚠ State BELUM berubah! Kemungkinan Kode.gs belum di-re-deploy.\n\n';
+    }
+  } catch (e) {
+    log += '❌ ERROR: ' + e.message + '\n\n';
+  }
+
+  // Step 4: Simulate siswa poll (getCurrentSoal)
+  log += '=== Step 4: GET getCurrentSoal (simulate siswa poll) ===\n';
+  try {
+    const soal = await gasGet('getCurrentSoal');
+    log += 'active: ' + soal.active + '\n';
+    log += 'soal_nomor: ' + (soal.soal_nomor || 0) + '\n';
+    log += 'quiz_finished: ' + soal.quiz_finished + '\n';
+    if (soal.active && soal.soal_nomor > 0) {
+      log += '✓ SISWA AKAN LIHAT SOAL #' + soal.soal_nomor + '!\n';
+      log += '   Pertanyaan: ' + (soal.pertanyaan || '').substring(0, 80) + '...\n';
+      log += '   Tipe: ' + soal.tipe + '\n';
+    } else {
+      log += '⚠ Siswa masih "Menunggu admin memulai soal..." - soal tidak akan muncul!\n';
+      log += '   message: ' + (soal.message || '-') + '\n';
+    }
+  } catch (e) {
+    log += '❌ ERROR: ' + e.message + '\n';
+  }
+
+  showFlowTestResult(log);
+}
+
+function showFlowTestResult(log) {
+  const dbgErr = document.getElementById('ctrlDebugError');
+  if (dbgErr) {
+    dbgErr.style.display = 'block';
+    dbgErr.style.background = 'rgba(15,23,42,0.95)';
+    dbgErr.style.color = '#C7D2FE';
+    dbgErr.style.padding = '14px';
+    dbgErr.style.fontSize = '11px';
+    dbgErr.style.maxHeight = '400px';
+    dbgErr.style.overflowY = 'auto';
+    dbgErr.innerHTML = '<pre style="white-space: pre-wrap; font-family: \'Courier New\', monospace; line-height: 1.5;">' + log + '</pre>';
+  }
+  console.log(log);
+  toast('✓ Test flow selesai - lihat hasil di panel debug', 'success', 4000);
+}
+
 // END KUIS + SHOW WINNER (NEW)
 async function endKuis() {
   showModal('Tutup Kuis & Tampilkan Pemenang?',
@@ -1380,14 +1476,14 @@ function updateStepIndicator(step) {
     if (num === step) {
       el.style.opacity = '1';
       if (circle) {
-        circle.style.background = 'linear-gradient(135deg, #1E40AF, #F59E0B)';
+        circle.style.background = 'linear-gradient(135deg, var(--primary), var(--accent))';
         circle.style.color = '#fff';
       }
     } else if (num < step) {
       // Sudah selesai - tampilkan hijau
       el.style.opacity = '0.7';
       if (circle) {
-        circle.style.background = 'linear-gradient(135deg, #1E40AF, #3B82F6)';
+        circle.style.background = 'linear-gradient(135deg, var(--success), var(--info))';
         circle.style.color = '#fff';
         circle.textContent = '✓';
       }
@@ -1395,7 +1491,7 @@ function updateStepIndicator(step) {
       // Belum dimulai
       el.style.opacity = '0.4';
       if (circle) {
-        circle.style.background = 'rgba(17, 24, 39, 0.1)';
+        circle.style.background = 'rgba(255,255,255,0.1)';
         circle.style.color = 'var(--text-dim)';
       }
     }
@@ -1455,9 +1551,9 @@ async function refreshStatus() {
       dbgFinished.style.color = status.quiz_finished ? '#6EE7B7' : '#FCA5A5';
     }
     if (dbgBadge) {
-      if (status.quiz_finished) { dbgBadge.textContent = '● SELESAI'; dbgBadge.style.background = 'rgba(245, 158, 11, 0.25)'; dbgBadge.style.color = '#FCD34D'; }
+      if (status.quiz_finished) { dbgBadge.textContent = '● SELESAI'; dbgBadge.style.background = 'rgba(245,158,11,0.3)'; dbgBadge.style.color = '#FCD34D'; }
       else if (status.quiz_active) { dbgBadge.textContent = '● BERJALAN'; dbgBadge.style.background = 'rgba(16, 185, 129, 0.2)'; dbgBadge.style.color = '#6EE7B7'; }
-      else { dbgBadge.textContent = '● MENUNGGU'; dbgBadge.style.background = 'rgba(245, 158, 11, 0.25)'; dbgBadge.style.color = '#FCD34D'; }
+      else { dbgBadge.textContent = '● MENUNGGU'; dbgBadge.style.background = 'rgba(245,158,11,0.3)'; dbgBadge.style.color = '#FCD34D'; }
     }
     if (dbgErr) dbgErr.style.display = 'none';
 
@@ -1615,10 +1711,10 @@ function renderTokenSiswaList(targetId, list) {
     const negClass = (s.score || 0) < 0 ? 'negative' : '';
     // Status badge (Aktif / Pending / Terkunci / Selesai)
     let statusBadge = '';
-    if (s.status === 'terkunci') statusBadge = '<span class="pel" style="background: rgba(220, 38, 38, 0.2);">🔒 Terkunci</span>';
-    else if (s.status === 'aktif') statusBadge = '<span class="pel" style="background: rgba(16, 185, 129, 0.2); color: #059669;">● Aktif</span>';
-    else if (s.status === 'selesai') statusBadge = '<span class="pel" style="background: rgba(30, 64, 175, 0.2); color: #1E40AF;">✓ Selesai</span>';
-    else statusBadge = '<span class="pel" style="background: #FDE68A; color: #D97706;">⏳ Pending</span>';
+    if (s.status === 'terkunci') statusBadge = '<span class="pel" style="background: rgba(239,68,68,0.3);">🔒 Terkunci</span>';
+    else if (s.status === 'aktif') statusBadge = '<span class="pel" style="background: rgba(16,185,129,0.3); color: #6EE7B7;">● Aktif</span>';
+    else if (s.status === 'selesai') statusBadge = '<span class="pel" style="background: rgba(99,102,241,0.3); color: #C7D2FE;">✓ Selesai</span>';
+    else statusBadge = '<span class="pel" style="background: rgba(245,158,11,0.3); color: #FCD34D;">⏳ Pending</span>';
     return '<div class="siswa-row ' + rankClass + ' ' + lockedClass + ' ' + negClass + '">' +
       '<div class="rank">' + (i + 1) + '</div>' +
       '<div style="flex: 1; min-width: 0;">' +
