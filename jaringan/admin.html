@@ -582,23 +582,77 @@ body {
   <div class="tab-content active" id="tab-control">
     <div class="panel">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-        <h3 style="margin: 0;">⚡ Kontrol Soal Kuis Literasi</h3>
+        <h3 style="margin: 0;">⚡ Kontrol Kuis Literasi</h3>
         <button class="btn-ghost" onclick="refreshStatus(); loadDaftarSiswa();" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none;">🔄 Refresh Status</button>
       </div>
 
-      <!-- STATE 1: KUIS BELUM DIMULAI - tampilkan tombol MULAI KUIS yang besar -->
-      <div id="ctrlStateStart" style="text-align: center; padding: 32px 16px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.1)); border: 2px dashed rgba(99,102,241,0.4); border-radius: 16px; margin-bottom: 18px;">
-        <div style="font-size: 80px; margin-bottom: 12px;">🎬</div>
-        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">KUIS SIAP DIMULAI</h2>
-        <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto;">
-          Pastikan semua siswa sudah login dengan token. Klik tombol di bawah untuk menampilkan <strong>Soal #1</strong> ke seluruh siswa secara bersamaan.
-        </p>
-        <button class="btn-mulai-kuis" id="btnMulaiKuis" onclick="nextSoal()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 22px 56px; border-radius: 18px; font-size: 22px; font-weight: 800; cursor: pointer; box-shadow: 0 16px 40px rgba(16,185,129,0.5); transition: all 0.3s; letter-spacing: 2px;">
-          🚀 MULAI KUIS
-        </button>
-        <div style="margin-top: 16px; font-size: 12px; color: var(--text-dim);">
-          Total soal: <strong>20</strong> (15 PG + 5 Essay) • Timer: 45s PG / 90s Essay
+      <!-- WIZARD STEPS - progress indicator -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; padding: 14px; background: rgba(15,23,42,0.5); border-radius: 14px; border: 1px solid var(--border);">
+        <div id="step1Indicator" class="step-indicator active" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #fff; flex-shrink: 0;">1</div>
+          <div style="min-width: 0;">
+            <div style="font-size: 13px; font-weight: 700;">SETUP TOKEN</div>
+            <div style="font-size: 11px; color: var(--text-dim);">Generate & tunggu siswa</div>
+          </div>
         </div>
+        <div style="font-size: 18px; opacity: 0.3;">→</div>
+        <div id="step2Indicator" class="step-indicator" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px; opacity: 0.4;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">2</div>
+          <div style="min-width: 0;">
+            <div style="font-size: 13px; font-weight: 700;">MULAI KUIS</div>
+            <div style="font-size: 11px; color: var(--text-dim);">Tampilkan Soal #1</div>
+          </div>
+        </div>
+        <div style="font-size: 18px; opacity: 0.3;">→</div>
+        <div id="step3Indicator" class="step-indicator" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px; opacity: 0.4;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">3</div>
+          <div style="min-width: 0;">
+            <div style="font-size: 13px; font-weight: 700;">SOAL BERJALAN</div>
+            <div style="font-size: 11px; color: var(--text-dim);">Next soal sampai selesai</div>
+          </div>
+        </div>
+        <div style="font-size: 18px; opacity: 0.3;">→</div>
+        <div id="step4Indicator" class="step-indicator" style="display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px; border-radius: 10px; opacity: 0.4;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: var(--text-dim); flex-shrink: 0;">4</div>
+          <div style="min-width: 0;">
+            <div style="font-size: 13px; font-weight: 700;">SELESAI</div>
+            <div style="font-size: 11px; color: var(--text-dim);">Pemenang & reset</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE 1: STEP 1 - SETUP TOKEN (kuis belum mulai, belum ada siswa) -->
+      <div id="ctrlStateSetup" style="text-align: center; padding: 28px 16px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(236,72,153,0.1)); border: 2px dashed rgba(99,102,241,0.4); border-radius: 16px; margin-bottom: 18px;">
+        <div style="font-size: 60px; margin-bottom: 8px;">🔑</div>
+        <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 1: SETUP TOKEN</h2>
+        <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 20px; max-width: 480px; margin-left: auto; margin-right: auto;">
+          1. Buka tab <strong>🔑 Token</strong> di atas & klik <strong>GENERATE BARU</strong> untuk meja kanan & kiri.<br>
+          2. Bagikan token ke siswa sesuai meja.<br>
+          3. Tunggu siswa login. Jumlah siswa yang masuk ditampilkan di bawah.
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 24px; margin: 18px 0; flex-wrap: wrap;">
+          <div style="background: rgba(99,102,241,0.2); padding: 16px 24px; border-radius: 14px; min-width: 140px;">
+            <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KANAN</div>
+            <div style="font-size: 32px; font-weight: 900; color: #C7D2FE;" id="setupSiswaKanan">0</div>
+            <div style="font-size: 10px; color: var(--text-dim);">siswa login</div>
+          </div>
+          <div style="background: rgba(245,158,11,0.2); padding: 16px 24px; border-radius: 14px; min-width: 140px;">
+            <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KIRI</div>
+            <div style="font-size: 32px; font-weight: 900; color: #FCD34D;" id="setupSiswaKiri">0</div>
+            <div style="font-size: 10px; color: var(--text-dim);">siswa login</div>
+          </div>
+        </div>
+
+        <button onclick="document.querySelector('[data-tab=token]').click()" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; border: none; padding: 14px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 24px rgba(99,102,241,0.4); margin-bottom: 12px;">
+          🔑 Buka Tab Token
+        </button>
+        <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 14px;">
+          Setelah siswa masuk, klik tombol di bawah untuk lanjut ke Langkah 2
+        </div>
+        <button id="btnLanjutMulai" onclick="goToStep2()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 18px 44px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 12px 32px rgba(16,185,129,0.5); transition: all 0.3s; letter-spacing: 1px;">
+          ➜ LANJUT KE MULAI KUIS
+        </button>
 
         <!-- Debug info: status server -->
         <div id="ctrlDebugInfo" style="margin-top: 20px; padding: 12px; background: rgba(15,23,42,0.7); border: 1px solid rgba(99,102,241,0.3); border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; text-align: left; max-width: 480px; margin: 20px auto 0;">
@@ -617,33 +671,58 @@ body {
         </div>
       </div>
 
-      <!-- STATE 2: KUIS BERJALAN - tampilkan kontrol next/stop/end -->
+      <!-- STATE 2: STEP 2 - MULAI KUIS (siswa sudah ada, kuis belum mulai) -->
+      <div id="ctrlStateStart" style="display: none; text-align: center; padding: 36px 16px; background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1)); border: 2px solid rgba(16,185,129,0.4); border-radius: 16px; margin-bottom: 18px;">
+        <div style="font-size: 80px; margin-bottom: 12px;">🎬</div>
+        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--success), var(--info)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 2: MULAI KUIS</h2>
+        <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto;">
+          Siswa sudah siap! Klik tombol di bawah untuk menampilkan <strong>Soal #1</strong> ke seluruh siswa secara bersamaan.
+        </p>
+        <button class="btn-mulai-kuis" id="btnMulaiKuis" onclick="nextSoal()" style="background: linear-gradient(135deg, var(--success), var(--info)); color: #fff; border: none; padding: 26px 64px; border-radius: 20px; font-size: 24px; font-weight: 800; cursor: pointer; box-shadow: 0 18px 44px rgba(16,185,129,0.5); transition: all 0.3s; letter-spacing: 2px;">
+          🚀 MULAI KUIS - TAMPILKAN SOAL #1
+        </button>
+        <div style="margin-top: 16px; font-size: 12px; color: var(--text-dim);">
+          Total soal: <strong>20</strong> (15 PG + 5 Essay) • Timer: 45s PG / 90s Essay
+        </div>
+        <div style="margin-top: 14px;">
+          <button onclick="goToStep1()" style="background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border); padding: 10px 24px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer;">
+            ← Kembali ke Langkah 1
+          </button>
+        </div>
+      </div>
+
+      <!-- STATE 3: STEP 3 - SOAL BERJALAN (kuis aktif, soal #1+) -->
       <div id="ctrlStateRunning" style="display: none;">
+        <div style="text-align: center; padding: 24px 16px; background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1)); border: 2px solid rgba(16,185,129,0.4); border-radius: 16px; margin-bottom: 18px;">
+          <div style="font-size: 60px; margin-bottom: 8px;">📝</div>
+          <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--success), var(--info)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 3: SOAL BERJALAN</h2>
+          <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 24px;">
+            Siswa sedang menjawab soal. Klik <strong>Next Soal</strong> untuk pindah ke soal berikutnya.
+          </p>
+          <button class="btn-next" id="btnNext" onclick="nextSoal()" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; border: none; padding: 22px 56px; border-radius: 18px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 14px 36px rgba(99,102,241,0.5); transition: all 0.3s; letter-spacing: 2px;">
+            ➜ NEXT SOAL
+          </button>
+        </div>
+
         <div class="control-panel">
           <div class="control-box">
             <div class="lbl">SOAL SAAT INI</div>
             <div class="val" id="ctrlSoal">—</div>
-            <div class="desc" id="ctrlSoalDesc">Klik "Next Soal" untuk menampilkan soal berikutnya ke seluruh siswa</div>
-            <button class="btn-next" id="btnNext" onclick="nextSoal()">➜ NEXT SOAL</button>
-            <button class="btn-stop" id="btnStop" onclick="stopKuis()">⏸ PAUSE KUIS</button>
-            <button class="btn-end" id="btnEnd" onclick="endKuis()">🏆 TUTUP &amp; TAMPILKAN PEMENANG</button>
-            <button class="btn-reset" onclick="confirmReset()">↺ RESET KUIS (Bersihkan Skor)</button>
+            <div class="desc" id="ctrlSoalDesc">Klik "Next Soal" untuk lanjut</div>
           </div>
           <div class="control-box">
             <div class="lbl">STATUS</div>
             <div class="val" id="ctrlStatus" style="color: var(--success);">Berjalan</div>
-            <div class="desc" id="ctrlStatusDesc">Siswa sedang menjawab soal literasi.</div>
+            <div class="desc" id="ctrlStatusDesc">Siswa sedang menjawab.</div>
             <div style="background: rgba(16,185,129,0.15); padding: 12px; border-radius: 10px; text-align: center; margin-top: 12px;">
               <span class="live-dot"></span>
               <span style="font-size: 13px; font-weight: 600;">Kuis Aktif</span>
             </div>
           </div>
           <div class="control-box">
-            <div class="lbl">TOTAL SOAL</div>
-            <div class="val" id="ctrlTotalSoal">20</div>
-            <div class="desc">Soal literasi tersedia (15 PG + 5 Essay)</div>
+            <div class="lbl">PROGRES</div>
+            <div class="val" id="ctrlTotalSoal">0/20</div>
             <div style="margin-top: 12px;">
-              <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">PROGRES KUIS</div>
               <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
                 <div id="ctrlProgress" style="height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.5s;"></div>
               </div>
@@ -651,13 +730,24 @@ body {
             </div>
           </div>
         </div>
+
+        <!-- Tombol End Kuis dipisah dengan jelas + warning -->
+        <div style="margin-top: 16px; padding: 16px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px;">
+          <div style="font-size: 13px; font-weight: 700; color: #FCD34D; margin-bottom: 8px;">
+            ⚠ TUTUP KUIS (opsional - klik setelah soal terakhir selesai)
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-end" id="btnEnd" onclick="endKuis()" style="flex: 1; min-width: 200px;">🏆 TUTUP &amp; TAMPILKAN PEMENANG</button>
+            <button class="btn-stop" id="btnStop" onclick="stopKuis()" style="flex: 1; min-width: 150px;">⏸ PAUSE KUIS</button>
+          </div>
+        </div>
       </div>
 
-      <!-- STATE 3: KUIS SELESAI - tampilkan winner + tombol reset -->
-      <div id="ctrlStateFinished" style="display: none; text-align: center; padding: 32px 16px; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.1)); border: 2px solid rgba(245,158,11,0.4); border-radius: 16px;">
+      <!-- STATE 4: STEP 4 - KUIS SELESAI - pemenang + tombol reset -->
+      <div id="ctrlStateFinished" style="display: none; text-align: center; padding: 36px 16px; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.1)); border: 2px solid rgba(245,158,11,0.4); border-radius: 16px;">
         <div style="font-size: 80px; margin-bottom: 12px;" id="ctrlFinishEmoji">🏆</div>
-        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #FCD34D, #F59E0B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;" id="ctrlFinishTitle">KUIS SELESAI</h2>
-        <p style="color: var(--text); font-size: 16px; margin-bottom: 20px;" id="ctrlFinishWinner">Pemenang: -</p>
+        <h2 style="font-size: 26px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #FCD34D, #F59E0B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">LANGKAH 4: KUIS SELESAI</h2>
+        <p style="color: var(--text); font-size: 16px; margin-bottom: 20px; font-weight: 700;" id="ctrlFinishWinner">Pemenang: -</p>
         <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
           <div style="background: rgba(99,102,241,0.2); padding: 16px 28px; border-radius: 14px; border: 1px solid var(--kanan);">
             <div style="font-size: 11px; color: var(--text-dim); font-weight: 600; letter-spacing: 2px;">MEJA KANAN</div>
@@ -669,7 +759,21 @@ body {
             <div style="font-size: 36px; font-weight: 900; color: #FCD34D; font-family: 'Courier New', monospace;" id="ctrlFinishKiri">0</div>
           </div>
         </div>
-        <button class="btn-reset" onclick="confirmReset()" style="display: inline-block; width: auto; padding: 14px 32px; font-size: 15px;">↺ MULAI KUIS BARU (Reset Skor)</button>
+        <div style="margin-bottom: 18px; padding: 14px; background: rgba(99,102,241,0.1); border-radius: 10px; max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 18px;">
+          <div style="font-size: 13px; color: #C7D2FE; margin-bottom: 4px;">
+            🔄 Klik tombol di bawah untuk <strong>mulai kuis baru</strong> (kelas lain atau ulang).
+          </div>
+          <div style="font-size: 11px; color: var(--text-dim);">
+            Semua skor siswa akan direset ke 0. Token tetap aktif. Siswa tidak perlu login ulang.<br>
+            <em>(Jika masih ada siswa login, akan kembali ke Langkah 2 - Mulai Kuis. Jika semua siswa logout, kembali ke Langkah 1 - Setup Token.)</em>
+          </div>
+        </div>
+        <button onclick="confirmReset()" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; border: none; padding: 22px 48px; border-radius: 18px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 16px 40px rgba(99,102,241,0.5); transition: all 0.3s; letter-spacing: 1px;">
+          🔄 COBA KUIS LAGI DARI AWAL
+        </button>
+        <div style="margin-top: 14px; font-size: 11px; color: var(--text-dim);">
+          Setelah reset, akan kembali ke Langkah 1 (Setup Token)
+        </div>
       </div>
     </div>
 
@@ -1191,15 +1295,76 @@ function updateControlUI(res) {
   const progress = (res.current_soal / total) * 100;
   document.getElementById('ctrlProgress').style.width = progress + '%';
   document.getElementById('ctrlProgressTxt').textContent = res.current_soal + '/' + total;
+  document.getElementById('ctrlTotalSoal').textContent = res.current_soal + '/' + total;
   document.getElementById('stSoal').textContent = res.current_soal;
   document.getElementById('stSoalSub').textContent = 'Tipe: ' + res.tipe.toUpperCase();
-  document.getElementById('btnStop').style.display = 'block';
   document.getElementById('quizStatus').textContent = '🔴 KUIS BERJALAN';
   document.getElementById('quizStatus').className = 'quiz-status';
+  // Update step indicator - aktifkan step 3
+  updateStepIndicator(3);
   // Tampilkan state Running, sembunyikan state lain
+  document.getElementById('ctrlStateSetup').style.display = 'none';
   document.getElementById('ctrlStateStart').style.display = 'none';
   document.getElementById('ctrlStateRunning').style.display = 'block';
   document.getElementById('ctrlStateFinished').style.display = 'none';
+}
+
+// Update step indicator (highlight step yang aktif)
+function updateStepIndicator(step) {
+  const steps = ['step1Indicator', 'step2Indicator', 'step3Indicator', 'step4Indicator'];
+  steps.forEach((id, idx) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const num = idx + 1;
+    const circle = el.querySelector('div > div:first-child'); // lingkaran nomor
+    if (num === step) {
+      el.style.opacity = '1';
+      if (circle) {
+        circle.style.background = 'linear-gradient(135deg, var(--primary), var(--accent))';
+        circle.style.color = '#fff';
+      }
+    } else if (num < step) {
+      // Sudah selesai - tampilkan hijau
+      el.style.opacity = '0.7';
+      if (circle) {
+        circle.style.background = 'linear-gradient(135deg, var(--success), var(--info))';
+        circle.style.color = '#fff';
+        circle.textContent = '✓';
+      }
+    } else {
+      // Belum dimulai
+      el.style.opacity = '0.4';
+      if (circle) {
+        circle.style.background = 'rgba(255,255,255,0.1)';
+        circle.style.color = 'var(--text-dim)';
+      }
+    }
+  });
+}
+
+// Navigasi manual antar step
+function goToStep1() {
+  // Manual pindah ke Step 1 (Setup Token)
+  document.getElementById('ctrlStateSetup').style.display = 'block';
+  document.getElementById('ctrlStateStart').style.display = 'none';
+  document.getElementById('ctrlStateRunning').style.display = 'none';
+  document.getElementById('ctrlStateFinished').style.display = 'none';
+  updateStepIndicator(1);
+}
+
+function goToStep2() {
+  // Manual pindah ke Step 2 (Mulai Kuis)
+  // Cek apakah ada siswa dulu
+  const totalSiswa = parseInt(document.getElementById('setupSiswaKanan').textContent || '0') +
+                     parseInt(document.getElementById('setupSiswaKiri').textContent || '0');
+  if (totalSiswa === 0) {
+    if (!confirm('Belum ada siswa yang login. Lanjut ke Mulai Kuis? (Anda tetap bisa kembali ke Langkah 1)')) return;
+  }
+  document.getElementById('ctrlStateSetup').style.display = 'none';
+  document.getElementById('ctrlStateStart').style.display = 'block';
+  document.getElementById('ctrlStateRunning').style.display = 'none';
+  document.getElementById('ctrlStateFinished').style.display = 'none';
+  updateStepIndicator(2);
 }
 
 async function refreshStatus() {
@@ -1208,7 +1373,7 @@ async function refreshStatus() {
     A.lastSoal = status.current_soal || 0;
     console.log('[refreshStatus] Status:', status);
 
-    // Update debug info di state Start
+    // Update debug info
     const dbgSoal = document.getElementById('ctrlDebugSoal');
     const dbgActive = document.getElementById('ctrlDebugActive');
     const dbgFinished = document.getElementById('ctrlDebugFinished');
@@ -1231,7 +1396,7 @@ async function refreshStatus() {
     if (dbgErr) dbgErr.style.display = 'none';
 
     if (status.quiz_finished) {
-      // STATE 3: KUIS SELESAI - tampilkan pemenang
+      // STATE 4: KUIS SELESAI (Langkah 4)
       const winnerText = status.winner === 'tie' ? '🤝 PERMAINAN SERI!' :
                           status.winner === 'kanan' ? '🏆 TIM KANAN MENANG!' :
                           status.winner === 'kiri' ? '🏆 TIM KIRI MENANG!' :
@@ -1245,14 +1410,15 @@ async function refreshStatus() {
       document.getElementById('quizStatus').textContent = '🏆 KUIS SELESAI';
       document.getElementById('quizStatus').className = 'quiz-status finished';
       // Tampilkan state Finished
+      document.getElementById('ctrlStateSetup').style.display = 'none';
       document.getElementById('ctrlStateStart').style.display = 'none';
       document.getElementById('ctrlStateRunning').style.display = 'none';
       document.getElementById('ctrlStateFinished').style.display = 'block';
-      // Update stats
+      updateStepIndicator(4);
       document.getElementById('stSoal').textContent = '✓';
       document.getElementById('stSoalSub').textContent = 'Kuis selesai';
     } else if (status.quiz_active && status.current_soal > 0) {
-      // STATE 2: KUIS BERJALAN
+      // STATE 3: KUIS BERJALAN (Langkah 3)
       try {
         const soalRes = await gasGet('getCurrentSoal');
         if (soalRes.active) {
@@ -1265,15 +1431,29 @@ async function refreshStatus() {
         }
       } catch (e) {}
     } else {
-      // STATE 1: KUIS BELUM DIMULAI (atau pause)
+      // STATE 1 atau 2: KUIS BELUM DIMULAI
       document.getElementById('quizStatus').textContent = '⏸ KUIS BELUM DIMULAI';
       document.getElementById('quizStatus').className = 'quiz-status inactive';
       document.getElementById('stSoal').textContent = '0';
       document.getElementById('stSoalSub').textContent = 'Belum dimulai';
-      // Tampilkan state Start
-      document.getElementById('ctrlStateStart').style.display = 'block';
+      // Sembunyikan state Running & Finished
       document.getElementById('ctrlStateRunning').style.display = 'none';
       document.getElementById('ctrlStateFinished').style.display = 'none';
+      // Tentukan state: Setup (Langkah 1) atau Start (Langkah 2) berdasarkan jumlah siswa
+      const siswaKanan = parseInt(document.getElementById('setupSiswaKanan').textContent || '0');
+      const siswaKiri = parseInt(document.getElementById('setupSiswaKiri').textContent || '0');
+      const totalSiswa = siswaKanan + siswaKiri;
+      if (totalSiswa > 0) {
+        // Sudah ada siswa - tampilkan state Start (Langkah 2)
+        document.getElementById('ctrlStateSetup').style.display = 'none';
+        document.getElementById('ctrlStateStart').style.display = 'block';
+        updateStepIndicator(2);
+      } else {
+        // Belum ada siswa - tampilkan state Setup (Langkah 1)
+        document.getElementById('ctrlStateSetup').style.display = 'block';
+        document.getElementById('ctrlStateStart').style.display = 'none';
+        updateStepIndicator(1);
+      }
     }
     if (status.token_kanan) {
       const el = document.getElementById('tokenKanan');
@@ -1340,6 +1520,11 @@ async function loadDaftarSiswa() {
       // Update debug info: Siswa login count
       const dbgSiswa = document.getElementById('ctrlDebugSiswa');
       if (dbgSiswa) dbgSiswa.textContent = res.summary.total + ' (Kanan: ' + res.siswa_kanan.length + ' | Kiri: ' + res.siswa_kiri.length + ')';
+      // Update setupSiswaKanan/Kiri di state Setup (Langkah 1)
+      const setupKanan = document.getElementById('setupSiswaKanan');
+      const setupKiri = document.getElementById('setupSiswaKiri');
+      if (setupKanan) setupKanan.textContent = res.siswa_kanan.length;
+      if (setupKiri) setupKiri.textContent = res.siswa_kiri.length;
     }
   } catch (e) { console.warn(e); }
 }
