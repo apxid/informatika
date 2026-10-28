@@ -842,36 +842,67 @@ const A = {
   pelanggaranSeen: 0, lastSoal: 0, ctrlTotalSoal: 20
 };
 
-// GAS API wrapper (fetch-based, seperti index.html)
+// GAS API wrapper (fetch-based, dengan error handling detail)
 async function gasGet(action, params = {}) {
+  if (GAS_URL.includes('PASTE_GAS_WEB_APP_URL_HERE')) {
+    throw new Error('GAS_URL belum diisi. Edit file admin.html bagian atas script, ganti PASTE_GAS_WEB_APP_URL_HERE dengan URL Web App Anda (akhiran /exec).');
+  }
+  if (!GAS_URL.endsWith('/exec')) {
+    throw new Error('GAS_URL harus berakhir dengan /exec (bukan /dev). URL Anda: ' + GAS_URL);
+  }
   const url = new URL(GAS_URL);
   url.searchParams.set('action', action);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-  // Add timestamp to prevent browser caching
   url.searchParams.set('_t', Date.now());
+  let res;
   try {
-    const res = await fetch(url.toString(), {
+    // JANGAN pakai custom headers seperti Cache-Control - akan trigger CORS preflight (OPTIONS) yang GAS tidak handle
+    res = await fetch(url.toString(), {
       method: 'GET',
       redirect: 'follow',
-      cache: 'no-store',
-      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      cache: 'no-store'
     });
-    const txt = await res.text();
+  } catch (fetchErr) {
+    throw new Error('Network/CORS error: ' + fetchErr.message + '. Pastikan deployment "Who has access: Anyone".');
+  }
+  const txt = await res.text();
+  if (!res.ok) {
+    throw new Error('HTTP ' + res.status + ' ' + res.statusText + '. Response: ' + txt.substring(0, 200));
+  }
+  try {
     return JSON.parse(txt);
-  } catch (e) { console.error('gasGet', action, e); throw e; }
+  } catch (parseErr) {
+    throw new Error('Response bukan JSON. Mungkin GAS redirect ke login Google. Response: ' + txt.substring(0, 200));
+  }
 }
 async function gasPost(action, data = {}) {
+  if (GAS_URL.includes('PASTE_GAS_WEB_APP_URL_HERE')) {
+    throw new Error('GAS_URL belum diisi. Edit file admin.html, ganti PASTE_GAS_WEB_APP_URL_HERE.');
+  }
+  if (!GAS_URL.endsWith('/exec')) {
+    throw new Error('GAS_URL harus berakhir /exec. URL Anda: ' + GAS_URL);
+  }
+  let res;
   try {
-    const res = await fetch(GAS_URL, {
+    res = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ ...data, action }),
       redirect: 'follow',
       cache: 'no-store'
     });
-    const txt = await res.text();
+  } catch (fetchErr) {
+    throw new Error('Network/CORS error: ' + fetchErr.message);
+  }
+  const txt = await res.text();
+  if (!res.ok) {
+    throw new Error('HTTP ' + res.status + '. Response: ' + txt.substring(0, 200));
+  }
+  try {
     return JSON.parse(txt);
-  } catch (e) { console.error('gasPost', action, e); throw e; }
+  } catch (parseErr) {
+    throw new Error('Response bukan JSON. Response: ' + txt.substring(0, 200));
+  }
 }
 
 function toast(msg, type = 'info', dur = 3000) {
@@ -906,7 +937,8 @@ async function doLogin() {
       toast(res.message || 'Login gagal', 'error');
     }
   } catch (e) {
-    toast('Error: ' + e.message, 'error');
+    console.error('[doLogin] Error:', e);
+    toast('⚠ ' + e.message, 'error', 8000);
   } finally {
     btn.disabled = false; btn.innerHTML = 'MASUK ➜';
   }
