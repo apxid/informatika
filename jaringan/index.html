@@ -1557,8 +1557,23 @@ async function pollSoal(verbose) {
       if (!STATE.answered && document.getElementById('quizView').style.display !== 'none') {
         showWaiting();
       }
+      // Hint: jika sudah 5+ poll tapi kuis belum aktif, tampilkan warning
       if (verbose) {
         toast('Kuis belum dimulai. Admin perlu klik MULAI KUIS.', 'info', 3000);
+      }
+      // Auto-hint setelah 5 poll (10 detik) masih false - kemungkinan Kode.gs belum re-deploy
+      if (STATE.pollCount === 5) {
+        const errEl = document.getElementById('pollLastError');
+        if (errEl) {
+          errEl.style.display = 'block';
+          errEl.style.background = 'rgba(245,158,11,0.15)';
+          errEl.style.color = '#FCD34D';
+          errEl.innerHTML = '⚠ Sudah 5 polling (10 detik) tapi kuis belum aktif.<br>' +
+            'Jika admin sudah klik MULAI KUIS, kemungkinan:<br>' +
+            '1. Kode.gs belum di-re-deploy (Deploy > Manage deployments > Edit > version baru)<br>' +
+            '2. Browser admin/siswa masih cache kode lama (Ctrl+Shift+R untuk hard refresh)<br>' +
+            '3. Cek di admin panel "STATUS SERVER" - apakah Current soal sudah berubah ke 1?';
+        }
       }
     }
   } catch (e) {
