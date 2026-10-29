@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard LKPD - SMPN 1 Moga</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="bg-slate-100 min-h-screen font-sans text-slate-800">
+
+  <!-- PIN Modal -->
+  <div id="pinModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl animate__animated animate__fadeInDown">
+      <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="lock" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800">Akses Guru / Admin</h2>
+      <p class="text-gray-500 text-sm mt-1 mb-6">Masukkan PIN keamanan dari sheet config</p>
+      
+      <input type="password" id="pinInput" placeholder="Masukkan PIN..." maxlength="8"
+        class="w-full text-center text-2xl tracking-widest px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none mb-4">
+      
+      <button onclick="verifyPin()" id="btnVerify"
+        class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-2">
+        <i data-lucide="key"></i> Verifikasi PIN
+      </button>
+      <p id="pinError" class="text-red-500 text-xs mt-3 hidden">PIN salah! Silakan periksa kembali.</p>
+    </div>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div id="adminContent" class="hidden">
+    <nav class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-lg">
+      <div class="flex items-center gap-3">
+        <i data-lucide="layout-dashboard" class="text-indigo-400"></i>
+        <h1 class="font-bold text-lg">Dashboard Rekapitulasi 10 Soal LKPD Siswa</h1>
+      </div>
+      <button onclick="location.reload()" class="text-sm bg-indigo-800 hover:bg-indigo-700 px-4 py-2 rounded-lg flex items-center gap-1">
+        <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
+      </button>
+    </nav>
+
+    <main class="max-w-[95%] mx-auto p-6">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-800">Data Jawaban Siswa</h2>
+          <p class="text-sm text-slate-500">Menampilkan seluruh jawaban dari 10 soal LKPD 1</p>
+        </div>
+        <button onclick="loadResponses()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh Data
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-xl overflow-x-auto border border-slate-200">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50 text-slate-600 uppercase tracking-wider border-b border-slate-200">
+              <th class="p-3">Waktu</th>
+              <th class="p-3">Nama Siswa</th>
+              <th class="p-3">Absen</th>
+              <th class="p-3">Kelas</th>
+              <th class="p-3">Q1 (Jaringan)</th>
+              <th class="p-3">Q2 (HW/SW)</th>
+              <th class="p-3">Q3 (Protokol)</th>
+              <th class="p-3">Q4 (Internet)</th>
+              <th class="p-3">Q5 (Etika)</th>
+              <th class="p-3">Q6 (Keamanan)</th>
+              <th class="p-3">Q7 (Topologi)</th>
+              <th class="p-3">Q8 (Media Akses)</th>
+              <th class="p-3">Q9 (OSI)</th>
+              <th class="p-3">Q10 (TCP/IP)</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="14" class="p-8 text-center text-slate-400">Memuat data jawaban...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyL_n30zesNORkR6R2kcC0XIgYjF-3kWl3YpVpmgZz1cvx-xNR5L50rmk7iZhKEoSw2/exec';
+    lucide.createIcons();
+
+    async function verifyPin() {
+      const pin = document.getElementById('pinInput').value;
+      const btn = document.getElementById('btnVerify');
+      const err = document.getElementById('pinError');
+      btn.disabled = true;
+      btn.innerHTML = 'Memeriksa...';
+
+      try {
+        const res = await fetch(`${GAS_URL}?page=verifyPin&pin=${encodeURIComponent(pin)}`);
+        const result = await res.json();
+        if (result.valid) {
+          document.getElementById('pinModal').classList.add('hidden');
+          document.getElementById('adminContent').classList.remove('hidden');
+          loadResponses();
+        } else {
+          err.classList.remove('hidden');
+        }
+      } catch (e) {
+        alert('Terjadi kesalahan koneksi!');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="key"></i> Verifikasi PIN`;
+        lucide.createIcons();
+      }
+    }
+
+    async function loadResponses() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = `<tr><td colspan="14" class="p-8 text-center text-slate-400">Memuat data...</td></tr>`;
+
+      try {
+        const res = await fetch(`${GAS_URL}?page=getResponses`);
+        const result = await res.json();
+
+        if (!result.data || result.data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="14" class="p-8 text-center text-slate-400">Belum ada jawaban yang masuk.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = result.data.map(row => `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-3 text-slate-400 whitespace-nowrap">${new Date(row.Timestamp).toLocaleString('id-ID')}</td>
+            <td class="p-3 font-semibold text-slate-800 whitespace-nowrap">${row.Nama || '-'}</td>
+            <td class="p-3 text-center font-bold text-slate-600">${row.No_Absen || '-'}</td>
+            <td class="p-3 whitespace-nowrap"><span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded-full">${row.Kelas || '-'}</span></td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q1_Jaringan_Komputer}">${row.Q1_Jaringan_Komputer || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q2_Hardware_Software}">${row.Q2_Hardware_Software || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q3_Protokol}">${row.Q3_Protokol || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q4_Internet_Manfaat}">${row.Q4_Internet_Manfaat || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q5_Etika_Digital}">${row.Q5_Etika_Digital || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q6_Keamanan_Data}">${row.Q6_Keamanan_Data || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q7_Topologi}">${row.Q7_Topologi || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q8_Media_Akses}">${row.Q8_Media_Akses || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q9_Model_OSI}">${row.Q9_Model_OSI || ''}</td>
+            <td class="p-3 max-w-xs truncate" title="${row.Q10_TCP_IP}">${row.Q10_TCP_IP || ''}</td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="14" class="p-8 text-center text-red-500">Gagal mengambil data.</td></tr>`;
+      }
+    }
+  </script>
+</body>
+</html>
