@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard LKPD - SMPN 1 Moga</title>
+  <title>Admin Dashboard & Koreksi LKPD - SMPN 1 Moga</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -35,25 +35,31 @@
   <div id="adminContent" class="hidden">
     <nav class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-lg">
       <div class="flex items-center gap-3">
-        <i data-lucide="layout-dashboard" class="text-indigo-400"></i>
-        <h1 class="font-bold text-lg">Dashboard Rekapitulasi 10 Soal LKPD Siswa</h1>
+        <i data-lucide="check-square" class="text-indigo-400"></i>
+        <h1 class="font-bold text-lg">Dashboard Koreksi Otomatis LKPD Siswa</h1>
       </div>
-      <button onclick="location.reload()" class="text-sm bg-indigo-800 hover:bg-indigo-700 px-4 py-2 rounded-lg flex items-center gap-1">
-        <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
-      </button>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleKeyModal()" class="text-sm bg-indigo-800 hover:bg-indigo-700 px-4 py-2 rounded-lg flex items-center gap-1.5 transition">
+          <i data-lucide="key" class="w-4 h-4"></i> Lihat Kunci Jawaban
+        </button>
+        <button onclick="location.reload()" class="text-sm bg-red-700 hover:bg-red-800 px-3 py-2 rounded-lg flex items-center gap-1 transition">
+          <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
+        </button>
+      </div>
     </nav>
 
-    <main class="max-w-[95%] mx-auto p-6">
-      <div class="flex justify-between items-center mb-6">
+    <main class="max-w-[96%] mx-auto p-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h2 class="text-xl font-bold text-slate-800">Data Jawaban Siswa</h2>
-          <p class="text-sm text-slate-500">Menampilkan seluruh jawaban dari 10 soal LKPD 1</p>
+          <h2 class="text-xl font-bold text-slate-800">Rekapitulasi & Analisis Jawaban Siswa</h2>
+          <p class="text-sm text-slate-500">Sistem mendeteksi kesesuaian jawaban berdasarkan kata kunci referensi modul.</p>
         </div>
-        <button onclick="loadResponses()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+        <button onclick="loadResponses()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow transition">
           <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh Data
         </button>
       </div>
 
+      <!-- Data Table -->
       <div class="bg-white rounded-2xl shadow-xl overflow-x-auto border border-slate-200">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
@@ -84,8 +90,48 @@
     </main>
   </div>
 
+  <!-- Modal Kunci Jawaban Referensi -->
+  <div id="keyModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl p-6 max-w-3xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
+      <div class="flex justify-between items-center mb-4 border-b pb-3">
+        <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+          <i data-lucide="book-open" class="text-indigo-600"></i> Kunci Jawaban & Kata Kunci Referensi (Modul Bab 5)
+        </h3>
+        <button onclick="toggleKeyModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
+      </div>
+      <div class="space-y-3 text-xs text-slate-700">
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q1 (Jaringan Komputer):</b> Sekumpulan komputer yang terhubung bersama untuk saling berbagi sumber daya (data, printer, internet). Contoh: Internet, LAN sekolah, jaringan telkomsel.</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q2 (Hardware & Software):</b> Hardware adalah perangkat keras fisik (router, kabel UTP, switch, NIC). Software adalah perangkat lunak/program pengaturnya (sistem operasi jaringan, driver, protokol).</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q3 (Protokol Jaringan):</b> Aturan standar yang mengatur bagaimana data dikirimkan antar perangkat dalam jaringan. Contoh: HTTP, TCP/IP, FTP, SMTP.</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q4 (Internet):</b> Jaringan komputer global yang saling terhubung menggunakan standar TCP/IP. Manfaat: sumber informasi, e-learning, komunikasi cepat, hiburan.</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q5 (Etika Digital):</b> Norma dan aturan sopan santun saat berinteraksi di dunia maya (tidak menyebar hoaks, menghargai karya orang lain, santun berbahasa).</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q6 (Keamanan Data):</b> Upaya melindungi data pribadi atau sistem dari akses ilegal/pencurian. Tips: Gunakan password kuat, aktifkan 2FA, hindariphishing, enkripsi data.</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q7 (Topologi Jaringan):</b> Struktur geometris cara susunan komputer terhubung dalam jaringan. Jenis: Star (Bintang), Bus, Ring, Mesh, Tree.</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q8 (Media Akses):</b> Perantara fisik atau nirkabel yang digunakan untuk transmisi data. Jenis: Kabel (UTP, Coaxial, Fiber Optic) dan Nirkabel (WiFi, Bluetooth, Infrared).</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q9 (Model OSI):</b> Kerangka kerja konseptual standar internasional (7 layer) untuk mendeskripsikan fungsi komunikasi jaringan.</div>
+        <div class="p-3 bg-slate-50 rounded-xl border"><b>Q10 (TCP/IP):</b> Standar protokol komunikasi dasar yang digunakan di internet untuk mengatur pengalamatan (IP) dan keandalan pengiriman paket data (TCP).</div>
+      </div>
+      <button onclick="toggleKeyModal()" class="mt-6 w-full py-2.5 bg-indigo-600 text-white font-semibold rounded-xl text-xs">Tutup Panduan Kunci</button>
+    </div>
+  </div>
+
   <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbyL_n30zesNORkR6R2kcC0XIgYjF-3kWl3YpVpmgZz1cvx-xNR5L50rmk7iZhKEoSw2/exec';
+    
+    // Kata kunci referensi untuk validasi otomatis/deteksi kemiripan
+    const keywords = {
+      q1: ['berbagi', 'terhubung', 'sumber daya', 'internet', 'komputer'],
+      q2: ['fisik', 'perangkat keras', 'program', 'router', 'kabel'],
+      q3: ['aturan', 'standar', 'http', 'tcp', 'mengatur'],
+      q4: ['global', 'informasi', 'komunikasi', 'belajar'],
+      q5: ['sopan', 'hoaks', 'etika', 'menghargai'],
+      q6: ['password', 'enkripsi', 'lindungi', 'aman'],
+      q7: ['star', 'bus', 'ring', 'mesh', 'struktur'],
+      q8: ['utp', 'fiber', 'wifi', 'kabel', 'nirkabel'],
+      q9: ['layer', '7', 'standar', 'konseptual'],
+      q10: ['pengalamatan', 'paket', 'protokol', 'ip']
+    };
+
     lucide.createIcons();
 
     async function verifyPin() {
@@ -114,35 +160,56 @@
       }
     }
 
+    function toggleKeyModal() {
+      const modal = document.getElementById('keyModal');
+      modal.classList.toggle('hidden');
+    }
+
+    function evaluateAnswer(text, qKey) {
+      if (!text) return '<span class="text-gray-300">-</span>';
+      const lower = text.toLowerCase();
+      const matchKeys = keywords[qKey] || [];
+      let foundCount = matchKeys.filter(k => lower.includes(k)).length;
+      
+      // Indikator visual otomatis berdasarkan kecocokan kata kunci
+      if (foundCount >= 2) {
+        return `<span class="block bg-emerald-50 text-emerald-700 p-1 rounded border border-emerald-200" title="Jawaban sangat relevan dengan kunci">${text}</span>`;
+      } else if (foundCount === 1) {
+        return `<span class="block bg-amber-50 text-amber-700 p-1 rounded border border-amber-200" title="Jawaban cukup relevan">${text}</span>`;
+      } else {
+        return `<span class="block bg-rose-50 text-rose-700 p-1 rounded border border-rose-200" title="Jawaban kurang/perlu dicek manual">${text}</span>`;
+      }
+    }
+
     async function loadResponses() {
       const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = `<tr><td colspan="14" class="p-8 text-center text-slate-400">Memuat data...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="14" class="p-8 text-center text-slate-400">Memuat data dan mencocokkan kata kunci...</td></tr>`;
 
       try {
         const res = await fetch(`${GAS_URL}?page=getResponses`);
         const result = await res.json();
 
         if (!result.data || result.data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="14" class="p-8 text-center text-slate-400">Belum ada jawaban yang masuk.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="14" class="p-8 text-center text-slate-400">Belum ada jawaban siswa yang masuk.</td></tr>`;
           return;
         }
 
         tbody.innerHTML = result.data.map(row => `
-          <tr class="hover:bg-slate-50 transition">
+          <tr class="hover:bg-slate-50 transition align-top">
             <td class="p-3 text-slate-400 whitespace-nowrap">${new Date(row.Timestamp).toLocaleString('id-ID')}</td>
             <td class="p-3 font-semibold text-slate-800 whitespace-nowrap">${row.Nama || '-'}</td>
             <td class="p-3 text-center font-bold text-slate-600">${row.No_Absen || '-'}</td>
             <td class="p-3 whitespace-nowrap"><span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded-full">${row.Kelas || '-'}</span></td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q1_Jaringan_Komputer}">${row.Q1_Jaringan_Komputer || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q2_Hardware_Software}">${row.Q2_Hardware_Software || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q3_Protokol}">${row.Q3_Protokol || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q4_Internet_Manfaat}">${row.Q4_Internet_Manfaat || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q5_Etika_Digital}">${row.Q5_Etika_Digital || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q6_Keamanan_Data}">${row.Q6_Keamanan_Data || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q7_Topologi}">${row.Q7_Topologi || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q8_Media_Akses}">${row.Q8_Media_Akses || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q9_Model_OSI}">${row.Q9_Model_OSI || ''}</td>
-            <td class="p-3 max-w-xs truncate" title="${row.Q10_TCP_IP}">${row.Q10_TCP_IP || ''}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q1_Jaringan_Komputer, 'q1')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q2_Hardware_Software, 'q2')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q3_Protokol, 'q3')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q4_Internet_Manfaat, 'q4')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q5_Etika_Digital, 'q5')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q6_Keamanan_Data, 'q6')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q7_Topologi, 'q7')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q8_Media_Akses, 'q8')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q9_Model_OSI, 'q9')}</td>
+            <td class="p-3 max-w-xs">${evaluateAnswer(row.Q10_TCP_IP, 'q10')}</td>
           </tr>
         `).join('');
       } catch (e) {
