@@ -17,6 +17,8 @@
   --accent-light: #34d399;
   --warning: #f59e0b;
   --danger: #ef4444;
+  --purple: #8b5cf6;
+  --pink: #ec4899;
   --bg: #f1f5f9;
   --bg-card: #ffffff;
   --text: #0f172a;
@@ -40,13 +42,6 @@ html, body {
 }
 
 /* ============================================================
-   KONFIGURASI - GANTI URL INI!
-   ============================================================ */
-/* URL Web App Google Apps Script Anda.
-   Format: https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec
-   Lihat README.md cara mendapatkannya. */
-
-/* ============================================================
    LOGIN SCREEN
    ============================================================ */
 #loginScreen {
@@ -66,30 +61,15 @@ html, body {
   box-shadow: var(--shadow-lg);
 }
 .login-logo {
-  width: 80px;
-  height: 80px;
+  width: 80px; height: 80px;
   margin: 0 auto 20px;
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   font-size: 40px;
-  color: white;
 }
-.login-card h1 {
-  text-align: center;
-  font-size: 24px;
-  color: var(--primary);
-  margin-bottom: 4px;
-  font-weight: 700;
-}
-.login-card .subtitle {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 14px;
-  margin-bottom: 28px;
-}
+.login-card h1 { text-align: center; font-size: 24px; color: var(--primary); margin-bottom: 4px; font-weight: 700; }
+.login-card .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
 .login-card .info-banner {
   background: #eff6ff;
   border-left: 4px solid var(--primary-light);
@@ -100,15 +80,8 @@ html, body {
   color: var(--primary-dark);
 }
 .form-group { margin-bottom: 16px; }
-.form-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-.form-group input,
-.form-group select {
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.form-group input, .form-group select, .form-group textarea {
   width: 100%;
   padding: 12px 14px;
   border: 2px solid var(--border);
@@ -118,17 +91,13 @@ html, body {
   background: white;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.form-group input:focus,
-.form-group select:focus {
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
   outline: none;
   border-color: var(--primary-light);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 20px;
   border: none;
   border-radius: var(--radius-sm);
@@ -139,25 +108,17 @@ html, body {
   transition: all 0.2s;
   text-decoration: none;
 }
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  width: 100%;
-}
+.btn-primary { background: var(--primary); color: white; width: 100%; }
 .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
 .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
 .btn-success { background: var(--accent); color: white; }
 .btn-success:hover { background: #059669; }
-.btn-ghost {
-  background: transparent;
-  color: var(--text-muted);
-  border: 2px solid var(--border);
-}
+.btn-ghost { background: transparent; color: var(--text-muted); border: 2px solid var(--border); }
 .btn-ghost:hover { background: var(--bg); }
 .btn-sm { padding: 6px 12px; font-size: 13px; }
 
 /* ============================================================
-   MAIN APP
+   MAIN APP - PHASE STEPPER
    ============================================================ */
 #appScreen { display: none; min-height: 100vh; }
 
@@ -179,55 +140,105 @@ html, body {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 20px; font-weight: 700;
+  color: white; font-size: 20px;
 }
 .topbar-info h2 { font-size: 15px; color: var(--text); font-weight: 700; }
 .topbar-info p { font-size: 12px; color: var(--text-muted); }
-.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
 .user-chip {
-  background: #eff6ff;
-  color: var(--primary-dark);
+  background: #eff6ff; color: var(--primary-dark);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
-  display: flex; align-items: center; gap: 6px;
 }
 
-/* Progress bar */
-.progress-container {
+/* Phase stepper */
+.phase-stepper {
   background: white;
   padding: 16px 24px;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow-x: auto;
 }
-.progress-info {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 8px;
+.phase-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 80px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.2s;
 }
-.progress-info .label { font-size: 14px; font-weight: 600; color: var(--text); }
-.progress-info .value { font-size: 14px; color: var(--text-muted); }
-.progress-bar {
-  height: 10px;
+.phase-step .step-circle {
+  width: 36px; height: 36px;
+  border-radius: 50%;
   background: var(--border);
-  border-radius: 5px;
-  overflow: hidden;
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px var(--border);
+  transition: all 0.3s;
 }
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-light));
-  border-radius: 5px;
-  transition: width 0.4s ease;
-  width: 0%;
+.phase-step .step-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+.phase-step.active .step-circle {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 0 0 2px var(--primary), 0 0 0 6px rgba(30, 58, 138, 0.15);
+  transform: scale(1.1);
+}
+.phase-step.active .step-label { color: var(--primary); }
+.phase-step.completed .step-circle {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.phase-step.completed .step-label { color: var(--accent); }
+.phase-step:not(.active):not(.completed) { opacity: 0.7; }
+.phase-step:hover { opacity: 1; }
+
+/* Connector line */
+.stepper-line {
+  position: absolute;
+  top: 32px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
 }
 
-/* Main content */
+/* Container */
 .container {
   max-width: 920px;
   margin: 24px auto;
-  padding: 0 24px 80px;
+  padding: 0 24px 100px;
 }
+
+/* Phase panels */
+.phase-panel { display: none; animation: fadeIn 0.4s; }
+.phase-panel.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .section-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 4px;
@@ -235,10 +246,157 @@ html, body {
 .section-desc {
   color: var(--text-muted);
   font-size: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-/* Question card */
+/* Content card */
+.content-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.content-card h2 {
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.content-card h3 {
+  font-size: 15px;
+  color: var(--text);
+  margin: 16px 0 8px;
+  font-weight: 700;
+}
+.content-card p { margin-bottom: 12px; font-size: 14px; }
+.content-card ul, .content-card ol {
+  margin: 8px 0 16px 20px;
+  font-size: 14px;
+}
+.content-card li { margin-bottom: 6px; }
+
+/* Highlight box */
+.highlight-box {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-left: 4px solid var(--primary-light);
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  margin: 16px 0;
+}
+.highlight-box.warning {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-left-color: var(--warning);
+}
+.highlight-box.success {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-left-color: var(--accent);
+}
+.highlight-box .highlight-title {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+/* Pertanyaan pemantik */
+.pemantik-box {
+  background: linear-gradient(135deg, #fef3c7, #fed7aa);
+  border: 2px dashed var(--warning);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  margin: 20px 0;
+}
+.pemantik-box .pemantik-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--warning);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.pemantik-box .pemantik-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* Grid materi */
+.materi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.materi-item {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  border-left: 4px solid var(--primary-light);
+  transition: transform 0.2s;
+}
+.materi-item:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.materi-item .materi-icon { font-size: 24px; margin-bottom: 8px; }
+.materi-item .materi-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+.materi-item .materi-desc { font-size: 13px; color: var(--text-muted); }
+
+/* Topology cards */
+.topology-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+.topology-card {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.topology-card .topo-name { font-weight: 700; color: var(--primary); font-size: 13px; }
+.topology-card .topo-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+/* OSI layer visualization */
+.osi-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0;
+}
+.osi-layer {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-radius: 6px;
+  border-left: 4px solid var(--primary);
+  font-size: 13px;
+}
+.osi-layer .layer-num {
+  width: 24px; height: 24px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.osi-layer .layer-name { font-weight: 700; margin-right: 8px; }
+.osi-layer .layer-desc { color: var(--text-muted); font-size: 12px; }
+
+/* Question card (LKPD) */
 .question-card {
   background: var(--bg-card);
   border-radius: var(--radius);
@@ -253,10 +411,7 @@ html, body {
 .question-card.verified { border-color: var(--primary); }
 .question-card.verified .q-status { background: var(--primary); color: white; }
 
-.q-header {
-  display: flex; align-items: flex-start; gap: 12px;
-  margin-bottom: 12px;
-}
+.q-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
 .q-num {
   background: var(--primary);
   color: white;
@@ -307,41 +462,62 @@ html, body {
 .q-meta { font-size: 12px; color: var(--text-muted); }
 .q-actions { display: flex; gap: 8px; }
 
-/* Skor display */
 .skor-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  display: inline-flex; align-items: center; gap: 4px;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 700;
-  background: #fef3c7;
-  color: #92400e;
+  background: #fef3c7; color: #92400e;
 }
 .skor-badge.high { background: #d1fae5; color: #065f46; }
 .skor-badge.low { background: #fee2e2; color: #991b1b; }
 
-/* Peer answers modal */
-.peer-list {
-  max-height: 60vh;
-  overflow-y: auto;
-  padding-right: 8px;
+/* Progress bar (LKPD) */
+.progress-bar {
+  height: 10px;
+  background: var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 8px;
 }
-.peer-item {
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  border-radius: 5px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* Reflection textarea */
+.reflection-item {
   background: var(--bg);
-  padding: 14px;
   border-radius: var(--radius-sm);
-  margin-bottom: 10px;
-  border-left: 3px solid var(--primary-light);
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 3px solid var(--purple);
 }
-.peer-item .peer-meta {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-  display: flex; justify-content: space-between;
+.reflection-item .ref-q {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
 }
-.peer-item .peer-text { font-size: 14px; }
+.reflection-item textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+.reflection-item textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
 
 /* Bottom action bar */
 .bottom-bar {
@@ -440,7 +616,6 @@ html, body {
   background: var(--border);
   display: flex; align-items: center; justify-content: center;
   font-weight: 700;
-  color: var(--text);
 }
 .leader-row.top1 .leader-rank { background: #fbbf24; color: white; }
 .leader-row.top2 .leader-rank { background: #cbd5e1; color: white; }
@@ -462,22 +637,33 @@ html, body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--text-muted);
-}
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
 .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+
+/* Completion celebration */
+.celebrate {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-radius: var(--radius);
+  margin: 20px 0;
+}
+.celebrate .emoji { font-size: 60px; margin-bottom: 12px; }
+.celebrate h2 { color: #065f46; margin-bottom: 8px; }
+.celebrate p { color: #047857; }
 
 /* Responsive */
 @media (max-width: 640px) {
   .topbar { padding: 10px 16px; }
   .topbar-info h2 { font-size: 13px; }
   .topbar-info p { font-size: 11px; }
-  .container { padding: 0 16px 80px; }
-  .question-card { padding: 16px; }
+  .container { padding: 0 16px 100px; }
+  .question-card, .content-card { padding: 16px; }
   .bottom-bar { padding: 10px 16px; }
   .login-card { padding: 28px 20px; }
+  .phase-stepper { padding: 12px 12px; }
+  .phase-step .step-label { font-size: 10px; }
+  .phase-step .step-circle { width: 32px; height: 32px; font-size: 13px; }
 }
 </style>
 </head>
@@ -493,7 +679,7 @@ html, body {
     <p class="subtitle">Lab Interaktif Informatika - Bab 5 Pertemuan 1</p>
 
     <div class="info-banner">
-      <strong>📋 Petunjuk:</strong> Masuk menggunakan nama lengkap & nomor PC yang kamu tempati (1-32). Pastikan kamu login di PC yang benar agar jawaban tersimpan dengan tepat.
+      <strong>📋 Petunjuk:</strong> Masuk menggunakan nama lengkap & nomor PC yang kamu tempati (1-32). Pastikan kamu login di PC yang benar agar progress tersimpan dengan tepat.
     </div>
 
     <form id="loginForm">
@@ -503,10 +689,7 @@ html, body {
       </div>
       <div class="form-group">
         <label for="pcInput">Nomor PC (lihat stiker di meja)</label>
-        <select id="pcInput" required>
-          <option value="">-- Pilih Nomor PC --</option>
-          <!-- 1-32 akan diisi via JS -->
-        </select>
+        <select id="pcInput" required></select>
       </div>
       <button type="submit" class="btn btn-primary" id="loginBtn">
         <span id="loginBtnText">Masuk ke Pembelajaran →</span>
@@ -520,11 +703,10 @@ html, body {
 </div>
 
 <!-- ============================================================
-     MAIN APP SCREEN
+     MAIN APP
      ============================================================ -->
 <div id="appScreen">
 
-  <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-logo">📡</div>
@@ -540,42 +722,481 @@ html, body {
     </div>
   </div>
 
-  <!-- Progress bar -->
-  <div class="progress-container">
-    <div class="progress-info">
-      <span class="label">📊 Progress LKPD Kamu</span>
-      <span class="value"><strong id="answeredCount">0</strong> / <span id="totalSoal">10</span> soal terjawab</span>
+  <!-- Phase stepper -->
+  <div class="phase-stepper">
+    <div class="stepper-line"></div>
+    <div class="phase-step active" data-phase="pendahuluan" onclick="goToPhase('pendahuluan')">
+      <div class="step-circle">1</div>
+      <div class="step-label">Pendahuluan</div>
     </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
+    <div class="phase-step" data-phase="tujuan" onclick="goToPhase('tujuan')">
+      <div class="step-circle">2</div>
+      <div class="step-label">Tujuan</div>
+    </div>
+    <div class="phase-step" data-phase="materi" onclick="goToPhase('materi')">
+      <div class="step-circle">3</div>
+      <div class="step-label">Materi</div>
+    </div>
+    <div class="phase-step" data-phase="lkpd" onclick="goToPhase('lkpd')">
+      <div class="step-circle">4</div>
+      <div class="step-label">LKPD</div>
+    </div>
+    <div class="phase-step" data-phase="refleksi" onclick="goToPhase('refleksi')">
+      <div class="step-circle">5</div>
+      <div class="step-label">Refleksi</div>
     </div>
   </div>
 
-  <!-- Main content -->
   <div class="container">
-    <h1 class="section-title">📝 Lembar Kerja Peserta Didik (LKPD 1)</h1>
-    <p class="section-desc">
-      Kerjakan <strong>semua 10 pertanyaan</strong> di bawah ini secara mandiri di laptop masing-masing. Jawabanmu tersimpan otomatis ke server. Guru dapat memanggilmu secara acak untuk membacakan jawaban, pastikan kamu siap di setiap nomor!
-    </p>
 
-    <div id="questionList">
-      <!-- Soal akan di-render via JS -->
-      <div class="empty-state">
-        <div class="loading"></div>
-        <p style="margin-top:12px;">Memuat soal...</p>
+    <!-- ============================================================
+         PHASE 1: PENDAHULUAN
+         ============================================================ -->
+    <div class="phase-panel active" id="phase-pendahuluan">
+      <h1 class="section-title">🌟 Pendahuluan</h1>
+      <p class="section-desc">Selamat datang di pembelajaran interaktif hari ini. Mari kita mulai dengan doa dan semangat belajar!</p>
+
+      <div class="content-card">
+        <h2>🙏 Pembukaan Pembelajaran</h2>
+        <p>Assalamu'alaikum warahmatullahi wabarakatuh. Selamat pagi anak-anak yang saya banggakan! Hari ini kita akan belajar tentang hal yang sangat dekat dengan keseharian kita, yaitu <strong>jaringan komputer dan internet</strong>.</p>
+
+        <p>Sebelum kita mulai, mari kita berdoa bersama sesuai agama dan kepercayaan masing-masing. Berdoa dengan khusyuk akan membuat hati kita tenang dan pikiran kita siap menerima ilmu baru.</p>
+
+        <div class="highlight-box success">
+          <div class="highlight-title">✨ Ice Breaking - "Tebak Jaringan"</div>
+          <p style="margin:0;">Coba angkat tangan jika kamu pernah menggunakan salah satu dari ini: WiFi rumah, hotspot HP, bluetooth speaker, atau internet di sekolah. Wah, hampir semua pernah ya! Itulah yang akan kita pelajari hari ini - bagaimana semua perangkat itu bisa terhubung satu sama lain.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>💡 Pertanyaan Pemantik</h2>
+        <p>Guru punya pertanyaan untuk menggerakkan rasa ingin tahu kalian. Coba pikirkan jawabannya sebelum kita masuk ke materi:</p>
+
+        <div class="pemantik-box">
+          <div class="pemantik-label">🔍 Pertanyaan Pemantik</div>
+          <div class="pemantik-text">"Apa perbedaan dari Bluetooth dan WiFi?"</div>
+        </div>
+
+        <p>Coba diskusikan dengan teman sebangkumu sebentar. Apakah kamu tahu bedanya? Keduanya sama-sama menghubungkan perangkat tanpa kabel, tapi ada perbedaan penting yang akan kita temukan di materi nanti.</p>
+
+        <div class="highlight-box warning">
+          <div class="highlight-title">🤔 Asesmen Diagnostik</div>
+          <p style="margin:0;">Pengalaman menyenangkan apa yang pernah kamu alami terkait jaringan komputer dan internet? Apakah kamu pernah: (a) main game online bareng teman? (b) video call dengan keluarga di luar kota? (c) download tugas dari internet? (d) koneksi WiFi yang lambat ketika banyak yang dipakai? Coba share pengalamanmu!</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>🎯 Apa yang Akan Kita Lakukan Hari Ini?</h2>
+        <p>Pembelajaran hari ini terdiri dari <strong>5 fase</strong> yang harus kamu lalui:</p>
+        <ol>
+          <li><strong>Pendahuluan</strong> - kamu sedang di sini sekarang</li>
+          <li><strong>Tujuan Pembelajaran</strong> - apa yang harus kamu kuasai setelah ini</li>
+          <li><strong>Materi</strong> - penjelasan lengkap tentang jaringan komputer & internet</li>
+          <li><strong>LKPD (Lembar Kerja)</strong> - 10 soal yang harus kamu kerjakan mandiri</li>
+          <li><strong>Refleksi</strong> - renungkan apa yang sudah kamu pelajari</li>
+        </ol>
+        <div class="highlight-box">
+          <div class="highlight-title">⚠️ Penting!</div>
+          <p style="margin:0;">Guru bisa memanggilmu <strong>secara acak</strong> di LKPD nanti untuk membacakan jawabanmu. Jadi pastikan kamu benar-benar memahami materinya ya! Tetap fokus dan semangat belajar!</p>
+        </div>
       </div>
     </div>
+
+    <!-- ============================================================
+         PHASE 2: TUJUAN PEMBELAJARAN
+         ============================================================ -->
+    <div class="phase-panel" id="phase-tujuan">
+      <h1 class="section-title">🎯 Tujuan Pembelajaran</h1>
+      <p class="section-desc">Setelah mengikuti pembelajaran ini, kamu diharapkan mampu mencapai hal-hal berikut.</p>
+
+      <div class="content-card">
+        <h2>📚 Tujuan Utama</h2>
+        <p>Pada akhir pembelajaran Bab 5 ini, peserta didik mampu:</p>
+        <ul>
+          <li>Menjelaskan <strong>internet dan jaringan lokal</strong> beserta perbedaannya</li>
+          <li>Menjelaskan <strong>komunikasi data via HP</strong> dan konektivitas internet</li>
+          <li>Memahami konektivitas internet melalui <strong>jaringan kabel dan nirkabel</strong> (bluetooth, wifi, internet)</li>
+          <li>Memahami <strong>enkripsi</strong> untuk memproteksi data</li>
+          <li>Mampu melakukan <strong>koneksi perangkat</strong> ke jaringan lokal maupun internet yang tersedia</li>
+        </ul>
+        <div class="highlight-box success">
+          <div class="highlight-title">🌟 Capaian Akhir</div>
+          <p style="margin:0;">Secara ringkas, kamu diharapkan telah <strong>melek secara komputasional (computationally literate)</strong> di bidang Jaringan Komputer dan Internet (JKI).</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>🧠 Pemahaman Bermakna</h2>
+        <p>Pemahaman bermakna yang akan kamu peroleh:</p>
+        <p>Kamu mampu menjelaskan internet dan jaringan lokal, komunikasi data via HP, konektivitas internet melalui jaringan kabel dan nirkabel (bluetooth, wifi, internet), dan memahami enkripsi untuk memproteksi data. Selain itu, kamu mampu melakukan koneksi perangkat ke jaringan lokal maupun internet yang tersedia.</p>
+      </div>
+
+      <div class="content-card">
+        <h2>🦁 Profil Pelajar Pancasila</h2>
+        <p>Profil Pelajar Pancasila yang ingin dicapai dalam pembelajaran ini:</p>
+        <div class="materi-grid">
+          <div class="materi-item">
+            <div class="materi-icon">🙏</div>
+            <div class="materi-title">Bertakwa & Berakhlak Mulia</div>
+            <div class="materi-desc">Menjalankan ajaran agama dan nilai sopan santun dalam berinternet</div>
+          </div>
+          <div class="materi-item">
+            <div class="materi-icon">🔬</div>
+            <div class="materi-title">Bernalar Kritis & Kreatif</div>
+            <div class="materi-desc">Berpikir logis tentang cara kerja jaringan dan solusi konektivitas</div>
+          </div>
+          <div class="materi-item">
+            <div class="materi-icon">🤝</div>
+            <div class="materi-title">Bergotong Royong</div>
+            <div class="materi-desc">Berkolaborasi dengan teman dalam pembelajaran lab</div>
+          </div>
+          <div class="materi-item">
+            <div class="materi-icon">🌏</div>
+            <div class="materi-title">Kebhinnekaan Global</div>
+            <div class="materi-desc">Menghargai keberagaman di dunia digital</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>🎓 8 Profil Lulusan</h2>
+        <p>Karakter yang dikembangkan melalui pembelajaran ini:</p>
+        <ol>
+          <li><strong>Keimanan & Ketakwaan</strong> - Keyakinan pada Tuhan YME</li>
+          <li><strong>Kewargaan</strong> - Cinta tanah air, taat aturan, tanggung jawab sosial</li>
+          <li><strong>Penalaran Kritis</strong> - Berpikir logis, analitis, reflektif</li>
+          <li><strong>Kreativitas</strong> - Berpikir inovatif dan orisinal</li>
+          <li><strong>Kolaborasi</strong> - Bekerja sama efektif dengan orang lain</li>
+          <li><strong>Kemandirian</strong> - Bertanggung jawab atas proses belajar sendiri</li>
+          <li><strong>Kesehatan</strong> - Menjaga keseimbangan fisik dan mental</li>
+          <li><strong>Komunikasi</strong> - Menyampaikan ide secara efektif lisan & tulisan</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PHASE 3: MATERI
+         ============================================================ -->
+    <div class="phase-panel" id="phase-materi">
+      <h1 class="section-title">📖 Materi Pembelajaran</h1>
+      <p class="section-desc">Pelajari materi berikut dengan saksama. Materi ini akan membantumu menjawab 10 soal LKPD di fase selanjutnya.</p>
+
+      <!-- Materi 1 -->
+      <div class="content-card">
+        <h2>🌐 1. Pengertian Jaringan Komputer</h2>
+        <p><strong>Jaringan komputer</strong> adalah dua atau lebih komputer yang saling terhubung menggunakan media komunikasi tertentu sehingga dapat saling berbagi sumber daya (data, printer, internet) dan berkomunikasi satu sama lain.</p>
+        <h3>Contoh penerapan dalam kehidupan sehari-hari:</h3>
+        <ul>
+          <li><strong>Internet di rumah</strong> - WiFi yang menghubungkan HP, laptop, TV, ke internet</li>
+          <li><strong>Jaringan kantor/sekolah</strong> - komputer guru & lab saling terhubung</li>
+          <li><strong>Hotspot HP</strong> - berbagi koneksi internet ke perangkat lain</li>
+          <li><strong>Internet of Things (IoT)</strong> - lampu, kamera, AC yang bisa dikontrol via HP</li>
+        </ul>
+        <div class="highlight-box">
+          <div class="highlight-title">💡 Manfaat utama jaringan:</div>
+          <p style="margin:0;">Berbagi sumber daya (printer, file, internet) • Komunikasi cepat • Akses informasi • Kolaborasi kerja</p>
+        </div>
+      </div>
+
+      <!-- Materi 2 -->
+      <div class="content-card">
+        <h2>⚙️ 2. Hardware vs Software dalam Jaringan</h2>
+        <div class="materi-grid">
+          <div class="materi-item">
+            <div class="materi-icon">🖥️</div>
+            <div class="materi-title">Hardware (Perangkat Keras)</div>
+            <div class="materi-desc">
+          Komponen fisik yang bisa disentuh:
+          • Router - pembagi koneksi internet
+          • Switch - penghubung banyak komputer
+          • Kabel UTP - media transmisi data
+          • NIC (Network Interface Card) - kartu jaringan di komputer
+          • Access Point - pemancar WiFi
+          • Modem - pengubah sinyal internet
+        </div>
+          </div>
+          <div class="materi-item">
+            <div class="materi-icon">💾</div>
+            <div class="materi-title">Software (Perangkat Lunak)</div>
+            <div class="materi-desc">
+          Program/logika yang menjalankan jaringan:
+          • Sistem Operasi Jaringan (Windows Server, Linux)
+          • Protokol (TCP/IP, HTTP)
+          • Firewall - pengaman jaringan
+          • Driver NIC - penghubung OS & hardware
+          • Aplikasi jaringan (browser, email client)
+        </div>
+          </div>
+        </div>
+        <p><strong>Intinya:</strong> Hardware = alat fisiknya, Software = "otak" yang membuat alatnya bekerja. Tanpa software, hardware hanyalah benda mati. Tanpa hardware, software tidak punya tempat berjalan.</p>
+      </div>
+
+      <!-- Materi 3 -->
+      <div class="content-card">
+        <h2>🔌 3. Protokol Jaringan</h2>
+        <p><strong>Protokol jaringan</strong> adalah aturan standar yang mengatur bagaimana perangkat berkomunikasi satu sama lain. Bayangkan seperti bahasa yang dipakai dua orang untuk mengerti satu sama lain - jika tidak ada protokol, perangkat tidak akan saling paham.</p>
+        <h3>Contoh protokol yang umum digunakan:</h3>
+        <ul>
+          <li><strong>TCP/IP</strong> - protokol dasar internet, mengatur pengiriman data</li>
+          <li><strong>HTTP/HTTPS</strong> - untuk mengakses website (HTTPS = versi aman)</li>
+          <li><strong>FTP</strong> - untuk transfer file</li>
+          <li><strong>DNS</strong> - menerjemahkan nama domain (google.com) ke IP address</li>
+          <li><strong>DHCP</strong> - memberi IP address otomatis ke perangkat</li>
+          <li><strong>SMTP</strong> - untuk mengirim email</li>
+        </ul>
+        <div class="highlight-box warning">
+          <div class="highlight-title">📌 Analogi</div>
+          <p style="margin:0;">Protokol itu seperti aturan lalu lintas: semua pengendara harus ikut aturan yang sama ( lampu merah berhenti, hijau jalan) supaya tidak tabrakan. Tanpa aturan, jalan akan chaos.</p>
+        </div>
+      </div>
+
+      <!-- Materi 4 -->
+      <div class="content-card">
+        <h2>🌍 4. Internet dan Manfaatnya</h2>
+        <p><strong>Internet</strong> (Interconnected Network) adalah jaringan global yang menghubungkan jutaan jaringan komputer di seluruh dunia. Internet bukan milik satu perusahaan, melainkan gabungan ribuan jaringan yang saling terhubung.</p>
+        <h3>Manfaat internet:</h3>
+        <ul>
+          <li><strong>Informasi</strong> - belajar, cari tahu hal baru, berita</li>
+          <li><strong>Komunikasi</strong> - chat, video call, email, media sosial</li>
+          <li><strong>Belanja online</strong> - e-commerce (Shopee, Tokopedia)</li>
+          <li><strong>Hiburan</strong> - streaming film, musik, game online</li>
+          <li><strong>Pendidikan</strong> - e-learning, kelas online, tutorial</li>
+          <li><strong>Pekerjaan</strong> - remote work, kolaborasi tim, cloud storage</li>
+        </ul>
+        <div class="highlight-box">
+          <div class="highlight-title">🌐 Fakta Menarik</div>
+          <p style="margin:0;">Internet pertama kali dikembangkan tahun 1969 (ARPANET) oleh Departemen Pertahanan AS. Saat ini, lebih dari <strong>5 miliar orang</strong> menggunakan internet setiap hari!</p>
+        </div>
+      </div>
+
+      <!-- Materi 5 -->
+      <div class="content-card">
+        <h2>🤝 5. Etika Berkomunikasi di Dunia Digital</h2>
+        <p><strong>Etika digital</strong> adalah tata krama berperilaku di dunia maya. Sopan santun di internet sama pentingnya dengan di dunia nyata - yang kita kirim bisa dilihat jutaan orang.</p>
+        <h3>Contoh etika digital yang baik:</h3>
+        <ul>
+          <li>Berkomentar sopan, tidak menghina atau membully</li>
+          <li>Menjaga privasi - tidak menyebarkan data pribadi</li>
+          <li>Tidak menyebarkan hoaks atau berita palsu</li>
+          <li>Minta izin sebelum share foto orang lain</li>
+          <li>Menghormati perbedaan pendapat</li>
+          <li>Tidak melakukan cyberbullying</li>
+          <li>Menggunakan kata-kata yang baik di media sosial</li>
+        </ul>
+        <div class="highlight-box warning">
+          <div class="highlight-title">⚠️ Ingat!</div>
+          <p style="margin:0;">Sesuatu yang kamu posting di internet bisa <strong>tersimpan selamanya</strong>. Pikirkan dulu sebelum posting - apakah akan menyakiti orang lain? Apakah akan menyesalkan di masa depan?</p>
+        </div>
+      </div>
+
+      <!-- Materi 6 -->
+      <div class="content-card">
+        <h2>🔐 6. Keamanan Data</h2>
+        <p><strong>Keamanan data</strong> adalah upaya melindungi data dari akses tidak sah, pencurian, atau kerusakan. Di era digital, data adalah aset berharga yang harus dijaga.</p>
+        <h3>Tips menjaga keamanan data:</h3>
+        <ul>
+          <li><strong>Password kuat</strong> - minimal 8 karakter, kombinasi huruf, angka, simbol</li>
+          <li><strong>Pakai antivirus</strong> - untuk deteksi malware</li>
+          <li><strong>Update software rutin</strong> - tutup celah keamanan</li>
+          <li><strong>Backup data</strong> - simpan salinan di tempat aman</li>
+          <li><strong>Jangan klik link mencurigakan</strong> - waspadai phishing</li>
+          <li><strong>Aktifkan 2FA</strong> (Two-Factor Authentication) jika tersedia</li>
+          <li><strong>HTTPS</strong> - pastikan website pakai kunci/gembok hijau</li>
+        </ul>
+        <div class="highlight-box">
+          <div class="highlight-title">🔒 Apa itu Enkripsi?</div>
+          <p style="margin:0;">Enkripsi = mengubah data menjadi kode rahasia yang hanya bisa dibaca dengan "kunci" tertentu. Contoh: WhatsApp memakai enkripsi end-to-end, jadi pesanmu hanya bisa dibaca oleh kamu dan penerima - WhatsApp sendiri tidak bisa membacanya.</p>
+        </div>
+      </div>
+
+      <!-- Materi 7 -->
+      <div class="content-card">
+        <h2>🕸️ 7. Topologi Jaringan</h2>
+        <p><strong>Topologi jaringan</strong> adalah susunan fisik atau logis dari perangkat dalam jaringan. Topologi menentukan bagaimana data mengalir dari satu perangkat ke perangkat lain.</p>
+        <div class="topology-grid">
+          <div class="topology-card">
+            <div class="topo-name">⭐ Star</div>
+            <div class="topo-desc">Semua terhubung ke 1 titik pusat (switch). Paling umum di lab.</div>
+          </div>
+          <div class="topology-card">
+            <div class="topo-name">🚌 Bus</div>
+            <div class="topo-desc">Semua terhubung ke 1 kabel utama. Lama & jarang dipakai.</div>
+          </div>
+          <div class="topology-card">
+            <div class="topo-name">💍 Ring</div>
+            <div class="topo-desc">Bentuk melingkar, data mengalir satu arah.</div>
+          </div>
+          <div class="topology-card">
+            <div class="topo-name">🕸️ Mesh</div>
+            <div class="topo-desc">Setiap perangkat terhubung ke semua perangkat. Paling aman.</div>
+          </div>
+          <div class="topology-card">
+            <div class="topo-name">🌳 Tree</div>
+            <div class="topo-desc">Gabungan beberapa star dalam struktur hierarki.</div>
+          </div>
+        </div>
+        <p><strong>Topologi Star</strong> paling umum digunakan di lab komputer sekolah karena mudah dikelola dan jika satu kabel putus, hanya 1 PC yang terputus (tidak mengganggu yang lain).</p>
+      </div>
+
+      <!-- Materi 8 -->
+      <div class="content-card">
+        <h2>📡 8. Media Akses Jaringan</h2>
+        <p><strong>Media akses jaringan</strong> adalah jalur atau wadah fisik yang digunakan untuk transmisi data antar perangkat.</p>
+        <div class="materi-grid">
+          <div class="materi-item">
+            <div class="materi-icon">🔌</div>
+            <div class="materi-title">Kabel UTP</div>
+            <div class="materi-desc">Kabel tembaga twisted pair, paling umum di LAN kantor/sekolah</div>
+          </div>
+          <div class="materi-item">
+            <div class="materi-icon">💡</div>
+            <div class="materi-title">Fiber Optik</div>
+            <div class="materi-desc">Transmisi via cahaya, sangat cepat, untuk backbone internet</div>
+          </div>
+          <div class="materi-item">
+            <div class="materi-icon">📶</div>
+            <div class="materi-title">Wireless (WiFi)</div>
+            <div class="materi-desc">Tanpa kabel, pakai gelombang radio. Praktis untuk mobile</div>
+          </div>
+          <div class="materi-item">
+            <div class="materi-icon">🔵</div>
+            <div class="materi-title">Bluetooth</div>
+            <div class="materi-desc">Jarak dekat (< 10m), untuk speaker, headphone, transfer file</div>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <div class="highlight-title">🔍 Jawaban Pertanyaan Pemantik!</div>
+          <p style="margin:0;"><strong>Perbedaan Bluetooth vs WiFi:</strong><br>
+          • <strong>WiFi</strong>: jangkauan luas (sampai 100m+), kecepatan tinggi (sampai Gbps), untuk internet<br>
+          • <strong>Bluetooth</strong>: jangkauan pendek (< 10m), kecepatan rendai, untuk koneksi perangkat (speaker, headphone, mouse)</p>
+        </div>
+      </div>
+
+      <!-- Materi 9 -->
+      <div class="content-card">
+        <h2>🏢 9. Model OSI (7 Lapisan)</h2>
+        <p><strong>Model OSI (Open Systems Interconnection)</strong> adalah standar referensi 7 lapisan yang menggambarkan bagaimana data dikomunikasikan melalui jaringan. Fungsinya sebagai standar komunikasi antar perangkat berbeda vendor (misal: komputer Windows bisa berbicara dengan server Linux).</p>
+        <div class="osi-layers">
+          <div class="osi-layer"><div class="layer-num">7</div><span class="layer-name">Application</span><span class="layer-desc">- antarmuka untuk aplikasi (browser, email)</span></div>
+          <div class="osi-layer"><div class="layer-num">6</div><span class="layer-name">Presentation</span><span class="layer-desc">- enkripsi & format data</span></div>
+          <div class="osi-layer"><div class="layer-num">5</div><span class="layer-name">Session</span><span class="layer-desc">- mengatur sesi komunikasi</span></div>
+          <div class="osi-layer"><div class="layer-num">4</div><span class="layer-name">Transport</span><span class="layer-desc">- pengiriman data end-to-end (TCP/UDP)</span></div>
+          <div class="osi-layer"><div class="layer-num">3</div><span class="layer-name">Network</span><span class="layer-desc">- routing & alamat IP</span></div>
+          <div class="osi-layer"><div class="layer-num">2</div><span class="layer-name">Data Link</span><span class="layer-desc">- pengalamatan MAC & frame</span></div>
+          <div class="osi-layer"><div class="layer-num">1</div><span class="layer-name">Physical</span><span class="layer-desc">- transmisi bit via kabel/gelombang</span></div>
+        </div>
+        <p><strong>Cara mengingat:</strong> dari atas ke bawah "<em>All People Seem To Need Data Processing</em>" - huruf depannya = Application, Presentation, Session, Transport, Network, Data Link, Physical.</p>
+      </div>
+
+      <!-- Materi 10 -->
+      <div class="content-card">
+        <h2>🌐 10. TCP/IP (4 Lapisan)</h2>
+        <p><strong>TCP/IP (Transmission Control Protocol/Internet Protocol)</strong> adalah protokol dasar yang menjalankan internet. Lebih sederhana dari OSI karena hanya 4 lapisan, dan inilah yang benar-benar dipakai di internet.</p>
+        <div class="osi-layers">
+          <div class="osi-layer" style="border-left-color: var(--accent);"><div class="layer-num" style="background:var(--accent);">4</div><span class="layer-name">Application</span><span class="layer-desc">- HTTP, FTP, DNS, SMTP (gabungan OSI 5-7)</span></div>
+          <div class="osi-layer" style="border-left-color: var(--accent);"><div class="layer-num" style="background:var(--accent);">3</div><span class="layer-name">Transport</span><span class="layer-desc">- TCP, UDP (sama seperti OSI 4)</span></div>
+          <div class="osi-layer" style="border-left-color: var(--accent);"><div class="layer-num" style="background:var(--accent);">2</div><span class="layer-name">Internet</span><span class="layer-desc">- IP, routing (sama seperti OSI 3)</span></div>
+          <div class="osi-layer" style="border-left-color: var(--accent);"><div class="layer-num" style="background:var(--accent);">1</div><span class="layer-name">Network Access</span><span class="layer-desc">- Ethernet, WiFi (gabungan OSI 1-2)</span></div>
+        </div>
+        <div class="highlight-box success">
+          <div class="highlight-title">✨ Fungsi TCP/IP:</div>
+          <p style="margin:0;">TCP/IP mengatur <strong>bagaimana data dikirim</strong> dari komputermu ke server di seluruh dunia. IP memberi alamat unik ke setiap perangkat, TCP memastikan data sampai utuh dan berurutan. Tanpa TCP/IP, internet tidak akan ada!</p>
+        </div>
+      </div>
+
+      <!-- Bonus materi -->
+      <div class="content-card">
+        <h2>🌟 Materi Tambahan</h2>
+        <h3>LAN vs WAN</h3>
+        <ul>
+          <li><strong>LAN (Local Area Network)</strong> - jaringan area kecil, seperti di rumah, kantor, sekolah. Jangkauan < 1 km.</li>
+          <li><strong>WAN (Wide Area Network)</strong> - jaringan area luas, mencakup kota, negara, bahkan benua. Internet adalah contoh WAN terbesar.</li>
+        </ul>
+        <h3>IoT (Internet of Things)</h3>
+        <p>IoT adalah konsep dimana benda-benda sehari-hari (lampu, kulkas, AC, kamera CCTV) terhubung ke internet dan bisa dikontrol via HP. Contoh: menyalakan AC rumah dari kantor, melihat tamu lewat CCTV dari HP.</p>
+        <h3>Cloud Computing</h3>
+        <p>Cloud computing = penyimpanan & pemrosesan data di server internet (bukan di komputer lokal). Contoh: Google Drive (simpan file), Gmail (email), YouTube (video). Keuntungan: akses dari mana saja, tidak makan storage lokal.</p>
+      </div>
+
+      <div class="highlight-box success" style="margin-top:20px;">
+        <div class="highlight-title">✅ Materi Selesai!</div>
+        <p style="margin:0;">Sekarang kamu sudah punya bekal pengetahuan. Lanjut ke fase <strong>LKPD</strong> untuk mengerjakan 10 soal. Jangan lupa, jawab dengan kalimatmu sendiri ya!</p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PHASE 4: LKPD
+         ============================================================ -->
+    <div class="phase-panel" id="phase-lkpd">
+      <h1 class="section-title">📝 LKPD 1 - Lembar Kerja Peserta Didik</h1>
+      <p class="section-desc">Kerjakan <strong>10 soal</strong> berikut secara mandiri. Jawaban tersimpan otomatis. Guru bisa memanggilmu secara acak untuk membacakan jawaban, jadi pastikan kamu siap!</p>
+
+      <div class="content-card" style="background:linear-gradient(135deg, #eff6ff, #dbeafe); margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <strong style="color:var(--primary);">📊 Progress LKPD Kamu</strong>
+          <span style="font-size:14px;"><strong id="answeredCount">0</strong> / <span id="totalSoal">10</span> soal</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div id="questionList">
+        <div class="empty-state"><div class="loading"></div><p style="margin-top:12px;">Memuat soal...</p></div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PHASE 5: REFLEKSI
+         ============================================================ -->
+    <div class="phase-panel" id="phase-refleksi">
+      <h1 class="section-title">🤔 Refleksi Pembelajaran</h1>
+      <p class="section-desc">Renungkan apa yang sudah kamu pelajari hari ini. Refleksi jujur akan membantumu belajar lebih baik di pertemuan selanjutnya.</p>
+
+      <div class="content-card">
+        <h2>💭 Pertanyaan Refleksi</h2>
+        <p>Jawab pertanyaan berikut dengan jujur dan reflektif. Tidak ada jawaban benar atau salah - yang penting jujur dan mendalam.</p>
+
+        <div id="reflectionList">
+          <!-- Akan diisi via JS -->
+        </div>
+
+        <button class="btn btn-success" onclick="saveReflection()" style="width:100%; margin-top:16px;">
+          💾 Simpan Refleksi & Selesai
+        </button>
+      </div>
+
+      <div id="reflectionDone" style="display:none;">
+        <div class="celebrate">
+          <div class="emoji">🎉</div>
+          <h2>Selamat! Kamu telah menyelesaikan pembelajaran!</h2>
+          <p>Refleksi tersimpan. Terima kasih sudah belajar dengan tekun hari ini.</p>
+        </div>
+        <div class="content-card">
+          <h2>📚 Apa Selanjutnya?</h2>
+          <ul>
+            <li>Guru akan mengevaluasi jawabanmu dan memberi skor</li>
+            <li>Cek leaderboard kelas untuk lihat peringkatmu</li>
+            <li>Bersiap untuk presentasi jika dipanggil guru</li>
+            <li>Pertemuan berikutnya akan membahas LKPD 2 (LAN, WAN, IoT, Cloud Computing)</li>
+          </ul>
+          <div class="highlight-box success">
+            <div class="highlight-title">🌟 Karakter yang Berkembang</div>
+            <p style="margin:0;">Hari ini kamu telah menunjukkan: <strong>Kemandirian</strong> (belajar mandiri di laptop), <strong>Kolaborasi</strong> (menyimak teman), <strong>Penalaran Kritis</strong> (menganalisis materi), dan <strong>Komunikasi</strong> (menyampaikan jawaban). Tetap semangat!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Bottom action bar -->
   <div class="bottom-bar">
-    <div>
-      <span style="font-size:13px; color:var(--text-muted);">Tersimpan otomatis •</span>
-      <span id="lastSaved" style="font-size:13px; color:var(--text-muted);">belum ada</span>
+    <button class="btn btn-ghost btn-sm" id="prevBtn" onclick="prevPhase()">← Sebelumnya</button>
+    <div style="font-size:13px; color:var(--text-muted);">
+      <span id="phaseLabel">Fase 1 dari 5</span>
+      <span style="margin:0 8px;">•</span>
+      <span id="lastSaved">tersimpan otomatis</span>
     </div>
-    <button class="btn btn-success" onclick="refreshState()">
-      🔄 Perbarui Status
-    </button>
+    <button class="btn btn-primary btn-sm" id="nextBtn" onclick="nextPhase()">Selanjutnya →</button>
   </div>
 </div>
 
@@ -602,37 +1223,14 @@ html, body {
   </div>
 </div>
 
-<!-- ============================================================
-     MODAL: Peer Answers
-     ============================================================ -->
-<div class="modal-overlay" id="peerModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="peerModalTitle">👀 Jawaban Teman</h3>
-      <button class="modal-close" onclick="closeModal('peerModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <div id="peerList" class="peer-list">
-        <div class="empty-state"><div class="loading"></div></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('peerModal')">Tutup</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast notification -->
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 /* ============================================================
    KONFIGURASI APLIKASI
    ============================================================ */
-
-// PENTING: Ganti dengan URL Web App Google Apps Script Anda
-// Format: https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx1iE1y1HCVkCFl91IXKO6KIpIgk458c6HJWgHTEX13iGbb0XvIHFw7azt2vI-NGLmPMg/exec";
 
 // State global
 let STUDENT = { nama: "", pc: null, loginAt: "" };
@@ -641,6 +1239,28 @@ let MY_ANSWERS = {};
 let SETTINGS = {};
 let AUTOSAVE_TIMERS = {};
 let LAST_SAVED = null;
+let CURRENT_PHASE = "pendahuluan";
+let REFLECTIONS = {};
+
+// Definisi fase
+const PHASES = ["pendahuluan", "tujuan", "materi", "lkpd", "refleksi"];
+const PHASE_LABELS = {
+  pendahuluan: "Pendahuluan",
+  tujuan: "Tujuan Pembelajaran",
+  materi: "Materi",
+  lkpd: "LKPD",
+  refleksi: "Refleksi"
+};
+
+// Pertanyaan refleksi (ID 90-95 sesuai sheet Refleksi di Template.xlsx)
+const REFLECTION_QUESTIONS = [
+  { id: 90, q: "Apa saja yang kamu peroleh setelah mempelajari materi Bab 5 - Jaringan Komputer dan Internet hari ini?" },
+  { id: 91, q: "Apakah kamu mampu menjelaskan kembali materi ini kepada teman? Bagian mana yang paling kamu pahami?" },
+  { id: 92, q: "Kesulitan apa yang kamu temui dalam mengerjakan LKPD? Bagaimana kamu mengatasinya?" },
+  { id: 93, q: "Bagian mana dari materi yang belum kamu pahami? Apa yang akan kamu lakukan untuk mempelajarinya?" },
+  { id: 94, q: "Apa Manfaat Bagi-Ku (AMBAK) dari materi ini untuk kehidupan sehari-hari?" },
+  { id: 95, q: "Bagaimana perasaanmu setelah mengikuti pembelajaran dengan aplikasi interaktif ini? Beri saran untuk perbaikan." }
+];
 
 /* ============================================================
    INIT
@@ -655,12 +1275,14 @@ document.addEventListener('DOMContentLoaded', () => {
     pcSelect.appendChild(opt);
   }
 
-  // Cek apakah sudah login (sessionStorage)
+  // Render reflection questions
+  renderReflectionForm();
+
+  // Cek apakah sudah login
   const savedStudent = sessionStorage.getItem('student');
   if (savedStudent) {
     try {
-      const s = JSON.parse(savedStudent);
-      STUDENT = s;
+      STUDENT = JSON.parse(savedStudent);
       showApp();
       return;
     } catch (e) {}
@@ -676,11 +1298,7 @@ async function handleLogin(e) {
   e.preventDefault();
   const nama = document.getElementById('namaInput').value.trim();
   const pc = document.getElementById('pcInput').value;
-
-  if (!nama || !pc) {
-    showToast('Lengkapi nama dan nomor PC', 'error');
-    return;
-  }
+  if (!nama || !pc) { showToast('Lengkapi nama dan nomor PC', 'error'); return; }
 
   const btn = document.getElementById('loginBtn');
   const btnText = document.getElementById('loginBtnText');
@@ -691,18 +1309,12 @@ async function handleLogin(e) {
     const url = `${GAS_URL}?action=login&nama=${encodeURIComponent(nama)}&pc=${pc}`;
     const res = await fetch(url);
     const data = await res.json();
-
-    if (!data.ok) {
-      showToast(data.error || 'Gagal masuk', 'error');
-      return;
-    }
+    if (!data.ok) { showToast(data.error || 'Gagal masuk', 'error'); return; }
 
     STUDENT = data.student;
     sessionStorage.setItem('student', JSON.stringify(STUDENT));
-
     if (data.settings) SETTINGS = data.settings;
     if (data.soal) SOAL_LIST = data.soal;
-
     showApp();
     showToast('Selamat datang, ' + STUDENT.nama + '!', 'success');
   } catch (err) {
@@ -717,22 +1329,84 @@ function showApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
   document.getElementById('userChip').textContent = `👩💻 PC ${STUDENT.pc} • ${STUDENT.nama.split(' ')[0]}`;
-
   if (SETTINGS.AppName) document.getElementById('appName').textContent = SETTINGS.AppName;
   document.getElementById('appMeta').textContent = `${SETTINGS.Bab || 'Bab 5'} • Pertemuan ${SETTINGS.Pertemuan || '1'}`;
   document.getElementById('totalSoal').textContent = SETTINGS.TotalSoal || SOAL_LIST.length || 10;
 
   renderQuestions();
-  refreshState();
+  // Load saved state (phase + answers)
+  refreshState(true);
 }
 
 /* ============================================================
-   RENDER SOAL
+   PHASE NAVIGATION
+   ============================================================ */
+function goToPhase(phase) {
+  if (!PHASES.includes(phase)) return;
+  CURRENT_PHASE = phase;
+
+  // Update panels
+  document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('phase-' + phase).classList.add('active');
+
+  // Update stepper
+  const phaseIdx = PHASES.indexOf(phase);
+  document.querySelectorAll('.phase-step').forEach((step, idx) => {
+    step.classList.remove('active', 'completed');
+    if (idx < phaseIdx) step.classList.add('completed');
+    else if (idx === phaseIdx) step.classList.add('active');
+  });
+
+  // Update bottom bar
+  document.getElementById('phaseLabel').textContent = `Fase ${phaseIdx + 1} dari 5 - ${PHASE_LABELS[phase]}`;
+  document.getElementById('prevBtn').disabled = (phaseIdx === 0);
+  document.getElementById('prevBtn').style.opacity = phaseIdx === 0 ? '0.5' : '1';
+  if (phaseIdx === PHASES.length - 1) {
+    document.getElementById('nextBtn').textContent = 'Selesai ✓';
+    document.getElementById('nextBtn').onclick = () => {
+      if (confirm('Yakin sudah selesai pembelajaran? Pastikan semua LKPD dan refleksi sudah terisi.')) {
+        setPhase('selesai');
+        showToast('🎉 Pembelajaran selesai! Terima kasih.', 'success');
+      }
+    };
+  } else {
+    document.getElementById('nextBtn').textContent = 'Selanjutnya →';
+    document.getElementById('nextBtn').onclick = nextPhase;
+  }
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Save phase to backend
+  setPhase(phase);
+}
+
+function nextPhase() {
+  const idx = PHASES.indexOf(CURRENT_PHASE);
+  if (idx < PHASES.length - 1) goToPhase(PHASES[idx + 1]);
+}
+
+function prevPhase() {
+  const idx = PHASES.indexOf(CURRENT_PHASE);
+  if (idx > 0) goToPhase(PHASES[idx - 1]);
+}
+
+async function setPhase(phase) {
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'setPhase', pc: STUDENT.pc, phase: phase })
+    });
+  } catch (e) { console.error('setPhase error:', e); }
+}
+
+/* ============================================================
+   RENDER QUESTIONS (LKPD)
    ============================================================ */
 function renderQuestions() {
   const list = document.getElementById('questionList');
   list.innerHTML = '';
-
   if (SOAL_LIST.length === 0) {
     list.innerHTML = '<div class="empty-state"><div class="emoji">📭</div><p>Soal belum dimuat. Coba refresh halaman.</p></div>';
     return;
@@ -742,7 +1416,6 @@ function renderQuestions() {
     const card = document.createElement('div');
     card.className = 'question-card';
     card.id = 'card-' + soal.id;
-
     const myAns = MY_ANSWERS[soal.id];
     let statusBadge = '<span class="q-status">Belum dijawab</span>';
     let skorBadge = '';
@@ -762,32 +1435,18 @@ function renderQuestions() {
         skorBadge = `<span class="skor-badge ${cls}">⭐ ${myAns.skor}/${soal.poin}</span>`;
       }
     }
-
     card.innerHTML = `
       <div class="q-header">
         <div class="q-num">${soal.id}</div>
         <div style="flex:1;">
           <div class="q-text">${soal.pertanyaan}</div>
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            ${statusBadge}
-            ${skorBadge}
-            ${SETTINGS.AllowPeerView ? `<button class="btn btn-ghost btn-sm" onclick="viewPeerAnswers(${soal.id})">👀 Lihat Jawaban Teman</button>` : ''}
-          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">${statusBadge}${skorBadge}</div>
         </div>
       </div>
-      <textarea
-        class="q-textarea"
-        id="textarea-${soal.id}"
-        placeholder="Tulis jawabanmu di sini... (minimal 2-3 kalimat untuk jawaban yang baik)"
-        oninput="scheduleAutosave(${soal.id})"
-      >${myAns ? myAns.jawaban : ''}</textarea>
+      <textarea class="q-textarea" id="textarea-${soal.id}" placeholder="Tulis jawabanmu di sini... (minimal 2-3 kalimat untuk jawaban yang baik)" oninput="scheduleAutosave(${soal.id})">${myAns ? myAns.jawaban : ''}</textarea>
       <div class="q-footer">
         <span class="q-meta" id="meta-${soal.id}">Belum disimpan</span>
-        <div class="q-actions">
-          <button class="btn btn-primary btn-sm" onclick="saveAnswer(${soal.id})">
-            💾 Simpan Jawaban
-          </button>
-        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveAnswer(${soal.id})">💾 Simpan Jawaban</button>
       </div>
     `;
     list.appendChild(card);
@@ -807,10 +1466,7 @@ async function saveAnswer(soalId, isAuto = false) {
   const textarea = document.getElementById('textarea-' + soalId);
   if (!textarea) return;
   const jawaban = textarea.value.trim();
-  if (!jawaban) {
-    if (!isAuto) showToast('Jawaban tidak boleh kosong', 'warning');
-    return;
-  }
+  if (!jawaban) { if (!isAuto) showToast('Jawaban tidak boleh kosong', 'warning'); return; }
 
   const meta = document.getElementById('meta-' + soalId);
   meta.innerHTML = '<span class="loading"></span> Menyimpan...';
@@ -819,13 +1475,7 @@ async function saveAnswer(soalId, isAuto = false) {
     const res = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'saveAnswer',
-        pc: STUDENT.pc,
-        soalId: soalId,
-        jawaban: jawaban,
-        nama: STUDENT.nama
-      })
+      body: JSON.stringify({ action: 'saveAnswer', pc: STUDENT.pc, soalId, jawaban, nama: STUDENT.nama })
     });
     const data = await res.json();
     if (data.ok) {
@@ -838,8 +1488,7 @@ async function saveAnswer(soalId, isAuto = false) {
       const card = document.getElementById('card-' + soalId);
       if (!card.classList.contains('answered')) {
         card.classList.add('answered');
-        const status = card.querySelector('.q-status');
-        if (status) status.textContent = 'Tersimpan';
+        card.querySelector('.q-status').textContent = 'Tersimpan';
       }
       if (!isAuto) showToast('Jawaban soal ' + soalId + ' tersimpan ✓', 'success');
     } else {
@@ -855,44 +1504,41 @@ async function saveAnswer(soalId, isAuto = false) {
 /* ============================================================
    STATE REFRESH
    ============================================================ */
-async function refreshState() {
+async function refreshState(silent = false) {
   try {
     const url = `${GAS_URL}?action=state&pc=${STUDENT.pc}`;
     const res = await fetch(url);
     const data = await res.json();
     if (data.ok) {
       MY_ANSWERS = data.answers || {};
-      // Update textarea tanpa override yang sedang diketik
+      // Restore phase
+      if (data.phase && PHASES.includes(data.phase) && silent) {
+        goToPhase(data.phase);
+      }
+      // Update textareas (tanpa override yang sedang diketik)
       SOAL_LIST.forEach(soal => {
         const ta = document.getElementById('textarea-' + soal.id);
         if (ta && document.activeElement !== ta) {
           ta.value = MY_ANSWERS[soal.id] ? MY_ANSWERS[soal.id].jawaban : '';
         }
         const meta = document.getElementById('meta-' + soal.id);
-        if (meta && MY_ANSWERS[soal.id]) {
-          meta.textContent = '✓ Tersimpan';
-        }
-        // Update card class
+        if (meta && MY_ANSWERS[soal.id]) meta.textContent = '✓ Tersimpan';
         const card = document.getElementById('card-' + soal.id);
         if (card) {
           card.classList.remove('answered', 'verified');
           if (MY_ANSWERS[soal.id]) {
             card.classList.add('answered');
-            if (MY_ANSWERS[soal.id].status === 'verified') {
-              card.classList.add('verified');
-            }
+            if (MY_ANSWERS[soal.id].status === 'verified') card.classList.add('verified');
           }
         }
       });
       updateProgress();
     }
-  } catch (err) {
-    console.error('refreshState error:', err);
-  }
+  } catch (err) { console.error('refreshState error:', err); }
 }
 
 function updateProgress() {
-  const answered = Object.keys(MY_ANSWERS).length;
+  const answered = Object.keys(MY_ANSWERS).filter(k => parseInt(k) <= 10).length;
   const total = SETTINGS.TotalSoal || SOAL_LIST.length || 10;
   document.getElementById('answeredCount').textContent = answered;
   const pct = Math.min(100, (answered / total) * 100);
@@ -905,15 +1551,10 @@ function updateProgress() {
 async function openLeaderboard() {
   document.getElementById('leaderboardModal').classList.add('active');
   document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><div class="loading"></div></div>';
-
   try {
     const res = await fetch(`${GAS_URL}?action=leaderboard`);
     const data = await res.json();
-    if (data.ok) {
-      renderLeaderboard(data.leaderboard);
-    } else {
-      document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><p>Belum ada data.</p></div>';
-    }
+    if (data.ok) renderLeaderboard(data.leaderboard);
   } catch (err) {
     document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><p>Gagal memuat: ' + err.message + '</p></div>';
   }
@@ -932,59 +1573,47 @@ function renderLeaderboard(lb) {
     else if (item.rank === 3) cls = 'top3';
     if (item.pc === STUDENT.pc) cls += ' me';
     const medal = item.rank === 1 ? '🥇' : item.rank === 2 ? '🥈' : item.rank === 3 ? '🥉' : item.rank;
-    return `
-      <div class="leader-row ${cls}">
-        <div class="leader-rank">${medal}</div>
-        <div class="leader-info">
-          <div class="leader-pc">PC ${item.pc}${item.pc === STUDENT.pc ? ' (Kamu)' : ''}</div>
-          <div class="leader-answered">${item.answered} soal dijawab</div>
-        </div>
-        <div class="leader-score">${item.total}</div>
-      </div>
-    `;
+    return `<div class="leader-row ${cls}"><div class="leader-rank">${medal}</div><div class="leader-info"><div class="leader-pc">PC ${item.pc}${item.pc === STUDENT.pc ? ' (Kamu)' : ''}</div><div class="leader-answered">${item.answered} soal dijawab</div></div><div class="leader-score">${item.total}</div></div>`;
   }).join('');
 }
 
 /* ============================================================
-   PEER ANSWERS
+   REFLECTION
    ============================================================ */
-async function viewPeerAnswers(soalId) {
-  const soal = SOAL_LIST.find(s => s.id === soalId);
-  if (!soal) return;
-  document.getElementById('peerModalTitle').textContent = '👀 Jawaban Teman - Soal ' + soalId;
-  document.getElementById('peerModal').classList.add('active');
-  document.getElementById('peerList').innerHTML = '<div class="empty-state"><div class="loading"></div> Memuat jawaban teman...</div>';
+function renderReflectionForm() {
+  const list = document.getElementById('reflectionList');
+  list.innerHTML = REFLECTION_QUESTIONS.map(r => `
+    <div class="reflection-item">
+      <div class="ref-q">${r.id - 89}. ${r.q}</div>
+      <textarea id="ref-${r.id}" placeholder="Tulis jawaban refleksimu di sini..." oninput="REFLECTIONS[${r.id}] = this.value"></textarea>
+    </div>
+  `).join('');
+}
 
-  // CATATAN: Endpoint admin_answers butuh PIN. Karena privasi, kita sediakan
-  // endpoint publik khusus untuk peer view. Untuk versi ini, kita tampilkan
-  // jawaban sendiri saja sebagai placeholder, dan jika diaktifkan di GAS
-  // (membuat endpoint publik peer_answers), akan tampil jawaban teman.
-  // Pendekatan alternatif: gunakan endpoint classProgress untuk statistik agregat.
+async function saveReflection() {
+  const filled = Object.keys(REFLECTIONS).filter(k => REFLECTIONS[k] && REFLECTIONS[k].trim());
+  if (filled.length < 3) {
+    if (!confirm('Baru ' + filled.length + ' dari 6 pertanyaan refleksi yang terisi. Lanjutkan simpan?')) return;
+  }
   try {
-    // Endpoint publik peer_answers (jika ditambahkan di GAS). Untuk demo:
-    const res = await fetch(`${GAS_URL}?action=classProgress`);
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'saveReflection', pc: STUDENT.pc, nama: STUDENT.nama, reflections: REFLECTIONS })
+    });
     const data = await res.json();
     if (data.ok) {
-      document.getElementById('peerList').innerHTML = `
-        <div class="peer-item">
-          <div class="peer-meta"><span>📊 Statistik Kelas</span></div>
-          <div class="peer-text">
-            <strong>${data.activeStudents}</strong> dari ${data.targetStudents} siswa sudah menjawab.<br>
-            Total <strong>${data.totalAnswers}</strong> jawaban terkumpul dari target ${data.targetAnswers} jawaban.
-          </div>
-        </div>
-        <div class="peer-item">
-          <div class="peer-meta"><span>📝 Jawabanmu untuk soal ini</span></div>
-          <div class="peer-text">${MY_ANSWERS[soalId] ? MY_ANSWERS[soalId].jawaban : '<em>Belum dijawab</em>'}</div>
-        </div>
-        <div class="peer-item" style="border-left-color: var(--accent);">
-          <div class="peer-meta"><span>💡 Tips</span></div>
-          <div class="peer-text">Setelah semua selesai, guru akan memanggil siswa secara acak untuk membacakan jawaban. Dengarkan jawaban teman untuk membandingkan dengan jawabanmu sendiri!</div>
-        </div>
-      `;
+      document.getElementById('reflectionDone').style.display = 'block';
+      document.querySelector('#phase-refleksi .content-card').style.display = 'none';
+      document.querySelector('#phase-refleksi .section-desc').style.display = 'none';
+      document.querySelector('#phase-refleksi .section-title').style.display = 'none';
+      showToast('🎉 Refleksi tersimpan! Pembelajaran selesai.', 'success');
+      setPhase('selesai');
+    } else {
+      showToast(data.error || 'Gagal menyimpan', 'error');
     }
   } catch (err) {
-    document.getElementById('peerList').innerHTML = '<p>Gagal memuat: ' + err.message + '</p>';
+    showToast('Error: ' + err.message, 'error');
   }
 }
 
@@ -993,7 +1622,6 @@ async function viewPeerAnswers(soalId) {
    ============================================================ */
 function doLogout() {
   if (!confirm('Yakin ingin keluar? Jawabanmu tetap tersimpan di server.')) return;
-  // Kirim logout ke server
   try {
     fetch(GAS_URL, {
       method: 'POST',
@@ -1006,11 +1634,9 @@ function doLogout() {
 }
 
 /* ============================================================
-   MODAL & TOAST
+   UTILITIES
    ============================================================ */
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
 let toastTimer = null;
 function showToast(msg, type = 'success') {
@@ -1021,11 +1647,8 @@ function showToast(msg, type = 'success') {
   toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// Tutup modal saat klik overlay
 document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', (e) => {
-    if (e.target === m) m.classList.remove('active');
-  });
+  m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('active'); });
 });
 
 // Auto-refresh state setiap 30 detik
@@ -1035,7 +1658,7 @@ setInterval(() => {
   }
 }, 30000);
 
-// Cek konfigurasi GAS_URL
+// Cek konfigurasi
 if (GAS_URL === 'PASTE_GAS_WEBAPP_URL_HERE') {
   setTimeout(() => {
     alert('⚠ KONFIGURASI BELUM SELESAI\n\nHalaman ini belum dihubungkan ke backend.\nGuru harus mengisi GAS_URL di file index.html terlebih dahulu.');
