@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LKPD Digital Informatika - SMPN 1 Moga</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-slate-800 font-sans pb-12">
+
+  <header class="p-6 text-center text-white animate__animated animate__fadeInDown">
+    <div class="inline-flex items-center gap-2 bg-indigo-500/30 px-4 py-1.5 rounded-full text-indigo-200 text-sm mb-3">
+      <i data-lucide="wifi" class="w-4 h-4"></i> Bab 5: Jaringan Komputer dan Internet (LKPD 1)
+    </div>
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">LKPD INTERAKTIF INFORMATIKA</h1>
+    <p class="text-indigo-200 text-sm mt-1">SMP Negeri 1 Moga • Fase D / Kelas IX</p>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4">
+    <form id="lkpdForm" class="space-y-6">
+
+      <!-- Identitas Siswa -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl animate__animated animate__fadeInUp">
+        <h2 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">
+          <i data-lucide="user-check" class="text-indigo-600"></i> Identitas Peserta Didik
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+            <input type="text" id="nama" required placeholder="Masukkan nama Anda..."
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">No. Absen</label>
+            <input type="number" id="absen" required min="1" max="50" placeholder="No..."
+              class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+          </div>
+          <div class="md:col-span-3">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas</label>
+            <select id="kelas" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+              <option value="">-- Pilih Kelas --</option>
+              <option value="9A">IX - A</option><option value="9B">IX - B</option><option value="9C">IX - C</option>
+              <option value="9D">IX - D</option><option value="9E">IX - E</option><option value="9F">IX - F</option>
+              <option value="9G">IX - G</option><option value="9H">IX - H</option><option value="9I">IX - I</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Soal 1 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 1 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">1. Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari[cite: 9]!</p>
+        <textarea id="q1" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 2 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 2 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">2. Jelaskan perbedaan antara hardware dan software dalam jaringan komputer[cite: 9]!</p>
+        <textarea id="q2" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 3 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 3 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">3. Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan[cite: 9]!</p>
+        <textarea id="q3" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 4 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 4 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">4. Jelaskan apa itu internet dan sebutkan beberapa manfaatnya[cite: 9]!</p>
+        <textarea id="q4" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 5 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 5 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">5. Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya[cite: 9]!</p>
+        <textarea id="q5" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 6 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 6 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">6. Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer[cite: 9]!</p>
+        <textarea id="q6" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 7 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 7 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">7. Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan[cite: 9]!</p>
+        <textarea id="q7" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 8 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 8 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">8. Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan[cite: 9]!</p>
+        <textarea id="q8" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 9 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 9 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">9. Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</p>
+        <textarea id="q9" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Soal 10 -->
+      <div class="glass-card rounded-2xl p-6 shadow-xl">
+        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 10 dari 10</span>
+        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">10. Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</p>
+        <textarea id="q10" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Tombol Kirim -->
+      <button type="submit" id="btnSubmit"
+        class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg transition duration-300 flex items-center justify-center gap-2 text-lg">
+        <i data-lucide="send"></i> Kirim Semua Jawaban LKPD
+      </button>
+
+    </form>
+  </main>
+
+  <!-- Modal Sukses -->
+  <div id="statusModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl p-6 text-center max-w-sm w-full animate__animated animate__zoomIn">
+      <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="check-circle-2" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-800">Terima Kasih!</h3>
+      <p class="text-gray-600 mt-2 text-sm">Ke-10 jawaban LKPD kamu telah berhasil tersimpan ke sistem guru.</p>
+      <button onclick="location.reload()" class="mt-6 w-full py-2.5 bg-indigo-600 text-white font-semibold rounded-xl">Selesai</button>
+    </div>
+  </div>
+
+  <script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyL_n30zesNORkR6R2kcC0XIgYjF-3kWl3YpVpmgZz1cvx-xNR5L50rmk7iZhKEoSw2/exec';
+    lucide.createIcons();
+
+    document.getElementById('lkpdForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Mengirimkan 10 Jawaban...`;
+      lucide.createIcons();
+
+      const payload = {
+        nama: document.getElementById('nama').value,
+        absen: document.getElementById('absen').value,
+        kelas: document.getElementById('kelas').value,
+        q1: document.getElementById('q1').value,
+        q2: document.getElementById('q2').value,
+        q3: document.getElementById('q3').value,
+        q4: document.getElementById('q4').value,
+        q5: document.getElementById('q5').value,
+        q6: document.getElementById('q6').value,
+        q7: document.getElementById('q7').value,
+        q8: document.getElementById('q8').value,
+        q9: document.getElementById('q9').value,
+        q10: document.getElementById('q10').value
+      };
+
+      try {
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        document.getElementById('statusModal').classList.remove('hidden');
+      } catch (err) {
+        alert('Gagal mengirim jawaban. Periksa koneksi internet Anda!');
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send"></i> Coba Kirim Lagi`;
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
