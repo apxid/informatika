@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard Guru - JaringanKu Lab Interaktif</title>
+<meta name="description" content="Panel guru untuk monitoring 32 siswa di lab komputer" />
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --primary: #1e3a8a;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e40af;
+  --accent: #10b981;
+  --accent-light: #34d399;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   PIN LOGIN SCREEN
+   ============================================================ */
+#pinScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  padding: 20px;
+}
+.pin-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.pin-logo {
+  width: 70px; height: 70px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+}
+.pin-card h1 { font-size: 22px; color: var(--primary); margin-bottom: 4px; }
+.pin-card .subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
+.pin-input-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.pin-input-group input {
+  width: 50px;
+  height: 60px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+.pin-input-group input:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.pin-card .btn-primary { width: 100%; margin-top: 8px; }
+.pin-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 16px;
+  padding: 10px;
+  background: #f1f5f9;
+  border-radius: var(--radius-sm);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+.btn-success { background: var(--accent); color: white; }
+.btn-success:hover { background: #059669; }
+.btn-warning { background: var(--warning); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: #dc2626; }
+.btn-ghost { background: transparent; color: var(--text-muted); border: 2px solid var(--border); }
+.btn-ghost:hover { background: var(--bg); }
+.btn-ghost.active { background: var(--primary); color: white; border-color: var(--primary); }
+.btn-sm { padding: 6px 10px; font-size: 12px; }
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+#dashboard { display: none; }
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar-logo {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 18px;
+}
+.topbar-info h2 { font-size: 15px; font-weight: 700; }
+.topbar-info p { font-size: 12px; color: var(--text-muted); }
+.topbar-right { display: flex; gap: 8px; align-items: center; }
+.live-indicator {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.live-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+/* Container */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+}
+
+/* Stats cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--primary);
+}
+.stat-card.success { border-left-color: var(--accent); }
+.stat-card.warning { border-left-color: var(--warning); }
+.stat-card.info { border-left-color: var(--primary-light); }
+.stat-card .stat-icon { font-size: 22px; margin-bottom: 8px; }
+.stat-card .stat-value { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; }
+.stat-card .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.stat-card .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+/* Tab navigation */
+.tab-nav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 6px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.tab-btn:hover { background: var(--bg); }
+.tab-btn.active { background: var(--primary); color: white; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Card */
+.card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.card-header h3 { font-size: 16px; color: var(--text); font-weight: 700; }
+.card-header .actions { display: flex; gap: 8px; }
+
+/* Student grid (32 PCs) */
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.student-tile {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.student-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.student-tile.online { border-color: var(--accent); background: #ecfdf5; }
+.student-tile.online::before {
+  content: '';
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.student-tile.offline { opacity: 0.6; }
+.student-tile .tile-pc {
+  font-size: 11px; color: var(--text-muted); font-weight: 600;
+}
+.student-tile .tile-name {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  margin: 4px 0; min-height: 18px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.student-tile .tile-progress {
+  font-size: 12px; color: var(--primary); font-weight: 700;
+}
+.tile-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.tile-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.4s;
+  width: 0%;
+}
+.student-tile.online .tile-bar-fill { background: var(--accent); }
+
+/* Per-soal view */
+.soal-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.soal-chip {
+  padding: 6px 12px;
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.soal-chip:hover { border-color: var(--primary-light); }
+.soal-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+.kunci-jawaban {
+  background: #fef3c7;
+  border-left: 4px solid var(--warning);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+.kunci-jawaban .kunci-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #92400e;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.kunci-jawaban .kunci-text {
+  font-size: 13px;
+  color: #78350f;
+}
+
+.answer-list { display: flex; flex-direction: column; gap: 10px; }
+.answer-item {
+  background: var(--bg);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--border);
+}
+.answer-item.verified { border-left-color: var(--accent); background: #ecfdf5; }
+.answer-item.revision { border-left-color: var(--danger); background: #fef2f2; }
+.answer-item.pending { border-left-color: var(--warning); }
+.answer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.answer-meta .left { display: flex; gap: 8px; align-items: center; }
+.answer-meta .pc-badge {
+  background: var(--primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 11px;
+}
+.answer-text {
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.answer-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.score-input {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Random picker */
+.random-display {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  text-align: center;
+  color: white;
+  margin-bottom: 16px;
+}
+.random-display .random-label {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+.random-display .random-name {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  min-height: 44px;
+}
+.random-display .random-pc {
+  font-size: 18px;
+  opacity: 0.9;
+}
+.random-display.spinning .random-name {
+  animation: shake 0.1s infinite;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+.random-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h3 { font-size: 16px; color: var(--primary); }
+.modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+.modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--text);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s;
+  pointer-events: none;
+  box-shadow: var(--shadow-lg);
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: var(--accent); }
+.toast.error { background: var(--danger); }
+.toast.warning { background: var(--warning); }
+
+.loading {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+.empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+
+.legend {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .student-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .container { padding: 16px; }
+  .topbar { padding: 10px 16px; }
+  .random-display .random-name { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PIN LOGIN
+     ============================================================ -->
+<div id="pinScreen">
+  <div class="pin-card">
+    <div class="pin-logo">🔐</div>
+    <h1>Dashboard Guru</h1>
+    <p class="subtitle">JaringanKu - Lab Interaktif</p>
+    <p style="margin-bottom:20px; font-size:13px; color:var(--text-muted);">Masukkan 4 digit PIN untuk mengakses panel guru</p>
+
+    <div class="pin-input-group">
+      <input type="password" maxlength="1" id="pin1" inputmode="numeric" />
+      <input type="password" maxlength="1" id="pin2" inputmode="numeric" />
+      <input type="password" maxlength="1" id="pin3" inputmode="numeric" />
+      <input type="password" maxlength="1" id="pin4" inputmode="numeric" />
+    </div>
+    <button class="btn btn-primary" id="pinSubmitBtn" onclick="submitPin()">
+      🔓 Masuk Dashboard
+    </button>
+    <div class="pin-hint">
+      <strong>Default PIN: 1234</strong><br>
+      Ganti PIN melalui menu Pengaturan setelah masuk.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DASHBOARD
+     ============================================================ -->
+<div id="dashboard">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">📡</div>
+      <div class="topbar-info">
+        <h2>Dashboard Guru - JaringanKu</h2>
+        <p>SMP NEGERI 1 MOGA • INFORMATIKA • Bab 5 Pertemuan 1</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span id="liveStatus">Live</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="manualRefresh()">🔄 Refresh</button>
+      <button class="btn btn-ghost btn-sm" onclick="openSettings()">⚙️ Pengaturan</button>
+      <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">Keluar</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Stats cards -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card success">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value" id="statOnline">0</div>
+        <div class="stat-label">Siswa Online</div>
+        <div class="stat-sub" id="statTotal">dari 32 total</div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value" id="statAnswers">0</div>
+        <div class="stat-label">Jawaban Terkumpul</div>
+        <div class="stat-sub" id="statTarget">target 320 jawaban</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="statVerified">0</div>
+        <div class="stat-label">Sudah Dinilai</div>
+        <div class="stat-sub" id="statPending">0 menunggu</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value" id="statAvg">0</div>
+        <div class="stat-label">Rata-rata Skor</div>
+        <div class="stat-sub">per siswa</div>
+      </div>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="grid" onclick="switchTab('grid')">🖥️ Monitor Siswa (32 PC)</button>
+      <button class="tab-btn" data-tab="soal" onclick="switchTab('soal')">📋 Per Soal (Grading)</button>
+      <button class="tab-btn" data-tab="random" onclick="switchTab('random')">🎲 Acak Siswa</button>
+    </div>
+
+    <!-- ============================================================
+         TAB 1: Monitor Siswa
+         ============================================================ -->
+    <div class="tab-panel active" id="tab-grid">
+      <div class="card">
+        <div class="card-header">
+          <h3>🖥️ Monitor Real-Time 32 Client Laptop</h3>
+          <div class="actions">
+            <button class="btn btn-ghost btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+            <button class="btn btn-warning btn-sm" onclick="resetSession()">♻️ Reset Sesi</button>
+          </div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span> Online & aktif</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--border)"></span> Offline</div>
+          <div class="legend-item">Klik tile untuk lihat detail jawaban siswa</div>
+        </div>
+        <div class="student-grid" id="studentGrid">
+          <div class="empty-state"><div class="loading"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         TAB 2: Per Soal (Grading)
+         ============================================================ -->
+    <div class="tab-panel" id="tab-soal">
+      <div class="card">
+        <div class="card-header">
+          <h3>📋 Penilaian Per Soal</h3>
+        </div>
+        <div class="soal-selector" id="soalSelector">
+          <span style="font-size:12px; color:var(--text-muted);">Pilih soal:</span>
+        </div>
+        <div id="kunciContainer" style="display:none;">
+          <div class="kunci-jawaban">
+            <div class="kunci-label">🔑 Kunci Jawaban Referensi</div>
+            <div class="kunci-text" id="kunciText"></div>
+          </div>
+        </div>
+        <div class="answer-list" id="answerList">
+          <div class="empty-state"><div class="emoji">👈</div><p>Pilih nomor soal di atas untuk melihat & menilai jawaban siswa</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         TAB 3: Random Picker
+         ============================================================ -->
+    <div class="tab-panel" id="tab-random">
+      <div class="card">
+        <div class="card-header">
+          <h3>🎲 Pemanggilan Acak Siswa</h3>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          Sistem akan memilih 1 siswa secara acak dari yang sedang online. Gunakan untuk memanggil siswa membacakan jawaban - cara ini memastikan SEMUA siswa tetap siap dan fokus karena bisa terpanggil kapan saja.
+        </p>
+        <div class="random-display" id="randomDisplay">
+          <div class="random-label">Klik tombol di bawah untuk memilih siswa acak</div>
+          <div class="random-name" id="randomName">—</div>
+          <div class="random-pc" id="randomPC"></div>
+        </div>
+        <div class="random-controls">
+          <button class="btn btn-primary" id="pickBtn" onclick="pickRandomStudent()">🎲 Pilih Siswa Acak</button>
+          <button class="btn btn-success" id="repickBtn" style="display:none;" onclick="pickRandomStudent()">🔄 Pilih Lagi</button>
+        </div>
+        <div id="onlineCount" style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted);"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: Settings
+     ============================================================ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>⚙️ Pengaturan</h3>
+      <button class="modal-close" onclick="closeModal('settingsModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <h4 style="margin-bottom:12px; color:var(--primary);">Ganti PIN Admin</h4>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px;">PIN Lama</label>
+        <input type="password" id="oldPin" maxlength="20" style="width:100%; padding:10px; border:2px solid var(--border); border-radius:6px;" />
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px;">PIN Baru (min. 4 karakter)</label>
+        <input type="password" id="newPin" maxlength="20" style="width:100%; padding:10px; border:2px solid var(--border); border-radius:6px;" />
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px;">Konfirmasi PIN Baru</label>
+        <input type="password" id="newPin2" maxlength="20" style="width:100%; padding:10px; border:2px solid var(--border); border-radius:6px;" />
+      </div>
+      <button class="btn btn-primary" onclick="changePin()" style="width:100%;">Ganti PIN</button>
+
+      <hr style="margin:20px 0; border:none; border-top:1px solid var(--border);">
+      <h4 style="margin-bottom:12px; color:var(--primary);">Reset Sesi Pembelajaran</h4>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
+        Reset akan menandai semua siswa sebagai "offline". Gunakan di awal sesi pembelajaran baru.
+        <strong>Jawaban siswa TIDAK akan dihapus.</strong>
+      </p>
+      <button class="btn btn-warning" onclick="resetSession()" style="width:100%;">♻️ Reset Status Siswa</button>
+
+      <hr style="margin:20px 0; border:none; border-top:1px solid var(--border);">
+      <h4 style="margin-bottom:8px; color:var(--primary);">ℹ️ Info Konfigurasi</h4>
+      <div style="font-size:12px; color:var(--text-muted); line-height:1.8;">
+        <strong>Backend:</strong> Google Apps Script<br>
+        <strong>Database:</strong> Google Spreadsheet<br>
+        <strong>Hosting:</strong> GitHub Pages<br>
+        <strong>Total Soal LKPD 1:</strong> 10<br>
+        <strong>Total Client:</strong> 32 laptop
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('settingsModal')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   KONFIGURASI
+   ============================================================ */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec";
+
+let ADMIN_PIN = sessionStorage.getItem('adminPin') || '';
+let CURRENT_TAB = 'grid';
+let ALL_STUDENTS = [];
+let ALL_SOAL = [];
+let CURRENT_SOAL_ID = null;
+let REFRESH_TIMER = null;
+
+/* ============================================================
+   PIN LOGIN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Auto-focus pada PIN input pertama
+  document.getElementById('pin1').focus();
+
+  // PIN input auto-advance
+  ['pin1', 'pin2', 'pin3', 'pin4'].forEach((id, idx) => {
+    const input = document.getElementById(id);
+    input.addEventListener('input', (e) => {
+      if (e.target.value && idx < 3) {
+        document.getElementById(['pin1','pin2','pin3','pin4'][idx+1]).focus();
+      }
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+        document.getElementById(['pin1','pin2','pin3','pin4'][idx-1]).focus();
+      }
+      if (e.key === 'Enter') submitPin();
+    });
+  });
+
+  // Auto-login jika sudah ada PIN di session
+  if (ADMIN_PIN) {
+    tryLogin(ADMIN_PIN);
+  }
+});
+
+async function submitPin() {
+  const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
+  if (pin.length < 4) {
+    showToast('PIN harus 4 digit', 'error');
+    return;
+  }
+  await tryLogin(pin);
+}
+
+async function tryLogin(pin) {
+  const btn = document.getElementById('pinSubmitBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Mengecek...';
+  }
+
+  try {
+    // Test PIN dengan request admin_stats
+    const url = `${GAS_URL}?action=admin_stats&pin=${encodeURIComponent(pin)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      ADMIN_PIN = pin;
+      sessionStorage.setItem('adminPin', pin);
+      enterDashboard(data.stats);
+    } else {
+      showToast(data.error || 'PIN salah', 'error');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '🔓 Masuk Dashboard';
+      }
+    }
+  } catch (err) {
+    showToast('Koneksi gagal: ' + err.message, 'error');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🔓 Masuk Dashboard';
+    }
+  }
+}
+
+function enterDashboard(initialStats) {
+  document.getElementById('pinScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  updateStats(initialStats);
+  loadSoalList();
+  loadStudentGrid();
+  // Auto-refresh setiap 10 detik
+  if (REFRESH_TIMER) clearInterval(REFRESH_TIMER);
+  REFRESH_TIMER = setInterval(autoRefresh, 10000);
+}
+
+function logoutAdmin() {
+  if (!confirm('Keluar dari dashboard guru?')) return;
+  sessionStorage.removeItem('adminPin');
+  ADMIN_PIN = '';
+  location.reload();
+}
+
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+function switchTab(tab) {
+  CURRENT_TAB = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tab));
+
+  if (tab === 'soal' && ALL_SOAL.length === 0) loadSoalList();
+  if (tab === 'random') updateOnlineCount();
+}
+
+/* ============================================================
+   LOAD DATA
+   ============================================================ */
+async function loadSoalList() {
+  try {
+    const url = `${GAS_URL}?action=admin_getSoalWithKey&pin=${encodeURIComponent(ADMIN_PIN)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      ALL_SOAL = data.soal;
+      renderSoalSelector();
+    }
+  } catch (err) {
+    console.error('loadSoalList error:', err);
+  }
+}
+
+function renderSoalSelector() {
+  const sel = document.getElementById('soalSelector');
+  sel.innerHTML = '<span style="font-size:12px; color:var(--text-muted);">Pilih soal:</span>';
+  ALL_SOAL.forEach(soal => {
+    const chip = document.createElement('div');
+    chip.className = 'soal-chip';
+    chip.textContent = 'Soal ' + soal.id;
+    chip.onclick = () => selectSoal(soal.id);
+    if (soal.id === CURRENT_SOAL_ID) chip.classList.add('active');
+    sel.appendChild(chip);
+  });
+}
+
+async function selectSoal(soalId) {
+  CURRENT_SOAL_ID = soalId;
+  renderSoalSelector();
+  const soal = ALL_SOAL.find(s => s.id === soalId);
+  if (!soal) return;
+
+  document.getElementById('kunciContainer').style.display = 'block';
+  document.getElementById('kunciText').textContent = soal.kunci || '(belum ada kunci)';
+
+  document.getElementById('answerList').innerHTML = '<div class="empty-state"><div class="loading"></div></div>';
+
+  try {
+    const url = `${GAS_URL}?action=admin_answers&soalId=${soalId}&pin=${encodeURIComponent(ADMIN_PIN)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      renderAnswers(data.answers, soal);
+    } else {
+      document.getElementById('answerList').innerHTML = '<div class="empty-state"><p>' + (data.error || 'Gagal memuat') + '</p></div>';
+    }
+  } catch (err) {
+    document.getElementById('answerList').innerHTML = '<div class="empty-state"><p>Error: ' + err.message + '</p></div>';
+  }
+}
+
+function renderAnswers(answers, soal) {
+  const list = document.getElementById('answerList');
+  if (!answers || answers.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="emoji">📭</div><p>Belum ada jawaban untuk soal ini.</p></div>';
+    return;
+  }
+
+  // Sort: verified first, then pending, then revision
+  answers.sort((a, b) => {
+    const order = { verified: 0, pending: 1, revision: 2, scored: 1 };
+    return (order[a.status] || 1) - (order[b.status] || 1);
+  });
+
+  list.innerHTML = answers.map(a => {
+    let cls = a.status || 'pending';
+    return `
+      <div class="answer-item ${cls}" id="ans-${a.pc}-${a.soalId}">
+        <div class="answer-meta">
+          <div class="left">
+            <span class="pc-badge">PC ${a.pc}</span>
+            <strong>${a.nama || '(tanpa nama)'}</strong>
+            <span style="color:var(--text-muted); font-size:11px;">${a.timestamp || ''}</span>
+          </div>
+          <span style="font-weight:700; color:var(--primary);">Skor: ${a.skor || 0}/${soal.poin}</span>
+        </div>
+        <div class="answer-text">${escapeHtml(a.jawaban)}</div>
+        <div class="answer-actions">
+          <input type="number" class="score-input" id="score-${a.pc}-${a.soalId}" value="${a.skor || 0}" min="0" max="${soal.poin}" placeholder="0" />
+          <button class="btn btn-primary btn-sm" onclick="saveScore(${a.pc}, ${a.soalId}, ${soal.poin})">💾 Simpan Skor</button>
+          <button class="btn btn-success btn-sm" onclick="verifyAnswer(${a.pc}, ${a.soalId}, 'verified')">✓ Benar</button>
+          <button class="btn btn-warning btn-sm" onclick="verifyAnswer(${a.pc}, ${a.soalId}, 'revision')">⚠ Revisi</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function saveScore(pc, soalId, maxPoin) {
+  const input = document.getElementById('score-' + pc + '-' + soalId);
+  if (!input) return;
+  let skor = parseFloat(input.value) || 0;
+  if (skor < 0) skor = 0;
+  if (skor > maxPoin) {
+    showToast('Skor maksimal ' + maxPoin, 'warning');
+    skor = maxPoin;
+    input.value = skor;
+  }
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'admin_updateScore',
+        pin: ADMIN_PIN,
+        pc: pc,
+        soalId: soalId,
+        skor: skor
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('Skor PC ' + pc + ' = ' + skor, 'success');
+      // Update display
+      selectSoal(soalId);
+    } else {
+      showToast(data.error || 'Gagal menyimpan', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+
+async function verifyAnswer(pc, soalId, status) {
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'admin_verify',
+        pin: ADMIN_PIN,
+        pc: pc,
+        soalId: soalId,
+        status: status
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      const label = status === 'verified' ? 'Terverifikasi' : 'Perlu Revisi';
+      showToast('PC ' + pc + ' - ' + label, 'success');
+      selectSoal(soalId);
+    } else {
+      showToast(data.error || 'Gagal', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+
+/* ============================================================
+   STUDENT GRID
+   ============================================================ */
+async function loadStudentGrid() {
+  try {
+    const url = `${GAS_URL}?action=admin_progress&pin=${encodeURIComponent(ADMIN_PIN)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      ALL_STUDENTS = data.students || [];
+      renderStudentGrid(data.totalSoal);
+      // Update stats juga
+      autoRefresh();
+    }
+  } catch (err) {
+    document.getElementById('studentGrid').innerHTML = '<div class="empty-state"><p>Gagal memuat: ' + err.message + '</p></div>';
+  }
+}
+
+function renderStudentGrid(totalSoal) {
+  const grid = document.getElementById('studentGrid');
+  // Pastikan ada 32 tile (PC 1-32)
+  let html = '';
+  for (let pc = 1; pc <= 32; pc++) {
+    const s = ALL_STUDENTS.find(x => x.pc === pc) || { pc: pc, nama: '', status: 'offline', answered: 0, totalScore: 0 };
+    const isOnline = s.status === 'online';
+    const pct = totalSoal ? Math.min(100, (s.answered / totalSoal) * 100) : 0;
+    html += `
+      <div class="student-tile ${isOnline ? 'online' : 'offline'}" onclick="showStudentDetail(${pc})">
+        <div class="tile-pc">PC ${pc}</div>
+        <div class="tile-name">${s.nama || '(kosong)'}</div>
+        <div class="tile-progress">${s.answered || 0}/${totalSoal || 10} ${s.totalScore ? '• ⭐' + s.totalScore : ''}</div>
+        <div class="tile-bar"><div class="tile-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+    `;
+  }
+  grid.innerHTML = html;
+}
+
+function showStudentDetail(pc) {
+  const s = ALL_STUDENTS.find(x => x.pc === pc);
+  if (!s) return;
+  alert(`Detail Siswa PC ${pc}\n\nNama: ${s.nama || '(belum login)'}\nStatus: ${s.status}\nJawaban terisi: ${s.answered || 0}\nTotal Skor: ${s.totalScore || 0}\nLogin: ${s.loginAt || '-'}\nAktif terakhir: ${s.lastActive || '-'}`);
+}
+
+/* ============================================================
+   RANDOM PICKER
+   ============================================================ */
+let isSpinning = false;
+async function pickRandomStudent() {
+  if (isSpinning) return;
+  isSpinning = true;
+  const display = document.getElementById('randomDisplay');
+  const nameEl = document.getElementById('randomName');
+  const pcEl = document.getElementById('randomPC');
+  const pickBtn = document.getElementById('pickBtn');
+  const repickBtn = document.getElementById('repickBtn');
+
+  pickBtn.disabled = true;
+  repickBtn.style.display = 'none';
+  display.classList.add('spinning');
+
+  // Animasi spin selama 2 detik
+  const animNames = ['Budi', 'Siti', 'Andi', 'Dewi', 'Eka', 'Fajar', 'Gita', 'Hadi', 'Indah', 'Joko'];
+  let i = 0;
+  const animInterval = setInterval(() => {
+    nameEl.textContent = animNames[i % animNames.length] + '...';
+    pcEl.textContent = 'PC ' + ((i % 32) + 1);
+    i++;
+  }, 80);
+
+  setTimeout(async () => {
+    clearInterval(animInterval);
+    display.classList.remove('spinning');
+
+    try {
+      const url = `${GAS_URL}?action=admin_random&pin=${encodeURIComponent(ADMIN_PIN)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.ok) {
+        nameEl.textContent = data.student.nama;
+        pcEl.textContent = 'PC ' + data.student.pc;
+        showToast('🎲 Terpilih: ' + data.student.nama + ' (PC ' + data.student.pc + ')', 'success');
+      } else {
+        nameEl.textContent = '—';
+        pcEl.textContent = data.error || 'Gagal';
+        showToast(data.error || 'Gagal', 'error');
+      }
+    } catch (err) {
+      nameEl.textContent = '—';
+      pcEl.textContent = 'Error koneksi';
+      showToast('Error: ' + err.message, 'error');
+    }
+
+    pickBtn.disabled = false;
+    pickBtn.style.display = 'none';
+    repickBtn.style.display = 'inline-flex';
+    isSpinning = false;
+  }, 2000);
+}
+
+function updateOnlineCount() {
+  const online = ALL_STUDENTS.filter(s => s.status === 'online').length;
+  document.getElementById('onlineCount').textContent = `${online} siswa sedang online`;
+}
+
+/* ============================================================
+   STATS & AUTO REFRESH
+   ============================================================ */
+async function autoRefresh() {
+  try {
+    const url = `${GAS_URL}?action=admin_stats&pin=${encodeURIComponent(ADMIN_PIN)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      updateStats(data.stats);
+    }
+  } catch (err) {}
+  // Refresh grid juga
+  try {
+    const url = `${GAS_URL}?action=admin_progress&pin=${encodeURIComponent(ADMIN_PIN)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      ALL_STUDENTS = data.students || [];
+      renderStudentGrid(data.totalSoal);
+      if (CURRENT_TAB === 'random') updateOnlineCount();
+    }
+  } catch (err) {}
+}
+
+function manualRefresh() {
+  showToast('🔄 Memperbarui data...', 'success');
+  autoRefresh();
+}
+
+function updateStats(stats) {
+  document.getElementById('statOnline').textContent = stats.onlineStudents || 0;
+  document.getElementById('statTotal').textContent = 'dari ' + (stats.totalStudents || 32) + ' total';
+  document.getElementById('statAnswers').textContent = stats.totalAnswers || 0;
+  document.getElementById('statTarget').textContent = 'target ' + (stats.targetAnswers || 320) + ' jawaban';
+  document.getElementById('statVerified').textContent = stats.verifiedAnswers || 0;
+  document.getElementById('statPending').textContent = (stats.totalAnswers - stats.verifiedAnswers) + ' menunggu';
+  document.getElementById('statAvg').textContent = (stats.avgScorePerStudent || 0).toFixed(1);
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function openSettings() {
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+async function changePin() {
+  const oldPin = document.getElementById('oldPin').value;
+  const newPin = document.getElementById('newPin').value;
+  const newPin2 = document.getElementById('newPin2').value;
+
+  if (!oldPin || !newPin || !newPin2) {
+    showToast('Lengkapi semua field', 'error');
+    return;
+  }
+  if (newPin !== newPin2) {
+    showToast('PIN baru tidak cocok', 'error');
+    return;
+  }
+  if (newPin.length < 4) {
+    showToast('PIN baru minimal 4 karakter', 'error');
+    return;
+  }
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'admin_changePin',
+        oldPin: oldPin,
+        newPin: newPin
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('PIN berhasil diganti', 'success');
+      ADMIN_PIN = newPin;
+      sessionStorage.setItem('adminPin', newPin);
+      document.getElementById('oldPin').value = '';
+      document.getElementById('newPin').value = '';
+      document.getElementById('newPin2').value = '';
+      closeModal('settingsModal');
+    } else {
+      showToast(data.error || 'Gagal', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+
+async function resetSession() {
+  if (!confirm('Reset status semua siswa ke offline?\n\n(Jawaban tidak akan dihapus)')) return;
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'admin_reset', pin: ADMIN_PIN })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('✓ Sesi direset. Semua siswa offline.', 'success');
+      autoRefresh();
+    } else {
+      showToast(data.error || 'Gagal', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+let toastTimer = null;
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function exportCSV() {
+  if (ALL_STUDENTS.length === 0) {
+    showToast('Belum ada data untuk diekspor', 'warning');
+    return;
+  }
+  let csv = 'PC,Nama,Kelas,Status,Answered,Verified,TotalScore,LoginAt,LastActive\n';
+  ALL_STUDENTS.forEach(s => {
+    const row = [
+      s.pc,
+      '"' + (s.nama || '').replace(/"/g, '""') + '"',
+      s.kelas || '',
+      s.status || '',
+      s.answered || 0,
+      s.verified || 0,
+      s.totalScore || 0,
+      '"' + (s.loginAt || '') + '"',
+      '"' + (s.lastActive || '') + '"'
+    ];
+    csv += row.join(',') + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'laporan_siswa_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV berhasil diunduh', 'success');
+}
+
+// Tutup modal saat klik overlay
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', (e) => {
+    if (e.target === m) m.classList.remove('active');
+  });
+});
+
+// Cek konfigurasi
+if (GAS_URL === 'PASTE_GAS_WEBAPP_URL_HERE') {
+  setTimeout(() => {
+    alert('⚠ KONFIGURASI BELUM SELESAI\n\nGuru harus mengisi GAS_URL di file admin.html terlebih dahulu sebelum dashboard dapat digunakan.');
+  }, 500);
+}
+</script>
+
+</body>
+</html>
