@@ -11,269 +11,220 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); }
-    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    /* Full Screen Layout / Bingkai Layar Penuh */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+    .gradient-bg { 
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); 
+    }
+    .exam-container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .glass-card { 
+      background: rgba(255, 255, 255, 0.96); 
+      backdrop-filter: blur(12px); 
+      border: 1px solid rgba(255, 255, 255, 0.2); 
+    }
     .step-content { display: none; }
-    .step-content.active { display: block; }
+    .step-content.active { display: flex; flex-direction: column; flex-grow: 1; }
   </style>
 </head>
-<body class="gradient-bg min-h-screen text-slate-800 font-sans pb-12 flex flex-col justify-between select-none">
+<body class="gradient-bg text-slate-800 font-sans select-none">
 
   <!-- Audio Warning URL -->
   <audio id="warningAudio" src="https://yanuar-moga.github.io/cbt/assets/warning.mp3" preload="auto"></audio>
 
-  <!-- Header Section -->
-  <header class="p-6 text-center text-white animate__animated animate__fadeInDown">
-    <div class="inline-flex items-center gap-2 bg-indigo-500/30 px-4 py-1.5 rounded-full text-indigo-200 text-sm mb-3">
-      <i data-lucide="wifi" class="w-4 h-4"></i> Bab 5: Jaringan Komputer dan Internet (LKPD 1)
-    </div>
-    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">LKPD INTERAKTIF INFORMATIKA</h1>
-    <p class="text-indigo-200 text-xs md:text-sm mt-1">SMP Negeri 1 Moga • Fase D / Kelas IX</p>
-  </header>
+  <!-- KOTAK UTAMA FULLSCREEN -->
+  <div class="exam-container p-2 md:p-6">
 
-  <main class="max-w-2xl mx-auto px-4 w-full flex-grow">
-    <form id="lkpdForm">
+    <!-- Header Mini -->
+    <header class="text-center text-white shrink-0">
+      <div class="inline-flex items-center gap-2 bg-indigo-500/30 px-3 py-1 rounded-full text-indigo-200 text-xs mb-1">
+        <i data-lucide="wifi" class="w-3.5 h-3.5"></i> Bab 5: Jaringan Komputer dan Internet (LKPD 1)
+      </div>
+      <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">LKPD INTERAKTIF INFORMATIKA</h1>
+      <p class="text-indigo-200 text-xs">SMP Negeri 1 Moga • Fase D / Kelas IX</p>
+    </header>
 
-      <!-- STEP 0: Identitas Siswa -->
-      <div class="step-content active animate__animated animate__fadeIn" data-step="0">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
-            <i data-lucide="user-check" class="w-6 h-6"></i>
-          </div>
-          <h2 class="text-xl font-bold text-indigo-900 mb-1">Identitas Peserta Didik</h2>
-          <p class="text-xs text-gray-500 mb-6">Silakan isi data diri Anda. Perhatian: Setelah menekan tombol Mulai, layar akan otomatis terkunci (Fullscreen) dan dilarang keluar tab.</p>
-          
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-              <input type="text" id="nama" required placeholder="Masukkan nama lengkap..."
-                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+    <!-- Konten Form -->
+    <main class="max-w-3xl w-full mx-auto my-auto flex flex-col flex-grow justify-center px-2">
+      <form id="lkpdForm" class="w-full">
+
+        <!-- STEP 0: Identitas Siswa -->
+        <div class="step-content active animate__animated animate__fadeIn" data-step="0">
+          <div class="glass-card rounded-2xl p-6 md:p-8 shadow-2xl my-auto">
+            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mb-3">
+              <i data-lucide="user-check" class="w-5 h-5"></i>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <h2 class="text-lg md:text-xl font-bold text-indigo-900 mb-1">Identitas Peserta Didik</h2>
+            <p class="text-xs text-gray-500 mb-5">Silakan isi data diri Anda. Perhatian: Setelah menekan tombol Mulai, layar akan otomatis fullscreen dan terkunci. Jika keluar tab/reload, layar akan terlock 5 menit!</p>
+            
+            <div class="space-y-3">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">No. Absen</label>
-                <input type="number" id="absen" required min="1" max="50" placeholder="No..."
-                  class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+                <input type="text" id="nama" required placeholder="Masukkan nama lengkap..."
+                  class="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm focus:outline-none">
               </div>
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas</label>
-                <select id="kelas" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
-                  <option value="">-- Pilih --</option>
-                  <option value="9A">IX - A</option><option value="9B">IX - B</option><option value="9C">IX - C</option>
-                  <option value="9D">IX - D</option><option value="9E">IX - E</option><option value="9F">IX - F</option>
-                  <option value="9G">IX - G</option><option value="9H">IX - H</option><option value="9I">IX - I</option>
-                </select>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">No. Absen</label>
+                  <input type="number" id="absen" required min="1" max="50" placeholder="No..."
+                    class="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Kelas</label>
+                  <select id="kelas" required class="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm focus:outline-none">
+                    <option value="">-- Pilih --</option>
+                    <option value="9A">IX - A</option><option value="9B">IX - B</option><option value="9C">IX - C</option>
+                    <option value="9D">IX - D</option><option value="9E">IX - E</option><option value="9F">IX - F</option>
+                    <option value="9G">IX - G</option><option value="9H">IX - H</option><option value="9I">IX - I</option>
+                  </select>
+                </div>
               </div>
             </div>
-          </div>
 
-          <button type="button" onclick="startExam()"
-            class="mt-8 w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            Mulai Mengerjakan <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- STEP 1 - 10 (Soal-soal LKPD) -->
-      <!-- STEP 1 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="1">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 1 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">10% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">1. Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari[cite: 9]!</h3>
-          <textarea id="q1" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+            <button type="button" onclick="startExam()"
+              class="mt-6 w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
+              Mulai Mengerjakan <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
           </div>
         </div>
+
+        <!-- GENERATOR SOAL 1 SAMPAI 10 -->
+        <!-- Data soal dimuat dinamis dalam struktur template seragam -->
+        <div id="questionsContainer"></div>
+
+      </form>
+    </main>
+
+    <!-- Footer Mini -->
+    <footer class="text-center text-indigo-300 text-xs shrink-0 py-1">
+      SMP Negeri 1 Moga • Deep Learning Informatics
+    </footer>
+  </div>
+
+  <!-- POP-UP LOCK SCREEN & COUNTDOWN 5 MENIT -->
+  <div id="lockScreenModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl animate__animated animate__zoomIn border-4 border-red-500">
+      <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+        <i data-lucide="lock" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-2xl font-extrabold text-red-600">AKSES DIKUNCI!</h3>
+      <p class="text-gray-700 text-sm mt-2 font-medium">Anda terdeteksi melakukan pelanggaran (keluar tab / reload / keluar fullscreen). Sistem mengunci halaman ujian Anda.</p>
+      
+      <div class="my-6 p-4 bg-red-50 rounded-2xl border border-red-200">
+        <span class="text-xs text-gray-500 uppercase tracking-wider block font-bold mb-1">Sisa Waktu Penalti Kunci:</span>
+        <span id="countdownTimer" class="text-4xl font-extrabold text-red-600 tracking-widest">05:00</span>
       </div>
 
-      <!-- STEP 2 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="2">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 2 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">20% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">2. Jelaskan perbedaan antara hardware dan software dalam jaringan komputer[cite: 9]!</h3>
-          <textarea id="q2" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 3 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="3">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 3 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">30% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">3. Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan[cite: 9]!</h3>
-          <textarea id="q3" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 4 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="4">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 4 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">40% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">4. Jelaskan apa itu internet dan sebutkan beberapa manfaatnya[cite: 9]!</h3>
-          <textarea id="q4" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 5 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="5">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 5 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">50% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">5. Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya[cite: 9]!</h3>
-          <textarea id="q5" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 6 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="6">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 6 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">60% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">6. Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer[cite: 9]!</h3>
-          <textarea id="q6" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 7 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="7">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 7 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">70% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">7. Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan[cite: 9]!</h3>
-          <textarea id="q7" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 8 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="8">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 8 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">80% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">8. Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan[cite: 9]!</h3>
-          <textarea id="q8" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 9 -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="9">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 9 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">90% Selesai</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">9. Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</h3>
-          <textarea id="q9" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 10 (Final) -->
-      <div class="step-content animate__animated animate__fadeIn" data-step="10">
-        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
-          <div class="flex justify-between items-center mb-3">
-            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase">Pertanyaan 10 / 10</span>
-            <span class="text-xs text-gray-400 font-medium">Final</span>
-          </div>
-          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">10. Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</h3>
-          <textarea id="q10" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
-          <div class="flex gap-3 mt-6">
-            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
-            <button type="submit" id="btnSubmit" class="w-2/3 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm shadow-lg"><i data-lucide="send" class="w-4 h-4"></i> Kirim Semua Jawaban</button>
-          </div>
-        </div>
-      </div>
-
-    </form>
-  </main>
-
-  <!-- Footer Info -->
-  <footer class="text-center text-indigo-300 text-xs py-6">
-    SMP Negeri 1 Moga • Pembelajaran Mendalam (Deep Learning)
-  </footer>
-
-  <!-- POP-UP WARNING ANTI-CURANG -->
-  <div id="cheatWarningModal" class="fixed inset-0 bg-red-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl animate__animated animate__bounceIn border-4 border-red-500">
-      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-        <i data-lucide="alert-triangle" class="w-10 h-10"></i>
-      </div>
-      <h3 class="text-2xl font-extrabold text-red-600">PERINGATAN!</h3>
-      <p class="text-gray-700 text-sm mt-2 font-medium">Dilarang Curang! Anda terdeteksi keluar dari layar ujian, mencoba membuka tab lain, atau keluar dari Fullscreen!</p>
-      <button onclick="dismissWarning()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm shadow-lg">Kembali ke Ujian</button>
+      <p class="text-xs text-gray-400">Tombol kembali akan terbuka otomatis setelah hitung mundur selesai.</p>
     </div>
   </div>
 
   <!-- Modal Sukses -->
-  <div id="statusModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="statusModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-3xl p-6 text-center max-w-sm w-full animate__animated animate__zoomIn">
       <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
         <i data-lucide="check-circle-2" class="w-10 h-10"></i>
       </div>
       <h3 class="text-2xl font-bold text-gray-800">Terima Kasih!</h3>
       <p class="text-gray-600 mt-2 text-sm">Ke-10 jawaban LKPD kamu telah berhasil tersimpan ke sistem guru.</p>
-      <button onclick="exitExamMode()" class="mt-6 w-full py-2.5 bg-indigo-600 text-white font-semibold rounded-xl text-sm font-bold">Selesai</button>
+      <button onclick="finishExam()" class="mt-6 w-full py-2.5 bg-indigo-600 text-white font-semibold rounded-xl text-sm font-bold">Selesai</button>
     </div>
   </div>
 
   <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbyL_n30zesNORkR6R2kcC0XIgYjF-3kWl3YpVpmgZz1cvx-xNR5L50rmk7iZhKEoSw2/exec';
+    
+    const questionsList = [
+      "1. Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari[cite: 9]!",
+      "2. Jelaskan perbedaan antara hardware dan software dalam jaringan komputer[cite: 9]!",
+      "3. Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan[cite: 9]!",
+      "4. Jelaskan apa itu internet dan sebutkan beberapa manfaatnya[cite: 9]!",
+      "5. Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya[cite: 9]!",
+      "6. Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer[cite: 9]!",
+      "7. Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan[cite: 9]!",
+      "8. Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan[cite: 9]!",
+      "9. Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!",
+      "10. Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!"
+    ];
+
     let currentStep = 0;
     const totalSteps = 10;
-    let examActive = false; // Status apakah sedang aktif di halaman soal
+    let examActive = false;
 
-    lucide.createIcons();
+    // Render Soal Dinamis agar rapi di dalam bingkai layar penuh
+    function renderQuestions() {
+      const container = document.getElementById('questionsContainer');
+      let html = '';
+      for (let i = 1; i <= 10; i++) {
+        let isLast = (i === 10);
+        html += `
+          <div class="step-content animate__animated animate__fadeIn" data-step="${i}">
+            <div class="glass-card rounded-2xl p-5 md:p-6 shadow-2xl my-auto flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full uppercase">Pertanyaan ${i} / 10</span>
+                  <span class="text-xs text-gray-400 font-medium">${i * 10}% Selesai</span>
+                </div>
+                <h3 class="text-sm md:text-base font-semibold text-slate-800 mb-3 leading-relaxed">${questionsList[i-1]}</h3>
+                <textarea id="q${i}" rows="4" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm focus:outline-none"></textarea>
+              </div>
+              <div class="flex gap-3 mt-4">
+                <button type="button" onclick="prevStep()" class="w-1/3 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-xs"><i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali</button>
+                ${isLast ? 
+                  `<button type="submit" id="btnSubmit" class="w-2/3 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-xs shadow-lg"><i data-lucide="send" class="w-3.5 h-3.5"></i> Kirim Jawaban</button>` :
+                  `<button type="button" onclick="nextStep()" class="w-2/3 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-xs">Selanjutnya <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>`
+                }
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    renderQuestions();
+
+    // Cek Status Lock pada LocalStorage saat halaman dimuat
+    window.addEventListener('DOMContentLoaded', () => {
+      checkLockStatus();
+    });
+
+    function startExam() {
+      const nama = document.getElementById('nama').value.trim();
+      const absen = document.getElementById('absen').value.trim();
+      const kelas = document.getElementById('kelas').value;
+
+      if (!nama || !absen || !kelas) {
+        alert('Harap lengkapi Identitas (Nama, No. Absen, dan Kelas) terlebih dahulu!');
+        return;
+      }
+
+      currentStep = 1;
+      examActive = true;
+      updateStepView();
+      requestFullscreen();
+    }
+
+    function requestFullscreen() {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    }
 
     function updateStepView() {
       const steps = document.querySelectorAll('.step-content');
@@ -284,98 +235,16 @@
           el.classList.remove('active');
         }
       });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
       lucide.createIcons();
     }
 
-    // Fungsi Masuk Ke Sesi Soal & Aktifkan Fullscreen
-    function startExam() {
-      // Validasi identitas
-      const nama = document.getElementById('nama').value.trim();
-      const absen = document.getElementById('absen').value.trim();
-      const kelas = document.getElementById('kelas').value;
-
-      if (!nama || !absen || !kelas) {
-        alert('Harap lengkapi Identitas (Nama, No. Absen, dan Kelas) terlebih dahulu!');
-        return;
-      }
-
-      // Masuk ke langkah soal 1
-      currentStep = 1;
-      examActive = true; // Kunci aktif
-      updateStepView();
-
-      // Minta Fullscreen Browser
-      requestFullscreen();
-    }
-
-    function requestFullscreen() {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(err => console.log(err));
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-      }
-    }
-
-    function exitExamMode() {
-      examActive = false;
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
-      }
-      location.reload();
-    }
-
-    function triggerCheatWarning() {
-      if (!examActive) return; // Hanya aktif saat ujian
-
-      // Putar Audio Warning
-      const audio = document.getElementById('warningAudio');
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(e => console.log("Audio play blocked:", e));
-      }
-
-      // Tampilkan Pop-up Warning
-      document.getElementById('cheatWarningModal').classList.remove('hidden');
-    }
-
-    function dismissWarning() {
-      document.getElementById('cheatWarningModal').classList.add('hidden');
-      // Paksa kembali ke mode fullscreen jika siswa keluar
-      requestFullscreen();
-    }
-
-    // --- DETEKSI KECURANGAN (Pindah Tab / Minimize / Keluar Fullscreen) ---
-    // 1. Deteksi Pindah Tab atau Ganti Aplikasi (Blur)
-    window.addEventListener('blur', function() {
-      if (examActive) {
-        triggerCheatWarning();
-      }
-    });
-
-    // 2. Deteksi Keluar dari Fullscreen
-    document.addEventListener('fullscreenchange', function() {
-      if (examActive && !document.fullscreenElement) {
-        triggerCheatWarning();
-      }
-    });
-
     function nextStep() {
       const activeEl = document.querySelector(`.step-content[data-step="${currentStep}"]`);
-      const inputs = activeEl.querySelectorAll('input, select, textarea');
-      let valid = true;
-      inputs.forEach(input => {
-        if (!input.checkValidity()) {
-          input.reportValidity();
-          valid = false;
-        }
-      });
-
-      if (!valid) return;
-
+      const textarea = activeEl.querySelector('textarea');
+      if (!textarea.value.trim()) {
+        textarea.reportValidity();
+        return;
+      }
       if (currentStep < totalSteps) {
         currentStep++;
         updateStepView();
@@ -389,12 +258,82 @@
       }
     }
 
+    // --- SISTEM LOCK SCREEN 5 MENIT BERBASIS LOCALSTORAGE ---
+    function triggerLockPenalty() {
+      if (!examActive) return;
+      
+      // Set waktu akhir lock (5 menit dari sekarang)
+      const lockDuration = 5 * 60 * 1000; // 5 menit dalam milidetik
+      const lockUntil = Date.now() + lockDuration;
+      localStorage.setItem('lkpd_lock_until', lockUntil);
+
+      // Putar Audio Warning
+      const audio = document.getElementById('warningAudio');
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log("Audio blocked:", e));
+      }
+
+      activateLockScreenUI();
+    }
+
+    function checkLockStatus() {
+      const lockUntil = localStorage.getItem('lkpd_lock_until');
+      if (lockUntil) {
+        const remaining = lockUntil - Date.now();
+        if (remaining > 0) {
+          examActive = false;
+          activateLockScreenUI();
+          startCountdown(remaining);
+        } else {
+          localStorage.removeItem('lkpd_lock_until');
+        }
+      }
+    }
+
+    function activateLockScreenUI() {
+      document.getElementById('lockScreenModal').classList.remove('hidden');
+    }
+
+    function startCountdown(durationMs) {
+      let timeLeft = Math.floor(durationMs / 1000);
+      const timerEl = document.getElementById('countdownTimer');
+
+      const interval = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          localStorage.removeItem('lkpd_lock_until');
+          document.getElementById('lockScreenModal').classList.add('hidden');
+          alert('Waktu penalti kunci selesai. Silakan lanjutkan ujian dengan jujur!');
+          location.reload();
+          return;
+        }
+
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        timeLeft--;
+      }, 1000);
+    }
+
+    // Deteksi Pelanggaran (Pindah Tab / Minimize / Keluar Fullscreen)
+    window.addEventListener('blur', () => {
+      if (examActive) triggerLockPenalty();
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (examActive && !document.fullscreenElement) {
+        triggerLockPenalty();
+      }
+    });
+
+    // Handle Submit
     document.getElementById('lkpdForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader" class="animate-spin w-4 h-4"></i> Mengirim...`;
+      btn.innerHTML = `<i data-lucide="loader" class="animate-spin w-3.5 h-3.5"></i> Mengirim...`;
       lucide.createIcons();
 
       const payload = {
@@ -421,16 +360,24 @@
           body: JSON.stringify(payload)
         });
         
-        examActive = false; // Matikan kunci anti-curang setelah berhasil kirim
+        examActive = false;
+        localStorage.removeItem('lkpd_lock_until'); // Hapus lock jika sukses
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         document.getElementById('statusModal').classList.remove('hidden');
       } catch (err) {
         alert('Gagal mengirim jawaban. Periksa koneksi internet Anda!');
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Coba Kirim Lagi`;
+        btn.innerHTML = `<i data-lucide="send" class="w-3.5 h-3.5"></i> Coba Kirim Lagi`;
         lucide.createIcons();
       }
     });
+
+    function finishExam() {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+      location.reload();
+    }
   </script>
 </body>
 </html>
