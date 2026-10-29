@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JaringanKu - Lab Interaktif Informatika | SMPN 1 Moga</title>
+<meta name="description" content="Aplikasi Pembelajaran Interaktif - Bab 5 Jaringan Komputer dan Internet - Pertemuan 1" />
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --primary: #1e3a8a;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e40af;
+  --accent: #10b981;
+  --accent-light: #34d399;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg: #f1f5f9;
+  --bg-card: #ffffff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   KONFIGURASI - GANTI URL INI!
+   ============================================================ */
+/* URL Web App Google Apps Script Anda.
+   Format: https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec
+   Lihat README.md cara mendapatkannya. */
+
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  padding: 20px;
+}
+.login-card {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+.login-logo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+}
+.login-card h1 {
+  text-align: center;
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+.login-card .subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+.login-card .info-banner {
+  background: #eff6ff;
+  border-left: 4px solid var(--primary-light);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--primary-dark);
+}
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: inherit;
+  background: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  width: 100%;
+}
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.btn-primary:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+.btn-success { background: var(--accent); color: white; }
+.btn-success:hover { background: #059669; }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 2px solid var(--border);
+}
+.btn-ghost:hover { background: var(--bg); }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+
+/* ============================================================
+   MAIN APP
+   ============================================================ */
+#appScreen { display: none; min-height: 100vh; }
+
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+.topbar-logo {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 20px; font-weight: 700;
+}
+.topbar-info h2 { font-size: 15px; color: var(--text); font-weight: 700; }
+.topbar-info p { font-size: 12px; color: var(--text-muted); }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.user-chip {
+  background: #eff6ff;
+  color: var(--primary-dark);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Progress bar */
+.progress-container {
+  background: white;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.progress-info {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.progress-info .label { font-size: 14px; font-weight: 600; color: var(--text); }
+.progress-info .value { font-size: 14px; color: var(--text-muted); }
+.progress-bar {
+  height: 10px;
+  background: var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  border-radius: 5px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* Main content */
+.container {
+  max-width: 920px;
+  margin: 24px auto;
+  padding: 0 24px 80px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.section-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Question card */
+.question-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.question-card.answered { border-color: var(--accent); }
+.question-card.answered .q-status { background: var(--accent); color: white; }
+.question-card.verified { border-color: var(--primary); }
+.question-card.verified .q-status { background: var(--primary); color: white; }
+
+.q-header {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 12px;
+}
+.q-num {
+  background: var(--primary);
+  color: white;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.q-status {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--border);
+  color: var(--text-muted);
+}
+.q-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.q-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.q-textarea:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.q-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 10px;
+  gap: 8px;
+}
+.q-meta { font-size: 12px; color: var(--text-muted); }
+.q-actions { display: flex; gap: 8px; }
+
+/* Skor display */
+.skor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #fef3c7;
+  color: #92400e;
+}
+.skor-badge.high { background: #d1fae5; color: #065f46; }
+.skor-badge.low { background: #fee2e2; color: #991b1b; }
+
+/* Peer answers modal */
+.peer-list {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.peer-item {
+  background: var(--bg);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  border-left: 3px solid var(--primary-light);
+}
+.peer-item .peer-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  display: flex; justify-content: space-between;
+}
+.peer-item .peer-text { font-size: 14px; }
+
+/* Bottom action bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header h3 { color: var(--primary); font-size: 18px; }
+.modal-body { padding: 24px; overflow-y: auto; flex: 1; }
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+.modal-close:hover { color: var(--text); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  background: var(--text);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  z-index: 2000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s;
+  pointer-events: none;
+  box-shadow: var(--shadow-lg);
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: var(--accent); }
+.toast.error { background: var(--danger); }
+.toast.warning { background: var(--warning); }
+
+/* Leaderboard */
+.leaderboard-list { display: flex; flex-direction: column; gap: 6px; }
+.leader-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+.leader-rank {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  color: var(--text);
+}
+.leader-row.top1 .leader-rank { background: #fbbf24; color: white; }
+.leader-row.top2 .leader-rank { background: #cbd5e1; color: white; }
+.leader-row.top3 .leader-rank { background: #f59e0b; color: white; }
+.leader-row.me { background: #eff6ff; border: 2px solid var(--primary-light); }
+.leader-info { flex: 1; }
+.leader-pc { font-weight: 600; font-size: 14px; }
+.leader-answered { font-size: 12px; color: var(--text-muted); }
+.leader-score { font-weight: 700; color: var(--primary); font-size: 16px; }
+
+/* Loading */
+.loading {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+.empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .topbar { padding: 10px 16px; }
+  .topbar-info h2 { font-size: 13px; }
+  .topbar-info p { font-size: 11px; }
+  .container { padding: 0 16px 80px; }
+  .question-card { padding: 16px; }
+  .bottom-bar { padding: 10px 16px; }
+  .login-card { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">📡</div>
+    <h1>JaringanKu</h1>
+    <p class="subtitle">Lab Interaktif Informatika - Bab 5 Pertemuan 1</p>
+
+    <div class="info-banner">
+      <strong>📋 Petunjuk:</strong> Masuk menggunakan nama lengkap & nomor PC yang kamu tempati (1-32). Pastikan kamu login di PC yang benar agar jawaban tersimpan dengan tepat.
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="namaInput">Nama Lengkap</label>
+        <input type="text" id="namaInput" placeholder="Contoh: Budi Santoso" required autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label for="pcInput">Nomor PC (lihat stiker di meja)</label>
+        <select id="pcInput" required>
+          <option value="">-- Pilih Nomor PC --</option>
+          <!-- 1-32 akan diisi via JS -->
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" id="loginBtn">
+        <span id="loginBtnText">Masuk ke Pembelajaran →</span>
+      </button>
+    </form>
+
+    <p style="text-align:center; font-size:11px; color:var(--text-muted); margin-top:20px;">
+      SMP NEGERI 1 MOGA • INFORMATIKA • Fase D / Kelas IX
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN APP SCREEN
+     ============================================================ -->
+<div id="appScreen">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">📡</div>
+      <div class="topbar-info">
+        <h2 id="appName">JaringanKu - Lab Interaktif</h2>
+        <p id="appMeta">Bab 5 - Jaringan Komputer dan Internet • Pertemuan 1</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-chip" id="userChip">👩💻 PC --</div>
+      <button class="btn btn-ghost btn-sm" onclick="openLeaderboard()">🏆 Kelas</button>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-container">
+    <div class="progress-info">
+      <span class="label">📊 Progress LKPD Kamu</span>
+      <span class="value"><strong id="answeredCount">0</strong> / <span id="totalSoal">10</span> soal terjawab</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+    <h1 class="section-title">📝 Lembar Kerja Peserta Didik (LKPD 1)</h1>
+    <p class="section-desc">
+      Kerjakan <strong>semua 10 pertanyaan</strong> di bawah ini secara mandiri di laptop masing-masing. Jawabanmu tersimpan otomatis ke server. Guru dapat memanggilmu secara acak untuk membacakan jawaban, pastikan kamu siap di setiap nomor!
+    </p>
+
+    <div id="questionList">
+      <!-- Soal akan di-render via JS -->
+      <div class="empty-state">
+        <div class="loading"></div>
+        <p style="margin-top:12px;">Memuat soal...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom action bar -->
+  <div class="bottom-bar">
+    <div>
+      <span style="font-size:13px; color:var(--text-muted);">Tersimpan otomatis •</span>
+      <span id="lastSaved" style="font-size:13px; color:var(--text-muted);">belum ada</span>
+    </div>
+    <button class="btn btn-success" onclick="refreshState()">
+      🔄 Perbarui Status
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: Leaderboard
+     ============================================================ -->
+<div class="modal-overlay" id="leaderboardModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🏆 Papan Skor Kelas</h3>
+      <button class="modal-close" onclick="closeModal('leaderboardModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+        Ranking berdasarkan total skor dari jawaban terverifikasi guru. Identitas teman dirahasiakan - hanya nomor PC yang ditampilkan.
+      </p>
+      <div id="leaderboardList" class="leaderboard-list">
+        <div class="empty-state"><div class="loading"></div></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('leaderboardModal')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: Peer Answers
+     ============================================================ -->
+<div class="modal-overlay" id="peerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="peerModalTitle">👀 Jawaban Teman</h3>
+      <button class="modal-close" onclick="closeModal('peerModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="peerList" class="peer-list">
+        <div class="empty-state"><div class="loading"></div></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('peerModal')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   KONFIGURASI APLIKASI
+   ============================================================ */
+
+// PENTING: Ganti dengan URL Web App Google Apps Script Anda
+// Format: https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec";
+
+// State global
+let STUDENT = { nama: "", pc: null, loginAt: "" };
+let SOAL_LIST = [];
+let MY_ANSWERS = {};
+let SETTINGS = {};
+let AUTOSAVE_TIMERS = {};
+let LAST_SAVED = null;
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Isi dropdown PC 1-32
+  const pcSelect = document.getElementById('pcInput');
+  for (let i = 1; i <= 32; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = 'PC ' + i;
+    pcSelect.appendChild(opt);
+  }
+
+  // Cek apakah sudah login (sessionStorage)
+  const savedStudent = sessionStorage.getItem('student');
+  if (savedStudent) {
+    try {
+      const s = JSON.parse(savedStudent);
+      STUDENT = s;
+      showApp();
+      return;
+    } catch (e) {}
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', handleLogin);
+});
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+async function handleLogin(e) {
+  e.preventDefault();
+  const nama = document.getElementById('namaInput').value.trim();
+  const pc = document.getElementById('pcInput').value;
+
+  if (!nama || !pc) {
+    showToast('Lengkapi nama dan nomor PC', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('loginBtn');
+  const btnText = document.getElementById('loginBtnText');
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="loading"></span> Menghubungkan...';
+
+  try {
+    const url = `${GAS_URL}?action=login&nama=${encodeURIComponent(nama)}&pc=${pc}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.ok) {
+      showToast(data.error || 'Gagal masuk', 'error');
+      return;
+    }
+
+    STUDENT = data.student;
+    sessionStorage.setItem('student', JSON.stringify(STUDENT));
+
+    if (data.settings) SETTINGS = data.settings;
+    if (data.soal) SOAL_LIST = data.soal;
+
+    showApp();
+    showToast('Selamat datang, ' + STUDENT.nama + '!', 'success');
+  } catch (err) {
+    showToast('Koneksi gagal: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Masuk ke Pembelajaran →';
+  }
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('userChip').textContent = `👩💻 PC ${STUDENT.pc} • ${STUDENT.nama.split(' ')[0]}`;
+
+  if (SETTINGS.AppName) document.getElementById('appName').textContent = SETTINGS.AppName;
+  document.getElementById('appMeta').textContent = `${SETTINGS.Bab || 'Bab 5'} • Pertemuan ${SETTINGS.Pertemuan || '1'}`;
+  document.getElementById('totalSoal').textContent = SETTINGS.TotalSoal || SOAL_LIST.length || 10;
+
+  renderQuestions();
+  refreshState();
+}
+
+/* ============================================================
+   RENDER SOAL
+   ============================================================ */
+function renderQuestions() {
+  const list = document.getElementById('questionList');
+  list.innerHTML = '';
+
+  if (SOAL_LIST.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="emoji">📭</div><p>Soal belum dimuat. Coba refresh halaman.</p></div>';
+    return;
+  }
+
+  SOAL_LIST.forEach(soal => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + soal.id;
+
+    const myAns = MY_ANSWERS[soal.id];
+    let statusBadge = '<span class="q-status">Belum dijawab</span>';
+    let skorBadge = '';
+    if (myAns) {
+      if (myAns.status === 'verified') {
+        card.classList.add('answered', 'verified');
+        statusBadge = '<span class="q-status">✓ Terverifikasi</span>';
+      } else if (myAns.status === 'revision') {
+        card.classList.add('answered');
+        statusBadge = '<span class="q-status" style="background:#fef3c7;color:#92400e;">Perlu Revisi</span>';
+      } else {
+        card.classList.add('answered');
+        statusBadge = '<span class="q-status">Tersimpan</span>';
+      }
+      if (myAns.skor > 0) {
+        const cls = myAns.skor >= 8 ? 'high' : myAns.skor < 5 ? 'low' : '';
+        skorBadge = `<span class="skor-badge ${cls}">⭐ ${myAns.skor}/${soal.poin}</span>`;
+      }
+    }
+
+    card.innerHTML = `
+      <div class="q-header">
+        <div class="q-num">${soal.id}</div>
+        <div style="flex:1;">
+          <div class="q-text">${soal.pertanyaan}</div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            ${statusBadge}
+            ${skorBadge}
+            ${SETTINGS.AllowPeerView ? `<button class="btn btn-ghost btn-sm" onclick="viewPeerAnswers(${soal.id})">👀 Lihat Jawaban Teman</button>` : ''}
+          </div>
+        </div>
+      </div>
+      <textarea
+        class="q-textarea"
+        id="textarea-${soal.id}"
+        placeholder="Tulis jawabanmu di sini... (minimal 2-3 kalimat untuk jawaban yang baik)"
+        oninput="scheduleAutosave(${soal.id})"
+      >${myAns ? myAns.jawaban : ''}</textarea>
+      <div class="q-footer">
+        <span class="q-meta" id="meta-${soal.id}">Belum disimpan</span>
+        <div class="q-actions">
+          <button class="btn btn-primary btn-sm" onclick="saveAnswer(${soal.id})">
+            💾 Simpan Jawaban
+          </button>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+/* ============================================================
+   AUTOSAVE
+   ============================================================ */
+function scheduleAutosave(soalId) {
+  if (AUTOSAVE_TIMERS[soalId]) clearTimeout(AUTOSAVE_TIMERS[soalId]);
+  document.getElementById('meta-' + soalId).textContent = 'Mengetik... (akan tersimpan otomatis)';
+  AUTOSAVE_TIMERS[soalId] = setTimeout(() => saveAnswer(soalId, true), 2000);
+}
+
+async function saveAnswer(soalId, isAuto = false) {
+  const textarea = document.getElementById('textarea-' + soalId);
+  if (!textarea) return;
+  const jawaban = textarea.value.trim();
+  if (!jawaban) {
+    if (!isAuto) showToast('Jawaban tidak boleh kosong', 'warning');
+    return;
+  }
+
+  const meta = document.getElementById('meta-' + soalId);
+  meta.innerHTML = '<span class="loading"></span> Menyimpan...';
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'saveAnswer',
+        pc: STUDENT.pc,
+        soalId: soalId,
+        jawaban: jawaban,
+        nama: STUDENT.nama
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      MY_ANSWERS[soalId] = MY_ANSWERS[soalId] || {};
+      MY_ANSWERS[soalId].jawaban = jawaban;
+      LAST_SAVED = new Date();
+      meta.textContent = '✓ Tersimpan ' + LAST_SAVED.toLocaleTimeString('id-ID');
+      document.getElementById('lastSaved').textContent = 'tersimpan ' + LAST_SAVED.toLocaleTimeString('id-ID');
+      updateProgress();
+      const card = document.getElementById('card-' + soalId);
+      if (!card.classList.contains('answered')) {
+        card.classList.add('answered');
+        const status = card.querySelector('.q-status');
+        if (status) status.textContent = 'Tersimpan';
+      }
+      if (!isAuto) showToast('Jawaban soal ' + soalId + ' tersimpan ✓', 'success');
+    } else {
+      meta.textContent = '⚠ Gagal menyimpan';
+      if (!isAuto) showToast(data.error || 'Gagal menyimpan', 'error');
+    }
+  } catch (err) {
+    meta.textContent = '⚠ Error koneksi';
+    if (!isAuto) showToast('Koneksi gagal: ' + err.message, 'error');
+  }
+}
+
+/* ============================================================
+   STATE REFRESH
+   ============================================================ */
+async function refreshState() {
+  try {
+    const url = `${GAS_URL}?action=state&pc=${STUDENT.pc}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      MY_ANSWERS = data.answers || {};
+      // Update textarea tanpa override yang sedang diketik
+      SOAL_LIST.forEach(soal => {
+        const ta = document.getElementById('textarea-' + soal.id);
+        if (ta && document.activeElement !== ta) {
+          ta.value = MY_ANSWERS[soal.id] ? MY_ANSWERS[soal.id].jawaban : '';
+        }
+        const meta = document.getElementById('meta-' + soal.id);
+        if (meta && MY_ANSWERS[soal.id]) {
+          meta.textContent = '✓ Tersimpan';
+        }
+        // Update card class
+        const card = document.getElementById('card-' + soal.id);
+        if (card) {
+          card.classList.remove('answered', 'verified');
+          if (MY_ANSWERS[soal.id]) {
+            card.classList.add('answered');
+            if (MY_ANSWERS[soal.id].status === 'verified') {
+              card.classList.add('verified');
+            }
+          }
+        }
+      });
+      updateProgress();
+    }
+  } catch (err) {
+    console.error('refreshState error:', err);
+  }
+}
+
+function updateProgress() {
+  const answered = Object.keys(MY_ANSWERS).length;
+  const total = SETTINGS.TotalSoal || SOAL_LIST.length || 10;
+  document.getElementById('answeredCount').textContent = answered;
+  const pct = Math.min(100, (answered / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+/* ============================================================
+   LEADERBOARD
+   ============================================================ */
+async function openLeaderboard() {
+  document.getElementById('leaderboardModal').classList.add('active');
+  document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><div class="loading"></div></div>';
+
+  try {
+    const res = await fetch(`${GAS_URL}?action=leaderboard`);
+    const data = await res.json();
+    if (data.ok) {
+      renderLeaderboard(data.leaderboard);
+    } else {
+      document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><p>Belum ada data.</p></div>';
+    }
+  } catch (err) {
+    document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><p>Gagal memuat: ' + err.message + '</p></div>';
+  }
+}
+
+function renderLeaderboard(lb) {
+  const list = document.getElementById('leaderboardList');
+  if (!lb || lb.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="emoji">📊</div><p>Belum ada skor. Mulai kerjakan soal untuk masuk ranking!</p></div>';
+    return;
+  }
+  list.innerHTML = lb.map(item => {
+    let cls = '';
+    if (item.rank === 1) cls = 'top1';
+    else if (item.rank === 2) cls = 'top2';
+    else if (item.rank === 3) cls = 'top3';
+    if (item.pc === STUDENT.pc) cls += ' me';
+    const medal = item.rank === 1 ? '🥇' : item.rank === 2 ? '🥈' : item.rank === 3 ? '🥉' : item.rank;
+    return `
+      <div class="leader-row ${cls}">
+        <div class="leader-rank">${medal}</div>
+        <div class="leader-info">
+          <div class="leader-pc">PC ${item.pc}${item.pc === STUDENT.pc ? ' (Kamu)' : ''}</div>
+          <div class="leader-answered">${item.answered} soal dijawab</div>
+        </div>
+        <div class="leader-score">${item.total}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   PEER ANSWERS
+   ============================================================ */
+async function viewPeerAnswers(soalId) {
+  const soal = SOAL_LIST.find(s => s.id === soalId);
+  if (!soal) return;
+  document.getElementById('peerModalTitle').textContent = '👀 Jawaban Teman - Soal ' + soalId;
+  document.getElementById('peerModal').classList.add('active');
+  document.getElementById('peerList').innerHTML = '<div class="empty-state"><div class="loading"></div> Memuat jawaban teman...</div>';
+
+  // CATATAN: Endpoint admin_answers butuh PIN. Karena privasi, kita sediakan
+  // endpoint publik khusus untuk peer view. Untuk versi ini, kita tampilkan
+  // jawaban sendiri saja sebagai placeholder, dan jika diaktifkan di GAS
+  // (membuat endpoint publik peer_answers), akan tampil jawaban teman.
+  // Pendekatan alternatif: gunakan endpoint classProgress untuk statistik agregat.
+  try {
+    // Endpoint publik peer_answers (jika ditambahkan di GAS). Untuk demo:
+    const res = await fetch(`${GAS_URL}?action=classProgress`);
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('peerList').innerHTML = `
+        <div class="peer-item">
+          <div class="peer-meta"><span>📊 Statistik Kelas</span></div>
+          <div class="peer-text">
+            <strong>${data.activeStudents}</strong> dari ${data.targetStudents} siswa sudah menjawab.<br>
+            Total <strong>${data.totalAnswers}</strong> jawaban terkumpul dari target ${data.targetAnswers} jawaban.
+          </div>
+        </div>
+        <div class="peer-item">
+          <div class="peer-meta"><span>📝 Jawabanmu untuk soal ini</span></div>
+          <div class="peer-text">${MY_ANSWERS[soalId] ? MY_ANSWERS[soalId].jawaban : '<em>Belum dijawab</em>'}</div>
+        </div>
+        <div class="peer-item" style="border-left-color: var(--accent);">
+          <div class="peer-meta"><span>💡 Tips</span></div>
+          <div class="peer-text">Setelah semua selesai, guru akan memanggil siswa secara acak untuk membacakan jawaban. Dengarkan jawaban teman untuk membandingkan dengan jawabanmu sendiri!</div>
+        </div>
+      `;
+    }
+  } catch (err) {
+    document.getElementById('peerList').innerHTML = '<p>Gagal memuat: ' + err.message + '</p>';
+  }
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function doLogout() {
+  if (!confirm('Yakin ingin keluar? Jawabanmu tetap tersimpan di server.')) return;
+  // Kirim logout ke server
+  try {
+    fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'logout', pc: STUDENT.pc })
+    });
+  } catch (e) {}
+  sessionStorage.removeItem('student');
+  location.reload();
+}
+
+/* ============================================================
+   MODAL & TOAST
+   ============================================================ */
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+let toastTimer = null;
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Tutup modal saat klik overlay
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', (e) => {
+    if (e.target === m) m.classList.remove('active');
+  });
+});
+
+// Auto-refresh state setiap 30 detik
+setInterval(() => {
+  if (STUDENT.pc && document.getElementById('appScreen').style.display === 'block') {
+    refreshState();
+  }
+}, 30000);
+
+// Cek konfigurasi GAS_URL
+if (GAS_URL === 'PASTE_GAS_WEBAPP_URL_HERE') {
+  setTimeout(() => {
+    alert('⚠ KONFIGURASI BELUM SELESAI\n\nHalaman ini belum dihubungkan ke backend.\nGuru harus mengisi GAS_URL di file index.html terlebih dahulu.');
+  }, 500);
+}
+</script>
+
+</body>
+</html>
