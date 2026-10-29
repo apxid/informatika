@@ -1624,7 +1624,7 @@ html, body {
 /* ============================================================
    KONFIGURASI APLIKASI
    ============================================================ */
-const GAS_URL = "PASTE_GAS_WEBAPP_URL_HERE";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec";
 
 let STUDENT = { nama: "", pc: null, loginAt: "" };
 let SOAL_LIST = [];
@@ -1652,6 +1652,153 @@ const REFLECTION_QUESTIONS = [
   { id: 94, q: "Apa Manfaat Bagi-Ku (AMBAK) dari materi ini untuk kehidupan sehari-hari?" },
   { id: 95, q: "Bagaimana perasaanmu setelah mengikuti pembelajaran dengan aplikasi interaktif ini? Beri saran untuk perbaikan." }
 ];
+
+/* ============================================================
+   GAS FETCH WRAPPER - handle error "unexpected token"
+   Penyebab umum error:
+   1. GAS_URL belum diisi (masih placeholder)
+   2. Web App belum di-deploy dengan benar
+   3. Permission "Anyone" belum di-grant
+   4. Response 302 redirect ke login Google (HTML, bukan JSON)
+   5. Response 405 Method Not Allowed (deploy salah)
+   ============================================================ */
+
+/**
+ * Cek apakah GAS_URL sudah dikonfigurasi
+ */
+function isGasConfigured() {
+  return GAS_URL &&
+         GAS_URL !== 'PASTE_GAS_WEBAPP_URL_HERE' &&
+         GAS_URL.startsWith('https://script.google.com/macros/') &&
+         GAS_URL.endsWith('/exec');
+}
+
+/**
+ * GET request ke GAS dengan query params
+ * @param {Object} params - { action: 'login', nama: 'Budi', pc: 1 }
+ * @returns {Promise<Object>} - parsed JSON response atau throw Error dengan pesan jelas
+ */
+async function gasGet(params) {
+  // Validasi konfigurasi
+  if (!isGasConfigured()) {
+    throw new Error('GAS_URL belum dikonfigurasi. Guru harus mengisi URL Web App di file index.html (baris const GAS_URL). Lihat README.md langkah 5.');
+  }
+
+  // Build URL dengan query params
+  const url = GAS_URL + '?' + Object.entries(params)
+    .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
+    .join('&');
+
+  let res;
+  try {
+    res = await fetch(url, { method: 'GET', redirect: 'follow' });
+  } catch (networkErr) {
+    throw new Error('Tidak bisa terhubung ke server. Cek koneksi internet. (' + networkErr.message + ')');
+  }
+
+  return await parseGasResponse(res, url);
+}
+
+/**
+ * POST request ke GAS dengan JSON body
+ * Pakai Content-Type: text/plain untuk hindari CORS preflight (OPTIONS request)
+ * @param {Object} body - { action: 'saveAnswer', pc: 1, soalId: 1, ... }
+ * @returns {Promise<Object>} - parsed JSON response
+ */
+async function gasPost(body) {
+  if (!isGasConfigured()) {
+    throw new Error('GAS_URL belum dikonfigurasi. Guru harus mengisi URL Web App di file index.html.');
+  }
+
+  let res;
+  try {
+    res = await fetch(GAS_URL, {
+      method: 'POST',
+      // PENTING: text/plain untuk hindari preflight CORS yang sering gagal di GAS
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body),
+      redirect: 'follow'
+    });
+  } catch (networkErr) {
+    throw new Error('Tidak bisa terhubung ke server. Cek koneksi internet. (' + networkErr.message + ')');
+  }
+
+  return await parseGasResponse(res, GAS_URL);
+}
+
+/**
+ * Parse response dari GAS dengan error handling komprehensif
+ * Inilah yang mencegah error "unexpected token ?" atau "<"
+ */
+async function parseGasResponse(res, requestUrl) {
+  // Cek HTTP status
+  if (!res.ok && res.status !== 200) {
+    // Coba ambil text untuk debugging
+    let errBody = '';
+    try { errBody = await res.text(); } catch (e) {}
+    if (res.status === 401 || res.status === 403) {
+      throw new Error('Akses ditolak (HTTP ' + res.status + '). Deploy ulang GAS dengan "Who has access: Anyone".');
+    }
+    if (res.status === 404) {
+      throw new Error('URL Web App tidak ditemukan (404). Periksa kembali GAS_URL atau deploy ulang.');
+    }
+    if (res.status === 405) {
+      throw new Error('Method tidak diizinkan (405). Pastikan deploy sebagai "Web app" bukan "API executable".');
+    }
+    if (res.status >= 500) {
+      throw new Error('Server GAS error (HTTP ' + res.status + '). Cek kode Kode.gs atau spreadsheet.');
+    }
+    throw new Error('HTTP ' + res.status + ': ' + (errBody.substring(0, 100) || 'unknown error'));
+  }
+
+  // Ambil response sebagai TEXT dulu, lalu parse JSON manual
+  // Ini mencegah error "unexpected token" yang tidak jelas
+  const text = await res.text();
+
+  // Cek apakah response kosong
+  if (!text || text.trim() === '') {
+    throw new Error('Server memberi response kosong. Mungkin ada error di Kode.gs - cek Execution log di script.google.com.');
+  }
+
+  // Cek apakah response adalah HTML (redirect ke login Google atau error page)
+  const trimmed = text.trim();
+  if (trimmed.startsWith('<!DOCTYPE') || trimmed.startsWith('<html') || trimmed.startsWith('<HTML')) {
+    // Kemungkinan: redirect ke login Google, atau error page Google
+    if (text.includes('accounts.google.com') || text.includes('ServiceLogin')) {
+      throw new Error('Server meminta login Google. Deploy ulang GAS dengan "Execute as: Me" dan authorization terbaru.');
+    }
+    if (text.includes('Error 404') || text.includes('Not Found')) {
+      throw new Error('Web App tidak ditemukan. Periksa GAS_URL atau deploy ulang sebagai Web app.');
+    }
+    // Generic HTML error
+    throw new Error('Server memberi response HTML (bukan JSON). Kemungkinan: (1) GAS_URL salah, (2) Web App belum di-deploy, atau (3) permission belum di-grant. Lihat console untuk detail.');
+  }
+
+  // Cek apakah response adalah XML
+  if (trimmed.startsWith('<?xml') || trimmed.startsWith('<')) {
+    throw new Error('Server memberi response XML (bukan JSON). Mungkin terjadi error di server GAS.');
+  }
+
+  // Sekarang safe untuk parse JSON
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (parseErr) {
+    // Tampilkan 100 karakter pertama untuk debugging
+    const preview = text.substring(0, 100).replace(/\n/g, ' ');
+    throw new Error('Response bukan JSON valid. Preview: "' + preview + '...". Cek Kode.gs apakah return ContentService JSON.');
+  }
+
+  return data;
+}
+
+/**
+ * Handle error global - tampilkan pesan user-friendly + log ke console
+ */
+function handleGasError(err, context) {
+  console.error('[' + context + '] GAS error:', err);
+  showToast(err.message || 'Terjadi kesalahan', 'error');
+}
 
 /* ============================================================
    INIT
@@ -1687,16 +1834,23 @@ async function handleLogin(e) {
   const pc = document.getElementById('pcInput').value;
   if (!nama || !pc) { showToast('Lengkapi nama dan nomor PC', 'error'); return; }
 
+  // Cek konfigurasi sebelum mencoba login
+  if (!isGasConfigured()) {
+    showToast('⚠ Aplikasi belum dikonfigurasi. Guru harus mengisi GAS_URL di file index.html. Lihat README.md.', 'error');
+    return;
+  }
+
   const btn = document.getElementById('loginBtn');
   const btnText = document.getElementById('loginBtnText');
   btn.disabled = true;
   btnText.innerHTML = '<span class="loading"></span> Menghubungkan...';
 
   try {
-    const url = `${GAS_URL}?action=login&nama=${encodeURIComponent(nama)}&pc=${pc}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!data.ok) { showToast(data.error || 'Gagal masuk', 'error'); return; }
+    const data = await gasGet({ action: 'login', nama: nama, pc: pc });
+    if (!data.ok) {
+      showToast(data.error || 'Gagal masuk', 'error');
+      return;
+    }
     STUDENT = data.student;
     sessionStorage.setItem('student', JSON.stringify(STUDENT));
     if (data.settings) SETTINGS = data.settings;
@@ -1704,7 +1858,7 @@ async function handleLogin(e) {
     showApp();
     showToast('Selamat datang, ' + STUDENT.nama + '!', 'success');
   } catch (err) {
-    showToast('Koneksi gagal: ' + err.message, 'error');
+    handleGasError(err, 'handleLogin');
   } finally {
     btn.disabled = false;
     btnText.textContent = 'Masuk ke Pembelajaran →';
@@ -1740,12 +1894,14 @@ function showApp() {
  * Fetch soal terpisah dari backend (fallback jika tidak terkirim saat login)
  */
 async function loadSoal() {
+  if (!isGasConfigured()) {
+    console.error('loadSoal: GAS_URL belum dikonfigurasi');
+    return false;
+  }
   try {
-    const res = await fetch(`${GAS_URL}?action=soal`);
-    const data = await res.json();
+    const data = await gasGet({ action: 'soal' });
     if (data.ok && Array.isArray(data.soal)) {
       SOAL_LIST = data.soal;
-      // Update TotalSoal juga jika belum diset
       if (!SETTINGS.TotalSoal) {
         SETTINGS.TotalSoal = SOAL_LIST.length;
         document.getElementById('totalSoal').textContent = SOAL_LIST.length;
@@ -1759,8 +1915,7 @@ async function loadSoal() {
       showToast('Gagal memuat soal: ' + (data.error || 'unknown'), 'error');
     }
   } catch (err) {
-    console.error('loadSoal error:', err);
-    showToast('Gagal memuat soal: ' + err.message, 'error');
+    handleGasError(err, 'loadSoal');
   }
   return false;
 }
@@ -1842,13 +1997,12 @@ function prevPhase() {
 }
 
 async function setPhase(phase) {
+  if (!isGasConfigured()) return; // Silent fail - tidak kritikal
   try {
-    await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'setPhase', pc: STUDENT.pc, phase: phase })
-    });
-  } catch (e) { console.error('setPhase error:', e); }
+    await gasPost({ action: 'setPhase', pc: STUDENT.pc, phase: phase });
+  } catch (err) {
+    console.warn('setPhase error (non-critical):', err.message);
+  }
 }
 
 /* ============================================================
@@ -1969,12 +2123,13 @@ async function saveAnswer(soalId, isAuto = false) {
   meta.innerHTML = '<span class="loading"></span> Menyimpan...';
 
   try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'saveAnswer', pc: STUDENT.pc, soalId, jawaban, nama: STUDENT.nama })
+    const data = await gasPost({
+      action: 'saveAnswer',
+      pc: STUDENT.pc,
+      soalId: soalId,
+      jawaban: jawaban,
+      nama: STUDENT.nama
     });
-    const data = await res.json();
     if (data.ok) {
       MY_ANSWERS[soalId] = MY_ANSWERS[soalId] || {};
       MY_ANSWERS[soalId].jawaban = jawaban;
@@ -1989,7 +2144,6 @@ async function saveAnswer(soalId, isAuto = false) {
         card.classList.add('answered');
         card.querySelector('.q-status').textContent = 'Tersimpan';
       }
-      // Update number grid
       const numBtn = document.getElementById('numbtn-' + soalId);
       if (numBtn && !numBtn.classList.contains('verified') && !numBtn.classList.contains('revision')) {
         numBtn.classList.add('answered');
@@ -2001,7 +2155,8 @@ async function saveAnswer(soalId, isAuto = false) {
     }
   } catch (err) {
     meta.textContent = '⚠ Error koneksi';
-    if (!isAuto) showToast('Koneksi gagal: ' + err.message, 'error');
+    console.error('[saveAnswer] error:', err);
+    if (!isAuto) showToast(err.message || 'Gagal menyimpan', 'error');
   }
 }
 
@@ -2009,10 +2164,9 @@ async function saveAnswer(soalId, isAuto = false) {
    STATE REFRESH
    ============================================================ */
 async function refreshState(silent = false) {
+  if (!isGasConfigured()) return; // Tidak ada backend, skip
   try {
-    const url = `${GAS_URL}?action=state&pc=${STUDENT.pc}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await gasGet({ action: 'state', pc: STUDENT.pc });
     if (data.ok) {
       MY_ANSWERS = data.answers || {};
       if (data.phase && PHASES.includes(data.phase) && silent) goToPhase(data.phase);
@@ -2020,7 +2174,6 @@ async function refreshState(silent = false) {
       // PENTING: jika soal belum termuat, fetch dulu lalu render ulang
       if (SOAL_LIST.length === 0) {
         await loadSoal();
-        renderQuestions();
       }
 
       SOAL_LIST.forEach(soal => {
@@ -2042,7 +2195,9 @@ async function refreshState(silent = false) {
       updateProgress();
       renderNumberGrid();
     }
-  } catch (err) { console.error('refreshState error:', err); }
+  } catch (err) {
+    console.warn('refreshState error (non-critical):', err.message);
+  }
 }
 
 function updateProgress() {
@@ -2061,12 +2216,16 @@ function updateProgress() {
 async function openLeaderboard() {
   document.getElementById('leaderboardModal').classList.add('active');
   document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><div class="loading"></div></div>';
+  if (!isGasConfigured()) {
+    document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><p>Aplikasi belum dikonfigurasi.</p></div>';
+    return;
+  }
   try {
-    const res = await fetch(`${GAS_URL}?action=leaderboard`);
-    const data = await res.json();
+    const data = await gasGet({ action: 'leaderboard' });
     if (data.ok) renderLeaderboard(data.leaderboard);
   } catch (err) {
-    document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><p>Gagal memuat: ' + err.message + '</p></div>';
+    handleGasError(err, 'openLeaderboard');
+    document.getElementById('leaderboardList').innerHTML = '<div class="empty-state"><p>' + err.message + '</p></div>';
   }
 }
 
@@ -2106,12 +2265,12 @@ async function saveReflection() {
     if (!confirm('Baru ' + filled.length + ' dari 6 pertanyaan refleksi yang terisi. Lanjutkan simpan?')) return;
   }
   try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'saveReflection', pc: STUDENT.pc, nama: STUDENT.nama, reflections: REFLECTIONS })
+    const data = await gasPost({
+      action: 'saveReflection',
+      pc: STUDENT.pc,
+      nama: STUDENT.nama,
+      reflections: REFLECTIONS
     });
-    const data = await res.json();
     if (data.ok) {
       document.getElementById('reflectionDone').style.display = 'block';
       document.getElementById('refleksiForm').style.display = 'none';
@@ -2122,7 +2281,7 @@ async function saveReflection() {
       showToast(data.error || 'Gagal menyimpan', 'error');
     }
   } catch (err) {
-    showToast('Error: ' + err.message, 'error');
+    handleGasError(err, 'saveReflection');
   }
 }
 
@@ -2131,13 +2290,10 @@ async function saveReflection() {
    ============================================================ */
 function doLogout() {
   if (!confirm('Yakin ingin keluar? Jawabanmu tetap tersimpan di server.')) return;
-  try {
-    fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'logout', pc: STUDENT.pc })
-    });
-  } catch (e) {}
+  if (isGasConfigured()) {
+    // Fire-and-forget logout (tidak perlu tunggu response)
+    gasPost({ action: 'logout', pc: STUDENT.pc }).catch(e => console.warn('Logout error:', e.message));
+  }
   sessionStorage.removeItem('student');
   location.reload();
 }
@@ -2160,13 +2316,21 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('active'); });
 });
 
+// Auto-refresh state setiap 30 detik (hanya jika backend terkonfigurasi)
 setInterval(() => {
-  if (STUDENT.pc && document.getElementById('appScreen').style.display === 'block') refreshState();
+  if (STUDENT.pc && isGasConfigured() && document.getElementById('appScreen').style.display === 'block') {
+    refreshState();
+  }
 }, 30000);
 
-if (GAS_URL === 'https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec') {
+// Tampilkan banner konfigurasi jika GAS_URL belum diisi
+if (!isGasConfigured()) {
   setTimeout(() => {
-    alert('⚠ KONFIGURASI BELUM SELESAI\n\nHalaman ini belum dihubungkan ke backend.\nGuru harus mengisi GAS_URL di file index.html terlebih dahulu.');
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:white;padding:10px 20px;font-size:14px;font-weight:600;z-index:9999;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
+    banner.innerHTML = '⚠ MODE DEMO — Guru harus mengisi <code style="background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:4px;">GAS_URL</code> di file index.html sebelum digunakan di kelas. Lihat README.md langkah 5.';
+    document.body.appendChild(banner);
+    document.body.style.paddingTop = '40px';
   }, 500);
 }
 </script>
