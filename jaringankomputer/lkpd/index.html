@@ -11,7 +11,6 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* Full Screen Layout / Bingkai Layar Penuh */
     html, body {
       margin: 0;
       padding: 0;
@@ -66,7 +65,7 @@
               <i data-lucide="user-check" class="w-5 h-5"></i>
             </div>
             <h2 class="text-lg md:text-xl font-bold text-indigo-900 mb-1">Identitas Peserta Didik</h2>
-            <p class="text-xs text-gray-500 mb-5">Silakan isi data diri Anda. Perhatian: Setelah menekan tombol Mulai, layar akan otomatis fullscreen dan terkunci. Jika keluar tab/reload, layar akan terlock 5 menit!</p>
+            <p class="text-xs text-gray-500 mb-5">Silakan isi data diri Anda. Perhatian: Setelah menekan tombol Mulai, layar akan otomatis fullscreen dan terkunci. Jika keluar tab/reload, layar akan terlock 5 menit secara persisten!</p>
             
             <div class="space-y-3">
               <div>
@@ -100,7 +99,6 @@
         </div>
 
         <!-- GENERATOR SOAL 1 SAMPAI 10 -->
-        <!-- Data soal dimuat dinamis dalam struktur template seragam -->
         <div id="questionsContainer"></div>
 
       </form>
@@ -112,7 +110,7 @@
     </footer>
   </div>
 
-  <!-- POP-UP LOCK SCREEN & COUNTDOWN 5 MENIT -->
+  <!-- POP-UP LOCK SCREEN & COUNTDOWN PERSISTEN -->
   <div id="lockScreenModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl animate__animated animate__zoomIn border-4 border-red-500">
       <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
@@ -126,7 +124,7 @@
         <span id="countdownTimer" class="text-4xl font-extrabold text-red-600 tracking-widest">05:00</span>
       </div>
 
-      <p class="text-xs text-gray-400">Tombol kembali akan terbuka otomatis setelah hitung mundur selesai.</p>
+      <p class="text-xs text-gray-400">Halaman akan otomatis terbuka kembali setelah hitung mundur habis.</p>
     </div>
   </div>
 
@@ -146,23 +144,23 @@
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbyL_n30zesNORkR6R2kcC0XIgYjF-3kWl3YpVpmgZz1cvx-xNR5L50rmk7iZhKEoSw2/exec';
     
     const questionsList = [
-      "1. Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari[cite: 9]!",
-      "2. Jelaskan perbedaan antara hardware dan software dalam jaringan komputer[cite: 9]!",
-      "3. Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan[cite: 9]!",
-      "4. Jelaskan apa itu internet dan sebutkan beberapa manfaatnya[cite: 9]!",
-      "5. Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya[cite: 9]!",
-      "6. Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer[cite: 9]!",
-      "7. Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan[cite: 9]!",
-      "8. Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan[cite: 9]!",
-      "9. Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!",
-      "10. Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!"
+      "1. Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari!",
+      "2. Jelaskan perbedaan antara hardware dan software dalam jaringan komputer!",
+      "3. Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan!",
+      "4. Jelaskan apa itu internet dan sebutkan beberapa manfaatnya!",
+      "5. Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya!",
+      "6. Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer!",
+      "7. Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan!",
+      "8. Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan!",
+      "9. Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer!",
+      "10. Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer!"
     ];
 
     let currentStep = 0;
     const totalSteps = 10;
     let examActive = false;
+    let countdownInterval = null;
 
-    // Render Soal Dinamis agar rapi di dalam bingkai layar penuh
     function renderQuestions() {
       const container = document.getElementById('questionsContainer');
       let html = '';
@@ -196,7 +194,7 @@
 
     renderQuestions();
 
-    // Cek Status Lock pada LocalStorage saat halaman dimuat
+    // Cek Status Lock pada LocalStorage saat halaman dimuat/di-reload
     window.addEventListener('DOMContentLoaded', () => {
       checkLockStatus();
     });
@@ -258,14 +256,16 @@
       }
     }
 
-    // --- SISTEM LOCK SCREEN 5 MENIT BERBASIS LOCALSTORAGE ---
+    // --- SISTEM LOCK SCREEN PERSISTEN 5 MENIT ---
     function triggerLockPenalty() {
-      if (!examActive) return;
+      // Jika sudah terkunci atau belum mulai ujian, abaikan
+      if (localStorage.getItem('lkpd_lock_until')) return;
       
-      // Set waktu akhir lock (5 menit dari sekarang)
       const lockDuration = 5 * 60 * 1000; // 5 menit dalam milidetik
       const lockUntil = Date.now() + lockDuration;
       localStorage.setItem('lkpd_lock_until', lockUntil);
+
+      examActive = false;
 
       // Putar Audio Warning
       const audio = document.getElementById('warningAudio');
@@ -274,37 +274,45 @@
         audio.play().catch(e => console.log("Audio blocked:", e));
       }
 
-      activateLockScreenUI();
+      checkLockStatus();
     }
 
     function checkLockStatus() {
       const lockUntil = localStorage.getItem('lkpd_lock_until');
       if (lockUntil) {
-        const remaining = lockUntil - Date.now();
+        const remaining = parseInt(lockUntil) - Date.now();
         if (remaining > 0) {
           examActive = false;
-          activateLockScreenUI();
-          startCountdown(remaining);
+          document.getElementById('lockScreenModal').classList.remove('hidden');
+          startPersistentCountdown(remaining);
         } else {
           localStorage.removeItem('lkpd_lock_until');
+          document.getElementById('lockScreenModal').classList.add('hidden');
         }
       }
     }
 
-    function activateLockScreenUI() {
-      document.getElementById('lockScreenModal').classList.remove('hidden');
-    }
+    function startPersistentCountdown(durationMs) {
+      if (countdownInterval) clearInterval(countdownInterval);
 
-    function startCountdown(durationMs) {
       let timeLeft = Math.floor(durationMs / 1000);
       const timerEl = document.getElementById('countdownTimer');
 
-      const interval = setInterval(() => {
+      countdownInterval = setInterval(() => {
+        const lockUntil = localStorage.getItem('lkpd_lock_until');
+        if (!lockUntil) {
+          clearInterval(countdownInterval);
+          return;
+        }
+
+        // Hitung selisih waktu secara akurat berdasarkan waktu sistem (tidak peduli reload)
+        timeLeft = Math.floor((parseInt(lockUntil) - Date.now()) / 1000);
+
         if (timeLeft <= 0) {
-          clearInterval(interval);
+          clearInterval(countdownInterval);
           localStorage.removeItem('lkpd_lock_until');
           document.getElementById('lockScreenModal').classList.add('hidden');
-          alert('Waktu penalti kunci selesai. Silakan lanjutkan ujian dengan jujur!');
+          alert('Waktu penalti kunci selesai. Silakan lanjutkan kembali ujian Anda!');
           location.reload();
           return;
         }
@@ -312,7 +320,6 @@
         let minutes = Math.floor(timeLeft / 60);
         let seconds = timeLeft % 60;
         timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        timeLeft--;
       }, 1000);
     }
 
@@ -361,7 +368,7 @@
         });
         
         examActive = false;
-        localStorage.removeItem('lkpd_lock_until'); // Hapus lock jika sukses
+        localStorage.removeItem('lkpd_lock_until');
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         document.getElementById('statusModal').classList.remove('hidden');
       } catch (err) {
