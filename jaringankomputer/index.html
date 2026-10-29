@@ -995,6 +995,130 @@ html, body {
 .app-body.lkpd-layout { grid-template-columns: 1fr 340px; }
 .app-body:not(.lkpd-layout) { grid-template-columns: 1fr; max-width: 1100px; }
 
+/* ============================================================
+   DIAGNOSTIK FORM - pilihan ganda rapi & besar
+   ============================================================ */
+.diag-question {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  margin: 18px 0;
+  border-left: 5px solid var(--primary-light);
+}
+.diag-question .diag-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 15px;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+.diag-question .diag-q-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.5;
+  display: inline;
+}
+.diag-question .diag-tipe-badge {
+  display: inline-block;
+  background: var(--purple-bg);
+  color: var(--purple);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 8px;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.diag-options {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.diag-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 16px;
+  user-select: none;
+}
+.diag-option:hover {
+  border-color: var(--primary-light);
+  background: var(--primary-bg);
+  transform: translateX(2px);
+}
+.diag-option input[type="radio"],
+.diag-option input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+.diag-option input:checked ~ .opt-letter {
+  background: var(--primary);
+  color: white;
+}
+.diag-option:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-bg);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+.diag-option .opt-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  background: var(--border-light);
+  color: var(--ink-2);
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.diag-option:has(input:checked) .opt-letter {
+  background: var(--primary);
+  color: white;
+}
+.diag-option .opt-text {
+  flex: 1;
+  color: var(--ink);
+  line-height: 1.55;
+  padding-top: 3px;
+}
+.diag-progress {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  padding: 8px 14px;
+  background: var(--primary-bg);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+.diag-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+.diag-empty .emoji { font-size: 56px; margin-bottom: 12px; }
+
 /* Responsive */
 @media (max-width: 1024px) {
   .app-body.lkpd-layout { grid-template-columns: 1fr; }
@@ -1135,23 +1259,30 @@ html, body {
         <div class="section-title-block">
           <span class="phase-badge">FASE 1 DARI 5</span>
           <h1>🌿 Pendahuluan</h1>
-          <p>Pembelajaran dibuka oleh guru. Setelah itu, lanjutkan membaca petunjuk di bawah ini.</p>
+          <p>Pembelajaran dibuka oleh guru. Setelah itu, kerjakan asesmen diagnostik di bawah ini.</p>
         </div>
 
+        <!-- ASESMEN DIAGNOSTIK INTERAKTIF -->
         <div class="content-card">
-          <h2>💡 Pertanyaan Pemantik</h2>
-          <p>Guru punya pertanyaan untuk menggerakkan rasa ingin tahu kalian. Coba pikirkan jawabannya sebelum kita masuk ke materi:</p>
+          <h2>📋 Asesmen Diagnostik Awal</h2>
+          <p>Sebelum masuk ke materi, jawab dulu pertanyaan berikut. Jawabanmu tersimpan ke spreadsheet guru sebagai data awal pemahamanmu.</p>
 
-          <div class="pemantik-box">
-            <div class="pemantik-label">🔍 Pertanyaan Pemantik</div>
-            <div class="pemantik-text">"Apa perbedaan dari Bluetooth dan WiFi?"</div>
+          <div id="diagnostikContainer">
+            <div class="empty-state">
+              <div class="loading"></div>
+              <p style="margin-top:12px;">Memuat pertanyaan diagnostik...</p>
+            </div>
           </div>
 
-          <p>Coba diskusikan dengan teman sebangkumu sebentar. Apakah kamu tahu bedanya? Keduanya sama-sama menghubungkan perangkat tanpa kabel, tapi ada perbedaan penting yang akan kita temukan di materi nanti.</p>
+          <button class="btn btn-success btn-xl btn-block" id="diagSaveBtn" onclick="saveDiagnostik()" style="margin-top:20px; display:none;">
+            💾 Simpan Jawaban Diagnostik
+          </button>
 
-          <div class="highlight-box warning">
-            <div class="highlight-title">🤔 Asesmen Diagnostik</div>
-            <p>Pengalaman menyenangkan apa yang pernah kamu alami terkait jaringan komputer dan internet? Apakah kamu pernah: (a) main game online bareng teman? (b) video call dengan keluarga di luar kota? (c) download tugas dari internet? (d) koneksi WiFi yang lambat ketika banyak yang dipakai? Coba share pengalamanmu!</p>
+          <div id="diagDoneBox" style="display:none;">
+            <div class="highlight-box success" style="margin-top:16px;">
+              <div class="highlight-title">✓ Jawaban tersimpan!</div>
+              <p id="diagDoneMsg">Jawaban kamu sudah tersimpan di spreadsheet guru. Lanjut ke fase berikutnya untuk mempelajari materi.</p>
+            </div>
           </div>
         </div>
 
@@ -1624,7 +1755,7 @@ html, body {
 /* ============================================================
    KONFIGURASI APLIKASI
    ============================================================ */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxm1mx4tgyI53eEIYVIJqm1xDIBsmj5FIpb1C1NdFKtwB3X3A4DDTH4pQyYdtDJOXIl1w/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwjWYFNZETU4u0h18w4mEZ01zr8ZRoTMU_Q5onEY-YiSFnywhg7LCiV1HxSoovFfvQ6/exec";
 
 let STUDENT = { nama: "", pc: null, loginAt: "" };
 let SOAL_LIST = [];
@@ -1652,6 +1783,11 @@ const REFLECTION_QUESTIONS = [
   { id: 94, q: "Apa Manfaat Bagi-Ku (AMBAK) dari materi ini untuk kehidupan sehari-hari?" },
   { id: 95, q: "Bagaimana perasaanmu setelah mengikuti pembelajaran dengan aplikasi interaktif ini? Beri saran untuk perbaikan." }
 ];
+
+// State untuk asesmen diagnostik
+let DIAGNOSTIK_LIST = [];   // dari backend
+let DIAG_ANSWERS = {};       // { 80: "A", 81: ["A","B","C"] }
+let DIAG_SAVED = false;
 
 /* ============================================================
    GAS FETCH WRAPPER - handle error "unexpected token"
@@ -1888,6 +2024,9 @@ function showApp() {
     renderNumberGrid();
     refreshState(true);
   }
+
+  // Load asesmen diagnostik untuk fase Pendahuluan
+  loadDiagnostik();
 }
 
 /**
@@ -1930,6 +2069,158 @@ async function retryLoadSoal() {
     refreshState(true);
     showToast(`✓ ${SOAL_LIST.length} soal berhasil dimuat`, 'success');
   }
+}
+
+/* ============================================================
+   ASESMEN DIAGNOSTIK - Pertanyaan awal di fase Pendahuluan
+   ============================================================ */
+async function loadDiagnostik() {
+  if (!isGasConfigured()) {
+    renderDiagnostikEmpty();
+    return;
+  }
+  try {
+    const data = await gasGet({ action: 'diagnostik' });
+    if (data.ok && Array.isArray(data.diagnostik)) {
+      DIAGNOSTIK_LIST = data.diagnostik;
+      renderDiagnostik();
+    } else {
+      renderDiagnostikEmpty();
+    }
+  } catch (err) {
+    console.warn('loadDiagnostik error:', err.message);
+    renderDiagnostikEmpty();
+  }
+}
+
+function renderDiagnostikEmpty() {
+  const c = document.getElementById('diagnostikContainer');
+  if (!c) return;
+  c.innerHTML = `
+    <div class="diag-empty">
+      <div class="emoji">📋</div>
+      <p>Asesmen diagnostik belum tersedia. Lanjut ke fase berikutnya.</p>
+    </div>
+  `;
+  const btn = document.getElementById('diagSaveBtn');
+  if (btn) btn.style.display = 'none';
+}
+
+function renderDiagnostik() {
+  const c = document.getElementById('diagnostikContainer');
+  if (!c) return;
+  if (DIAGNOSTIK_LIST.length === 0) {
+    renderDiagnostikEmpty();
+    return;
+  }
+
+  let html = `<div class="diag-progress">📋 ${DIAGNOSTIK_LIST.length} pertanyaan • Jawab semua lalu klik "Simpan Jawaban Diagnostik"</div>`;
+  DIAGNOSTIK_LIST.forEach((item, idx) => {
+    const isMulti = item.tipe === 'multi';
+    const inputType = isMulti ? 'checkbox' : 'radio';
+    const tipeLabel = isMulti ? 'Pilih semua yang sesuai' : 'Pilih satu jawaban';
+    const tipeBadge = isMulti ? '📋 Multi' : '◉ Single';
+
+    html += `
+      <div class="diag-question" id="diag-q-${item.id}">
+        <span class="diag-num">${idx + 1}</span>
+        <span class="diag-q-text">${escapeHtml(item.pertanyaan)}</span>
+        <span class="diag-tipe-badge">${tipeBadge}</span>
+        <div style="font-size:13px; color:var(--muted); margin-top:8px; margin-left:44px;">${tipeLabel}</div>
+        <div class="diag-options">
+    `;
+    ['A', 'B', 'C', 'D'].forEach(letter => {
+      const text = item.pilihan && item.pilihan[letter];
+      if (!text) return;
+      const name = 'diag-' + item.id;
+      const id = name + '-' + letter;
+      html += `
+          <label class="diag-option" for="${id}">
+            <input type="${inputType}" name="${name}" id="${id}" value="${letter}" onchange="onDiagChange(${item.id}, '${letter}', ${isMulti})" />
+            <span class="opt-letter">${letter}</span>
+            <span class="opt-text">${escapeHtml(text)}</span>
+          </label>
+      `;
+    });
+    html += `
+        </div>
+      </div>
+    `;
+  });
+  c.innerHTML = html;
+
+  // Tampilkan tombol simpan
+  const btn = document.getElementById('diagSaveBtn');
+  if (btn) btn.style.display = 'flex';
+}
+
+function onDiagChange(diagId, letter, isMulti) {
+  if (isMulti) {
+    // Checkbox - kumpulkan semua yang checked
+    if (!DIAG_ANSWERS[diagId]) DIAG_ANSWERS[diagId] = [];
+    const checkboxes = document.querySelectorAll('input[name="diag-' + diagId + '"]:checked');
+    DIAG_ANSWERS[diagId] = Array.from(checkboxes).map(cb => cb.value);
+  } else {
+    // Radio - langsung simpan
+    DIAG_ANSWERS[diagId] = letter;
+  }
+}
+
+async function saveDiagnostik() {
+  // Validasi: semua pertanyaan harus dijawab
+  const unanswered = DIAGNOSTIK_LIST.filter(item => {
+    const ans = DIAG_ANSWERS[item.id];
+    if (Array.isArray(ans)) return ans.length === 0;
+    return !ans;
+  });
+  if (unanswered.length > 0) {
+    if (!confirm(`Masih ada ${unanswered.length} pertanyaan yang belum dijawab. Lanjutkan simpan?`)) return;
+  }
+
+  const btn = document.getElementById('diagSaveBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Menyimpan...';
+  }
+
+  try {
+    const data = await gasPost({
+      action: 'saveDiagnostik',
+      pc: STUDENT.pc,
+      nama: STUDENT.nama,
+      answers: DIAG_ANSWERS
+    });
+    if (data.ok) {
+      DIAG_SAVED = true;
+      const doneBox = document.getElementById('diagDoneBox');
+      const doneMsg = document.getElementById('diagDoneMsg');
+      if (doneBox) doneBox.style.display = 'block';
+      if (doneMsg) {
+        const count = Object.keys(DIAG_ANSWERS).length;
+        doneMsg.textContent = `${count} jawaban tersimpan di spreadsheet guru. Guru akan melihat hasil asesmen awal kamu. Lanjut ke fase berikutnya!`;
+      }
+      if (btn) {
+        btn.style.display = 'none';
+      }
+      showToast('✓ Jawaban diagnostik tersimpan!', 'success');
+    } else {
+      showToast(data.error || 'Gagal menyimpan', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = '💾 Simpan Jawaban Diagnostik'; }
+    }
+  } catch (err) {
+    handleGasError(err, 'saveDiagnostik');
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Simpan Jawaban Diagnostik'; }
+  }
+}
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 /* ============================================================
