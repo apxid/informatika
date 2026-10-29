@@ -13,127 +13,242 @@
   <style>
     .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); }
     .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .step-content { display: none; }
+    .step-content.active { display: block; }
   </style>
 </head>
-<body class="gradient-bg min-h-screen text-slate-800 font-sans pb-12">
+<body class="gradient-bg min-h-screen text-slate-800 font-sans pb-12 flex flex-col justify-between">
 
+  <!-- Header Section -->
   <header class="p-6 text-center text-white animate__animated animate__fadeInDown">
     <div class="inline-flex items-center gap-2 bg-indigo-500/30 px-4 py-1.5 rounded-full text-indigo-200 text-sm mb-3">
       <i data-lucide="wifi" class="w-4 h-4"></i> Bab 5: Jaringan Komputer dan Internet (LKPD 1)
     </div>
-    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">LKPD INTERAKTIF INFORMATIKA</h1>
-    <p class="text-indigo-200 text-sm mt-1">SMP Negeri 1 Moga • Fase D / Kelas IX</p>
+    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">LKPD INTERAKTIF INFORMATIKA</h1>
+    <p class="text-indigo-200 text-xs md:text-sm mt-1">SMP Negeri 1 Moga • Fase D / Kelas IX</p>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4">
-    <form id="lkpdForm" class="space-y-6">
+  <main class="max-w-2xl mx-auto px-4 w-full flex-grow">
+    <form id="lkpdForm">
 
-      <!-- Identitas Siswa -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl animate__animated animate__fadeInUp">
-        <h2 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">
-          <i data-lucide="user-check" class="text-indigo-600"></i> Identitas Peserta Didik
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="md:col-span-2">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-            <input type="text" id="nama" required placeholder="Masukkan nama Anda..."
-              class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+      <!-- STEP 0: Identitas Siswa -->
+      <div class="step-content active animate__animated animate__fadeIn" data-step="0">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
+            <i data-lucide="user-check" class="w-6 h-6"></i>
           </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">No. Absen</label>
-            <input type="number" id="absen" required min="1" max="50" placeholder="No..."
-              class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+          <h2 class="text-xl font-bold text-indigo-900 mb-1">Identitas Peserta Didik</h2>
+          <p class="text-xs text-gray-500 mb-6">Silakan isi data diri Anda dengan benar sebelum memulai LKPD.</p>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+              <input type="text" id="nama" required placeholder="Masukkan nama lengkap..."
+                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">No. Absen</label>
+                <input type="number" id="absen" required min="1" max="50" placeholder="No..."
+                  class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas</label>
+                <select id="kelas" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                  <option value="">-- Pilih --</option>
+                  <option value="9A">IX - A</option><option value="9B">IX - B</option><option value="9C">IX - C</option>
+                  <option value="9D">IX - D</option><option value="9E">IX - E</option><option value="9F">IX - F</option>
+                  <option value="9G">IX - G</option><option value="9H">IX - H</option><option value="9I">IX - I</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="md:col-span-3">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas</label>
-            <select id="kelas" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
-              <option value="">-- Pilih Kelas --</option>
-              <option value="9A">IX - A</option><option value="9B">IX - B</option><option value="9C">IX - C</option>
-              <option value="9D">IX - D</option><option value="9E">IX - E</option><option value="9F">IX - F</option>
-              <option value="9G">IX - G</option><option value="9H">IX - H</option><option value="9I">IX - I</option>
-            </select>
+
+          <button type="button" onclick="nextStep()"
+            class="mt-8 w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            Mulai Mengerjakan <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Generator Soal 1 - 10 -->
+      <!-- STEP 1 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="1">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 1 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">10% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">1. Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari[cite: 9]!</h3>
+          <textarea id="q1" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
           </div>
         </div>
       </div>
 
-      <!-- Soal 1 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 1 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">1. Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari[cite: 9]!</p>
-        <textarea id="q1" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 2 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="2">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 2 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">20% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">2. Jelaskan perbedaan antara hardware dan software dalam jaringan komputer[cite: 9]!</h3>
+          <textarea id="q2" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 2 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 2 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">2. Jelaskan perbedaan antara hardware dan software dalam jaringan komputer[cite: 9]!</p>
-        <textarea id="q2" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 3 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="3">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 3 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">30% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">3. Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan[cite: 9]!</h3>
+          <textarea id="q3" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 3 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 3 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">3. Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan[cite: 9]!</p>
-        <textarea id="q3" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 4 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="4">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 4 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">40% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">4. Jelaskan apa itu internet dan sebutkan beberapa manfaatnya[cite: 9]!</h3>
+          <textarea id="q4" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 4 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 4 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">4. Jelaskan apa itu internet dan sebutkan beberapa manfaatnya[cite: 9]!</p>
-        <textarea id="q4" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 5 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="5">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 5 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">50% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">5. Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya[cite: 9]!</h3>
+          <textarea id="q5" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 5 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 5 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">5. Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya[cite: 9]!</p>
-        <textarea id="q5" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 6 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="6">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 6 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">60% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">6. Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer[cite: 9]!</h3>
+          <textarea id="q6" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 6 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 6 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">6. Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer[cite: 9]!</p>
-        <textarea id="q6" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 7 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="7">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 7 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">70% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">7. Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan[cite: 9]!</h3>
+          <textarea id="q7" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 7 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 7 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">7. Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan[cite: 9]!</p>
-        <textarea id="q7" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 8 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="8">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 8 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">80% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">8. Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan[cite: 9]!</h3>
+          <textarea id="q8" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 8 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 8 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">8. Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan[cite: 9]!</p>
-        <textarea id="q8" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 9 -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="9">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 9 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">90% Selesai</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">9. Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</h3>
+          <textarea id="q9" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="button" onclick="nextStep()" class="w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm">Selanjutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
-      <!-- Soal 9 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 9 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">9. Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</p>
-        <textarea id="q9" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+      <!-- STEP 10 (Final) -->
+      <div class="step-content animate__animated animate__fadeIn" data-step="10">
+        <div class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">Pertanyaan 10 / 10</span>
+            <span class="text-xs text-gray-400 font-medium">Final</span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold text-slate-800 mb-4 leading-relaxed">10. Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</h3>
+          <textarea id="q10" rows="5" required placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
+          
+          <div class="flex gap-3 mt-6">
+            <button type="button" onclick="prevStep()" class="w-1/3 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali</button>
+            <button type="submit" id="btnSubmit" class="w-2/3 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition flex items-center justify-center gap-1 text-sm shadow-lg"><i data-lucide="send" class="w-4 h-4"></i> Kirim Semua Jawaban</button>
+          </div>
+        </div>
       </div>
-
-      <!-- Soal 10 -->
-      <div class="glass-card rounded-2xl p-6 shadow-xl">
-        <span class="text-xs font-bold text-indigo-600 uppercase">Pertanyaan 10 dari 10</span>
-        <p class="text-sm font-semibold text-slate-800 mt-1 mb-3">10. Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer[cite: 9]!</p>
-        <textarea id="q10" rows="3" required placeholder="Tuliskan jawaban..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-      </div>
-
-      <!-- Tombol Kirim -->
-      <button type="submit" id="btnSubmit"
-        class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg transition duration-300 flex items-center justify-center gap-2 text-lg">
-        <i data-lucide="send"></i> Kirim Semua Jawaban LKPD
-      </button>
 
     </form>
   </main>
+
+  <!-- Footer Info -->
+  <footer class="text-center text-indigo-300 text-xs py-6">
+    SMP Negeri 1 Moga • Pembelajaran Mendalam (Deep Learning)
+  </footer>
 
   <!-- Modal Sukses -->
   <div id="statusModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
@@ -143,19 +258,63 @@
       </div>
       <h3 class="text-2xl font-bold text-gray-800">Terima Kasih!</h3>
       <p class="text-gray-600 mt-2 text-sm">Ke-10 jawaban LKPD kamu telah berhasil tersimpan ke sistem guru.</p>
-      <button onclick="location.reload()" class="mt-6 w-full py-2.5 bg-indigo-600 text-white font-semibold rounded-xl">Selesai</button>
+      <button onclick="location.reload()" class="mt-6 w-full py-2.5 bg-indigo-600 text-white font-semibold rounded-xl text-sm font-bold">Selesai</button>
     </div>
   </div>
 
   <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbyL_n30zesNORkR6R2kcC0XIgYjF-3kWl3YpVpmgZz1cvx-xNR5L50rmk7iZhKEoSw2/exec';
+    let currentStep = 0;
+    const totalSteps = 10;
+
     lucide.createIcons();
+
+    function updateStepView() {
+      const steps = document.querySelectorAll('.step-content');
+      steps.forEach((el, index) => {
+        if (index === currentStep) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+
+    function nextStep() {
+      // Validasi sederhana sebelum lanjut
+      const activeEl = document.querySelector(`.step-content[data-step="${currentStep}"]`);
+      const inputs = activeEl.querySelectorAll('input, select, textarea');
+      let valid = true;
+      inputs.forEach(input => {
+        if (!input.checkValidity()) {
+          input.reportValidity();
+          valid = false;
+        }
+      });
+
+      if (!valid) return;
+
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateStepView();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        updateStepView();
+      }
+    }
 
     document.getElementById('lkpdForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Mengirimkan 10 Jawaban...`;
+      btn.innerHTML = `<i data-lucide="loader" class="animate-spin w-4 h-4"></i> Mengirim...`;
       lucide.createIcons();
 
       const payload = {
@@ -186,7 +345,7 @@
       } catch (err) {
         alert('Gagal mengirim jawaban. Periksa koneksi internet Anda!');
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="send"></i> Coba Kirim Lagi`;
+        btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Coba Kirim Lagi`;
         lucide.createIcons();
       }
     });
