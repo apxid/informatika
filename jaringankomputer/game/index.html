@@ -519,17 +519,17 @@ body{
   width:min(900px,96vw); justify-content:center;
 }
 .target{
-  flex:1; max-width:200px;
+  flex:1; max-width:220px;
   background:rgba(26,17,8,.78); border:3px solid var(--gold-d);
-  border-radius:12px; padding:8px 10px;
-  display:flex; flex-direction:column; align-items:center; gap:4px;
+  border-radius:12px; padding:10px 12px;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
   transition:all .15s; backdrop-filter:blur(4px);
   box-shadow: var(--shadow-inset);
 }
 .target .t-letter{
-  width:32px; height:32px; border-radius:50%;
+  width:38px; height:38px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
-  font-weight:900; color:#fff; font-size:16px;
+  font-weight:900; color:#fff; font-size:20px;
   box-shadow: var(--shadow-inset);
 }
 .target[data-l="A"] .t-letter{background:linear-gradient(180deg,#FF8585,var(--red-d));}
@@ -537,8 +537,8 @@ body{
 .target[data-l="C"] .t-letter{background:linear-gradient(180deg,#8BF57A,var(--green-d));}
 .target[data-l="D"] .t-letter{background:linear-gradient(180deg,#FFE066,var(--yellow-d));}
 .target .t-text{
-  font-size:11px; color:var(--cream); font-weight:600; text-align:center;
-  line-height:1.2; max-height:32px; overflow:hidden;
+  font-size:14px; color:var(--cream); font-weight:700; text-align:center;
+  line-height:1.3; max-height:42px; overflow:hidden;
 }
 .target.active{
   background:linear-gradient(180deg,var(--gold-l),var(--gold));
@@ -555,24 +555,35 @@ body{
 }
 @keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
 
-/* Next question countdown (during 10s free-fly) */
-.next-q-countdown{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  z-index:4; background:rgba(26,17,8,.85); border:3px solid var(--gold-d);
-  border-radius:20px; padding:18px 32px; text-align:center;
-  color:var(--gold-l); font-weight:900; font-size:18px;
-  backdrop-filter:blur(6px); white-space:nowrap;
-  box-shadow: var(--shadow), 0 0 30px rgba(255,210,74,.3);
-  animation:countdownPop .5s ease;
+/* Scene indicator (terrain + time of day) */
+.scene-indicator{
+  position:absolute; top:14px; right:18px; z-index:4;
+  background:rgba(26,17,8,.8); border:2px solid var(--gold-d);
+  border-radius:10px; padding:6px 14px;
+  color:var(--gold-l); font-weight:900; font-size:14px;
+  backdrop-filter:blur(4px); display:flex; gap:8px; align-items:center;
+  box-shadow: var(--shadow-inset);
 }
-@keyframes countdownPop{
-  from{transform:translate(-50%,-50%) scale(.5); opacity:0;}
-  to{transform:translate(-50%,-50%) scale(1); opacity:1;}
+.scene-indicator .scene-sep{opacity:.5;}
+
+/* Next question countdown (during 10s free-fly) - positioned below fuel bar */
+.next-q-countdown{
+  position:absolute; top:90px; left:50%; transform:translateX(-50%);
+  z-index:4; background:rgba(26,17,8,.85); border:3px solid var(--gold-d);
+  border-radius:16px; padding:10px 24px; text-align:center;
+  color:var(--gold-l); font-weight:900; font-size:15px;
+  backdrop-filter:blur(6px); white-space:nowrap;
+  box-shadow: var(--shadow), 0 0 20px rgba(255,210,74,.3);
+  animation:countdownSlide .4s ease;
+}
+@keyframes countdownSlide{
+  from{transform:translateX(-50%) translateY(-20px); opacity:0;}
+  to{transform:translateX(-50%) translateY(0); opacity:1;}
 }
 .countdown-num{
-  display:inline-block; font-size:32px; color:var(--gold);
-  margin:0 6px; min-width:40px; text-align:center;
-  text-shadow:0 0 12px rgba(255,210,74,.6);
+  display:inline-block; font-size:22px; color:var(--gold);
+  margin:0 4px; min-width:28px; text-align:center;
+  text-shadow:0 0 10px rgba(255,210,74,.6);
   animation:numPulse 1s ease-in-out infinite;
 }
 @keyframes numPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
@@ -1026,6 +1037,13 @@ body{
         <span id="q-progress">Soal 1 dari 10</span>
       </div>
       <div class="q-text" id="q-text">Memuat soal...</div>
+    </div>
+
+    <!-- Scene indicator (shows current terrain + time of day) -->
+    <div class="scene-indicator" id="scene-indicator">
+      <span id="scene-name">🛫 Laut</span>
+      <span class="scene-sep">·</span>
+      <span id="time-of-day">🌅 Pagi</span>
     </div>
 
     <!-- Next question countdown (shows during 10s free-fly wait) -->
@@ -2147,6 +2165,8 @@ function init3D(){
     state.plane = null; state.clouds = []; state.gates = []; state.gatesGroup = null;
     state.ground = null; state.runwayStripes = []; state.splitClouds = []; state.prop = null;
     state.flyingObjects = []; state.flyingObjTimer = 0;
+    state.terrainObjects = []; state.sceneIdx = 0; state.sceneTimer = 0; state.todIdx = 0;
+    state.dirLight = null; state.ambLight = null; state.terrainSpawnTimer = 0;
   }
 
   state.scene.background = new THREE.Color(0x7FC8F8);
@@ -2155,10 +2175,13 @@ function init3D(){
   state.camera.lookAt(0, 1, -20);
 
   // Lights
-  state.scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+  const amb = new THREE.AmbientLight(0xffffff, 0.75);
+  state.scene.add(amb);
+  state.ambLight = amb;
   const dir = new THREE.DirectionalLight(0xffffff, 0.9);
   dir.position.set(20, 30, 10);
   state.scene.add(dir);
+  state.dirLight = dir;
   const dir2 = new THREE.DirectionalLight(0xfff4d0, 0.4);
   dir2.position.set(-15, 10, -20);
   state.scene.add(dir2);
@@ -2195,6 +2218,12 @@ function init3D(){
   state.splitClouds = [];
   state.flyingObjects = [];
   state.flyingObjTimer = 120; // spawn first flying object after 2 seconds
+  // Scenery state
+  state.terrainObjects = [];
+  state.sceneIdx = 0;
+  state.sceneTimer = 0;
+  state.todIdx = 0;
+  state.terrainSpawnTimer = 0;
   for (let i=0; i<30; i++){
     const cloud = createCloud();
     // Mix of low clouds (in plane flight path) and high clouds
@@ -2467,6 +2496,282 @@ function spawnRandomFlyingObject(){
   obj.userData.flapPhase = Math.random() * Math.PI * 2;
   state.scene.add(obj);
   state.flyingObjects.push(obj);
+}
+
+/* ============================================================
+   SCENERY SYSTEM (terrain types + time of day)
+   ============================================================ */
+
+// Scene definitions: each has ground color, sky color, fog, light, and object spawner
+const SCENES = [
+  { name:'🛫 Laut',         icon:'🛫', ground:0x1E6091, sky:0x87CEEB, fog:0xB8E5FF, light:0xffffff, spawnFn:'spawnWater' },
+  { name:'🌲 Hutan',        icon:'🌲', ground:0x2E7D32, sky:0x7FC8F8, fog:0xB8E5FF, light:0xffffff, spawnFn:'spawnTrees' },
+  { name:'🏙️ Perkotaan',   icon:'🏙️', ground:0x555555, sky:0x7FC8F8, fog:0xC0D0E0, light:0xffffff, spawnFn:'spawnBuildings' },
+  { name:'🏘️ Jalanan Desa',icon:'🏘️', ground:0x8B6914, sky:0x7FC8F8, fog:0xB8E5FF, light:0xffffff, spawnFn:'spawnHouses' },
+  { name:'🌾 Sawah',        icon:'🌾', ground:0x7CB342, sky:0x7FC8F8, fog:0xC8E6C9, light:0xffffff, spawnFn:'spawnRice' },
+  { name:'🌴 Kebun Sawit',  icon:'🌴', ground:0x33691E, sky:0x7FC8F8, fog:0xC0E0B0, light:0xfff4d0, spawnFn:'spawnPalms' },
+  { name:'🚗 Jalanan Macet',icon:'🚗', ground:0x333333, sky:0x7FC8F8, fog:0xB0B8C0, light:0xffffff, spawnFn:'spawnTraffic' },
+  { name:'🛣️ Jalanan Sepi', icon:'🛣️', ground:0x444444, sky:0x7FC8F8, fog:0xB8E5FF, light:0xffffff, spawnFn:'spawnQuietRoad' },
+];
+
+// Time of day: sky tint + light color + light intensity
+const TIME_OF_DAY = [
+  { name:'🌅 Pagi',  skyTint:0xFFB07A, lightColor:0xFFE4B5, intensity:0.7 },  // warm morning
+  { name:'☀️ Siang', skyTint:0x87CEEB, lightColor:0xffffff, intensity:1.0 },  // bright day
+  { name:'🌇 Sore',  skyTint:0xFF8C42, lightColor:0xFFA060, intensity:0.8 },   // golden afternoon
+];
+
+/* ===== Terrain object creators ===== */
+function createTree(){
+  const g = new THREE.Group();
+  const trunkMat = new THREE.MeshLambertMaterial({color:0x6B4423});
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 3, 6), trunkMat);
+  trunk.position.y = 1.5;
+  g.add(trunk);
+  const leafMat = new THREE.MeshLambertMaterial({color:0x2E7D32});
+  for (let i=0; i<3; i++){
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(2 - i*0.4, 2, 7), leafMat);
+    cone.position.y = 3 + i*1.2;
+    g.add(cone);
+  }
+  return g;
+}
+function createBuilding(){
+  const g = new THREE.Group();
+  const h = 5 + Math.random()*15;
+  const colors = [0x888888, 0xa0a0a0, 0x7799aa, 0xbbaa88, 0x998877];
+  const c = colors[Math.floor(Math.random()*colors.length)];
+  const mat = new THREE.MeshPhongMaterial({color:c, specular:0x333333, shininess:20});
+  const w = 3 + Math.random()*3;
+  const d = 3 + Math.random()*3;
+  const building = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  building.position.y = h/2;
+  g.add(building);
+  // Window lights (small emissive squares)
+  if (Math.random() < 0.5){
+    const winMat = new THREE.MeshBasicMaterial({color: 0xFFE066});
+    for (let i=0; i<4; i++){
+      const win = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.1), winMat);
+      win.position.set((Math.random()-0.5)*w*0.7, 1+Math.random()*(h-2), d/2+0.05);
+      g.add(win);
+    }
+  }
+  return g;
+}
+function createHouse(){
+  const g = new THREE.Group();
+  const wallMat = new THREE.MeshLambertMaterial({color: [0xFFE0B2,0xD7CCC8,0xFFF9C4,0xF8BBD0][Math.floor(Math.random()*4)]});
+  const wall = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 3), wallMat);
+  wall.position.y = 1;
+  g.add(wall);
+  // Roof (triangular prism = rotated box)
+  const roofMat = new THREE.MeshLambertMaterial({color:[0xC62828,0x6D4C41,0x5D4037][Math.floor(Math.random()*3)]});
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(2.5, 1.5, 4), roofMat);
+  roof.position.y = 2.75;
+  roof.rotation.y = Math.PI/4;
+  g.add(roof);
+  return g;
+}
+function createRicePlant(){
+  const g = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({color: 0x7CB342});
+  const mat2 = new THREE.MeshLambertMaterial({color: 0xFBC02D});
+  for (let i=0; i<5; i++){
+    const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.2, 4), mat);
+    stalk.position.set((Math.random()-0.5)*0.8, 0.6, (Math.random()-0.5)*0.8);
+    stalk.rotation.z = (Math.random()-0.5)*0.3;
+    g.add(stalk);
+    const grain = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.4, 4), mat2);
+    grain.position.copy(stalk.position);
+    grain.position.y += 0.5;
+    g.add(grain);
+  }
+  return g;
+}
+function createPalmTree(){
+  const g = new THREE.Group();
+  const trunkMat = new THREE.MeshLambertMaterial({color:0x6B4423});
+  // Curved trunk (segments)
+  for (let i=0; i<5; i++){
+    const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.2-i*0.02, 0.25-i*0.02, 1.5, 6), trunkMat);
+    seg.position.set(Math.sin(i*0.3)*0.3, i*1.4+0.7, 0);
+    seg.rotation.z = 0.15;
+    g.add(seg);
+  }
+  // Fronds (palm leaves)
+  const leafMat = new THREE.MeshLambertMaterial({color:0x33691E});
+  for (let i=0; i<7; i++){
+    const ang = (i/7) * Math.PI * 2;
+    const frond = new THREE.Mesh(new THREE.ConeGeometry(0.3, 3, 4), leafMat);
+    frond.position.set(Math.cos(ang)*1, 7.5, Math.sin(ang)*1);
+    frond.rotation.z = Math.PI/2 - 0.3;
+    frond.rotation.y = ang;
+    g.add(frond);
+  }
+  return g;
+}
+function createCar(){
+  const g = new THREE.Group();
+  const colors = [0xE53935,0x1E88E5,0xFBC02D,0x43A047,0x212121,0xF5F5F5];
+  const c = colors[Math.floor(Math.random()*colors.length)];
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.5, 2.5), new THREE.MeshPhongMaterial({color:c, shininess:60}));
+  body.position.y = 0.5;
+  g.add(body);
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1, 0.4, 1.2), new THREE.MeshPhongMaterial({color:0x222, shininess:40}));
+  cabin.position.set(0, 0.9, -0.1);
+  g.add(cabin);
+  // Wheels
+  const wheelMat = new THREE.MeshLambertMaterial({color:0x111});
+  const wheelGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.2, 8);
+  [[-0.6,0.3,-0.8],[0.6,0.3,-0.8],[-0.6,0.3,0.8],[0.6,0.3,0.8]].forEach(p => {
+    const w = new THREE.Mesh(wheelGeo, wheelMat);
+    w.position.set(...p);
+    w.rotation.z = Math.PI/2;
+    g.add(w);
+  });
+  return g;
+}
+
+/* ===== Terrain spawn functions (spawn objects at far end, scroll toward plane) ===== */
+function spawnTerrainObjects(sceneIdx){
+  const scene = SCENES[sceneIdx];
+  const fn = scene.spawnFn;
+  const z = -250;
+  if (fn === 'spawnTrees' || fn === 'spawnPalms'){
+    // Forest/plantation: trees on both sides
+    for (let i=0; i<3; i++){
+      const tree = (fn === 'spawnPalms') ? createPalmTree() : createTree();
+      const side = i % 2 === 0 ? -1 : 1;
+      tree.position.set(side * (15 + Math.random()*20), -7.5, z - i*30);
+      state.scene.add(tree);
+      state.terrainObjects.push(tree);
+    }
+  } else if (fn === 'spawnBuildings'){
+    // City: buildings on both sides
+    for (let i=0; i<2; i++){
+      const b = createBuilding();
+      const side = i % 2 === 0 ? -1 : 1;
+      b.position.set(side * (12 + Math.random()*10), -7.5, z - i*40);
+      state.scene.add(b);
+      state.terrainObjects.push(b);
+    }
+  } else if (fn === 'spawnHouses'){
+    // Village: houses on both sides
+    for (let i=0; i<3; i++){
+      const h = createHouse();
+      const side = i % 2 === 0 ? -1 : 1;
+      h.position.set(side * (14 + Math.random()*10), -7.5, z - i*25);
+      h.rotation.y = side > 0 ? -Math.PI/2 : Math.PI/2;
+      state.scene.add(h);
+      state.terrainObjects.push(h);
+    }
+  } else if (fn === 'spawnRice'){
+    // Rice fields: rows of plants
+    for (let i=0; i<4; i++){
+      const r = createRicePlant();
+      r.scale.set(2, 2, 2);
+      r.position.set((Math.random()-0.5)*40, -7.5, z - i*20);
+      state.scene.add(r);
+      state.terrainObjects.push(r);
+    }
+  } else if (fn === 'spawnTraffic'){
+    // Traffic jam: many cars on road
+    for (let i=0; i<6; i++){
+      const c = createCar();
+      const lane = i % 2 === 0 ? -2.5 : 2.5;
+      c.position.set(lane, -7, z - i*8);
+      c.rotation.y = lane > 0 ? Math.PI : 0;
+      state.scene.add(c);
+      state.terrainObjects.push(c);
+    }
+  } else if (fn === 'spawnQuietRoad'){
+    // Quiet road: few cars
+    if (Math.random() < 0.6){
+      const c = createCar();
+      const lane = Math.random() < 0.5 ? -2.5 : 2.5;
+      c.position.set(lane, -7, z);
+      c.rotation.y = lane > 0 ? Math.PI : 0;
+      state.scene.add(c);
+      state.terrainObjects.push(c);
+    }
+  }
+  // Water/laut: no objects needed, just blue ground
+}
+
+/* ===== Scene manager: cycle scenes + time of day ===== */
+function updateScene(t){
+  if (state.sceneIdx === undefined) return;
+  const scene = SCENES[state.sceneIdx];
+
+  // Cycle time of day (every ~40 seconds per phase)
+  const todIdx = Math.floor((t / 40) % 3);
+  if (state.todIdx !== todIdx){
+    state.todIdx = todIdx;
+    const tod = TIME_OF_DAY[todIdx];
+    if ($('time-of-day')) $('time-of-day').textContent = tod.name;
+  }
+  const tod = TIME_OF_DAY[state.todIdx || 0];
+
+  // Smoothly lerp colors toward target scene + time of day
+  const targetSky = _mixColor(scene.sky, tod.skyTint, 0.4);
+  const targetLight = tod.lightColor;
+  const targetIntensity = tod.intensity;
+
+  if (state.scene){
+    state.scene.background.lerp(new THREE.Color(targetSky), 0.02);
+    if (state.scene.fog) state.scene.fog.color.lerp(new THREE.Color(scene.fog), 0.02);
+  }
+  if (state.ground && state.ground.material){
+    state.ground.material.color.lerp(new THREE.Color(scene.ground), 0.02);
+  }
+  // Update lights (find directional lights in scene)
+  if (state.dirLight){
+    state.dirLight.color.setHex(targetLight);
+    state.dirLight.intensity = targetIntensity * 0.9;
+  }
+  if (state.ambLight){
+    state.ambLight.intensity = 0.5 + targetIntensity * 0.3;
+  }
+
+  // Scene timer: change scene every ~25 seconds
+  state.sceneTimer = (state.sceneTimer || 0) + 1;
+  if (state.sceneTimer > 25 * 60){ // 25 seconds at 60fps
+    state.sceneTimer = 0;
+    state.sceneIdx = (state.sceneIdx + 1) % SCENES.length;
+    const newScene = SCENES[state.sceneIdx];
+    if ($('scene-name')) $('scene-name').textContent = newScene.name;
+    toast('Melewati: ' + newScene.name, '');
+  }
+
+  // Spawn terrain objects periodically
+  state.terrainSpawnTimer = (state.terrainSpawnTimer || 0) + 1;
+  if (state.terrainSpawnTimer > 40){ // every ~0.7 seconds
+    state.terrainSpawnTimer = 0;
+    spawnTerrainObjects(state.sceneIdx);
+  }
+
+  // Move terrain objects toward plane, despawn when passed
+  if (state.terrainObjects){
+    const moveSpeed = (state.keys && state.keys.up) ? 2.5 : 1.5;
+    for (let ti = state.terrainObjects.length - 1; ti >= 0; ti--){
+      const obj = state.terrainObjects[ti];
+      obj.position.z += moveSpeed;
+      if (obj.position.z > 20){
+        state.scene.remove(obj);
+        state.terrainObjects.splice(ti, 1);
+      }
+    }
+  }
+}
+
+function _mixColor(c1, c2, ratio){
+  // Mix two hex colors
+  const r1 = (c1>>16)&255, g1 = (c1>>8)&255, b1 = c1&255;
+  const r2 = (c2>>16)&255, g2 = (c2>>8)&255, b2 = c2&255;
+  const r = Math.round(r1*(1-ratio) + r2*ratio);
+  const g = Math.round(g1*(1-ratio) + g2*ratio);
+  const b = Math.round(b1*(1-ratio) + b2*ratio);
+  return (r<<16)|(g<<8)|b;
 }
 
 function createPlaneModel(){
@@ -3023,6 +3328,9 @@ function animate3D(){
       }
     }
   }
+
+  // ===== SCENERY SYSTEM (terrain types + time of day) =====
+  updateScene(t);
 
   // Plane controls
   const pd = state.planeData;
