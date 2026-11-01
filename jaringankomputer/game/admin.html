@@ -653,8 +653,7 @@ tbody tr:hover{background:var(--gold-l);}
 
   <!-- Footer About -->
   <div class="admin-footer">
-    © 2026 Game Edukasi Pesawat · 
-    <a href="javascript:void(0)" onclick="showAbout()" class="about-link-admin">ℹ️ About Game</a>
+    <a href="javascript:void(0)" onclick="showAbout()" class="about-link-admin">ℹ️ About Aplikasi</a>
   </div>
 </div>
 
@@ -701,7 +700,7 @@ tbody tr:hover{background:var(--gold-l);}
    CONFIG
    ============================================================ */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyIS_XKM7d-69xEqM9uoYAu9_btAPZBEcQExNf2gB5NjrouAklwtSJHFlPgy9_0qARfMA/exec";
-const USE_MOCK = (GAS_URL === "https://script.google.com/macros/s/AKfycbyIS_XKM7d-69xEqM9uoYAu9_btAPZBEcQExNf2gB5NjrouAklwtSJHFlPgy9_0qARfMA/exec");
+const USE_MOCK = (GAS_URL === "GANTI_DENGAN_URL_GOOGLE_APPS_SCRIPT_WEB_APP");
 const ADMIN_PASS = USE_MOCK ? "admin123" : null; // di GAS, password di Code.gs
 
 const state = {
@@ -741,14 +740,19 @@ function escapeHtml(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;
 async function api(payload){
   if (USE_MOCK) return mockApi(payload);
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(GAS_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     return await res.json();
   } catch(e){
-    return {status:'error', message:String(e)};
+    console.warn('API error, fallback to mock:', e);
+    return mockApi(payload);
   }
 }
 
