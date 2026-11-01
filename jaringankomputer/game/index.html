@@ -681,51 +681,62 @@ body{
 .sound-toggle:hover{transform:scale(1.1);}
 .sound-toggle.muted{background:#666; color:#aaa;}
 
-/* ===== Virtual touch controls (mobile/touch only) ===== */
+/* ===== Virtual touch controls (mobile/touch only) - CoC style ===== */
 .touch-controls{
-  display:none; /* hidden by default, shown on touch devices */
+  display:none;
   position:absolute; inset:0; z-index:5; pointer-events:none;
 }
-/* D-pad: right side, above answer targets (bottom ~220px) */
+/* D-pad: right side, above answer targets */
 .touch-dpad{
-  position:absolute; bottom:210px; right:16px;
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  position:absolute; bottom:250px; right:14px;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
   pointer-events:auto;
 }
 .dpad-row{
-  display:flex; gap:8px;
+  display:flex; gap:6px;
 }
 /* Fire button: center-bottom */
 .touch-fire-btn{
-  position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+  position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
   pointer-events:auto;
 }
+/* CoC-style touch buttons */
 .touch-btn{
-  width:58px; height:58px; border-radius:50%;
-  background:rgba(26,17,8,.75); border:3px solid var(--gold-d);
-  color:var(--gold-l); font-size:22px; font-weight:900;
+  width:56px; height:56px; border-radius:50%;
+  background:linear-gradient(180deg, var(--gold-l) 0%, var(--gold) 50%, var(--gold-d) 100%);
+  border:3px solid var(--wood-d);
+  color:var(--wood-d); font-size:22px; font-weight:900;
   cursor:pointer; user-select:none; -webkit-user-select:none;
-  backdrop-filter:blur(4px);
-  box-shadow: var(--shadow-inset);
-  transition:transform .08s, background .08s;
+  box-shadow: 0 4px 0 var(--wood-d), 0 6px 10px rgba(0,0,0,.4),
+              inset 0 2px 0 rgba(255,255,255,.4), inset 0 -2px 0 rgba(0,0,0,.2);
+  transition:transform .08s, box-shadow .08s;
   touch-action:none;
   display:flex; align-items:center; justify-content:center; flex-direction:column;
+  text-shadow:0 1px 0 rgba(255,255,255,.3);
 }
 .touch-btn:active, .touch-btn.pressed{
-  background:linear-gradient(180deg,var(--gold-l),var(--gold));
-  color:var(--wood-d); transform:scale(.9);
-  border-color:var(--wood-d);
+  transform:scale(.92) translateY(2px);
+  box-shadow: 0 2px 0 var(--wood-d), 0 3px 6px rgba(0,0,0,.3),
+              inset 0 2px 0 rgba(255,255,255,.3), inset 0 -2px 0 rgba(0,0,0,.2);
 }
 .touch-fire-btn{
-  background:rgba(229,57,53,.85); border-color:var(--yellow);
-  width:80px; height:80px; font-size:26px;
+  background:linear-gradient(180deg, #FF8585 0%, var(--red) 50%, var(--red-d) 100%);
+  border-color:var(--wood-d);
+  width:78px; height:78px; font-size:28px;
+  color:#fff;
+  box-shadow: 0 5px 0 var(--wood-d), 0 8px 14px rgba(0,0,0,.4),
+              inset 0 2px 0 rgba(255,255,255,.3), inset 0 -3px 0 rgba(0,0,0,.2);
+  text-shadow:0 1px 2px rgba(0,0,0,.4);
 }
 .touch-fire-btn:active, .touch-fire-btn.pressed{
-  background:linear-gradient(180deg,#FF8585,var(--red-d));
-  color:#fff; transform:translateX(-50%) scale(.9);
+  background:linear-gradient(180deg, #FF6868 0%, #E53935 50%, #B71C1C 100%);
+  transform:translateX(-50%) scale(.92) translateY(2px);
+  box-shadow: 0 2px 0 var(--wood-d), 0 4px 8px rgba(0,0,0,.3),
+              inset 0 2px 0 rgba(255,255,255,.2), inset 0 -2px 0 rgba(0,0,0,.2);
 }
 .fire-label{
-  font-size:9px; font-weight:900; margin-top:2px;
+  font-size:8px; font-weight:900; margin-top:1px;
+  letter-spacing:0.5px;
 }
 /* Show touch controls on touch devices */
 @media (hover: none) and (pointer: coarse){
@@ -913,37 +924,59 @@ body{
 /* Responsive */
 @media (max-width:600px){
   .desk-area{grid-template-columns:1fr;}
-  /* Answer targets: 2x2 grid on mobile, bigger text */
+  /* Compact top HUD on mobile */
+  .hud-top{top:8px; padding:0 8px; gap:4px;}
+  .hud-panel{padding:4px 8px; font-size:10px; border-radius:8px;}
+  .hud-panel .val{font-size:14px;}
+  .hud-panel .lbl{font-size:8px;}
+  .fuel-gauge{top:8px; width:180px;}
+  .fuel-gauge .label{font-size:10px;}
+  .fuel-bar{height:14px;}
+  .fuel-icons .heart{font-size:11px;}
+  /* Scene indicator: below HUD, right side, compact */
+  .scene-indicator{top:52px; right:8px; font-size:10px; padding:3px 8px; border-radius:8px;}
+  /* Question banner: compact */
+  .q-banner{top:78px; padding:8px 10px; border-radius:12px; width:94vw;}
+  .q-text{font-size:14px !important; line-height:1.3;}
+  .q-meta{font-size:10px;}
+  /* Countdown: below question banner */
+  .next-q-countdown{top:78px; font-size:12px; padding:6px 16px;}
+  .countdown-num{font-size:18px;}
+  /* Answer targets: 2x2 grid, bigger text, above fire button */
   .targets-hud{
     display:grid !important;
     grid-template-columns:1fr 1fr;
-    gap:8px; bottom:110px; width:94vw; padding:0 8px;
+    gap:6px; bottom:100px; width:94vw; padding:0 6px;
   }
   .target{
-    padding:10px 8px; max-width:none;
-    flex-direction:row; gap:8px; text-align:left;
+    padding:8px 6px; max-width:none;
+    flex-direction:row; gap:6px; text-align:left;
+    border-radius:10px;
   }
   .target .t-letter{
-    width:40px; height:40px; font-size:22px; flex-shrink:0;
+    width:36px; height:36px; font-size:18px; flex-shrink:0;
   }
   .target .t-text{
-    font-size:13px; line-height:1.3; max-height:none; overflow:hidden;
+    font-size:12px; line-height:1.25; max-height:none; overflow:hidden;
     flex:1; display:flex; align-items:center;
   }
-  .q-banner{top:80px; padding:8px 12px;}
-  .q-text{font-size:15px !important;}
-  .controls-hint{font-size:10px; padding:5px 12px;}
-  .coc-btn{min-width:220px; font-size:18px; padding:14px 30px;}
-  /* Touch controls: adjust D-pad position for 2x2 targets */
-  .touch-dpad{bottom:260px; right:12px;}
-  .touch-btn{width:52px; height:52px; font-size:20px;}
-  .touch-fire-btn{width:72px; height:72px; font-size:24px;}
-  /* Scene indicator lower on mobile */
-  .scene-indicator{top:60px; right:10px; font-size:11px; padding:4px 8px;}
+  .target.active{transform:translateY(-3px) scale(1.03);}
+  /* Touch controls: D-pad right above answers, fire center bottom */
+  .touch-dpad{bottom:235px; right:10px; gap:5px;}
+  .dpad-row{gap:5px;}
+  .touch-btn{width:48px; height:48px; font-size:18px; border-width:2px;}
+  .touch-fire-btn{width:68px; height:68px; font-size:22px; bottom:12px;}
+  .fire-label{font-size:7px;}
+  .controls-hint{display:none;}
+  .coc-btn{min-width:200px; font-size:16px; padding:12px 24px;}
 }
 @media (max-width:400px){
-  .target .t-text{font-size:11px;}
-  .target .t-letter{width:34px; height:34px; font-size:18px;}
+  .target .t-text{font-size:10px;}
+  .target .t-letter{width:30px; height:30px; font-size:15px;}
+  .touch-btn{width:42px; height:42px; font-size:16px;}
+  .touch-fire-btn{width:60px; height:60px; font-size:20px;}
+  .hud-panel .val{font-size:12px;}
+  .fuel-gauge{width:150px;}
 }
 </style>
 </head>
@@ -1311,9 +1344,9 @@ body{
   </div>
 </div>
 
-<!-- Background music audio element -->
+<!-- Background music audio element (local file for reliable autoplay) -->
 <audio id="bg-music" loop preload="auto">
-  <source src="https://apxid.github.io/informatika/jaringankomputer/game/assets/mb_clear.mp3" type="audio/mpeg">
+  <source src="mb_clear.mp3" type="audio/mpeg">
 </audio>
 
 <!-- ============================================================
