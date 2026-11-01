@@ -681,7 +681,7 @@ body{
 .sound-toggle:hover{transform:scale(1.1);}
 .sound-toggle.muted{background:#666; color:#aaa;}
 
-/* ===== Virtual touch controls (mobile/touch only) - CoC style unified D-pad ===== */
+/* ===== Virtual touch controls (mobile/touch only) - colored circle buttons ===== */
 .touch-controls{
   display:none;
   position:absolute; inset:0; z-index:5; pointer-events:none;
@@ -695,36 +695,51 @@ body{
 .dpad-row{
   display:flex; gap:6px;
 }
-/* CoC-style touch buttons */
+/* Base button: solid colored circle, white icon */
 .touch-btn{
-  width:54px; height:54px; border-radius:50%;
-  background:linear-gradient(180deg, var(--gold-l) 0%, var(--gold) 50%, var(--gold-d) 100%);
-  border:3px solid var(--wood-d);
-  color:var(--wood-d); font-size:22px; font-weight:900;
+  width:56px; height:56px; border-radius:50%;
+  border:none;
+  color:#fff; font-size:24px; font-weight:900;
   cursor:pointer; user-select:none; -webkit-user-select:none;
-  box-shadow: 0 4px 0 var(--wood-d), 0 6px 10px rgba(0,0,0,.4),
-              inset 0 2px 0 rgba(255,255,255,.4), inset 0 -2px 0 rgba(0,0,0,.2);
+  box-shadow: 0 4px 8px rgba(0,0,0,.35), inset 0 2px 0 rgba(255,255,255,.25);
   transition:transform .08s, box-shadow .08s;
   touch-action:none;
   display:flex; align-items:center; justify-content:center;
-  text-shadow:0 1px 0 rgba(255,255,255,.3);
 }
 .touch-btn:active, .touch-btn.pressed{
   transform:scale(.92) translateY(2px);
-  box-shadow: 0 2px 0 var(--wood-d), 0 3px 6px rgba(0,0,0,.3),
-              inset 0 2px 0 rgba(255,255,255,.3), inset 0 -2px 0 rgba(0,0,0,.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.2);
 }
+/* Up/Forward: GREEN */
+.touch-up-btn{
+  background:#43A047;
+  font-size:26px;
+}
+.touch-up-btn:active, .touch-up-btn.pressed{
+  background:#2E7D32;
+}
+/* Left: BLUE */
+.touch-left-btn{
+  background:#1E88E5;
+}
+.touch-left-btn:active, .touch-left-btn.pressed{
+  background:#1565C0;
+}
+/* Right: BLUE */
+.touch-right-btn{
+  background:#1E88E5;
+}
+.touch-right-btn:active, .touch-right-btn.pressed{
+  background:#1565C0;
+}
+/* Fire/Laser: RED with "OK" text */
 .touch-fire-btn{
-  background:linear-gradient(180deg, #FF8585 0%, var(--red) 50%, var(--red-d) 100%);
-  color:#fff; font-size:24px;
-  text-shadow:0 1px 2px rgba(0,0,0,.4);
-  box-shadow: 0 4px 0 var(--wood-d), 0 6px 10px rgba(0,0,0,.4),
-              inset 0 2px 0 rgba(255,255,255,.3), inset 0 -2px 0 rgba(0,0,0,.2);
+  background:#E53935;
+  font-size:18px;
+  letter-spacing:1px;
 }
 .touch-fire-btn:active, .touch-fire-btn.pressed{
-  background:linear-gradient(180deg, #FF6868 0%, #E53935 50%, #B71C1C 100%);
-  box-shadow: 0 2px 0 var(--wood-d), 0 3px 6px rgba(0,0,0,.3),
-              inset 0 2px 0 rgba(255,255,255,.2), inset 0 -2px 0 rgba(0,0,0,.2);
+  background:#C62828;
 }
 /* Show touch controls on touch devices */
 @media (hover: none) and (pointer: coarse){
@@ -952,8 +967,9 @@ body{
   /* Unified D-pad: right side, above answer targets */
   .touch-dpad{bottom:130px; right:10px; gap:5px;}
   .dpad-row{gap:5px;}
-  .touch-btn{width:48px; height:48px; font-size:19px; border-width:2px;}
-  .touch-fire-btn{font-size:21px;}
+  .touch-btn{width:50px; height:50px; font-size:21px;}
+  .touch-up-btn{font-size:23px;}
+  .touch-fire-btn{font-size:15px;}
   .controls-hint{display:none;}
   .coc-btn{min-width:200px; font-size:16px; padding:12px 24px;}
 }
@@ -1266,7 +1282,7 @@ body{
           <button class="touch-btn touch-left-btn" id="btn-touch-left">⬅</button>
           <button class="touch-btn touch-right-btn" id="btn-touch-right">➡</button>
         </div>
-        <button class="touch-btn touch-fire-btn" id="btn-touch-fire">🔥</button>
+        <button class="touch-btn touch-fire-btn" id="btn-touch-fire">OK</button>
       </div>
     </div>
   </div>
