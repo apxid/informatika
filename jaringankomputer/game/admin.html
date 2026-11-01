@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Game Pesawat Edukasi</title>
+<style>
+/* ============================================================
+   ADMIN THEME - CLASH OF CLANS STYLE
+   ============================================================ */
+:root{
+  --gold:#FFD24A; --gold-d:#C8941A; --gold-l:#FFE994;
+  --wood:#5C3A1E; --wood-d:#3A2410; --wood-l:#8B5A2B;
+  --red:#FF5252; --red-d:#C4202C;
+  --blue:#3F88FF; --blue-d:#1E5BC4;
+  --green:#52D869; --green-d:#1FA336;
+  --yellow:#FFD93D; --yellow-d:#C49A00;
+  --cream:#FFF6E0; --dark:#1A1108;
+  --shadow:0 6px 0 rgba(0,0,0,.25), 0 10px 18px rgba(0,0,0,.3);
+  --shadow-inset: inset 0 3px 0 rgba(255,255,255,.35), inset 0 -4px 0 rgba(0,0,0,.25);
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%; font-family:'Trebuchet MS','Segoe UI',sans-serif;}
+body{
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 2px, transparent 2px 80px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 40px),
+    linear-gradient(135deg,#7B4A24 0%, #5C3A1E 40%, #3A2410 100%);
+  background-attachment:fixed;
+  color:var(--dark); min-height:100vh;
+  user-select:none;
+}
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:var(--wood-d);}
+::-webkit-scrollbar-thumb{background:var(--gold-d); border-radius:5px;}
+
+/* ===== SCREENS ===== */
+.screen{display:none !important; min-height:100vh; padding:20px;}
+.screen.active{display:block !important; animation:fadeIn .5s;}
+#screen-login.active{display:flex !important;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
+
+/* ===== LOGIN ===== */
+#screen-login{
+  align-items:center; justify-content:center;
+}
+.login-box{
+  background:linear-gradient(180deg,rgba(255,246,224,.97),rgba(255,230,170,.97));
+  border:6px solid var(--wood-d); border-radius:24px;
+  padding:34px 38px; width:min(440px,92vw);
+  box-shadow: var(--shadow), 0 0 0 4px var(--gold-d), 0 20px 40px rgba(0,0,0,.4);
+  animation:popIn .7s cubic-bezier(.34,1.56,.64,1);
+  position:relative; text-align:center;
+}
+@keyframes popIn{0%{transform:scale(.3) rotate(-10deg); opacity:0;}100%{transform:scale(1) rotate(0); opacity:1;}}
+.login-box::before{
+  content:""; position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+  width:80px; height:44px; background:var(--red);
+  border:4px solid var(--wood-d); border-radius:8px;
+  box-shadow: var(--shadow-inset);
+}
+.login-box::after{
+  content:"ADMIN"; position:absolute; top:-15px; left:50%; transform:translateX(-50%);
+  color:#fff; font-weight:900; font-size:16px;
+  text-shadow:1px 1px 0 var(--wood-d);
+}
+.login-box h2{margin-top:18px; color:var(--wood-d); font-size:22px;}
+.login-box p{color:var(--wood-l); font-size:13px; margin:6px 0 18px;}
+.login-box input{
+  width:100%; padding:13px 16px; font-size:16px; font-weight:600;
+  border:3px solid var(--wood-l); border-radius:12px; background:#fff;
+  text-align:center; letter-spacing:3px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.08);
+  font-family:inherit;
+}
+.login-box input:focus{outline:none; border-color:var(--gold-d); box-shadow:0 0 0 4px rgba(255,210,74,.35);}
+
+/* ===== BUTTONS (CoC style) ===== */
+.coc-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:14px 28px; min-width:160px;
+  background:linear-gradient(180deg,var(--gold-l) 0%, var(--gold) 50%, var(--gold-d) 100%);
+  color:var(--wood-d); font-weight:900; font-size:16px;
+  border:4px solid var(--wood-d); border-radius:14px;
+  cursor:pointer; text-transform:uppercase; letter-spacing:.5px;
+  box-shadow: var(--shadow), var(--shadow-inset);
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .15s, box-shadow .15s;
+  font-family:inherit;
+}
+.coc-btn:hover{transform:translateY(-2px); box-shadow:0 8px 0 rgba(0,0,0,.25), 0 14px 22px rgba(0,0,0,.35), var(--shadow-inset);}
+.coc-btn:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.25), var(--shadow-inset);}
+.coc-btn.green{background:linear-gradient(180deg,#8BF57A 0%, var(--green) 50%, var(--green-d) 100%); color:#0F4A1C;}
+.coc-btn.red{background:linear-gradient(180deg,#FF8585 0%, var(--red) 50%, var(--red-d) 100%); color:#fff;}
+.coc-btn.blue{background:linear-gradient(180deg,#7AB5FF 0%, var(--blue) 50%, var(--blue-d) 100%); color:#fff;}
+.coc-btn.small{padding:9px 18px; min-width:auto; font-size:13px; border-radius:10px; border-width:3px;}
+.coc-btn.block{width:100%;}
+
+/* ===== HEADER ===== */
+.admin-header{
+  background:linear-gradient(180deg,rgba(255,246,224,.97),rgba(255,230,170,.97));
+  border-bottom:5px solid var(--wood-d);
+  padding:14px 20px; display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:12px;
+  position:sticky; top:0; z-index:10;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+.admin-header h1{
+  color:var(--wood-d); font-size:22px; font-weight:900;
+  text-shadow:1px 1px 0 var(--gold);
+  display:flex; align-items:center; gap:10px;
+}
+.admin-logo{
+  width:38px; height:38px; background:var(--red);
+  border:3px solid var(--wood-d); border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; box-shadow: var(--shadow-inset);
+}
+.header-right{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+
+/* ===== TABS ===== */
+.tabs{
+  display:flex; gap:8px; padding:14px 20px 0;
+  flex-wrap:wrap;
+}
+.tab{
+  padding:10px 20px; background:rgba(255,246,224,.5);
+  border:3px solid var(--wood-l); border-bottom:none;
+  border-radius:10px 10px 0 0; cursor:pointer;
+  font-weight:900; color:var(--cream); font-size:14px;
+  transition:all .15s;
+}
+.tab:hover{background:rgba(255,246,224,.8);}
+.tab.active{
+  background:linear-gradient(180deg,var(--gold-l),var(--gold));
+  color:var(--wood-d); border-color:var(--wood-d);
+  transform:translateY(-2px);
+}
+
+/* ===== PANELS ===== */
+.panel{
+  background:linear-gradient(180deg,rgba(255,246,224,.97),rgba(255,230,170,.97));
+  border:5px solid var(--wood-d); border-radius:18px;
+  padding:18px 22px; margin:0 20px 20px;
+  box-shadow: var(--shadow);
+  animation:popIn .5s ease;
+}
+.panel h2{
+  color:var(--wood-d); font-size:20px; margin-bottom:14px;
+  padding-bottom:8px; border-bottom:3px solid var(--gold-d);
+  display:flex; align-items:center; gap:10px;
+}
+
+/* ===== TOKEN SECTION ===== */
+.token-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:18px;
+}
+.token-card{
+  background:rgba(255,255,255,.7); border:3px solid var(--wood-l);
+  border-radius:14px; padding:18px; text-align:center;
+}
+.token-card.kiri{border-color:var(--red-d);}
+.token-card.kanan{border-color:var(--blue-d);}
+.token-card h3{color:var(--wood-d); font-size:18px; margin-bottom:8px;}
+.token-card .posisi-icon{font-size:30px; display:block; margin-bottom:6px;}
+.token-display{
+  font-size:22px; font-weight:900; letter-spacing:2px;
+  background:var(--wood-d); color:var(--gold-l);
+  padding:12px; border-radius:10px; margin:10px 0;
+  border:2px dashed var(--gold-d);
+  word-break:break-all;
+}
+.token-display.empty{color:#999; font-style:italic; letter-spacing:normal; font-size:14px;}
+.token-meta{font-size:12px; color:var(--wood-l); margin-top:6px;}
+
+/* ===== STATS ===== */
+.stats-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+  gap:12px; margin-bottom:18px;
+}
+.stat-card{
+  background:rgba(255,255,255,.7); border:3px solid var(--wood-l);
+  border-radius:12px; padding:14px; text-align:center;
+}
+.stat-card .num{font-size:30px; font-weight:900; color:var(--wood-d);}
+.stat-card .lbl{font-size:12px; color:var(--wood-l); font-weight:bold; margin-top:2px;}
+.stat-card.gold{background:linear-gradient(180deg,var(--gold-l),var(--gold)); border-color:var(--gold-d);}
+.stat-card.green{background:linear-gradient(180deg,#DCFCE7,#a7f3d0); border-color:var(--green-d);}
+.stat-card.red{background:linear-gradient(180deg,#FEE2E2,#fecaca); border-color:var(--red-d);}
+.stat-card.blue{background:linear-gradient(180deg,#DBEAFE,#bfdbfe); border-color:var(--blue-d);}
+
+/* ===== TABLES ===== */
+.tbl-wrap{overflow-x:auto; border-radius:10px; border:2px solid var(--wood-l);}
+table{width:100%; border-collapse:collapse; background:#fff; min-width:560px;}
+thead th{
+  background:linear-gradient(180deg,var(--wood-l),var(--wood-d));
+  color:var(--gold-l); padding:10px 12px; text-align:left;
+  font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+  border-right:2px solid var(--wood-d);
+}
+thead th:last-child{border-right:none;}
+tbody td{padding:8px 12px; border-bottom:1px solid #eee; font-size:13px; font-weight:600;}
+tbody tr:nth-child(even){background:#f9f5e8;}
+tbody tr:hover{background:var(--gold-l);}
+.badge{
+  display:inline-block; padding:3px 10px; border-radius:8px;
+  font-size:11px; font-weight:900; color:#fff;
+}
+.badge.aktif{background:var(--green-d);}
+.badge.nonaktif{background:#999;}
+.badge.menang{background:var(--green-d);}
+.badge.gagal{background:var(--red-d);}
+.badge.selesai{background:var(--blue-d);}
+.badge.menunggu{background:#999;}
+.badge.kiri{background:var(--red-d);}
+.badge.kanan{background:var(--blue-d);}
+
+/* ===== POPUP ===== */
+.popup-mask{
+  position:fixed; inset:0; background:rgba(0,0,0,.6);
+  display:none; align-items:center; justify-content:center;
+  z-index:50; backdrop-filter:blur(4px);
+}
+.popup-mask.show{display:flex; animation:fadeIn .3s;}
+.popup{
+  background:linear-gradient(180deg,rgba(255,246,224,.98),rgba(255,230,170,.98));
+  border:6px solid var(--wood-d); border-radius:22px;
+  padding:24px 26px; width:min(440px,92vw);
+  box-shadow: var(--shadow), 0 0 0 4px var(--gold-d);
+  text-align:center; animation:popIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+.popup h3{color:var(--wood-d); margin-bottom:8px;}
+.popup p{color:var(--wood-l); margin-bottom:14px; font-size:14px;}
+.popup .icon-big{font-size:42px; display:block; margin-bottom:6px;}
+.popup-btns{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-80px);
+  background:var(--wood-d); color:var(--gold-l);
+  padding:10px 22px; border-radius:24px; font-weight:900; font-size:14px;
+  border:3px solid var(--gold-d); z-index:100;
+  box-shadow: var(--shadow);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--red-d); color:#fff; border-color:var(--yellow);}
+.toast.success{background:var(--green-d); color:#fff; border-color:var(--gold);}
+
+/* ===== EMPTY ===== */
+.empty-msg{
+  text-align:center; padding:30px; color:var(--wood-l);
+  font-style:italic; font-weight:bold;
+}
+
+/* ===== LOADING ===== */
+.spinner{
+  width:42px; height:42px; border:5px solid rgba(255,210,74,.3);
+  border-top-color:var(--gold); border-radius:50%;
+  animation:spin 1s linear infinite; margin:0 auto 10px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media (max-width:700px){
+  .token-grid{grid-template-columns:1fr;}
+  .admin-header h1{font-size:18px;}
+  .tab{padding:8px 14px; font-size:12px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
+<div id="screen-login" class="screen active">
+  <div class="login-box">
+    <h2>🔐 ADMIN PANEL</h2>
+    <p>Masukkan password admin untuk lanjut</p>
+    <input id="admin-pass" type="password" placeholder="PASSWORD" autocomplete="off">
+    <button class="coc-btn green block" style="margin-top:14px;" onclick="adminLogin()">MASUK</button>
+    <p style="margin-top:14px; font-size:11px; color:var(--wood-l);">
+      Default: <b>admin123</b> (ganti di Code.gs)
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================
+     DASHBOARD SCREEN
+     ============================================================ -->
+<div id="screen-dashboard" class="screen">
+  <div class="admin-header">
+    <h1><span class="admin-logo">✈</span> ADMIN PANEL - GAME PESAWAT</h1>
+    <div class="header-right">
+      <button class="coc-btn blue small" onclick="refreshAll()">🔄 REFRESH</button>
+      <button class="coc-btn red small" onclick="logout()">⏻ LOGOUT</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="overview" onclick="switchTab('overview')">📊 OVERVIEW</div>
+    <div class="tab" data-tab="token" onclick="switchTab('token')">🎫 TOKEN</div>
+    <div class="tab" data-tab="siswa" onclick="switchTab('siswa')">👥 SISWA</div>
+    <div class="tab" data-tab="hasil" onclick="switchTab('hasil')">🏆 HASIL</div>
+    <div class="tab" data-tab="kuesioner" onclick="switchTab('kuesioner')">📋 KUESIONER</div>
+  </div>
+
+  <!-- TAB: OVERVIEW -->
+  <div id="tab-overview" class="tab-panel">
+    <div class="panel">
+      <h2>📊 STATISTIK OVERVIEW</h2>
+      <div class="stats-grid">
+        <div class="stat-card blue"><div class="num" id="stat-siswa">0</div><div class="lbl">TOTAL SISWA</div></div>
+        <div class="stat-card green"><div class="num" id="stat-menang">0</div><div class="lbl">PEMENANG</div></div>
+        <div class="stat-card red"><div class="num" id="stat-gagal">0</div><div class="lbl">GAGAL</div></div>
+        <div class="stat-card gold"><div class="num" id="stat-aktif">0</div><div class="lbl">TOKEN AKTIF</div></div>
+        <div class="stat-card"><div class="num" id="stat-kues">0</div><div class="lbl">KUESIONER</div></div>
+        <div class="stat-card"><div class="num" id="stat-rata">0s</div><div class="lbl">RATA-RATA WAKTU</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>🏆 TOP 5 PEMENANG TERCEPAT</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Posisi</th><th>Benar</th><th>Salah</th><th>Waktu</th></tr></thead>
+          <tbody id="tbl-top5"><tr><td colspan="7" class="empty-msg">Belum ada data</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: TOKEN -->
+  <div id="tab-token" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <h2>🎫 GENERATE TOKEN MEJA</h2>
+      <p style="margin-bottom:14px; color:var(--wood-l); font-size:13px;">
+        Token berbeda untuk meja kiri &amp; kanan. Setiap generate akan menonaktifkan token lama pada posisi tersebut.
+      </p>
+      <div class="token-grid">
+        <div class="token-card kiri">
+          <span class="posisi-icon">🪑</span>
+          <h3>MEJA KIRI</h3>
+          <div class="token-display empty" id="token-kiri-display">BELUM DI-GENERATE</div>
+          <div class="token-meta" id="token-kiri-meta">-</div>
+          <button class="coc-btn red small" style="margin-top:10px;" onclick="generateToken('kiri')">🎲 GENERATE</button>
+        </div>
+        <div class="token-card kanan">
+          <span class="posisi-icon">💺</span>
+          <h3>MEJA KANAN</h3>
+          <div class="token-display empty" id="token-kanan-display">BELUM DI-GENERATE</div>
+          <div class="token-meta" id="token-kanan-meta">-</div>
+          <button class="coc-btn blue small" style="margin-top:10px;" onclick="generateToken('kanan')">🎲 GENERATE</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>📋 RIWAYAT TOKEN</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>No</th><th>Posisi</th><th>Token</th><th>Status</th><th>Dibuat</th></tr></thead>
+          <tbody id="tbl-token"><tr><td colspan="5" class="empty-msg">Belum ada token</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: SISWA -->
+  <div id="tab-siswa" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <h2>👥 DAFTAR SISWA LOGIN</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>No</th><th>Nama</th><th>Absen</th><th>Kelas</th><th>Posisi</th><th>Status</th><th>Waktu</th></tr></thead>
+          <tbody id="tbl-siswa"><tr><td colspan="7" class="empty-msg">Belum ada siswa login</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: HASIL -->
+  <div id="tab-hasil" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <h2>🏆 HASIL GAME SEMUA SISWA</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Posisi</th><th>Benar</th><th>Salah</th><th>Waktu</th><th>Status</th></tr></thead>
+          <tbody id="tbl-hasil"><tr><td colspan="8" class="empty-msg">Belum ada hasil</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: KUESIONER -->
+  <div id="tab-kuesioner" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <h2>📋 HASIL KUESIONER SISWA</h2>
+      <div class="stats-grid" style="margin-bottom:14px;">
+        <div class="stat-card gold"><div class="num" id="avg-app">-</div><div class="lbl">RATA APP</div></div>
+        <div class="stat-card gold"><div class="num" id="avg-soal">-</div><div class="lbl">RATA SOAL</div></div>
+        <div class="stat-card gold"><div class="num" id="avg-seru">-</div><div class="lbl">RATA SERU</div></div>
+        <div class="stat-card gold"><div class="num" id="avg-tampilan">-</div><div class="lbl">RATA TAMPILAN</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>App</th><th>Soal</th><th>Seru</th><th>Tampilan</th><th>Saran</th></tr></thead>
+          <tbody id="tbl-kuesioner"><tr><td colspan="8" class="empty-msg">Belum ada kuesioner</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP: LOADING -->
+<div id="popup-loading" class="popup-mask">
+  <div class="popup">
+    <div class="spinner"></div>
+    <h3 id="loading-text">MEMUAT...</h3>
+  </div>
+</div>
+
+<!-- POPUP: INFO -->
+<div id="popup-info" class="popup-mask">
+  <div class="popup">
+    <span class="icon-big" id="popup-icon">ℹ️</span>
+    <h3 id="popup-title">INFO</h3>
+    <p id="popup-message">Pesan</p>
+    <div class="popup-btns">
+      <button class="coc-btn green small" onclick="closePopup('popup-info')">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxr22gYHlZkx3Tae0oN7CYy114VYTGmZgPKoyn50ZyKqTKgx_pC_iKOzcUn3-PDY33PaA/exec";
+const USE_MOCK = (GAS_URL === "https://script.google.com/macros/s/AKfycbxr22gYHlZkx3Tae0oN7CYy114VYTGmZgPKoyn50ZyKqTKgx_pC_iKOzcUn3-PDY33PaA/exec");
+const ADMIN_PASS = USE_MOCK ? "admin123" : null; // di GAS, password di Code.gs
+
+const state = {
+  pass: USE_MOCK ? "admin123" : null,
+  data: { siswa:[], hasil:[], token:[], kuesioner:[], winners:[] }
+};
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function toast(msg, type){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type||'');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>{ t.classList.remove('show'); }, 2400);
+}
+function showLoading(text){
+  $('loading-text').textContent = text || 'MEMUAT...';
+  $('popup-loading').classList.add('show');
+}
+function hideLoading(){ $('popup-loading').classList.remove('show'); }
+function showPopup(title, msg, icon){
+  $('popup-title').textContent = title;
+  $('popup-message').textContent = msg;
+  $('popup-icon').textContent = icon || 'ℹ️';
+  $('popup-info').classList.add('show');
+}
+function closePopup(id){ $(id).classList.remove('show'); }
+function escapeHtml(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+/* ============================================================
+   API
+   ============================================================ */
+async function api(payload){
+  if (USE_MOCK) return mockApi(payload);
+  try {
+    const res = await fetch(GAS_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  } catch(e){
+    return {status:'error', message:String(e)};
+  }
+}
+
+function mockApi(p){
+  return new Promise((resolve)=>{
+    setTimeout(()=>{
+      switch(p.action){
+        case 'adminLogin':
+          resolve({status:'ok', valid: p.pass === 'admin123'});
+          break;
+        case 'generateToken':
+          if (p.pass !== 'admin123'){ resolve({status:'error', message:'Akses ditolak'}); break; }
+          const kode = p.posisi.toUpperCase() + '-' + Math.random().toString(36).substr(2,6).toUpperCase();
+          state.data.token.unshift({no:state.data.token.length+1, posisi:p.posisi, token:kode, status:'aktif', dibuat:new Date().toLocaleString('id-ID')});
+          // Nonaktifkan lama
+          state.data.token.forEach((t,i)=>{ if (i>0 && t.posisi===p.posisi) t.status='nonaktif'; });
+          resolve({status:'ok', token:kode, posisi:p.posisi, dibuat:new Date().toLocaleString('id-ID')});
+          break;
+        case 'getDashboard':
+          if (p.pass !== 'admin123'){ resolve({status:'error', message:'Akses ditolak'}); break; }
+          resolve({status:'ok', ...state.data});
+          break;
+        default:
+          resolve({status:'error', message:'Unknown'});
+      }
+    }, 500);
+  });
+}
+
+/* ============================================================
+   ADMIN LOGIN
+   ============================================================ */
+async function adminLogin(){
+  const pass = $('admin-pass').value.trim();
+  if (!pass){ toast('Masukkan password','error'); return; }
+  showLoading('MEMVERIFIKASI...');
+  let valid = false;
+  if (USE_MOCK){
+    valid = pass === 'admin123';
+  } else {
+    const res = await api({action:'adminLogin', pass});
+    valid = res.valid;
+  }
+  hideLoading();
+  if (valid){
+    state.pass = pass;
+    $('screen-login').classList.remove('active');
+    $('screen-dashboard').classList.add('active');
+    toast('Login berhasil','success');
+    refreshAll();
+  } else {
+    toast('Password salah','error');
+  }
+}
+
+function logout(){
+  state.pass = null;
+  $('admin-pass').value = '';
+  $('screen-dashboard').classList.remove('active');
+  $('screen-login').classList.add('active');
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  $('tab-'+name).style.display = 'block';
+}
+
+/* ============================================================
+   GENERATE TOKEN
+   ============================================================ */
+async function generateToken(posisi){
+  showLoading('GENERATE TOKEN...');
+  const res = await api({action:'generateToken', posisi, pass: state.pass});
+  hideLoading();
+  if (res.status === 'ok'){
+    const display = $(`token-${posisi}-display`);
+    display.textContent = res.token;
+    display.classList.remove('empty');
+    $(`token-${posisi}-meta`).textContent = 'Dibuat: ' + (res.dibuat || '-') + ' · Status: AKTIF';
+    toast(`Token ${posisi}: ${res.token}`, 'success');
+    refreshAll();
+  } else {
+    toast(res.message || 'Gagal generate token','error');
+  }
+}
+
+/* ============================================================
+   REFRESH ALL DATA
+   ============================================================ */
+async function refreshAll(){
+  showLoading('MEMUAT DATA...');
+  const res = await api({action:'getDashboard', pass: state.pass});
+  hideLoading();
+  if (res.status === 'ok'){
+    state.data = { siswa:res.siswa||[], hasil:res.hasil||[], token:res.token||[], kuesioner:res.kuesioner||[], winners:res.winners||[] };
+    renderOverview();
+    renderToken();
+    renderSiswa();
+    renderHasil();
+    renderKuesioner();
+  } else {
+    toast(res.message || 'Gagal memuat data','error');
+  }
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderOverview(){
+  const d = state.data;
+  $('stat-siswa').textContent = d.siswa.length;
+  $('stat-menang').textContent = d.hasil.filter(h => h.status==='menang').length;
+  $('stat-gagal').textContent = d.hasil.filter(h => h.status==='gagal').length;
+  $('stat-aktif').textContent = d.token.filter(t => t.status==='aktif').length;
+  $('stat-kues').textContent = d.kuesioner.length;
+  const menang = d.hasil.filter(h => h.status==='menang' && h.waktu);
+  $('stat-rata').textContent = menang.length ? (Math.round(menang.reduce((s,h)=>s+(h.waktu||0),0)/menang.length))+'s' : '0s';
+
+  // Top 5 winners
+  const top5 = (d.winners && d.winners.length ? d.winners : d.hasil.filter(h=>h.status==='menang'))
+    .sort((a,b)=>(a.waktu||0)-(b.waktu||0)).slice(0,5);
+  $('tbl-top5').innerHTML = top5.length ? top5.map((w,i)=>{
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    return `<tr><td><b>${medal}</b></td><td>${escapeHtml(w.nama)}</td><td>${escapeHtml(w.kelas)}</td><td><span class="badge ${w.posisi}">${w.posisi}</span></td><td>${w.benar||0}</td><td>${w.salah||0}</td><td><b>${w.waktu||0}s</b></td></tr>`;
+  }).join('') : '<tr><td colspan="7" class="empty-msg">Belum ada pemenang</td></tr>';
+}
+
+function renderToken(){
+  const d = state.data;
+  // Active tokens
+  const aktifKiri = d.token.find(t => t.posisi==='kiri' && t.status==='aktif');
+  const aktifKanan = d.token.find(t => t.posisi==='kanan' && t.status==='aktif');
+  if (aktifKiri){
+    $('token-kiri-display').textContent = aktifKiri.token;
+    $('token-kiri-display').classList.remove('empty');
+    $('token-kiri-meta').textContent = 'Dibuat: ' + (aktifKiri.dibuat||'-');
+  }
+  if (aktifKanan){
+    $('token-kanan-display').textContent = aktifKanan.token;
+    $('token-kanan-display').classList.remove('empty');
+    $('token-kanan-meta').textContent = 'Dibuat: ' + (aktifKanan.dibuat||'-');
+  }
+  // History
+  $('tbl-token').innerHTML = d.token.length ? d.token.map(t =>
+    `<tr><td>${t.no}</td><td><span class="badge ${t.posisi}">${t.posisi}</span></td><td><b>${escapeHtml(t.token)}</b></td><td><span class="badge ${t.status}">${t.status}</span></td><td>${escapeHtml(t.dibuat||'-')}</td></tr>`
+  ).join('') : '<tr><td colspan="5" class="empty-msg">Belum ada token</td></tr>';
+}
+
+function renderSiswa(){
+  const d = state.data;
+  $('tbl-siswa').innerHTML = d.siswa.length ? d.siswa.map(s =>
+    `<tr><td>${s.no}</td><td>${escapeHtml(s.nama)}</td><td>${escapeHtml(s.absen)}</td><td>${escapeHtml(s.kelas)}</td><td><span class="badge ${s.posisi}">${s.posisi}</span></td><td><span class="badge ${s.status||'menunggu'}">${s.status||'menunggu'}</span></td><td>${s.waktu||0}s</td></tr>`
+  ).join('') : '<tr><td colspan="7" class="empty-msg">Belum ada siswa login</td></tr>';
+}
+
+function renderHasil(){
+  const d = state.data;
+  $('tbl-hasil').innerHTML = d.hasil.length ? d.hasil.map(h =>
+    `<tr><td>${h.no}</td><td>${escapeHtml(h.nama)}</td><td>${escapeHtml(h.kelas)}</td><td><span class="badge ${h.posisi}">${h.posisi}</span></td><td>${h.benar||0}</td><td>${h.salah||0}</td><td><b>${h.waktu||0}s</b></td><td><span class="badge ${h.status}">${h.status}</span></td></tr>`
+  ).join('') : '<tr><td colspan="8" class="empty-msg">Belum ada hasil</td></tr>';
+}
+
+function renderKuesioner(){
+  const d = state.data;
+  const k = d.kuesioner;
+  if (k.length){
+    const avg = (key) => (k.reduce((s,x)=>s+(Number(x[key])||0),0)/k.length).toFixed(1);
+    $('avg-app').textContent = avg('app');
+    $('avg-soal').textContent = avg('soal');
+    $('avg-seru').textContent = avg('seru');
+    $('avg-tampilan').textContent = avg('tampilan');
+  }
+  $('tbl-kuesioner').innerHTML = k.length ? k.map(x =>
+    `<tr><td>${x.no}</td><td>${escapeHtml(x.nama)}</td><td>${escapeHtml(x.kelas)}</td><td>${x.app||0}/5</td><td>${x.soal||0}/5</td><td>${x.seru||0}/5</td><td>${x.tampilan||0}/5</td><td style="max-width:300px;">${escapeHtml(x.saran||'-')}</td></tr>`
+  ).join('') : '<tr><td colspan="8" class="empty-msg">Belum ada kuesioner</td></tr>';
+}
+
+/* Enter key for login */
+$('admin-pass').addEventListener('keypress', e=>{
+  if (e.key === 'Enter') adminLogin();
+});
+
+/* Init */
+if (USE_MOCK){
+  // Pre-populate demo data
+  state.data.siswa = [
+    {no:1,nama:'Ahmad Fauzi',absen:'01',kelas:'9A',posisi:'kiri',status:'selesai',waktu:65},
+    {no:2,nama:'Siti Aminah',absen:'02',kelas:'9A',posisi:'kanan',status:'menang',waktu:48},
+    {no:3,nama:'Budi Santoso',absen:'03',kelas:'9A',posisi:'kiri',status:'gagal',waktu:30},
+  ];
+  state.data.hasil = [
+    {no:1,nama:'Siti Aminah',kelas:'9A',posisi:'kanan',benar:10,salah:0,waktu:48,status:'menang'},
+    {no:2,nama:'Ahmad Fauzi',kelas:'9A',posisi:'kiri',benar:8,salah:2,waktu:65,status:'selesai'},
+    {no:3,nama:'Budi Santoso',kelas:'9A',posisi:'kiri',benar:5,salah:3,waktu:30,status:'gagal'},
+  ];
+  state.data.kuesioner = [
+    {no:1,nama:'Siti Aminah',kelas:'9A',app:5,soal:4,seru:5,tampilan:5,saran:'Seru banget! Tambah soal lagi dong.'},
+    {no:2,nama:'Ahmad Fauzi',kelas:'9A',app:4,soal:3,seru:4,tampilan:5,saran:'Bagus, tapi soal terlalu mudah.'},
+  ];
+}
+</script>
+</body>
+</html>
