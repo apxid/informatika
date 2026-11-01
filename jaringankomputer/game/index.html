@@ -816,7 +816,7 @@ body{
   </div>
 
   <div class="welcome-footer">
-    <a href="javascript:void(0)" onclick="showAbout()" class="about-link">ℹ️ About Game</a>
+    <a href="javascript:void(0)" onclick="showAbout()" class="about-link">ℹ️ About Aplikasi</a>
   </div>
 </div>
 
@@ -1207,7 +1207,7 @@ body{
    CONFIG - GANTI GAS_URL DENGAN URL WEB APP ANDA
    ============================================================ */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyIS_XKM7d-69xEqM9uoYAu9_btAPZBEcQExNf2gB5NjrouAklwtSJHFlPgy9_0qARfMA/exec";
-const USE_MOCK = (GAS_URL === "https://script.google.com/macros/s/AKfycbyIS_XKM7d-69xEqM9uoYAu9_btAPZBEcQExNf2gB5NjrouAklwtSJHFlPgy9_0qARfMA/exec"); // mock mode jika belum deploy
+const USE_MOCK = (GAS_URL === "GANTI_DENGAN_URL_GOOGLE_APPS_SCRIPT_WEB_APP"); // false jika URL sudah diisi
 
 /* Mock data soal (cadangan jika backend belum siap) */
 const MOCK_SOAL = [
@@ -1253,6 +1253,108 @@ function showLayer(id){
   el.classList.add('active');
   // Auto fullscreen on layer change (request)
   tryFullscreen();
+  // Save current layer for reload persistence
+  saveState();
+}
+
+/* ============================================================
+   STATE PERSISTENCE (survive page reload)
+   ============================================================ */
+function saveState(){
+  try {
+    const st = {
+      layer: document.querySelector('.layer.active')?.id || 'layer-welcome',
+      siswa: state.siswa,
+      token: state.token,
+      soalList: state.soalList,
+      curIdx: state.curIdx,
+      benar: state.benar,
+      salah: state.salah,
+      startTime: state.startTime ? Date.now() - state.startTime : 0, // elapsed
+      soundEnabled: Sound.enabled
+    };
+    sessionStorage.setItem('gameState', JSON.stringify(st));
+  } catch(e){}
+}
+
+function clearState(){
+  try { sessionStorage.removeItem('gameState'); } catch(e){}
+}
+
+function restoreState(){
+  try {
+    const raw = sessionStorage.getItem('gameState');
+    if (!raw) { showLayer('layer-welcome'); return false; }
+    const st = JSON.parse(raw);
+
+    // Restore user data
+    state.siswa = st.siswa || {};
+    state.token = st.token || '';
+
+    // Restore sound preference
+    if (st.soundEnabled === false && Sound.enabled){
+      Sound.enabled = false;
+      const btn = $('sound-toggle');
+      if (btn){ btn.textContent = '🔇'; btn.classList.add('muted'); }
+    }
+
+    // If on login/players/howto layer, restore form fields too
+    if (st.siswa){
+      if (st.siswa.nama) $('inp-nama').value = st.siswa.nama;
+      if (st.siswa.absen) $('inp-absen').value = st.siswa.absen;
+      if (st.siswa.kelas) $('inp-kelas').value = st.siswa.kelas;
+      if (st.siswa.posisi){
+        const radio = document.querySelector(`input[name="posisi"][value="${st.siswa.posisi}"]`);
+        if (radio) radio.checked = true;
+      }
+    }
+
+    // Decide which layer to show
+    if (st.layer === 'layer-game' && st.soalList && st.soalList.length){
+      // Restore mid-game: show game layer, re-init 3D, jump to current question
+      state.soalList = st.soalList;
+      state.curIdx = st.curIdx || 0;
+      state.benar = st.benar || 0;
+      state.salah = st.salah || 0;
+      state.stoppedHandled = false;
+      state.startTime = Date.now() - (st.startTime || 0);
+      showLayer('layer-game');
+      Sound.init();
+      Sound.resume();
+      init3D();
+      renderQuestion();
+      startTimer();
+      startGameStatusPoll();
+      Sound.startBg();
+      // Restore fuel display
+      updateFuel();
+      toast('Game dilanjutkan','');
+      return true;
+    } else if (st.layer === 'layer-win' || st.layer === 'layer-lose'){
+      // Can't fully restore win/lose without re-submitting; go to players layer
+      showLayer('layer-players');
+      refreshPlayers();
+      toast('Sesi selesai. Masukkan token untuk main lagi','');
+      return true;
+    } else if (st.layer === 'layer-players'){
+      showLayer('layer-players');
+      refreshPlayers();
+      return true;
+    } else if (st.layer === 'layer-howto'){
+      showLayer('layer-howto');
+      return true;
+    } else if (st.layer === 'layer-login'){
+      showLayer('layer-login');
+      return true;
+    } else {
+      showLayer('layer-welcome');
+      return false;
+    }
+  } catch(e){
+    console.warn('Restore state error:', e);
+    showLayer('layer-welcome');
+    return false;
+  }
 }
 function tryFullscreen(){
   const el = document.documentElement;
@@ -1506,11 +1608,15 @@ function toggleSound(){
 async function api(payload){
   if (USE_MOCK) return mockApi(payload);
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(GAS_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     return await res.json();
   } catch(e){
     console.warn('API error, fallback to mock:', e);
@@ -1634,6 +1740,7 @@ function handleGameStopped(res){
 function onStoppedConfirm(){
   closePopup('popup-stopped');
   state.stoppedHandled = false;
+  clearState(); // clear saved state, go to welcome
   showLayer('layer-welcome');
 }
 
@@ -1773,6 +1880,8 @@ function renderQuestion(){
   banner.style.animation = 'none';
   void banner.offsetWidth;
   banner.style.animation = '';
+  // Save game progress for reload persistence
+  saveState();
 }
 
 function answerQuestion(picked, correct){
@@ -1814,6 +1923,7 @@ function answerQuestion(picked, correct){
     }
   }
   updateFuel();
+  saveState(); // save progress after each answer
   setTimeout(()=>{
     state.curIdx++;
     if (state.curIdx >= state.soalList.length){
@@ -1940,29 +2050,44 @@ async function submitKuesioner(){
    ============================================================ */
 function init3D(){
   const canvas = $('canvas-3d');
-  // Cleanup
-  if (state.renderer){
-    state.renderer.dispose();
-    if (state.renderer.forceContextLoss) state.renderer.forceContextLoss();
-  }
+  // Cancel old animation loop
   if (state.animId) cancelAnimationFrame(state.animId);
+  // Remove old keyboard listener
   if (state.keyHandler){
     window.removeEventListener('keydown', state.keyHandler);
     window.removeEventListener('keyup', state.keyHandler);
     state.keyHandler = null;
   }
 
-  state.scene = new THREE.Scene();
+  // ===== REUSE renderer if exists (fixes blank screen on restart) =====
+  if (!state.renderer){
+    // First time: create renderer, scene, camera
+    state.scene = new THREE.Scene();
+    state.camera = new THREE.PerspectiveCamera(68, window.innerWidth/window.innerHeight, 0.1, 600);
+    state.renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+    state.renderer.setSize(window.innerWidth, window.innerHeight);
+    state.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    state.camera.position.set(0, 4, 12);
+  } else {
+    // Restart: clear all children from scene (reuse renderer + canvas)
+    while (state.scene.children.length > 0){
+      const obj = state.scene.children[0];
+      state.scene.remove(obj);
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material){
+        if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
+        else obj.material.dispose();
+      }
+    }
+    // Reset references
+    state.plane = null; state.clouds = []; state.gates = []; state.gatesGroup = null;
+    state.ground = null; state.runwayStripes = []; state.splitClouds = []; state.prop = null;
+  }
+
   state.scene.background = new THREE.Color(0x7FC8F8);
   state.scene.fog = new THREE.Fog(0xB8E5FF, 80, 280);
-
-  state.camera = new THREE.PerspectiveCamera(68, window.innerWidth/window.innerHeight, 0.1, 600);
   state.camera.position.set(0, 4, 12);
   state.camera.lookAt(0, 1, -20);
-
-  state.renderer = new THREE.WebGLRenderer({canvas, antialias:true});
-  state.renderer.setSize(window.innerWidth, window.innerHeight);
-  state.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   // Lights
   state.scene.add(new THREE.AmbientLight(0xffffff, 0.75));
@@ -2083,74 +2208,7 @@ function createCloud(){
   return group;
 }
 
-/* ===== CLOUD SPLIT EFFECT (plane passes through cloud) ===== */
-function splitCloud(cloud, index){
-  if (cloud.userData.split) return;
-  cloud.userData.split = true;
-
-  // Divide spheres into left (x<0) and right (x>=0) halves based on local position
-  const leftSpheres = [];
-  const rightSpheres = [];
-  cloud.children.forEach(child => {
-    if (child.position.x < 0) leftSpheres.push(child);
-    else rightSpheres.push(child);
-  });
-
-  // If one half is empty, just pick middle spheres to split evenly
-  if (leftSpheres.length === 0 || rightSpheres.length === 0){
-    const half = Math.ceil(cloud.children.length / 2);
-    leftSpheres.length = 0; rightSpheres.length = 0;
-    cloud.children.forEach((child, i) => {
-      if (i < half) leftSpheres.push(child); else rightSpheres.push(child);
-    });
-  }
-
-  // Create two groups for the halves
-  const leftGroup = new THREE.Group();
-  const rightGroup = new THREE.Group();
-  const baseX = cloud.position.x;
-  const baseY = cloud.position.y;
-  const baseZ = cloud.position.z;
-
-  leftSpheres.forEach(s => {
-    // Clone sphere with its material for independent fade
-    const newMat = s.material.clone();
-    const newS = new THREE.Mesh(s.geometry.clone(), newMat);
-    newS.position.copy(s.position);
-    leftGroup.add(newS);
-  });
-  rightSpheres.forEach(s => {
-    const newMat = s.material.clone();
-    const newS = new THREE.Mesh(s.geometry.clone(), newMat);
-    newS.position.copy(s.position);
-    rightGroup.add(newS);
-  });
-
-  leftGroup.position.set(baseX, baseY, baseZ);
-  rightGroup.position.set(baseX, baseY, baseZ);
-  state.scene.add(leftGroup);
-  state.scene.add(rightGroup);
-
-  // Track for animation
-  state.splitClouds.push({
-    left: leftGroup, right: rightGroup,
-    baseX: baseX, baseZ: baseZ,
-    life: 0, maxLife: 40
-  });
-
-  // Remove original cloud from scene and replace with a new one far away
-  state.scene.remove(cloud);
-  state.clouds.splice(index, 1);
-  const newCloud = createCloud();
-  newCloud.position.set((Math.random()-0.5)*300, 5+Math.random()*25, -200 - Math.random()*60);
-  newCloud.userData.speed = 0.5 + Math.random()*0.7;
-  newCloud.userData.split = false;
-  state.scene.add(newCloud);
-  state.clouds.push(newCloud);
-
-  // Play cloud split whoosh sound
-  Sound.cloudSplit();
-}
+/* NOTE: Plane passes THROUGH clouds (no collision/split effect) */
 
 function createPlaneModel(){
   const plane = new THREE.Group();
@@ -2389,7 +2447,7 @@ function spawnAnswerGates(q){
 
   // 4 gates spread horizontally ahead
   const positions = [-9, -3, 3, 9];
-  const zPos = -48;
+  const zPos = -28;
 
   opts.forEach((o, i) => {
     const gate = createGate(o.l, o.color);
@@ -2622,9 +2680,7 @@ function animate3D(){
   state.animId = requestAnimationFrame(animate3D);
   const t = performance.now() * 0.001;
 
-  // Move clouds toward camera + check plane-cloud intersection for split effect
-  const planeZ = state.planeData.z;
-  const planeX = state.planeData.x;
+  // Move clouds toward camera (plane passes through, no collision)
   for (let ci = state.clouds.length - 1; ci >= 0; ci--){
     const c = state.clouds[ci];
     c.position.z += c.userData.speed;
@@ -2635,42 +2691,8 @@ function animate3D(){
       const isLow = Math.random() < 0.4;
       c.position.x = isLow ? (Math.random()-0.5)*60 : (Math.random()-0.5)*300;
       c.position.y = isLow ? (Math.random()*4 - 1) : (5 + Math.random()*25);
-      c.userData.split = false;
     }
-    // Cloud split detection: plane passing through cloud
-    if (!c.userData.split && c.userData.speed > 0){
-      const dz = Math.abs(c.position.z - planeZ);
-      const dx = Math.abs(c.position.x - planeX);
-      const planeY = state.plane ? state.plane.position.y : 0;
-      const dy = Math.abs(c.position.y - planeY);
-      // Split clouds within range of plane
-      if (dz < 5 && dx < 7 && dy < 6){
-        splitCloud(c, ci);
-      }
-    }
-  }
-
-  // Animate split cloud halves
-  if (state.splitClouds){
-    for (let si = state.splitClouds.length - 1; si >= 0; si--){
-      const sc = state.splitClouds[si];
-      sc.life++;
-      const progress = sc.life / sc.maxLife;
-      // Move halves apart
-      sc.left.position.x = sc.baseX - progress * 6;
-      sc.right.position.x = sc.baseX + progress * 6;
-      sc.left.position.z = sc.baseZ + progress * 3;
-      sc.right.position.z = sc.baseZ + progress * 3;
-      // Fade out
-      const opacity = 0.9 * (1 - progress);
-      sc.left.children.forEach(ch => { if (ch.material) ch.material.opacity = opacity; });
-      sc.right.children.forEach(ch => { if (ch.material) ch.material.opacity = opacity; });
-      if (sc.life >= sc.maxLife){
-        state.scene.remove(sc.left);
-        state.scene.remove(sc.right);
-        state.splitClouds.splice(si, 1);
-      }
-    }
+    // NOTE: Plane passes THROUGH clouds (no collision/split effect)
   }
 
   // Ground scroll (infinite forward motion illusion)
@@ -2689,7 +2711,7 @@ function animate3D(){
   // Plane controls
   const pd = state.planeData;
   const moveSpeed = 0.35;
-  const forwardSpeed = 0.9;
+  const forwardSpeed = 1.2;
   if (state.keys.left){
     pd.targetX = Math.max(pd.targetX - moveSpeed, -10);
     pd.targetBank = 0.6;
@@ -2701,7 +2723,7 @@ function animate3D(){
   }
   // Forward movement (Arrow Up) - plane flies toward gates
   if (state.keys.up && !state.answered){
-    pd.targetZ = Math.max(pd.targetZ - forwardSpeed, -52);
+    pd.targetZ = Math.max(pd.targetZ - forwardSpeed, -32);
     pd.pitch = -0.15; // nose down dive toward target
   } else {
     // Return to base Z=0 when not pressing up (after answer resets)
@@ -2737,12 +2759,12 @@ function animate3D(){
   });
 
   // ===== COLLISION DETECTION (plane rams gate) =====
-  if (!state.answered && pd.collisionCooldown <= 0 && pd.z < -38){
+  if (!state.answered && pd.collisionCooldown <= 0 && pd.z < -20){
     state.gates.forEach(g => {
       if (g.userData.hit) return;
       const dz = Math.abs(pd.z - g.position.z);
       const dx = Math.abs(pd.x - g.userData.baseX);
-      if (dz < 4.0 && dx < 3.6){
+      if (dz < 5.0 && dx < 4.0){
         collideGate(g);
       }
     });
@@ -2872,7 +2894,11 @@ document.addEventListener('click', (e)=>{
    INIT
    ============================================================ */
 window.addEventListener('load', ()=>{
-  showLayer('layer-welcome');
+  // Try to restore previous state (survive reload)
+  if (!restoreState()){
+    // No saved state, show welcome
+    showLayer('layer-welcome');
+  }
 });
 </script>
 
