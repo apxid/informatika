@@ -555,6 +555,28 @@ body{
 }
 @keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
 
+/* Next question countdown (during 10s free-fly) */
+.next-q-countdown{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  z-index:4; background:rgba(26,17,8,.85); border:3px solid var(--gold-d);
+  border-radius:20px; padding:18px 32px; text-align:center;
+  color:var(--gold-l); font-weight:900; font-size:18px;
+  backdrop-filter:blur(6px); white-space:nowrap;
+  box-shadow: var(--shadow), 0 0 30px rgba(255,210,74,.3);
+  animation:countdownPop .5s ease;
+}
+@keyframes countdownPop{
+  from{transform:translate(-50%,-50%) scale(.5); opacity:0;}
+  to{transform:translate(-50%,-50%) scale(1); opacity:1;}
+}
+.countdown-num{
+  display:inline-block; font-size:32px; color:var(--gold);
+  margin:0 6px; min-width:40px; text-align:center;
+  text-shadow:0 0 12px rgba(255,210,74,.6);
+  animation:numPulse 1s ease-in-out infinite;
+}
+@keyframes numPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+
 /* Controls hint */
 .controls-hint{
   position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
@@ -1004,6 +1026,13 @@ body{
         <span id="q-progress">Soal 1 dari 10</span>
       </div>
       <div class="q-text" id="q-text">Memuat soal...</div>
+    </div>
+
+    <!-- Next question countdown (shows during 10s free-fly wait) -->
+    <div class="next-q-countdown" id="next-q-countdown" style="display:none;">
+      <span>✈️ Terbang bebas! Soal berikutnya dalam</span>
+      <span class="countdown-num" id="countdown-num">10</span>
+      <span>detik</span>
     </div>
 
     <!-- Target HUD (bottom - 4 letter targets) -->
@@ -1924,14 +1953,49 @@ function answerQuestion(picked, correct){
   }
   updateFuel();
   saveState(); // save progress after each answer
-  setTimeout(()=>{
+  
+  // Hide question banner, show countdown for 10-second free-fly period
+  $('q-banner').style.display = 'none';
+  $('targets-hud').style.display = 'none';
+  showCountdown(10, ()=>{
+    // After 10s: restore UI and load next question
+    $('q-banner').style.display = '';
+    $('targets-hud').style.display = '';
     state.curIdx++;
     if (state.curIdx >= state.soalList.length){
       endGame(true);
     } else {
       renderQuestion();
     }
-  }, 1800);
+  });
+}
+
+/* ===== 10-second countdown before next question (free-fly time) ===== */
+function showCountdown(seconds, callback){
+  const el = $('next-q-countdown');
+  const numEl = $('countdown-num');
+  let remaining = seconds;
+  el.style.display = 'block';
+  numEl.textContent = remaining;
+  
+  // Clear gates so plane flies freely
+  if (state.gatesGroup){
+    while(state.gatesGroup.children.length > 0){
+      const g = state.gatesGroup.children[0];
+      state.gatesGroup.remove(g);
+    }
+  }
+  state.gates = [];
+  
+  const interval = setInterval(()=>{
+    remaining--;
+    numEl.textContent = remaining;
+    if (remaining <= 0){
+      clearInterval(interval);
+      el.style.display = 'none';
+      callback();
+    }
+  }, 1000);
 }
 
 function updateFuel(){
@@ -2082,6 +2146,7 @@ function init3D(){
     // Reset references
     state.plane = null; state.clouds = []; state.gates = []; state.gatesGroup = null;
     state.ground = null; state.runwayStripes = []; state.splitClouds = []; state.prop = null;
+    state.flyingObjects = []; state.flyingObjTimer = 0;
   }
 
   state.scene.background = new THREE.Color(0x7FC8F8);
@@ -2128,6 +2193,8 @@ function init3D(){
   // Clouds
   state.clouds = [];
   state.splitClouds = [];
+  state.flyingObjects = [];
+  state.flyingObjTimer = 120; // spawn first flying object after 2 seconds
   for (let i=0; i<30; i++){
     const cloud = createCloud();
     // Mix of low clouds (in plane flight path) and high clouds
@@ -2209,6 +2276,198 @@ function createCloud(){
 }
 
 /* NOTE: Plane passes THROUGH clouds (no collision/split effect) */
+
+/* ============================================================
+   FLYING OBJECTS (birds, kites, UFOs, other planes, balloons)
+   Random ambient objects that fly across the sky
+   ============================================================ */
+function createBird(){
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshLambertMaterial({color: 0x333333});
+  const beakMat = new THREE.MeshLambertMaterial({color: 0xFFA500});
+  // Body (small ellipsoid)
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 6), bodyMat);
+  body.scale.set(1, 0.7, 1.5);
+  g.add(body);
+  // Head
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 6), bodyMat);
+  head.position.set(0, 0.1, -0.35);
+  g.add(head);
+  // Beak
+  const beak = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.15, 6), beakMat);
+  beak.position.set(0, 0.1, -0.55);
+  beak.rotation.x = -Math.PI/2;
+  g.add(beak);
+  // Wings (2 angled boxes that will flap)
+  const wingMat = new THREE.MeshLambertMaterial({color: 0x222222});
+  const wingGeo = new THREE.BoxGeometry(1.2, 0.05, 0.4);
+  const wingL = new THREE.Mesh(wingGeo, wingMat);
+  wingL.position.set(-0.7, 0.1, 0);
+  wingL.rotation.z = 0.2;
+  g.add(wingL);
+  const wingR = new THREE.Mesh(wingGeo, wingMat);
+  wingR.position.set(0.7, 0.1, 0);
+  wingR.rotation.z = -0.2;
+  g.add(wingR);
+  g.userData.wingL = wingL;
+  g.userData.wingR = wingR;
+  g.userData.type = 'bird';
+  return g;
+}
+
+function createKite(){
+  const g = new THREE.Group();
+  // Diamond kite shape (4 triangles forming a diamond)
+  const colors = [0xFF5252, 0xFFD93D, 0x52D869, 0x3F88FF];
+  const diamondGeo = new THREE.BufferGeometry();
+  const verts = new Float32Array([
+    0, 1.2, 0,  -0.8, 0, 0,  0.8, 0, 0,   // top triangle
+    -0.8, 0, 0,  0, -1.5, 0,  0.8, 0, 0,  // bottom triangle
+  ]);
+  diamondGeo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+  diamondGeo.setIndex([0,1,2, 1,3,2]);
+  diamondGeo.computeVertexNormals();
+  const kiteMat = new THREE.MeshLambertMaterial({color: 0xFF5252, side: THREE.DoubleSide});
+  const kite = new THREE.Mesh(diamondGeo, kiteMat);
+  g.add(kite);
+  // Cross sticks
+  const stickMat = new THREE.MeshLambertMaterial({color: 0x8B4513});
+  const stickH = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.04, 0.04), stickMat);
+  g.add(stickH);
+  const stickV = new THREE.Mesh(new THREE.BoxGeometry(0.04, 2.8, 0.04), stickMat);
+  g.add(stickV);
+  // Tail (series of small colored bows on a string)
+  const tailGroup = new THREE.Group();
+  const tailColors = [0xFFD93D, 0x52D869, 0x3F88FF, 0xFF5252];
+  for (let i=0; i<6; i++){
+    const bow = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.08, 0.02), 
+      new THREE.MeshLambertMaterial({color: tailColors[i % tailColors.length]}));
+    bow.position.set(Math.sin(i*0.5)*0.2, -1.8 - i*0.35, 0);
+    tailGroup.add(bow);
+  }
+  g.add(tailGroup);
+  g.userData.tail = tailGroup;
+  g.userData.type = 'kite';
+  return g;
+}
+
+function createUFO(){
+  const g = new THREE.Group();
+  // Main disc (flattened cylinder)
+  const discMat = new THREE.MeshPhongMaterial({color: 0xcccccc, specular: 0xffffff, shininess: 100});
+  const disc = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.5, 0.4, 16), discMat);
+  g.add(disc);
+  // Dome on top (half sphere, green glass)
+  const domeMat = new THREE.MeshPhongMaterial({color: 0x4FC3F7, transparent:true, opacity:0.6, specular:0xffffff, shininess:120});
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(0.6, 12, 8, 0, Math.PI*2, 0, Math.PI/2), domeMat);
+  dome.position.y = 0.2;
+  g.add(dome);
+  // Glowing lights underneath (colored spheres)
+  const lightColors = [0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF];
+  for (let i=0; i<6; i++){
+    const ang = (i/6) * Math.PI * 2;
+    const light = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 8, 6),
+      new THREE.MeshBasicMaterial({color: lightColors[i]})
+    );
+    light.position.set(Math.cos(ang)*1.2, -0.2, Math.sin(ang)*1.2);
+    g.add(light);
+  }
+  g.userData.type = 'ufo';
+  g.userData.spin = true;
+  return g;
+}
+
+function createOtherPlane(){
+  const g = new THREE.Group();
+  const colors = [0x1565C0, 0x2E7D32, 0x6A1B9A, 0x00838F];
+  const c = colors[Math.floor(Math.random()*colors.length)];
+  const bodyMat = new THREE.MeshPhongMaterial({color: c, specular: 0xaaaaaa, shininess: 60});
+  // Fuselage
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 2.5, 10), bodyMat);
+  body.rotation.x = Math.PI/2;
+  g.add(body);
+  // Wings
+  const wings = new THREE.Mesh(new THREE.BoxGeometry(3, 0.1, 0.8), bodyMat);
+  g.add(wings);
+  // Tail fin
+  const fin = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.6, 0.4), bodyMat);
+  fin.position.set(0, 0.35, 1.1);
+  g.add(fin);
+  // Nose
+  const nose = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 10), 
+    new THREE.MeshPhongMaterial({color: 0xFFD93D, specular: 0xffffff, shininess: 80}));
+  nose.position.set(0, 0, -1.5);
+  nose.rotation.x = -Math.PI/2;
+  g.add(nose);
+  // Propeller
+  const prop = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.06, 0.06), 
+    new THREE.MeshLambertMaterial({color: 0x222}));
+  prop.position.set(0, 0, -1.8);
+  g.add(prop);
+  g.userData.prop = prop;
+  g.userData.type = 'otherplane';
+  return g;
+}
+
+function createBalloon(){
+  const g = new THREE.Group();
+  const colors = [0xFF5252, 0xFFD93D, 0x52D869, 0x3F88FF, 0xE91E63];
+  const c = colors[Math.floor(Math.random()*colors.length)];
+  // Balloon (sphere, slightly elongated)
+  const balloonMat = new THREE.MeshPhongMaterial({color: c, specular: 0x888888, shininess: 50});
+  const balloon = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), balloonMat);
+  balloon.scale.set(1, 1.2, 1);
+  g.add(balloon);
+  // Basket (small box below)
+  const basketMat = new THREE.MeshLambertMaterial({color: 0x8B4513});
+  const basket = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.4, 0.5), basketMat);
+  basket.position.y = -1.5;
+  g.add(basket);
+  // Strings (4 thin cylinders)
+  const stringMat = new THREE.MeshLambertMaterial({color: 0x654321});
+  for (let i=0; i<4; i++){
+    const ang = (i/4) * Math.PI * 2;
+    const sx = Math.cos(ang)*0.25, sz = Math.sin(ang)*0.25;
+    const string = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.6, 4), stringMat);
+    string.position.set(sx, -1.05, sz);
+    g.add(string);
+  }
+  g.userData.type = 'balloon';
+  return g;
+}
+
+function spawnRandomFlyingObject(){
+  const types = ['bird', 'kite', 'ufo', 'otherplane', 'balloon'];
+  const type = types[Math.floor(Math.random()*types.length)];
+  let obj;
+  switch(type){
+    case 'bird':       obj = createBird(); break;
+    case 'kite':       obj = createKite(); break;
+    case 'ufo':        obj = createUFO(); break;
+    case 'otherplane': obj = createOtherPlane(); break;
+    case 'balloon':    obj = createBalloon(); break;
+    default:           obj = createBird();
+  }
+  // Spawn at random edge, fly across
+  const fromLeft = Math.random() < 0.5;
+  const y = 3 + Math.random()*15; // altitude 3-18
+  const z = -30 - Math.random()*40; // depth -30 to -70
+  if (fromLeft){
+    obj.position.set(-80, y, z);
+    obj.userData.velX = 0.3 + Math.random()*0.3; // move right
+    if (obj.userData.type === 'otherplane') obj.rotation.y = Math.PI/2;
+  } else {
+    obj.position.set(80, y, z);
+    obj.userData.velX = -(0.3 + Math.random()*0.3); // move left
+    if (obj.userData.type === 'otherplane') obj.rotation.y = -Math.PI/2;
+  }
+  obj.userData.velY = (Math.random()-0.5) * 0.05; // slight vertical drift
+  obj.userData.swayPhase = Math.random() * Math.PI * 2;
+  obj.userData.flapPhase = Math.random() * Math.PI * 2;
+  state.scene.add(obj);
+  state.flyingObjects.push(obj);
+}
 
 function createPlaneModel(){
   const plane = new THREE.Group();
@@ -2708,6 +2967,63 @@ function animate3D(){
     });
   }
 
+  // ===== FLYING OBJECTS (birds, kites, UFOs, planes, balloons) =====
+  // Spawn at random intervals
+  if (state.flyingObjTimer !== undefined){
+    state.flyingObjTimer--;
+    if (state.flyingObjTimer <= 0){
+      spawnRandomFlyingObject();
+      // Next spawn in 3-8 seconds (180-480 frames at 60fps)
+      state.flyingObjTimer = 180 + Math.floor(Math.random()*300);
+    }
+  }
+  // Animate & move flying objects
+  if (state.flyingObjects){
+    for (let fi = state.flyingObjects.length - 1; fi >= 0; fi--){
+      const obj = state.flyingObjects[fi];
+      // Move horizontally
+      obj.position.x += obj.userData.velX;
+      obj.position.y += obj.userData.velY + Math.sin(t*2 + obj.userData.swayPhase) * 0.02;
+      // Type-specific animations
+      if (obj.userData.type === 'bird'){
+        // Flap wings
+        const flap = Math.sin(t*12 + obj.userData.flapPhase) * 0.5;
+        if (obj.userData.wingL) obj.userData.wingL.rotation.z = 0.2 + flap;
+        if (obj.userData.wingR) obj.userData.wingR.rotation.z = -0.2 - flap;
+        // Face direction of travel
+        obj.rotation.y = obj.userData.velX > 0 ? Math.PI/2 : -Math.PI/2;
+      } else if (obj.userData.type === 'ufo'){
+        // Spin the UFO
+        obj.rotation.y = t * 0.8;
+        // Bob up and down
+        obj.position.y += Math.sin(t*1.5 + obj.userData.swayPhase) * 0.03;
+      } else if (obj.userData.type === 'kite'){
+        // Sway side to side
+        obj.rotation.z = Math.sin(t*1.5 + obj.userData.swayPhase) * 0.3;
+        // Tail wiggle
+        if (obj.userData.tail){
+          obj.userData.tail.children.forEach((bow, i) => {
+            bow.position.x = Math.sin(t*2 + i*0.5) * 0.3;
+          });
+        }
+      } else if (obj.userData.type === 'otherplane'){
+        // Spin propeller
+        if (obj.userData.prop) obj.userData.prop.rotation.z = t * 40;
+        // Slight bob
+        obj.position.y += Math.sin(t*1.2 + obj.userData.swayPhase) * 0.02;
+      } else if (obj.userData.type === 'balloon'){
+        // Gentle bob
+        obj.position.y += Math.sin(t*0.8 + obj.userData.swayPhase) * 0.015;
+        obj.rotation.z = Math.sin(t*0.5) * 0.05;
+      }
+      // Despawn when off-screen
+      if (obj.position.x > 100 || obj.position.x < -100){
+        state.scene.remove(obj);
+        state.flyingObjects.splice(fi, 1);
+      }
+    }
+  }
+
   // Plane controls
   const pd = state.planeData;
   const moveSpeed = 0.35;
@@ -2796,17 +3112,15 @@ function collideGate(gate){
   if (state.planeData.collisionCooldown > 0) return;
   state.planeData.collisionCooldown = 30;
 
-  // Sound: collision impact
+  // Sound: whoosh pass-through sound
   Sound.collision();
-  // Visual: plane bump + gate flash
-  planeShake();
+  // Plane PASSES THROUGH gate (no bounce, no shake)
   const q = state.soalList[state.curIdx];
   const letter = gate.userData.letter;
-  // Flash gate immediately
+  // Mark gate as hit (fade it out)
   gate.userData.hit = true;
   flashGate(gate, 0xFFD93D);
-  // Bounce plane back
-  state.planeData.targetZ = -5;
+  // Plane continues flying through (no bounce back)
   // Trigger answer
   setTimeout(()=> answerQuestion(letter, q ? q.benar : ''), 200);
 }
