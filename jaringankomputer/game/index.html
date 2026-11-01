@@ -680,6 +680,50 @@ body{
 .sound-toggle:hover{transform:scale(1.1);}
 .sound-toggle.muted{background:#666; color:#aaa;}
 
+/* ===== Virtual touch controls (mobile/touch only) ===== */
+.touch-controls{
+  display:none; /* hidden by default, shown on touch devices */
+  position:absolute; bottom:0; left:0; right:0; height:140px;
+  z-index:5; pointer-events:none;
+}
+.touch-pad{
+  position:absolute; bottom:20px; display:flex; gap:12px;
+  pointer-events:auto;
+}
+.touch-left{ left:20px; }
+.touch-right{ right:20px; }
+.touch-btn{
+  width:64px; height:64px; border-radius:50%;
+  background:rgba(26,17,8,.7); border:3px solid var(--gold-d);
+  color:var(--gold-l); font-size:26px; font-weight:900;
+  cursor:pointer; user-select:none; -webkit-user-select:none;
+  backdrop-filter:blur(4px);
+  box-shadow: var(--shadow-inset);
+  transition:transform .08s, background .08s;
+  touch-action:none; /* prevent scroll on touch */
+}
+.touch-btn:active, .touch-btn.pressed{
+  background:linear-gradient(180deg,var(--gold-l),var(--gold));
+  color:var(--wood-d); transform:scale(.9);
+  border-color:var(--wood-d);
+}
+.touch-fire-btn{
+  background:rgba(229,57,53,.8); border-color:var(--yellow);
+  width:72px; height:72px; font-size:28px;
+}
+.touch-fire-btn:active, .touch-fire-btn.pressed{
+  background:linear-gradient(180deg,#FF8585,var(--red-d));
+  color:#fff;
+}
+/* Show touch controls on touch devices (no hover, coarse pointer) */
+@media (hover: none) and (pointer: coarse){
+  .touch-controls{display:block;}
+  .controls-hint{display:none;} /* hide keyboard hint on touch */
+}
+/* Also show if touch is detected via JS */
+.touch-controls.show-touch{display:block;}
+body.touch-device .controls-hint{font-size:10px; padding:4px 10px;}
+
 /* ============================================================
    POPUP / MODAL (custom, NO sweetalert)
    ============================================================ */
@@ -1157,6 +1201,20 @@ body{
       <span class="key-hint">⬆</span> MAJU NABRAK · 
       <span class="key-hint">SPASI</span> TEMBAK · 
       <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" title="Aktif/Matikan suara">🔊</button>
+    </div>
+
+    <!-- Virtual touch controls (mobile only) -->
+    <div class="touch-controls" id="touch-controls">
+      <!-- Left side: movement -->
+      <div class="touch-pad touch-left">
+        <button class="touch-btn touch-left-btn" id="btn-touch-left">⬅</button>
+        <button class="touch-btn touch-right-btn" id="btn-touch-right">➡</button>
+      </div>
+      <!-- Right side: forward + fire -->
+      <div class="touch-pad touch-right">
+        <button class="touch-btn touch-up-btn" id="btn-touch-up">⬆</button>
+        <button class="touch-btn touch-fire-btn" id="btn-touch-fire">🔥</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1732,19 +1790,35 @@ const Sound = {
 
   // ===== Background music (MP3 looping) =====
   musicEl: null,
+  musicStarted: false,
   startMusic(){
     if (!this.musicEl){
       this.musicEl = document.getElementById('bg-music');
     }
-    if (this.musicEl && this.enabled){
-      this.musicEl.volume = 0.3;
-      this.musicEl.play().catch(()=>{ /* autoplay might be blocked */ });
+    if (!this.musicEl) return;
+    // Set volume and attempt play
+    this.musicEl.volume = 0.4;
+    this.musicEl.loop = true;
+    const playPromise = this.musicEl.play();
+    if (playPromise){
+      playPromise.then(() => {
+        this.musicStarted = true;
+      }).catch((e) => {
+        // Autoplay blocked — retry after short delay (user gesture should have unlocked)
+        console.warn('Music autoplay blocked, retrying...', e);
+        setTimeout(() => {
+          this.musicEl.play().then(() => {
+            this.musicStarted = true;
+          }).catch(() => {});
+        }, 500);
+      });
     }
   },
   stopMusic(){
     if (this.musicEl){
       this.musicEl.pause();
       this.musicEl.currentTime = 0;
+      this.musicStarted = false;
     }
   },
   setMusicVolume(v){
@@ -2754,70 +2828,248 @@ function createCar(){
   return g;
 }
 
+/* ===== Additional terrain objects ===== */
+function createBush(){
+  const g = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({color: [0x2E7D32, 0x388E3C, 0x1B5E20][Math.floor(Math.random()*3)]});
+  for (let i=0; i<3; i++){
+    const s = new THREE.Mesh(new THREE.SphereGeometry(0.5+Math.random()*0.3, 6, 5), mat);
+    s.position.set((Math.random()-0.5)*1.2, 0.3, (Math.random()-0.5)*1.2);
+    g.add(s);
+  }
+  return g;
+}
+function createRock(){
+  const g = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({color: [0x757575, 0x9E9E9E, 0x616161][Math.floor(Math.random()*3)]});
+  const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(0.6+Math.random()*0.4), mat);
+  rock.position.y = 0.3;
+  rock.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+  g.add(rock);
+  return g;
+}
+function createTruck(){
+  const g = new THREE.Group();
+  const colors = [0xE53935, 0x1E88E5, 0xFBC02D, 0x212121, 0xF5F5F5];
+  const c = colors[Math.floor(Math.random()*colors.length)];
+  // Cabin
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1, 1.5), new THREE.MeshPhongMaterial({color:c, shininess:60}));
+  cabin.position.set(0, 0.7, -1);
+  g.add(cabin);
+  // Cargo container
+  const cargo = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.4, 2.5), new THREE.MeshPhongMaterial({color: [0x888, 0xaaa, 0xCCC][Math.floor(Math.random()*3)], shininess:30}));
+  cargo.position.set(0, 0.9, 0.8);
+  g.add(cargo);
+  // Wheels
+  const wheelMat = new THREE.MeshLambertMaterial({color:0x111});
+  const wheelGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.2, 8);
+  [[-0.6,0.35,-1.2],[0.6,0.35,-1.2],[-0.6,0.35,0.5],[0.6,0.35,0.5],[-0.6,0.35,1.5],[0.6,0.35,1.5]].forEach(p => {
+    const w = new THREE.Mesh(wheelGeo, wheelMat);
+    w.position.set(...p); w.rotation.z = Math.PI/2;
+    g.add(w);
+  });
+  return g;
+}
+function createMotorcycle(){
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 1.5), new THREE.MeshPhongMaterial({color:0xC62828, shininess:80}));
+  body.position.y = 0.5;
+  g.add(body);
+  const seat = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.15, 0.6), new THREE.MeshLambertMaterial({color:0x222}));
+  seat.position.set(0, 0.8, 0.1);
+  g.add(seat);
+  // Wheels
+  const wheelMat = new THREE.MeshLambertMaterial({color:0x111});
+  const wheelGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.12, 8);
+  const w1 = new THREE.Mesh(wheelGeo, wheelMat); w1.position.set(0, 0.3, -0.6); w1.rotation.z = Math.PI/2; g.add(w1);
+  const w2 = new THREE.Mesh(wheelGeo, wheelMat); w2.position.set(0, 0.3, 0.6); w2.rotation.z = Math.PI/2; g.add(w2);
+  return g;
+}
+function createStreetLight(){
+  const g = new THREE.Group();
+  const poleMat = new THREE.MeshLambertMaterial({color:0x444});
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 5, 6), poleMat);
+  pole.position.y = 2.5;
+  g.add(pole);
+  const arm = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 1.5), poleMat);
+  arm.position.set(0, 4.5, 0.7);
+  g.add(arm);
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), new THREE.MeshBasicMaterial({color:0xFFE066}));
+  lamp.position.set(0, 4.4, 1.3);
+  g.add(lamp);
+  return g;
+}
+function createBoat(){
+  const g = new THREE.Group();
+  const hullMat = new THREE.MeshPhongMaterial({color:[0xE53935, 0x1E88E5, 0xFBC02D, 0x212121][Math.floor(Math.random()*4)], shininess:60});
+  const hull = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.6, 4), hullMat);
+  hull.position.y = 0.3;
+  g.add(hull);
+  // Cabin
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1, 0.8, 1.5), new THREE.MeshPhongMaterial({color:0xFFF, shininess:40}));
+  cabin.position.set(0, 0.9, -0.5);
+  g.add(cabin);
+  // Flag pole
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2, 4), new THREE.MeshLambertMaterial({color:0x888}));
+  pole.position.set(0, 2, 1);
+  g.add(pole);
+  return g;
+}
+function createWave(){
+  const g = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({color:0x42A5F5, transparent:true, opacity:0.6});
+  for (let i=0; i<3; i++){
+    const w = new THREE.Mesh(new THREE.TorusGeometry(1+i*0.5, 0.08, 4, 12), mat);
+    w.rotation.x = Math.PI/2;
+    w.position.y = 0.1;
+    g.add(w);
+  }
+  return g;
+}
+
 /* ===== Terrain spawn functions (spawn objects at far end, scroll toward plane) ===== */
 function spawnTerrainObjects(sceneIdx){
   const scene = SCENES[sceneIdx];
   const fn = scene.spawnFn;
   const z = -250;
-  if (fn === 'spawnTrees' || fn === 'spawnPalms'){
-    // Forest/plantation: trees on both sides
-    for (let i=0; i<3; i++){
-      const tree = (fn === 'spawnPalms') ? createPalmTree() : createTree();
+  if (fn === 'spawnTrees'){
+    // Forest: dense trees + bushes + rocks on both sides
+    for (let i=0; i<5; i++){
+      const tree = createTree();
       const side = i % 2 === 0 ? -1 : 1;
-      tree.position.set(side * (15 + Math.random()*20), -7.5, z - i*30);
+      const scale = 0.7 + Math.random()*0.8;
+      tree.scale.set(scale, scale, scale);
+      tree.position.set(side * (12 + Math.random()*25), -7.5, z - i*18);
+      tree.rotation.y = Math.random()*Math.PI;
       state.scene.add(tree);
       state.terrainObjects.push(tree);
     }
+    // Bushes between trees
+    if (Math.random() < 0.7){
+      const bush = createBush();
+      bush.position.set((Math.random()-0.5)*30, -7.5, z - Math.random()*30);
+      state.scene.add(bush);
+      state.terrainObjects.push(bush);
+    }
+    // Rocks
+    if (Math.random() < 0.4){
+      const rock = createRock();
+      rock.position.set((Math.random()-0.5)*35, -7.3, z - Math.random()*40);
+      state.scene.add(rock);
+      state.terrainObjects.push(rock);
+    }
+  } else if (fn === 'spawnPalms'){
+    // Palm plantation: rows of palm trees
+    for (let i=0; i<4; i++){
+      const palm = createPalmTree();
+      const side = i % 2 === 0 ? -1 : 1;
+      palm.position.set(side * (10 + Math.random()*20), -7.5, z - i*22);
+      state.scene.add(palm);
+      state.terrainObjects.push(palm);
+    }
+    // Bushes under palms
+    if (Math.random() < 0.5){
+      const bush = createBush();
+      bush.position.set((Math.random()-0.5)*30, -7.5, z - Math.random()*30);
+      state.scene.add(bush);
+      state.terrainObjects.push(bush);
+    }
   } else if (fn === 'spawnBuildings'){
-    // City: buildings on both sides
-    for (let i=0; i<2; i++){
+    // City: tall buildings + street lights
+    for (let i=0; i<3; i++){
       const b = createBuilding();
       const side = i % 2 === 0 ? -1 : 1;
-      b.position.set(side * (12 + Math.random()*10), -7.5, z - i*40);
+      b.position.set(side * (10 + Math.random()*12), -7.5, z - i*28);
       state.scene.add(b);
       state.terrainObjects.push(b);
     }
+    // Street lights
+    if (Math.random() < 0.6){
+      const light = createStreetLight();
+      light.position.set((Math.random()<0.5?-1:1) * 7, -7.5, z - Math.random()*30);
+      state.scene.add(light);
+      state.terrainObjects.push(light);
+    }
   } else if (fn === 'spawnHouses'){
-    // Village: houses on both sides
-    for (let i=0; i<3; i++){
+    // Village: houses + trees + bushes
+    for (let i=0; i<4; i++){
       const h = createHouse();
       const side = i % 2 === 0 ? -1 : 1;
-      h.position.set(side * (14 + Math.random()*10), -7.5, z - i*25);
+      h.position.set(side * (12 + Math.random()*12), -7.5, z - i*20);
       h.rotation.y = side > 0 ? -Math.PI/2 : Math.PI/2;
       state.scene.add(h);
       state.terrainObjects.push(h);
     }
+    // Village trees
+    if (Math.random() < 0.5){
+      const tree = createTree();
+      tree.scale.set(0.6, 0.6, 0.6);
+      tree.position.set((Math.random()-0.5)*30, -7.5, z - Math.random()*30);
+      state.scene.add(tree);
+      state.terrainObjects.push(tree);
+    }
   } else if (fn === 'spawnRice'){
-    // Rice fields: rows of plants
-    for (let i=0; i<4; i++){
+    // Rice fields: dense rows of rice plants
+    for (let i=0; i<6; i++){
       const r = createRicePlant();
-      r.scale.set(2, 2, 2);
-      r.position.set((Math.random()-0.5)*40, -7.5, z - i*20);
+      r.scale.set(2.5, 2.5, 2.5);
+      r.position.set((Math.random()-0.5)*50, -7.5, z - i*12);
       state.scene.add(r);
       state.terrainObjects.push(r);
     }
   } else if (fn === 'spawnTraffic'){
-    // Traffic jam: many cars on road
-    for (let i=0; i<6; i++){
-      const c = createCar();
+    // Traffic jam: cars + trucks + motorcycles, dense
+    const types = ['car', 'car', 'car', 'truck', 'motorcycle'];
+    for (let i=0; i<8; i++){
+      const type = types[Math.floor(Math.random()*types.length)];
+      let v;
+      if (type === 'truck') v = createTruck();
+      else if (type === 'motorcycle') v = createMotorcycle();
+      else v = createCar();
       const lane = i % 2 === 0 ? -2.5 : 2.5;
-      c.position.set(lane, -7, z - i*8);
-      c.rotation.y = lane > 0 ? Math.PI : 0;
-      state.scene.add(c);
-      state.terrainObjects.push(c);
+      v.position.set(lane + (Math.random()-0.5)*1, -7, z - i*6);
+      v.rotation.y = lane > 0 ? Math.PI : 0;
+      state.scene.add(v);
+      state.terrainObjects.push(v);
     }
   } else if (fn === 'spawnQuietRoad'){
-    // Quiet road: few cars
-    if (Math.random() < 0.6){
-      const c = createCar();
+    // Quiet road: 1-2 vehicles (car/truck/motorcycle)
+    if (Math.random() < 0.7){
+      const type = Math.random() < 0.6 ? 'car' : (Math.random() < 0.5 ? 'truck' : 'motorcycle');
+      let v;
+      if (type === 'truck') v = createTruck();
+      else if (type === 'motorcycle') v = createMotorcycle();
+      else v = createCar();
       const lane = Math.random() < 0.5 ? -2.5 : 2.5;
-      c.position.set(lane, -7, z);
-      c.rotation.y = lane > 0 ? Math.PI : 0;
-      state.scene.add(c);
-      state.terrainObjects.push(c);
+      v.position.set(lane, -7, z);
+      v.rotation.y = lane > 0 ? Math.PI : 0;
+      state.scene.add(v);
+      state.terrainObjects.push(v);
+    }
+    // Street light occasionally
+    if (Math.random() < 0.3){
+      const light = createStreetLight();
+      light.position.set((Math.random()<0.5?-1:1) * 7, -7.5, z);
+      state.scene.add(light);
+      state.terrainObjects.push(light);
+    }
+  } else if (fn === 'spawnWater'){
+    // Sea: boats + waves
+    if (Math.random() < 0.4){
+      const boat = createBoat();
+      boat.position.set((Math.random()-0.5)*30, -7, z - Math.random()*40);
+      boat.rotation.y = Math.random()*Math.PI;
+      state.scene.add(boat);
+      state.terrainObjects.push(boat);
+    }
+    // Waves
+    for (let i=0; i<2; i++){
+      const wave = createWave();
+      wave.position.set((Math.random()-0.5)*40, -7.5, z - i*20 - Math.random()*20);
+      state.scene.add(wave);
+      state.terrainObjects.push(wave);
     }
   }
-  // Water/laut: no objects needed, just blue ground
 }
 
 /* ===== Scene manager: cycle scenes + time of day ===== */
@@ -3243,6 +3495,56 @@ function setupKeyboard(){
   };
   window.addEventListener('keydown', state.keyHandler);
   window.addEventListener('keyup', state.keyHandler);
+  setupTouchControls();
+}
+
+/* ===== TOUCH CONTROLS (virtual buttons for mobile) ===== */
+function setupTouchControls(){
+  // Detect touch device
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (isTouch){
+    document.body.classList.add('touch-device');
+    const tc = $('touch-controls');
+    if (tc) tc.classList.add('show-touch');
+  }
+
+  // Map buttons to key states
+  const btnMap = [
+    { id:'btn-touch-left',  key:'left' },
+    { id:'btn-touch-right', key:'right' },
+    { id:'btn-touch-up',    key:'up' },
+    { id:'btn-touch-fire',  key:'space', fire:true }
+  ];
+
+  btnMap.forEach(({id, key, fire}) => {
+    const btn = $(id);
+    if (!btn) return;
+    const press = (e) => {
+      e.preventDefault();
+      btn.classList.add('pressed');
+      if (state.keys){
+        state.keys[key] = true;
+        if (fire && !state._firePressed){
+          state._firePressed = true;
+          fireLaser();
+        }
+      }
+    };
+    const release = (e) => {
+      e.preventDefault();
+      btn.classList.remove('pressed');
+      if (state.keys){
+        state.keys[key] = false;
+        if (fire) state._firePressed = false;
+      }
+    };
+    btn.addEventListener('touchstart', press, {passive:false});
+    btn.addEventListener('touchend', release, {passive:false});
+    btn.addEventListener('touchcancel', release, {passive:false});
+    btn.addEventListener('mousedown', press);
+    btn.addEventListener('mouseup', release);
+    btn.addEventListener('mouseleave', release);
+  });
 }
 
 /* ===== LASER FIRING ===== */
