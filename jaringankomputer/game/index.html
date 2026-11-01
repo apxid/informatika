@@ -681,28 +681,23 @@ body{
 .sound-toggle:hover{transform:scale(1.1);}
 .sound-toggle.muted{background:#666; color:#aaa;}
 
-/* ===== Virtual touch controls (mobile/touch only) - CoC style ===== */
+/* ===== Virtual touch controls (mobile/touch only) - CoC style unified D-pad ===== */
 .touch-controls{
   display:none;
   position:absolute; inset:0; z-index:5; pointer-events:none;
 }
-/* D-pad: right side, above answer targets */
+/* Unified D-pad: right side, above answer targets */
 .touch-dpad{
-  position:absolute; bottom:250px; right:14px;
+  position:absolute; bottom:200px; right:12px;
   display:flex; flex-direction:column; align-items:center; gap:6px;
   pointer-events:auto;
 }
 .dpad-row{
   display:flex; gap:6px;
 }
-/* Fire button: center-bottom */
-.touch-fire-btn{
-  position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
-  pointer-events:auto;
-}
 /* CoC-style touch buttons */
 .touch-btn{
-  width:56px; height:56px; border-radius:50%;
+  width:54px; height:54px; border-radius:50%;
   background:linear-gradient(180deg, var(--gold-l) 0%, var(--gold) 50%, var(--gold-d) 100%);
   border:3px solid var(--wood-d);
   color:var(--wood-d); font-size:22px; font-weight:900;
@@ -711,7 +706,7 @@ body{
               inset 0 2px 0 rgba(255,255,255,.4), inset 0 -2px 0 rgba(0,0,0,.2);
   transition:transform .08s, box-shadow .08s;
   touch-action:none;
-  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  display:flex; align-items:center; justify-content:center;
   text-shadow:0 1px 0 rgba(255,255,255,.3);
 }
 .touch-btn:active, .touch-btn.pressed{
@@ -721,22 +716,15 @@ body{
 }
 .touch-fire-btn{
   background:linear-gradient(180deg, #FF8585 0%, var(--red) 50%, var(--red-d) 100%);
-  border-color:var(--wood-d);
-  width:78px; height:78px; font-size:28px;
-  color:#fff;
-  box-shadow: 0 5px 0 var(--wood-d), 0 8px 14px rgba(0,0,0,.4),
-              inset 0 2px 0 rgba(255,255,255,.3), inset 0 -3px 0 rgba(0,0,0,.2);
+  color:#fff; font-size:24px;
   text-shadow:0 1px 2px rgba(0,0,0,.4);
+  box-shadow: 0 4px 0 var(--wood-d), 0 6px 10px rgba(0,0,0,.4),
+              inset 0 2px 0 rgba(255,255,255,.3), inset 0 -2px 0 rgba(0,0,0,.2);
 }
 .touch-fire-btn:active, .touch-fire-btn.pressed{
   background:linear-gradient(180deg, #FF6868 0%, #E53935 50%, #B71C1C 100%);
-  transform:translateX(-50%) scale(.92) translateY(2px);
-  box-shadow: 0 2px 0 var(--wood-d), 0 4px 8px rgba(0,0,0,.3),
+  box-shadow: 0 2px 0 var(--wood-d), 0 3px 6px rgba(0,0,0,.3),
               inset 0 2px 0 rgba(255,255,255,.2), inset 0 -2px 0 rgba(0,0,0,.2);
-}
-.fire-label{
-  font-size:8px; font-weight:900; margin-top:1px;
-  letter-spacing:0.5px;
 }
 /* Show touch controls on touch devices */
 @media (hover: none) and (pointer: coarse){
@@ -942,39 +930,38 @@ body{
   /* Countdown: below question banner */
   .next-q-countdown{top:78px; font-size:12px; padding:6px 16px;}
   .countdown-num{font-size:18px;}
-  /* Answer targets: 2x2 grid, bigger text, above fire button */
+  /* Answer targets: moved DOWN (no fire button at center bottom anymore) */
   .targets-hud{
     display:grid !important;
     grid-template-columns:1fr 1fr;
-    gap:6px; bottom:100px; width:94vw; padding:0 6px;
+    gap:5px; bottom:16px; width:96vw; padding:0 6px;
   }
   .target{
-    padding:8px 6px; max-width:none;
+    padding:7px 6px; max-width:none;
     flex-direction:row; gap:6px; text-align:left;
     border-radius:10px;
   }
   .target .t-letter{
-    width:36px; height:36px; font-size:18px; flex-shrink:0;
+    width:34px; height:34px; font-size:17px; flex-shrink:0;
   }
   .target .t-text{
     font-size:12px; line-height:1.25; max-height:none; overflow:hidden;
     flex:1; display:flex; align-items:center;
   }
-  .target.active{transform:translateY(-3px) scale(1.03);}
-  /* Touch controls: D-pad right above answers, fire center bottom */
-  .touch-dpad{bottom:235px; right:10px; gap:5px;}
+  .target.active{transform:translateY(-2px) scale(1.03);}
+  /* Unified D-pad: right side, above answer targets */
+  .touch-dpad{bottom:130px; right:10px; gap:5px;}
   .dpad-row{gap:5px;}
-  .touch-btn{width:48px; height:48px; font-size:18px; border-width:2px;}
-  .touch-fire-btn{width:68px; height:68px; font-size:22px; bottom:12px;}
-  .fire-label{font-size:7px;}
+  .touch-btn{width:48px; height:48px; font-size:19px; border-width:2px;}
+  .touch-fire-btn{font-size:21px;}
   .controls-hint{display:none;}
   .coc-btn{min-width:200px; font-size:16px; padding:12px 24px;}
 }
 @media (max-width:400px){
   .target .t-text{font-size:10px;}
-  .target .t-letter{width:30px; height:30px; font-size:15px;}
-  .touch-btn{width:42px; height:42px; font-size:16px;}
-  .touch-fire-btn{width:60px; height:60px; font-size:20px;}
+  .target .t-letter{width:28px; height:28px; font-size:14px;}
+  .touch-btn{width:42px; height:42px; font-size:17px;}
+  .touch-dpad{bottom:120px; right:8px;}
   .hud-panel .val{font-size:12px;}
   .fuel-gauge{width:150px;}
 }
@@ -1271,18 +1258,16 @@ body{
       <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" title="Aktif/Matikan suara">🔊</button>
     </div>
 
-    <!-- Virtual touch controls (mobile only) -->
+    <!-- Virtual touch controls (mobile only) - one unified D-pad -->
     <div class="touch-controls" id="touch-controls">
-      <!-- D-pad on right side, above answer targets -->
       <div class="touch-dpad" id="touch-dpad">
         <button class="touch-btn touch-up-btn" id="btn-touch-up">⬆</button>
         <div class="dpad-row">
           <button class="touch-btn touch-left-btn" id="btn-touch-left">⬅</button>
           <button class="touch-btn touch-right-btn" id="btn-touch-right">➡</button>
         </div>
+        <button class="touch-btn touch-fire-btn" id="btn-touch-fire">🔥</button>
       </div>
-      <!-- Fire button in center-bottom -->
-      <button class="touch-btn touch-fire-btn" id="btn-touch-fire">🔥<span class="fire-label">TEMBAK</span></button>
     </div>
   </div>
 </div>
@@ -1344,10 +1329,8 @@ body{
   </div>
 </div>
 
-<!-- Background music audio element (local file for reliable autoplay) -->
-<audio id="bg-music" loop preload="auto">
-  <source src="mb_clear.mp3" type="audio/mpeg">
-</audio>
+<!-- Background music audio element (source set dynamically via Cache API) -->
+<audio id="bg-music" loop preload="auto"></audio>
 
 <!-- ============================================================
      POPUP: ABOUT GAME
@@ -1856,32 +1839,81 @@ const Sound = {
     }
   },
 
-  // ===== Background music (MP3 looping) =====
+  // ===== Background music (MP3 with Cache API) =====
   musicEl: null,
   musicStarted: false,
-  startMusic(){
+  musicLoading: false,
+  musicUrl: 'https://apxid.github.io/informatika/jaringankomputer/game/assets/mb_clear.mp3',
+  
+  async startMusic(){
+    if (this.musicLoading || this.musicStarted) return;
     if (!this.musicEl){
       this.musicEl = document.getElementById('bg-music');
     }
     if (!this.musicEl) return;
-    // Set volume and attempt play
-    this.musicEl.volume = 0.4;
-    this.musicEl.loop = true;
-    const playPromise = this.musicEl.play();
-    if (playPromise){
-      playPromise.then(() => {
+    
+    this.musicLoading = true;
+    
+    try {
+      // Try Cache API first
+      let audioBlob = null;
+      
+      if ('caches' in window) {
+        const cache = await caches.open('game-music-cache');
+        const cachedResponse = await cache.match(this.musicUrl);
+        
+        if (cachedResponse) {
+          // File sudah di-cache, langsung pakai
+          audioBlob = await cachedResponse.blob();
+        } else {
+          // Belum di-cache, download dari URL
+          const response = await fetch(this.musicUrl);
+          if (response.ok) {
+            // Simpan ke cache
+            await cache.put(this.musicUrl, response.clone());
+            audioBlob = await response.blob();
+          }
+        }
+      } else {
+        // Cache API tidak didukung, langsung fetch
+        const response = await fetch(this.musicUrl);
+        if (response.ok) audioBlob = await response.blob();
+      }
+      
+      if (audioBlob) {
+        // Buat blob URL dan set sebagai source
+        const blobUrl = URL.createObjectURL(audioBlob);
+        this.musicEl.src = blobUrl;
+        this.musicEl.loop = true;
+        this.musicEl.volume = 0.4;
+        
+        const playPromise = this.musicEl.play();
+        if (playPromise) {
+          await playPromise;
+          this.musicStarted = true;
+        }
+      } else {
+        // Fallback: coba local file langsung
+        this.musicEl.src = 'mb_clear.mp3';
+        this.musicEl.volume = 0.4;
+        await this.musicEl.play();
         this.musicStarted = true;
-      }).catch((e) => {
-        // Autoplay blocked — retry after short delay (user gesture should have unlocked)
-        console.warn('Music autoplay blocked, retrying...', e);
-        setTimeout(() => {
-          this.musicEl.play().then(() => {
-            this.musicStarted = true;
-          }).catch(() => {});
-        }, 500);
-      });
+      }
+    } catch (e) {
+      // Fallback: coba local file
+      try {
+        this.musicEl.src = 'mb_clear.mp3';
+        this.musicEl.volume = 0.4;
+        await this.musicEl.play();
+        this.musicStarted = true;
+      } catch(e2) {
+        console.warn('Music playback failed:', e2);
+      }
     }
+    
+    this.musicLoading = false;
   },
+  
   stopMusic(){
     if (this.musicEl){
       this.musicEl.pause();
@@ -2131,7 +2163,7 @@ async function startGame(){
   // Initialize & start sound BEFORE any async (preserves user gesture for autoplay)
   Sound.init();
   Sound.resume();
-  Sound.startMusic(); // start music NOW (within click gesture) — before await
+  Sound.startMusic(); // fire-and-forget (async, loads from cache/download in background)
   Sound.startBg();
   
   showLoading('MEMUAT SOAL...');
