@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Pesawat Edukasi - Jaringan Komputer SMP Kelas 9</title>
+
+<!-- Three.js for 3D cockpit view -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+/* ============================================================
+   THEME: CLASH OF CLANS STYLE - WOOD, GOLD, STONE, BRIGHT
+   ============================================================ */
+:root{
+  --gold:#FFD24A; --gold-d:#C8941A; --gold-l:#FFE994;
+  --wood:#5C3A1E; --wood-d:#3A2410; --wood-l:#8B5A2B;
+  --stone:#5B6770; --stone-l:#7E8B94;
+  --sky:#7FC8F8; --sky-l:#B8E5FF; --sky-d:#3DA5E5;
+  --grass:#7CDD59; --grass-d:#3FA526;
+  --red:#FF5252; --red-d:#C4202C;
+  --blue:#3F88FF; --blue-d:#1E5BC4;
+  --green:#52D869; --green-d:#1FA336;
+  --yellow:#FFD93D; --yellow-d:#C49A00;
+  --cream:#FFF6E0; --dark:#1A1108; --white:#FFFFFF;
+  --shadow:0 6px 0 rgba(0,0,0,.25), 0 10px 18px rgba(0,0,0,.3);
+  --shadow-inset: inset 0 3px 0 rgba(255,255,255,.35), inset 0 -4px 0 rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%; width:100%; overflow:hidden; font-family:'Trebuchet MS','Segoe UI',sans-serif;}
+body{
+  background:#000; color:var(--dark);
+  user-select:none; -webkit-user-select:none;
+  position:fixed; top:0; left:0; right:0; bottom:0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:var(--wood-d);}
+::-webkit-scrollbar-thumb{background:var(--gold-d); border-radius:5px;}
+
+/* ===== LAYER SYSTEM ===== */
+.layer{
+  position:absolute; inset:0;
+  display:none; opacity:0;
+  transition:opacity .6s ease;
+}
+.layer.active{display:flex; opacity:1; animation:layerIn .6s ease;}
+@keyframes layerIn{
+  from{opacity:0; transform:scale(1.05);}
+  to{opacity:1; transform:scale(1);}
+}
+
+/* ===== WOOD BACKGROUND ===== */
+.bg-wood{
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.08) 0 2px, transparent 2px 80px),
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.04) 0 1px, transparent 1px 40px),
+    linear-gradient(135deg,#7B4A24 0%, #5C3A1E 40%, #3A2410 100%);
+}
+.bg-sky{
+  background:linear-gradient(180deg,#7FC8F8 0%, #B8E5FF 60%, #E8F7FF 100%);
+}
+.bg-grass{
+  background:linear-gradient(180deg,#7FC8F8 0%, #B8E5FF 50%, #7CDD59 50%, #3FA526 100%);
+}
+
+/* ============================================================
+   LAYER 1: WELCOME - CLASH OF CLANS MENU
+   ============================================================ */
+#layer-welcome{
+  flex-direction:column; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+
+/* Animated sky with floating clouds */
+.sky-deco{
+  position:absolute; inset:0; pointer-events:none; overflow:hidden;
+}
+.cloud{
+  position:absolute; background:rgba(255,255,255,.85); border-radius:50px;
+  filter:blur(.5px);
+  box-shadow: 30px 0 0 -5px rgba(255,255,255,.85),
+              55px 5px 0 -8px rgba(255,255,255,.85),
+              -25px 5px 0 -5px rgba(255,255,255,.85);
+  animation:cloudFloat linear infinite;
+}
+.cloud.c1{width:80px;height:30px;top:15%;left:-100px;animation-duration:35s;}
+.cloud.c2{width:60px;height:24px;top:35%;left:-100px;animation-duration:50s;animation-delay:-10s;}
+.cloud.c3{width:100px;height:36px;top:55%;left:-100px;animation-duration:60s;animation-delay:-25s;opacity:.7;}
+.cloud.c4{width:50px;height:20px;top:25%;left:-100px;animation-duration:40s;animation-delay:-30s;}
+@keyframes cloudFloat{
+  from{transform:translateX(0);}
+  to{transform:translateX(calc(100vw + 200px));}
+}
+
+/* Floating islands decoration */
+.floating-island{
+  position:absolute; pointer-events:none;
+  animation:islandBob 4s ease-in-out infinite;
+}
+.floating-island.i1{top:8%; right:5%; animation-delay:0s;}
+.floating-island.i2{bottom:25%; left:3%; animation-delay:-2s;}
+@keyframes islandBob{
+  0%,100%{transform:translateY(0) rotate(-2deg);}
+  50%{transform:translateY(-15px) rotate(2deg);}
+}
+
+/* Game Logo / Title */
+.game-logo{
+  position:relative; z-index:2; text-align:center;
+  margin-bottom:30px;
+  animation:logoDrop 1.2s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes logoDrop{
+  0%{transform:translateY(-200px) scale(.5); opacity:0;}
+  60%{transform:translateY(20px) scale(1.1); opacity:1;}
+  100%{transform:translateY(0) scale(1);}
+}
+.logo-title{
+  font-family:'Trebuchet MS',sans-serif;
+  font-size:clamp(36px,7vw,72px);
+  font-weight:900; color:var(--gold);
+  text-shadow:
+    -2px -2px 0 var(--wood-d), 2px -2px 0 var(--wood-d),
+    -2px 2px 0 var(--wood-d), 2px 2px 0 var(--wood-d),
+    0 6px 0 var(--wood-d), 0 8px 12px rgba(0,0,0,.5);
+  letter-spacing:2px; line-height:1;
+  transform:rotate(-3deg);
+}
+.logo-sub{
+  margin-top:8px; font-size:clamp(14px,2.2vw,22px);
+  color:var(--cream); font-weight:bold;
+  text-shadow:2px 2px 0 var(--wood-d), 0 4px 8px rgba(0,0,0,.5);
+  transform:rotate(-3deg);
+}
+.logo-badge{
+  display:inline-block; margin-top:14px; padding:4px 18px;
+  background:linear-gradient(180deg,var(--red),var(--red-d));
+  color:#fff; font-weight:900; font-size:14px; border-radius:20px;
+  border:3px solid var(--gold);
+  box-shadow:var(--shadow);
+  animation:badgePulse 1.6s ease-in-out infinite;
+}
+@keyframes badgePulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.08);}
+}
+
+/* Plane mascot */
+.plane-mascot{
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:200px; height:200px;
+  z-index:1; opacity:.35;
+  animation:planeFly 8s ease-in-out infinite;
+}
+@keyframes planeFly{
+  0%,100%{transform:translate(-50%,-50%) rotate(-5deg);}
+  50%{transform:translate(-50%,-60%) rotate(5deg);}
+}
+
+/* Big play button (CoC style) */
+.coc-btn{
+  position:relative; z-index:3;
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:18px 50px; min-width:260px;
+  background:linear-gradient(180deg,var(--gold-l) 0%, var(--gold) 50%, var(--gold-d) 100%);
+  color:var(--wood-d); font-weight:900; font-size:22px;
+  border:4px solid var(--wood-d); border-radius:18px;
+  cursor:pointer; text-transform:uppercase; letter-spacing:1px;
+  box-shadow: var(--shadow), var(--shadow-inset);
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .15s, box-shadow .15s;
+}
+.coc-btn:hover{transform:translateY(-2px); box-shadow:0 8px 0 rgba(0,0,0,.25), 0 14px 22px rgba(0,0,0,.35), var(--shadow-inset);}
+.coc-btn:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.25), var(--shadow-inset);}
+.coc-btn.green{background:linear-gradient(180deg,#8BF57A 0%, var(--green) 50%, var(--green-d) 100%); color:#0F4A1C;}
+.coc-btn.red{background:linear-gradient(180deg,#FF8585 0%, var(--red) 50%, var(--red-d) 100%); color:#fff;}
+.coc-btn.blue{background:linear-gradient(180deg,#7AB5FF 0%, var(--blue) 50%, var(--blue-d) 100%); color:#fff;}
+.coc-btn.small{padding:10px 24px; min-width:auto; font-size:15px; border-radius:12px; border-width:3px;}
+
+.btn-row{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; z-index:3; position:relative;}
+
+.welcome-footer{
+  position:absolute; bottom:14px; left:0; right:0; text-align:center;
+  color:var(--cream); font-size:13px; font-weight:bold;
+  text-shadow:1px 1px 0 var(--wood-d); z-index:3;
+}
+
+/* ============================================================
+   LAYER 2: LOGIN (FULLSCREEN)
+   ============================================================ */
+#layer-login{
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:20px;
+}
+.login-card{
+  background:linear-gradient(180deg,rgba(255,246,224,.97),rgba(255,230,170,.97));
+  border:6px solid var(--wood-d); border-radius:24px;
+  padding:34px 38px; width:min(460px,92vw);
+  box-shadow: var(--shadow), 0 0 0 4px var(--gold-d), 0 20px 40px rgba(0,0,0,.4);
+  animation:cardPop .7s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+@keyframes cardPop{
+  0%{transform:scale(.3) rotate(-10deg); opacity:0;}
+  100%{transform:scale(1) rotate(0); opacity:1;}
+}
+.login-card::before{
+  content:""; position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+  width:80px; height:44px; background:var(--red);
+  border:4px solid var(--wood-d); border-radius:8px;
+  box-shadow: var(--shadow-inset);
+}
+.login-card::after{
+  content:"LOGIN"; position:absolute; top:-15px; left:50%; transform:translateX(-50%);
+  color:#fff; font-weight:900; font-size:16px; z-index:2;
+  text-shadow:1px 1px 0 var(--wood-d);
+}
+.card-title{
+  text-align:center; color:var(--wood-d); font-weight:900; font-size:22px;
+  margin-top:18px; margin-bottom:6px;
+}
+.card-sub{
+  text-align:center; color:var(--wood-l); font-size:13px; margin-bottom:22px;
+}
+.field{margin-bottom:16px;}
+.field label{
+  display:block; font-weight:bold; color:var(--wood-d); font-size:13px;
+  margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;
+}
+.field input, .field select{
+  width:100%; padding:13px 16px; font-size:16px; font-weight:600;
+  border:3px solid var(--wood-l); border-radius:12px;
+  background:#fff; color:var(--dark);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.08);
+  transition:border-color .2s, box-shadow .2s;
+  font-family:inherit;
+}
+.field input:focus, .field select:focus{
+  outline:none; border-color:var(--gold-d);
+  box-shadow:0 0 0 4px rgba(255,210,74,.35), inset 0 2px 4px rgba(0,0,0,.08);
+}
+.posisi-group{display:flex; gap:10px;}
+.posisi-group label{
+  flex:1; cursor:pointer; padding:14px 10px; text-align:center;
+  border:3px solid var(--wood-l); border-radius:12px;
+  background:#fff; font-weight:900; color:var(--wood-d);
+  transition:all .15s; font-size:14px;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.posisi-group input{display:none;}
+.posisi-group input:checked + label{
+  background:linear-gradient(180deg,var(--gold-l),var(--gold));
+  border-color:var(--wood-d); transform:translateY(-2px);
+  box-shadow:var(--shadow);
+}
+.posisi-icon{font-size:24px;}
+
+/* ============================================================
+   LAYER 3: PLAYER LIST + TOKEN
+   ============================================================ */
+#layer-players{
+  flex-direction:column; padding:20px 30px;
+}
+.players-header{
+  text-align:center; margin-bottom:18px;
+  animation:slideInDown .6s ease;
+}
+@keyframes slideInDown{
+  from{transform:translateY(-30px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+.players-header h2{
+  font-size:clamp(22px,4vw,32px); color:var(--gold);
+  text-shadow:-2px -2px 0 var(--wood-d), 2px -2px 0 var(--wood-d),
+              -2px 2px 0 var(--wood-d), 2px 2px 0 var(--wood-d),
+              0 5px 0 var(--wood-d), 0 7px 10px rgba(0,0,0,.4);
+  letter-spacing:1px;
+}
+.players-header p{color:var(--cream); font-size:14px; text-shadow:1px 1px 0 var(--wood-d); margin-top:4px;}
+
+.desk-area{
+  display:grid; grid-template-columns:1fr 1fr; gap:18px;
+  max-width:900px; width:100%; margin:0 auto;
+  animation:slideInUp .6s ease .15s both;
+}
+@keyframes slideInUp{
+  from{transform:translateY(30px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+.desk{
+  background:linear-gradient(180deg,rgba(255,246,224,.95),rgba(255,230,170,.95));
+  border:5px solid var(--wood-d); border-radius:18px;
+  padding:14px 16px;
+  box-shadow: var(--shadow);
+  position:relative;
+}
+.desk::before{
+  content:""; position:absolute; top:-14px; left:14px; right:14px; height:24px;
+  background:linear-gradient(180deg,var(--wood-l),var(--wood-d));
+  border:3px solid var(--wood-d); border-radius:6px;
+  box-shadow: var(--shadow-inset);
+}
+.desk-title{
+  margin-top:6px; margin-bottom:10px; padding-top:8px;
+  text-align:center; font-weight:900; font-size:18px;
+  color:#fff; padding:8px 12px; border-radius:10px;
+  text-shadow:1px 1px 0 rgba(0,0,0,.3);
+}
+.desk.kiri .desk-title{background:linear-gradient(180deg,#FF8585,var(--red-d));}
+.desk.kanan .desk-title{background:linear-gradient(180deg,#7AB5FF,var(--blue-d));}
+.desk-list{
+  background:rgba(255,255,255,.6); border-radius:10px; padding:6px;
+  max-height:180px; overflow-y:auto;
+}
+.desk-row{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:6px 10px; border-bottom:1px dashed rgba(0,0,0,.15);
+  font-size:13px; font-weight:600;
+}
+.desk-row:last-child{border-bottom:none;}
+.desk-row .nama{color:var(--wood-d);}
+.desk-row .badge{
+  font-size:10px; padding:2px 8px; border-radius:8px; color:#fff; font-weight:900;
+}
+.badge.aktif{background:var(--green-d);}
+.badge.menunggu{background:#999;}
+
+.token-section{
+  max-width:600px; margin:24px auto 0; text-align:center;
+  animation:slideInUp .6s ease .3s both;
+}
+.token-input-wrap{
+  display:flex; gap:8px; max-width:380px; margin:14px auto 0;
+}
+.token-input-wrap input{
+  flex:1; padding:13px 16px; font-size:16px; font-weight:700;
+  border:3px solid var(--wood-l); border-radius:12px;
+  background:#fff; text-transform:uppercase; letter-spacing:2px; text-align:center;
+  font-family:inherit;
+}
+.token-input-wrap input:focus{
+  outline:none; border-color:var(--gold-d);
+  box-shadow:0 0 0 4px rgba(255,210,74,.35);
+}
+.token-info{
+  margin-top:10px; font-size:13px; color:var(--cream); font-weight:bold;
+  text-shadow:1px 1px 0 var(--wood-d);
+}
+
+/* ============================================================
+   LAYER: HOW TO PLAY
+   ============================================================ */
+#layer-howto{
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:20px; overflow-y:auto;
+}
+.howto-card{
+  background:linear-gradient(180deg,rgba(255,246,224,.97),rgba(255,230,170,.97));
+  border:6px solid var(--wood-d); border-radius:24px;
+  padding:28px 32px; width:min(640px,94vw);
+  box-shadow:var(--shadow), 0 0 0 4px var(--gold-d);
+  animation:cardPop .7s cubic-bezier(.34,1.56,.64,1);
+}
+.howto-card h2{
+  text-align:center; color:var(--wood-d); font-size:26px;
+  margin-bottom:6px;
+}
+.howto-card .sub{text-align:center; color:var(--wood-l); font-size:13px; margin-bottom:18px;}
+.howto-steps{display:grid; gap:12px;}
+.howto-step{
+  display:flex; gap:14px; align-items:flex-start;
+  background:rgba(255,255,255,.7); padding:12px 14px;
+  border-radius:12px; border:2px solid var(--wood-l);
+}
+.step-num{
+  flex-shrink:0; width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(180deg,var(--gold-l),var(--gold-d));
+  border:3px solid var(--wood-d); color:var(--wood-d);
+  font-weight:900; font-size:18px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: var(--shadow-inset);
+}
+.step-text{flex:1; font-size:14px; color:var(--dark); line-height:1.5;}
+.step-text b{color:var(--red-d);}
+.fuel-bar-demo{
+  margin:6px 0; height:14px; background:#eee; border-radius:7px;
+  border:2px solid var(--wood-d); overflow:hidden; position:relative;
+}
+.fuel-bar-demo .fill{
+  height:100%; background:linear-gradient(90deg,var(--green-d),var(--green),var(--yellow),var(--red));
+  width:100%;
+}
+
+/* ============================================================
+   LAYER: GAME (3D COCKPIT)
+   ============================================================ */
+#layer-game{
+  flex-direction:column;
+  background:linear-gradient(180deg,#7FC8F8 0%, #B8E5FF 60%, #E8F7FF 100%);
+}
+#canvas-3d{
+  position:absolute; inset:0; width:100%; height:100%;
+  z-index:1;
+}
+.cockpit-overlay{
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  display:flex; flex-direction:column;
+}
+/* Cockpit frame (dashboard) */
+.cockpit-frame{
+  position:absolute; bottom:0; left:0; right:0; height:35vh;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(60,40,20,.2) 30%, rgba(40,25,10,.95) 100%);
+  pointer-events:none;
+}
+.cockpit-frame::before{
+  /* Dashboard panel */
+  content:""; position:absolute; bottom:0; left:0; right:0; height:30vh;
+  background:
+    radial-gradient(ellipse 50% 100% at 50% 100%, rgba(0,0,0,.4) 0%, transparent 70%),
+    linear-gradient(180deg,#3A2410 0%, #1A1108 100%);
+  border-top:4px solid #1A1108;
+  box-shadow: inset 0 4px 0 rgba(255,210,74,.15);
+}
+.cockpit-frame::after{
+  /* HUD curve - dashboard edge */
+  content:""; position:absolute; top:0; left:0; right:0; height:60px;
+  background: linear-gradient(180deg,#5C3A1E,#3A2410);
+  border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  border-top:3px solid var(--gold-d);
+  box-shadow: var(--shadow-inset);
+}
+
+/* Top HUD */
+.hud-top{
+  position:absolute; top:14px; left:0; right:0;
+  display:flex; justify-content:space-between; align-items:flex-start;
+  padding:0 18px; z-index:3; pointer-events:none;
+}
+.hud-panel{
+  background:rgba(26,17,8,.75); border:2px solid var(--gold-d);
+  border-radius:10px; padding:6px 12px; color:var(--gold-l);
+  font-weight:900; font-size:13px;
+  backdrop-filter:blur(4px);
+  box-shadow: var(--shadow-inset);
+}
+.hud-panel .lbl{font-size:10px; color:var(--cream); opacity:.8; display:block;}
+.hud-panel .val{font-size:18px;}
+
+/* Fuel gauge */
+.fuel-gauge{
+  position:absolute; top:14px; left:50%; transform:translateX(-50%);
+  z-index:3; width:240px;
+}
+.fuel-gauge .label{
+  text-align:center; color:var(--gold-l); font-weight:900; font-size:12px;
+  text-shadow:1px 1px 0 #000; margin-bottom:4px;
+}
+.fuel-bar{
+  height:18px; background:rgba(0,0,0,.7); border:2px solid var(--gold-d);
+  border-radius:9px; overflow:hidden; position:relative;
+  box-shadow: var(--shadow-inset);
+}
+.fuel-bar .fill{
+  height:100%; width:100%;
+  background:linear-gradient(90deg,var(--red) 0%, var(--yellow) 30%, var(--green) 60%, var(--green-d) 100%);
+  transition:width .6s ease;
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,.2);
+}
+.fuel-bar .ticks{
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(90deg, transparent 0 23px, rgba(0,0,0,.4) 23px 24px);
+}
+.fuel-icons{
+  display:flex; justify-content:space-between; margin-top:3px;
+}
+.heart{font-size:14px; filter:drop-shadow(1px 1px 0 #000);}
+.heart.lost{filter:grayscale(1); opacity:.25;}
+
+/* Question panel */
+.question-panel{
+  position:absolute; left:50%; bottom:38vh; transform:translateX(-50%);
+  width:min(560px,92vw); z-index:3; pointer-events:auto;
+  background:linear-gradient(180deg,rgba(255,246,224,.97),rgba(255,230,170,.97));
+  border:4px solid var(--wood-d); border-radius:18px;
+  padding:14px 18px;
+  box-shadow: var(--shadow), 0 0 0 3px var(--gold-d);
+  animation:qSlideIn .5s ease;
+}
+@keyframes qSlideIn{
+  from{transform:translate(-50%,40px); opacity:0;}
+  to{transform:translate(-50%,0); opacity:1;}
+}
+.q-meta{
+  display:flex; justify-content:space-between; font-size:11px; font-weight:bold;
+  color:var(--wood-l); margin-bottom:4px;
+}
+.q-text{
+  font-size:clamp(15px,2.5vw,20px); font-weight:900; color:var(--wood-d);
+  line-height:1.3; margin-bottom:12px;
+}
+.q-options{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+.q-opt{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 12px; border:3px solid var(--wood-d); border-radius:12px;
+  background:linear-gradient(180deg,#fff,#f0f0f0);
+  cursor:pointer; font-weight:700; font-size:13px; color:var(--dark);
+  transition:transform .1s, box-shadow .1s;
+  box-shadow:0 3px 0 var(--wood-d);
+  text-align:left;
+}
+.q-opt:hover{transform:translateY(-2px); box-shadow:0 5px 0 var(--wood-d);}
+.q-opt:active{transform:translateY(2px); box-shadow:0 1px 0 var(--wood-d);}
+.q-opt .letter{
+  flex-shrink:0; width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; color:#fff; font-size:14px;
+  box-shadow: var(--shadow-inset);
+}
+.q-opt[data-l="A"] .letter{background:linear-gradient(180deg,#FF8585,var(--red-d));}
+.q-opt[data-l="B"] .letter{background:linear-gradient(180deg,#7AB5FF,var(--blue-d));}
+.q-opt[data-l="C"] .letter{background:linear-gradient(180deg,#8BF57A,var(--green-d));}
+.q-opt[data-l="D"] .letter{background:linear-gradient(180deg,#FFE066,var(--yellow-d));}
+.q-opt.correct{background:linear-gradient(180deg,#9BF57A,#52D869); animation:correctPulse .5s;}
+.q-opt.wrong{background:linear-gradient(180deg,#FF8585,#FF5252); color:#fff; animation:wrongShake .4s;}
+@keyframes correctPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+/* Cockpit instruments decorative */
+.cockpit-instrument{
+  position:absolute; bottom:18px; z-index:4; pointer-events:none;
+  width:80px; height:80px; border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #5C3A1E, #1A1108);
+  border:4px solid var(--gold-d);
+  box-shadow: var(--shadow), inset 0 0 12px rgba(0,0,0,.8);
+}
+.cockpit-instrument.left{left:18px;}
+.cockpit-instrument.right{right:18px;}
+.cockpit-instrument::before{
+  content:""; position:absolute; inset:8px; border-radius:50%;
+  background:radial-gradient(circle, #1A1108 60%, #3A2410 100%);
+  border:2px solid var(--wood-l);
+}
+.cockpit-instrument::after{
+  content:attr(data-label); position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%); color:var(--gold-l);
+  font-size:9px; font-weight:900; text-align:center; z-index:2;
+  text-shadow:0 0 4px var(--gold-d);
+}
+.needle{
+  position:absolute; top:50%; left:50%; width:3px; height:30px;
+  background:var(--red); transform-origin:bottom center;
+  transform:translate(-50%,-100%) rotate(0deg);
+  border-radius:2px; z-index:3;
+  transition:transform .5s ease;
+}
+
+/* ============================================================
+   POPUP / MODAL (custom, NO sweetalert)
+   ============================================================ */
+.popup-mask{
+  position:absolute; inset:0; background:rgba(0,0,0,.6);
+  display:none; align-items:center; justify-content:center;
+  z-index:50; backdrop-filter:blur(4px);
+}
+.popup-mask.show{display:flex; animation:fadeIn .3s;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.popup{
+  background:linear-gradient(180deg,rgba(255,246,224,.98),rgba(255,230,170,.98));
+  border:6px solid var(--wood-d); border-radius:22px;
+  padding:24px 26px; width:min(440px,92vw);
+  box-shadow: var(--shadow), 0 0 0 4px var(--gold-d), 0 20px 50px rgba(0,0,0,.5);
+  text-align:center; position:relative;
+  animation:popupIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popupIn{
+  0%{transform:scale(.3) translateY(40px); opacity:0;}
+  100%{transform:scale(1) translateY(0); opacity:1;}
+}
+.popup h3{
+  color:var(--wood-d); font-size:22px; margin-bottom:8px; font-weight:900;
+}
+.popup p{color:var(--wood-l); font-size:14px; margin-bottom:18px; line-height:1.5;}
+.popup .icon-big{font-size:48px; margin-bottom:8px; display:block;}
+.popup .popup-btns{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+
+/* ============================================================
+   LAYER: WIN / LOSE
+   ============================================================ */
+#layer-win, #layer-lose{
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:20px; text-align:center;
+}
+#layer-win{background:radial-gradient(circle at 50% 30%, #FFE994, var(--gold-d) 70%, var(--wood-d) 100%);}
+#layer-lose{background:radial-gradient(circle at 50% 30%, #555, #1A1108 80%);}
+
+.result-title{
+  font-size:clamp(40px,8vw,80px); font-weight:900;
+  text-shadow: -3px -3px 0 var(--wood-d), 3px -3px 0 var(--wood-d),
+               -3px 3px 0 var(--wood-d), 3px 3px 0 var(--wood-d),
+               0 8px 0 var(--wood-d), 0 12px 18px rgba(0,0,0,.6);
+  letter-spacing:2px; animation:resultDrop 1s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes resultDrop{
+  0%{transform:translateY(-200px) scale(.3) rotate(-20deg); opacity:0;}
+  60%{transform:translateY(20px) scale(1.1) rotate(3deg); opacity:1;}
+  100%{transform:translateY(0) scale(1) rotate(0); opacity:1;}
+}
+#layer-win .result-title{color:var(--gold);}
+#layer-lose .result-title{color:var(--red);}
+
+.result-sub{
+  margin-top:14px; font-size:18px; font-weight:bold;
+  color:#fff; text-shadow:2px 2px 0 var(--wood-d);
+  animation:fadeInUp .8s ease .4s both;
+}
+@keyframes fadeInUp{
+  from{transform:translateY(20px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+
+.winners-list{
+  margin-top:20px; width:min(540px,92vw);
+  background:rgba(255,246,224,.95); border:5px solid var(--wood-d);
+  border-radius:18px; padding:14px 18px;
+  box-shadow: var(--shadow), 0 0 0 3px var(--gold-d);
+  animation:cardPop .7s ease .5s both;
+  max-height:40vh; overflow-y:auto;
+}
+.winners-list h3{
+  color:var(--wood-d); text-align:center; font-size:18px; margin-bottom:10px;
+}
+.winner-row{
+  display:grid; grid-template-columns:30px 1fr auto;
+  align-items:center; gap:10px;
+  padding:8px 10px; border-radius:8px;
+  background:rgba(255,255,255,.6); margin-bottom:6px;
+  font-weight:700; color:var(--dark);
+}
+.winner-row .rank{
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; color:#fff; font-size:13px;
+}
+.winner-row.r1 .rank{background:linear-gradient(180deg,#FFE066,var(--yellow-d)); color:var(--wood-d);}
+.winner-row.r2 .rank{background:linear-gradient(180deg,#ddd,#999);}
+.winner-row.r3 .rank{background:linear-gradient(180deg,#CD7F32,#8B4513);}
+.winner-row.r4 .rank,.winner-row.r5 .rank{background:var(--stone);}
+.winner-row .time{color:var(--red-d); font-weight:900;}
+
+.result-stats{
+  margin-top:14px; display:flex; gap:18px; justify-content:center;
+}
+.stat-box{
+  background:rgba(255,246,224,.95); border:3px solid var(--wood-d);
+  border-radius:12px; padding:8px 16px; min-width:90px;
+}
+.stat-box .v{font-size:24px; font-weight:900; color:var(--wood-d);}
+.stat-box .l{font-size:11px; color:var(--wood-l); font-weight:bold;}
+
+/* ============================================================
+   KUESIONER POPUP
+   ============================================================ */
+#popup-kuesioner .popup{
+  width:min(520px,94vw); max-height:90vh; overflow-y:auto;
+  text-align:left;
+}
+#popup-kuesioner h3{text-align:center;}
+.rate-group{margin-bottom:14px;}
+.rate-group label{
+  display:block; font-weight:bold; color:var(--wood-d); font-size:13px;
+  margin-bottom:6px;
+}
+.rate-stars{display:flex; gap:6px;}
+.rate-stars .star{
+  flex:1; padding:8px 4px; text-align:center; cursor:pointer;
+  background:#fff; border:2px solid var(--wood-l); border-radius:8px;
+  font-weight:900; color:var(--wood-l); transition:all .15s;
+  font-size:14px;
+}
+.rate-stars .star.active{
+  background:linear-gradient(180deg,var(--gold-l),var(--gold));
+  border-color:var(--wood-d); color:var(--wood-d); transform:translateY(-2px);
+  box-shadow:0 3px 0 var(--wood-d);
+}
+.rate-stars .star:hover{border-color:var(--gold-d);}
+.saran-area{
+  width:100%; padding:10px 12px; font-size:14px;
+  border:3px solid var(--wood-l); border-radius:10px;
+  background:#fff; font-family:inherit; resize:vertical; min-height:80px;
+}
+.saran-area:focus{outline:none; border-color:var(--gold-d); box-shadow:0 0 0 4px rgba(255,210,74,.35);}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast{
+  position:absolute; top:20px; left:50%; transform:translateX(-50%) translateY(-80px);
+  background:var(--wood-d); color:var(--gold-l);
+  padding:10px 22px; border-radius:24px; font-weight:900; font-size:14px;
+  border:3px solid var(--gold-d); z-index:100;
+  box-shadow: var(--shadow);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--red-d); color:#fff; border-color:var(--yellow);}
+.toast.success{background:var(--green-d); color:#fff; border-color:var(--gold);}
+
+/* ============================================================
+   BACK BUTTON
+   ============================================================ */
+.back-btn{
+  position:absolute; top:14px; left:14px; z-index:20;
+  padding:8px 14px; background:rgba(26,17,8,.8); color:var(--gold-l);
+  border:2px solid var(--gold-d); border-radius:10px;
+  font-weight:900; font-size:13px; cursor:pointer;
+  backdrop-filter:blur(4px);
+  transition:all .15s;
+}
+.back-btn:hover{background:var(--wood-d); transform:translateY(-1px);}
+
+/* Loading spinner */
+.spinner{
+  width:42px; height:42px; border:5px solid rgba(255,210,74,.3);
+  border-top-color:var(--gold); border-radius:50%;
+  animation:spin 1s linear infinite; margin:0 auto 10px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Confetti */
+.confetti{position:absolute; width:8px; height:14px; z-index:5; pointer-events:none;}
+
+/* Responsive */
+@media (max-width:600px){
+  .desk-area{grid-template-columns:1fr;}
+  .q-options{grid-template-columns:1fr;}
+  .coc-btn{min-width:220px; font-size:18px; padding:14px 30px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div id="toast" class="toast"></div>
+
+<!-- ============================================================
+     LAYER 1: WELCOME
+     ============================================================ -->
+<div id="layer-welcome" class="layer bg-grass">
+  <div class="sky-deco">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+    <div class="cloud c4"></div>
+  </div>
+
+  <!-- Floating island decoration -->
+  <svg class="floating-island i1" width="120" height="90" viewBox="0 0 120 90">
+    <ellipse cx="60" cy="20" rx="50" ry="14" fill="#7CDD59" stroke="#1A1108" stroke-width="3"/>
+    <path d="M 15 22 Q 60 85 105 22 L 105 30 Q 60 95 15 30 Z" fill="#5C3A1E" stroke="#1A1108" stroke-width="3"/>
+    <circle cx="40" cy="14" r="6" fill="#3FA526" stroke="#1A1108" stroke-width="2"/>
+    <circle cx="80" cy="16" r="5" fill="#3FA526" stroke="#1A1108" stroke-width="2"/>
+  </svg>
+  <svg class="floating-island i2" width="90" height="70" viewBox="0 0 90 70">
+    <ellipse cx="45" cy="16" rx="38" ry="10" fill="#7CDD59" stroke="#1A1108" stroke-width="3"/>
+    <path d="M 10 18 Q 45 65 80 18 L 80 25 Q 45 72 10 25 Z" fill="#5C3A1E" stroke="#1A1108" stroke-width="3"/>
+  </svg>
+
+  <div class="game-logo">
+    <div class="logo-title">PESAWAT EDUKASI</div>
+    <div class="logo-sub">Jaringan Komputer &amp; Internet - SMP Kelas 9</div>
+    <div class="logo-badge">GAME BELAJAR SERU</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="coc-btn green" onclick="goLogin()">
+      ▶ MAIN SEKARANG
+    </button>
+    <button class="coc-btn blue small" onclick="showPopupInfo()">
+      ℹ CARA MAIN
+    </button>
+  </div>
+
+  <div class="welcome-footer">
+    © 2026 Game Edukasi Pesawat · Dibuat untuk Pembelajaran SMP
+  </div>
+</div>
+
+<!-- ============================================================
+     LAYER 2: LOGIN SISWA
+     ============================================================ -->
+<div id="layer-login" class="layer bg-wood">
+  <button class="back-btn" onclick="showLayer('layer-welcome')">← Kembali</button>
+  <div class="login-card">
+    <div class="card-title">LOGIN SISWA</div>
+    <div class="card-sub">Masukkan data untuk mulai bermain</div>
+
+    <div class="field">
+      <label>Nama Lengkap</label>
+      <input id="inp-nama" type="text" placeholder="Contoh: Ahmad Fauzi" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>No. Absen</label>
+      <input id="inp-absen" type="text" placeholder="Contoh: 01" autocomplete="off" maxlength="3">
+    </div>
+    <div class="field">
+      <label>Kelas</label>
+      <select id="inp-kelas">
+        <option value="">-- Pilih Kelas --</option>
+        <option value="9A">9A</option>
+        <option value="9B">9B</option>
+        <option value="9C">9C</option>
+        <option value="9D">9D</option>
+        <option value="9E">9E</option>
+        <option value="9F">9F</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Posisi Meja</label>
+      <div class="posisi-group">
+        <input type="radio" id="pos-kiri" name="posisi" value="kiri">
+        <label for="pos-kiri"><span class="posisi-icon">🪑</span>MEJA KIRI</label>
+        <input type="radio" id="pos-kanan" name="posisi" value="kanan">
+        <label for="pos-kanan"><span class="posisi-icon">💺</span>MEJA KANAN</label>
+      </div>
+    </div>
+
+    <button class="coc-btn green" style="width:100%; margin-top:6px;" onclick="submitLogin()">
+      ✔ LANJUT
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================
+     LAYER 3: PLAYER LIST + TOKEN
+     ============================================================ -->
+<div id="layer-players" class="layer bg-wood">
+  <button class="back-btn" onclick="showLayer('layer-login')">← Kembali</button>
+
+  <div class="players-header">
+    <h2>DAFTAR SISWA ONLINE</h2>
+    <p>Silakan masukkan token sesuai posisi meja Anda</p>
+  </div>
+
+  <div class="desk-area">
+    <div class="desk kiri">
+      <div class="desk-title">🪑 MEJA KIRI</div>
+      <div id="list-kiri" class="desk-list">
+        <div style="text-align:center; color:#999; padding:14px; font-size:12px;">Belum ada siswa</div>
+      </div>
+    </div>
+    <div class="desk kanan">
+      <div class="desk-title">💺 MEJA KANAN</div>
+      <div id="list-kanan" class="desk-list">
+        <div style="text-align:center; color:#999; padding:14px; font-size:12px;">Belum ada siswa</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="token-section">
+    <div class="coc-btn small blue" style="cursor:default; display:inline-block;">MASUKKAN TOKEN</div>
+    <div class="token-input-wrap">
+      <input id="inp-token" type="text" placeholder="TOKEN" maxlength="20" autocomplete="off">
+      <button class="coc-btn green small" onclick="validateToken()">CEK</button>
+    </div>
+    <div class="token-info">
+      Token berbeda untuk meja kiri &amp; kanan. Dapatkan token dari guru/admin.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     LAYER: HOW TO PLAY
+     ============================================================ -->
+<div id="layer-howto" class="layer bg-grass">
+  <button class="back-btn" onclick="showLayer('layer-players')">← Kembali</button>
+  <div class="howto-card">
+    <h2>📜 CARA BERMAIN</h2>
+    <div class="sub">Baca petunjuk sebelum terbang!</div>
+
+    <div class="howto-steps">
+      <div class="howto-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Anda adalah <b>pilot pesawat</b>. View adalah dari kokpit pesawat (dalam cockpit).</div>
+      </div>
+      <div class="howto-step">
+        <div class="step-num">2</div>
+        <div class="step-text">Setiap soal akan muncul di panel dashboard. Pilih jawaban <b>A/B/C/D</b> dengan klik tombol.</div>
+      </div>
+      <div class="howto-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Jawaban <b>benar</b>: pesawat terus terbang, bensin bertambah.</div>
+      </div>
+      <div class="howto-step">
+        <div class="step-num">4</div>
+        <div class="step-text">Jawaban <b>salah</b>: bensin berkurang. <b>3x salah = pesawat jatuh</b> (Game Over).</div>
+      </div>
+      <div class="howto-step">
+        <div class="step-num">5</div>
+        <div class="step-text">Selesaikan semua soal untuk <b>menang</b> dan masuk daftar pemenang tercepat!</div>
+      </div>
+      <div class="howto-step">
+        <div class="step-num">📊</div>
+        <div class="step-text">
+          <b>Indikator bensin:</b>
+          <div class="fuel-bar-demo"><div class="fill"></div></div>
+          Hijau = aman · Kuning = hati-hati · Merah = kritis
+        </div>
+      </div>
+    </div>
+
+    <button class="coc-btn green" style="width:100%; margin-top:18px;" onclick="startGame()">
+      ✈ START TERBANG!
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================
+     LAYER: GAME (3D COCKPIT)
+     ============================================================ -->
+<div id="layer-game" class="layer">
+  <canvas id="canvas-3d"></canvas>
+
+  <div class="cockpit-overlay">
+    <!-- Cockpit frame (dashboard) -->
+    <div class="cockpit-frame"></div>
+
+    <!-- Top HUD -->
+    <div class="hud-top">
+      <div class="hud-panel">
+        <span class="lbl">PILOT</span>
+        <span class="val" id="hud-nama">-</span>
+      </div>
+      <div class="hud-panel">
+        <span class="lbl">SOAL</span>
+        <span class="val"><span id="hud-cur">0</span>/<span id="hud-tot">0</span></span>
+      </div>
+      <div class="hud-panel">
+        <span class="lbl">WAKTU</span>
+        <span class="val" id="hud-waktu">00:00</span>
+      </div>
+    </div>
+
+    <!-- Fuel gauge -->
+    <div class="fuel-gauge">
+      <div class="label">⛽ BENSIN</div>
+      <div class="fuel-bar">
+        <div class="fill" id="fuel-fill"></div>
+        <div class="ticks"></div>
+      </div>
+      <div class="fuel-icons" id="fuel-icons">
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+      </div>
+    </div>
+
+    <!-- Question panel -->
+    <div class="question-panel" id="q-panel">
+      <div class="q-meta">
+        <span id="q-tingkat">-</span>
+        <span id="q-progress">Soal 1 dari 10</span>
+      </div>
+      <div class="q-text" id="q-text">Memuat soal...</div>
+      <div class="q-options" id="q-options"></div>
+    </div>
+
+    <!-- Cockpit instruments -->
+    <div class="cockpit-instrument left" data-label="SPEED">
+      <div class="needle" id="needle-left"></div>
+    </div>
+    <div class="cockpit-instrument right" data-label="ALT">
+      <div class="needle" id="needle-right"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     LAYER: WIN
+     ============================================================ -->
+<div id="layer-win" class="layer">
+  <div class="result-title">CONGRATULATION!</div>
+  <div class="result-sub">✈️ Pesawat Anda berhasil mendarat dengan selamat! ✈️</div>
+
+  <div class="result-stats">
+    <div class="stat-box"><div class="v" id="win-benar">0</div><div class="l">BENAR</div></div>
+    <div class="stat-box"><div class="v" id="win-salah">0</div><div class="l">SALAH</div></div>
+    <div class="stat-box"><div class="v" id="win-waktu">0s</div><div class="l">WAKTU</div></div>
+  </div>
+
+  <div class="winners-list">
+    <h3>🏆 DAFTAR PEMENANG (TERCEPAT)</h3>
+    <div id="winners-list-body"></div>
+  </div>
+
+  <div class="btn-row" style="margin-top:20px;">
+    <button class="coc-btn blue small" onclick="openKuesioner()">📋 ISI KUESIONER</button>
+    <button class="coc-btn green small" onclick="restartGame()">🔄 MAIN LAGI</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     LAYER: LOSE
+     ============================================================ -->
+<div id="layer-lose" class="layer">
+  <div class="result-title">YOU LOSE</div>
+  <div class="result-sub">💥 Pesawat kehabisan bensin dan jatuh! 💥</div>
+
+  <div class="result-stats">
+    <div class="stat-box"><div class="v" id="lose-benar">0</div><div class="l">BENAR</div></div>
+    <div class="stat-box"><div class="v" id="lose-salah">3</div><div class="l">SALAH</div></div>
+    <div class="stat-box"><div class="v" id="lose-waktu">0s</div><div class="l">WAKTU</div></div>
+  </div>
+
+  <div class="btn-row" style="margin-top:20px;">
+    <button class="coc-btn red small" onclick="restartGame()">🔄 COBA LAGI</button>
+    <button class="coc-btn blue small" onclick="openKuesioner()">📋 ISI KUESIONER</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     POPUP: INFO
+     ============================================================ -->
+<div id="popup-info" class="popup-mask">
+  <div class="popup">
+    <span class="icon-big">ℹ️</span>
+    <h3>TENTANG GAME</h3>
+    <p>Game edukasi pesawat untuk belajar <b>Jaringan Komputer &amp; Internet</b> kelas 9 SMP. Jawab soal dengan benar agar pesawat tetap terbang. 3x salah = pesawat jatuh!</p>
+    <div class="popup-btns">
+      <button class="coc-btn green small" onclick="closePopup('popup-info')">OK, MENGERTI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     POPUP: LOADING
+     ============================================================ -->
+<div id="popup-loading" class="popup-mask">
+  <div class="popup">
+    <div class="spinner"></div>
+    <h3 id="loading-text">MEMUAT...</h3>
+    <p>Mohon tunggu sebentar</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     POPUP: KUESIONER
+     ============================================================ -->
+<div id="popup-kuesioner" class="popup-mask">
+  <div class="popup">
+    <h3>📋 KUESIONER APLIKASI</h3>
+    <p style="text-align:center;">Berikan penilaian Anda tentang game ini</p>
+
+    <div class="rate-group">
+      <label>1. Kemudahan penggunaan aplikasi</label>
+      <div class="rate-stars" data-name="app">
+        <div class="star" data-v="1">1</div>
+        <div class="star" data-v="2">2</div>
+        <div class="star" data-v="3">3</div>
+        <div class="star" data-v="4">4</div>
+        <div class="star" data-v="5">5</div>
+      </div>
+    </div>
+    <div class="rate-group">
+      <label>2. Kemudahan soal</label>
+      <div class="rate-stars" data-name="soal">
+        <div class="star" data-v="1">1</div>
+        <div class="star" data-v="2">2</div>
+        <div class="star" data-v="3">3</div>
+        <div class="star" data-v="4">4</div>
+        <div class="star" data-v="5">5</div>
+      </div>
+    </div>
+    <div class="rate-group">
+      <label>3. Keseruan game</label>
+      <div class="rate-stars" data-name="seru">
+        <div class="star" data-v="1">1</div>
+        <div class="star" data-v="2">2</div>
+        <div class="star" data-v="3">3</div>
+        <div class="star" data-v="4">4</div>
+        <div class="star" data-v="5">5</div>
+      </div>
+    </div>
+    <div class="rate-group">
+      <label>4. Tampilan visual</label>
+      <div class="rate-stars" data-name="tampilan">
+        <div class="star" data-v="1">1</div>
+        <div class="star" data-v="2">2</div>
+        <div class="star" data-v="3">3</div>
+        <div class="star" data-v="4">4</div>
+        <div class="star" data-v="5">5</div>
+      </div>
+    </div>
+    <div class="rate-group">
+      <label>5. Saran &amp; kritik</label>
+      <textarea class="saran-area" id="kues-saran" placeholder="Tulis saran atau kritik Anda di sini..."></textarea>
+    </div>
+
+    <div class="popup-btns">
+      <button class="coc-btn red small" onclick="closeKuesionerSkip()">LEWATI</button>
+      <button class="coc-btn green small" onclick="submitKuesioner()">KIRIM</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG - GANTI GAS_URL DENGAN URL WEB APP ANDA
+   ============================================================ */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxr22gYHlZkx3Tae0oN7CYy114VYTGmZgPKoyn50ZyKqTKgx_pC_iKOzcUn3-PDY33PaA/exec";
+const USE_MOCK = (GAS_URL === "https://script.google.com/macros/s/AKfycbxr22gYHlZkx3Tae0oN7CYy114VYTGmZgPKoyn50ZyKqTKgx_pC_iKOzcUn3-PDY33PaA/exec"); // mock mode jika belum deploy
+
+/* Mock data soal (cadangan jika backend belum siap) */
+const MOCK_SOAL = [
+  {pertanyaan:"Apa kepanjangan dari WWW?", a:"World Wide Web", b:"World Web Wide", c:"Web World Wide", d:"Wide World Web", benar:"A", tingkat:"mudah"},
+  {pertanyaan:"Perangkat penghubung jaringan lokal dengan internet?", a:"Switch", b:"Router", c:"Hub", d:"Repeater", benar:"B", tingkat:"mudah"},
+  {pertanyaan:"Topologi jaringan dengan satu jalur utama?", a:"Star", b:"Ring", c:"Bus", d:"Mesh", benar:"C", tingkat:"mudah"},
+  {pertanyaan:"Alamat unik tiap perangkat dalam jaringan?", a:"IP Address", b:"URL", c:"Domain", d:"DNS", benar:"A", tingkat:"mudah"},
+  {pertanyaan:"Jaringan cakupan antar negara?", a:"LAN", b:"MAN", c:"WAN", d:"PAN", benar:"C", tingkat:"mudah"},
+  {pertanyaan:"Kepanjangan LAN?", a:"Local Area Network", b:"Large Access Network", c:"Local Access Node", d:"Logical Area Network", benar:"A", tingkat:"mudah"},
+  {pertanyaan:"Protokol transfer halaman web?", a:"FTP", b:"HTTP", c:"SMTP", d:"POP3", benar:"B", tingkat:"mudah"},
+  {pertanyaan:"Perangkat mengubah sinyal digital ke analog?", a:"Router", b:"Modem", c:"Switch", d:"Bridge", benar:"B", tingkat:"sedang"},
+  {pertanyaan:"Pada URL www.google.com, 'google.com' adalah?", a:"Protokol", b:"Domain", c:"Path", d:"Subdomain", benar:"B", tingkat:"sedang"},
+  {pertanyaan:"Layanan surat elektronik di internet?", a:"E-commerce", b:"E-mail", c:"Chat", d:"Browsing", benar:"B", tingkat:"mudah"},
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  siswa: { nama:"", absen:"", kelas:"", posisi:"" },
+  token: "",
+  soalList: [],
+  curIdx: 0,
+  benar: 0,
+  salah: 0,
+  maxSalah: 3,
+  startTime: 0,
+  timerInterval: null,
+  scene: null, camera: null, renderer: null,
+  plane: null, clouds: [], animId: null,
+  answered: false,
+  kuesionerRatings: { app:0, soal:0, seru:0, tampilan:0 }
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function showLayer(id){
+  document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+  const el = $(id);
+  el.classList.add('active');
+  // Auto fullscreen on layer change (request)
+  tryFullscreen();
+}
+function tryFullscreen(){
+  const el = document.documentElement;
+  if (el.requestFullscreen && !document.fullscreenElement) {
+    el.requestFullscreen().catch(()=>{});
+  } else if (el.webkitRequestFullscreen && !document.webkitFullscreenElement){
+    el.webkitRequestFullscreen();
+  }
+}
+function showPopup(id){ $(id).classList.add('show'); }
+function closePopup(id){ $(id).classList.remove('show'); }
+function toast(msg, type){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type||'');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>{ t.classList.remove('show'); }, 2400);
+}
+function showLoading(text){
+  $('loading-text').textContent = text || 'MEMUAT...';
+  showPopup('popup-loading');
+}
+
+/* ============================================================
+   API CALL (GAS or mock)
+   ============================================================ */
+async function api(payload){
+  if (USE_MOCK) return mockApi(payload);
+  try {
+    const res = await fetch(GAS_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  } catch(e){
+    console.warn('API error, fallback to mock:', e);
+    return mockApi(payload);
+  }
+}
+
+function mockApi(p){
+  return new Promise((resolve)=>{
+    setTimeout(()=>{
+      switch(p.action){
+        case 'login':
+          resolve({status:'ok', nama:p.nama, absen:p.absen, kelas:p.kelas, posisi:p.posisi});
+          break;
+        case 'validateToken':
+          if (p.token && p.token.length >= 6) resolve({status:'ok', valid:true});
+          else resolve({status:'error', valid:false, message:'Token tidak valid'});
+          break;
+        case 'getSoal':
+          resolve({status:'ok', soal: MOCK_SOAL});
+          break;
+        case 'submitResult':
+          resolve({status:'ok'});
+          break;
+        case 'getWinners':
+          resolve({status:'ok', winners: [
+            {nama:'Budi', kelas:'9A', waktu:45, benar:10, salah:0},
+            {nama:'Siti', kelas:'9A', waktu:62, benar:10, salah:1},
+            {nama:'Andi', kelas:'9B', waktu:78, benar:10, salah:1},
+          ]});
+          break;
+        case 'submitKuesioner':
+          resolve({status:'ok'});
+          break;
+        default:
+          resolve({status:'error', message:'Unknown action (mock)'});
+      }
+    }, 500);
+  });
+}
+
+/* ============================================================
+   FLOW: LOGIN
+   ============================================================ */
+function goLogin(){
+  showLayer('layer-login');
+  setTimeout(()=> $('inp-nama').focus(), 700);
+}
+
+async function submitLogin(){
+  const nama = $('inp-nama').value.trim();
+  const absen = $('inp-absen').value.trim();
+  const kelas = $('inp-kelas').value;
+  const posisiEl = document.querySelector('input[name="posisi"]:checked');
+  if (!nama){ toast('Nama wajib diisi','error'); return; }
+  if (!absen){ toast('No. absen wajib diisi','error'); return; }
+  if (!kelas){ toast('Pilih kelas','error'); return; }
+  if (!posisiEl){ toast('Pilih posisi meja','error'); return; }
+  const posisi = posisiEl.value;
+
+  showLoading('MEMPROSES LOGIN...');
+  const res = await api({action:'login', nama, absen, kelas, posisi});
+  closePopup('popup-loading');
+
+  if (res.status === 'ok'){
+    state.siswa = { nama, absen, kelas, posisi };
+    toast('Login berhasil!','success');
+    showLayer('layer-players');
+    refreshPlayers();
+  } else {
+    toast(res.message || 'Login gagal','error');
+  }
+}
+
+async function refreshPlayers(){
+  // Dalam mode full GAS, panggil getDashboard. Di mock, tampilkan siswa saat ini.
+  if (USE_MOCK){
+    renderPlayers([state.siswa]);
+  } else {
+    const res = await api({action:'getDashboard', pass:'admin123'});
+    if (res.status === 'ok') renderPlayers(res.siswa);
+  }
+}
+
+function renderPlayers(siswaList){
+  const kiri = siswaList.filter(s => s.posisi === 'kiri');
+  const kanan = siswaList.filter(s => s.posisi === 'kanan');
+  const htmlRow = (s) => `<div class="desk-row"><span class="nama">${escapeHtml(s.nama)} (${s.kelas})</span><span class="badge ${s.status==='aktif'?'aktif':'menunggu'}">${s.status||'menunggu'}</span></div>`;
+  $('list-kiri').innerHTML = kiri.length ? kiri.map(htmlRow).join('') : '<div style="text-align:center;color:#999;padding:14px;font-size:12px;">Belum ada siswa</div>';
+  $('list-kanan').innerHTML = kanan.length ? kanan.map(htmlRow).join('') : '<div style="text-align:center;color:#999;padding:14px;font-size:12px;">Belum ada siswa</div>';
+}
+
+function escapeHtml(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+/* ============================================================
+   FLOW: TOKEN
+   ============================================================ */
+async function validateToken(){
+  const token = $('inp-token').value.trim();
+  if (!token){ toast('Masukkan token','error'); return; }
+  showLoading('MEMVALIDASI TOKEN...');
+  const res = await api({action:'validateToken', token, posisi: state.siswa.posisi});
+  closePopup('popup-loading');
+  if (res.valid){
+    state.token = token;
+    toast('Token valid!','success');
+    showLayer('layer-howto');
+  } else {
+    toast(res.message || 'Token tidak valid','error');
+  }
+}
+
+/* ============================================================
+   FLOW: GAME
+   ============================================================ */
+async function startGame(){
+  showLoading('MEMUAT SOAL...');
+  const res = await api({action:'getSoal'});
+  closePopup('popup-loading');
+  if (res.status === 'ok' && res.soal.length){
+    state.soalList = res.soal;
+    state.curIdx = 0; state.benar = 0; state.salah = 0;
+    state.startTime = Date.now();
+    showLayer('layer-game');
+    init3D();
+    renderQuestion();
+    startTimer();
+  } else {
+    toast('Gagal memuat soal','error');
+  }
+}
+
+function startTimer(){
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(()=>{
+    const sec = Math.floor((Date.now() - state.startTime)/1000);
+    const m = String(Math.floor(sec/60)).padStart(2,'0');
+    const s = String(sec%60).padStart(2,'0');
+    $('hud-waktu').textContent = `${m}:${s}`;
+  }, 500);
+}
+
+function renderQuestion(){
+  state.answered = false;
+  const q = state.soalList[state.curIdx];
+  if (!q) { endGame(true); return; }
+  $('hud-nama').textContent = state.siswa.nama;
+  $('hud-cur').textContent = state.curIdx + 1;
+  $('hud-tot').textContent = state.soalList.length;
+  $('q-tingkat').textContent = 'Tingkat: ' + (q.tingkat||'-');
+  $('q-progress').textContent = `Soal ${state.curIdx+1} dari ${state.soalList.length}`;
+  $('q-text').textContent = q.pertanyaan;
+
+  const opts = [
+    {l:'A', t:q.a}, {l:'B', t:q.b}, {l:'C', t:q.c}, {l:'D', t:q.d}
+  ];
+  // Acak opsi
+  opts.sort(()=>Math.random()-0.5);
+  $('q-options').innerHTML = opts.map(o =>
+    `<div class="q-opt" data-l="${o.l}" onclick="answerQuestion('${o.l}','${q.benar}')">
+       <div class="letter">${o.l}</div>
+       <span>${escapeHtml(o.t)}</span>
+     </div>`
+  ).join('');
+
+  // Reset panel animation
+  const panel = $('q-panel');
+  panel.style.animation = 'none';
+  void panel.offsetWidth;
+  panel.style.animation = '';
+}
+
+function answerQuestion(picked, correct){
+  if (state.answered) return;
+  state.answered = true;
+  const opts = document.querySelectorAll('.q-opt');
+  opts.forEach(o => {
+    o.style.pointerEvents = 'none';
+    if (o.dataset.l === correct) o.classList.add('correct');
+    if (o.dataset.l === picked && picked !== correct) o.classList.add('wrong');
+  });
+
+  if (picked === correct){
+    state.benar++;
+    toast('Jawaban benar! ✈️','success');
+    planeBoost();
+  } else {
+    state.salah++;
+    toast(`Salah! (${state.salah}/${state.maxSalah})`,'error');
+    planeShake();
+    if (state.salah >= state.maxSalah){
+      setTimeout(()=> endGame(false), 1200);
+      return;
+    }
+  }
+  updateFuel();
+  setTimeout(()=>{
+    state.curIdx++;
+    if (state.curIdx >= state.soalList.length){
+      endGame(true);
+    } else {
+      renderQuestion();
+    }
+  }, 1400);
+}
+
+function updateFuel(){
+  const fuelPct = Math.max(0, 100 - (state.salah / state.maxSalah) * 100);
+  $('fuel-fill').style.width = fuelPct + '%';
+  const hearts = $('fuel-icons').querySelectorAll('.heart');
+  hearts.forEach((h, i) => {
+    if (i < state.salah) h.classList.add('lost');
+    else h.classList.remove('lost');
+  });
+  // Cockpit needles
+  const speedRot = -90 + (state.benar * 18);
+  const altRot = -90 + (fuelPct * 1.8);
+  $('needle-left').style.transform = `translate(-50%,-100%) rotate(${speedRot}deg)`;
+  $('needle-right').style.transform = `translate(-50%,-100%) rotate(${altRot}deg)`;
+}
+
+async function endGame(win){
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  const waktu = Math.floor((Date.now() - state.startTime)/1000);
+  if (state.animId) cancelAnimationFrame(state.animId);
+
+  // Submit result
+  await api({
+    action:'submitResult',
+    nama: state.siswa.nama, kelas: state.siswa.kelas, posisi: state.siswa.posisi,
+    benar: state.benar, salah: state.salah, waktu,
+    status: win ? 'menang' : 'gagal'
+  });
+
+  if (win){
+    $('win-benar').textContent = state.benar;
+    $('win-salah').textContent = state.salah;
+    $('win-waktu').textContent = waktu + 's';
+    showLayer('layer-win');
+    loadWinners();
+    launchConfetti();
+  } else {
+    $('lose-benar').textContent = state.benar;
+    $('lose-waktu').textContent = waktu + 's';
+    showLayer('layer-lose');
+  }
+}
+
+async function loadWinners(){
+  const res = await api({action:'getWinners'});
+  const body = $('winners-list-body');
+  if (res.status === 'ok' && res.winners.length){
+    body.innerHTML = res.winners.map((w, i) => {
+      const rank = i+1;
+      const rankClass = rank <= 5 ? 'r'+rank : 'r5';
+      const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':`#${rank}`;
+      return `<div class="winner-row ${rankClass}">
+        <div class="rank">${medal}</div>
+        <div><div>${escapeHtml(w.nama)}</div><div style="font-size:11px;color:#666;">${w.kelas} · ${w.posisi}</div></div>
+        <div class="time">${w.waktu}s</div>
+      </div>`;
+    }).join('');
+  } else {
+    body.innerHTML = '<div style="text-align:center;color:#666;padding:10px;">Belum ada pemenang lain.</div>';
+  }
+}
+
+function restartGame(){
+  state.curIdx = 0; state.benar = 0; state.salah = 0; state.answered = false;
+  // Reset hearts
+  $('fuel-icons').querySelectorAll('.heart').forEach(h => h.classList.remove('lost'));
+  $('fuel-fill').style.width = '100%';
+  startGame();
+}
+
+/* ============================================================
+   KUESIONER
+   ============================================================ */
+function openKuesioner(){
+  // Reset ratings
+  state.kuesionerRatings = { app:0, soal:0, seru:0, tampilan:0 };
+  document.querySelectorAll('.rate-stars .star').forEach(s => s.classList.remove('active'));
+  $('kues-saran').value = '';
+  showPopup('popup-kuesioner');
+}
+function closeKuesionerSkip(){
+  closePopup('popup-kuesioner');
+  toast('Kuesioner dilewati','');
+}
+async function submitKuesioner(){
+  const r = state.kuesionerRatings;
+  if (!r.app || !r.soal || !r.seru || !r.tampilan){
+    toast('Lengkapi semua rating','error');
+    return;
+  }
+  const saran = $('kues-saran').value.trim();
+  showLoading('MENGIRIM...');
+  const res = await api({
+    action:'submitKuesioner',
+    nama: state.siswa.nama, kelas: state.siswa.kelas,
+    app:r.app, soal:r.soal, seru:r.seru, tampilan:r.tampilan, saran
+  });
+  closePopup('popup-loading');
+  closePopup('popup-kuesioner');
+  if (res.status === 'ok'){
+    toast('Kuesioner terkirim. Terima kasih!','success');
+    setTimeout(()=> showLayer('layer-welcome'), 1200);
+  } else {
+    toast('Gagal mengirim','error');
+  }
+}
+
+/* ============================================================
+   3D COCKPIT (Three.js)
+   ============================================================ */
+function init3D(){
+  const canvas = $('canvas-3d');
+  // Cleanup
+  if (state.renderer) state.renderer.dispose();
+  if (state.animId) cancelAnimationFrame(state.animId);
+
+  state.scene = new THREE.Scene();
+  state.scene.background = new THREE.Color(0x7FC8F8);
+  state.scene.fog = new THREE.Fog(0xB8E5FF, 50, 200);
+
+  state.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 500);
+  state.camera.position.set(0, 2, 0);
+  state.camera.lookAt(0, 5, -20);
+
+  state.renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+  state.renderer.setSize(window.innerWidth, window.innerHeight);
+  state.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Lights
+  const amb = new THREE.AmbientLight(0xffffff, 0.8);
+  state.scene.add(amb);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+  dir.position.set(10, 20, 10);
+  state.scene.add(dir);
+
+  // Ground (rolling hills)
+  const groundGeo = new THREE.PlaneGeometry(400, 400, 40, 40);
+  const groundMat = new THREE.MeshLambertMaterial({color:0x7CDD59});
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI/2;
+  ground.position.y = -3;
+  // Bumpy hills
+  const pos = ground.geometry.attributes.position;
+  for (let i=0; i<pos.count; i++){
+    const x = pos.getX(i), y = pos.getY(i);
+    pos.setZ(i, Math.sin(x*0.1)*1.5 + Math.cos(y*0.15)*1.5);
+  }
+  ground.geometry.computeVertexNormals();
+  state.scene.add(ground);
+  state.ground = ground;
+
+  // Clouds (multiple white puffy spheres)
+  state.clouds = [];
+  for (let i=0; i<25; i++){
+    const cloud = createCloud();
+    cloud.position.set(
+      (Math.random()-0.5)*200,
+      5 + Math.random()*15,
+      -Math.random()*180
+    );
+    cloud.userData.speed = 0.3 + Math.random()*0.5;
+    state.scene.add(cloud);
+    state.clouds.push(cloud);
+  }
+
+  // Mountains in distance
+  for (let i=0; i<8; i++){
+    const mGeo = new THREE.ConeGeometry(15+Math.random()*8, 20+Math.random()*10, 6);
+    const mMat = new THREE.MeshLambertMaterial({color: 0x4a8c3f});
+    const m = new THREE.Mesh(mGeo, mMat);
+    m.position.set((Math.random()-0.5)*300, -2, -150 - Math.random()*80);
+    state.scene.add(m);
+  }
+
+  // Cockpit frame (dark dashboard at bottom)
+  const dashGeo = new THREE.BoxGeometry(8, 1.5, 2);
+  const dashMat = new THREE.MeshLambertMaterial({color:0x2a1a08});
+  const dash = new THREE.Mesh(dashGeo, dashMat);
+  dash.position.set(0, -1.5, -1);
+  state.scene.add(dash);
+  state.dash = dash;
+
+  // Steering yoke (control stick)
+  const yokeGeo = new THREE.CylinderGeometry(0.15, 0.2, 1, 8);
+  const yokeMat = new THREE.MeshLambertMaterial({color:0x3a2410});
+  const yoke = new THREE.Mesh(yokeGeo, yokeMat);
+  yoke.position.set(0, -1.2, -0.5);
+  yoke.rotation.x = -0.3;
+  state.scene.add(yoke);
+  state.yoke = yoke;
+
+  // Yoke top
+  const yokeTopGeo = new THREE.TorusGeometry(0.3, 0.06, 6, 16);
+  const yokeTop = new THREE.Mesh(yokeTopGeo, yokeMat);
+  yokeTop.position.set(0, -0.7, -0.7);
+  yokeTop.rotation.x = Math.PI/2;
+  state.scene.add(yokeTop);
+  state.yokeTop = yokeTop;
+
+  // Engine sound waves (visual: propeller blur in front)
+  const propGeo = new THREE.CircleGeometry(0.8, 16);
+  const propMat = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.15});
+  const prop = new THREE.Mesh(propGeo, propMat);
+  prop.position.set(0, 1, -5);
+  state.scene.add(prop);
+  state.prop = prop;
+
+  // Sun
+  const sunGeo = new THREE.SphereGeometry(3, 16, 16);
+  const sunMat = new THREE.MeshBasicMaterial({color:0xfff4a0});
+  const sun = new THREE.Mesh(sunGeo, sunMat);
+  sun.position.set(40, 30, -100);
+  state.scene.add(sun);
+
+  animate3D();
+  window.addEventListener('resize', onResize3D);
+}
+
+function createCloud(){
+  const group = new THREE.Group();
+  const mat = new THREE.MeshLambertMaterial({color:0xffffff, transparent:true, opacity:0.9});
+  for (let i=0; i<5; i++){
+    const r = 1.5 + Math.random()*1.5;
+    const s = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 6), mat);
+    s.position.set((Math.random()-0.5)*4, (Math.random()-0.5)*1, (Math.random()-0.5)*2);
+    group.add(s);
+  }
+  return group;
+}
+
+function animate3D(){
+  state.animId = requestAnimationFrame(animate3D);
+  const t = performance.now() * 0.001;
+
+  // Move clouds toward camera
+  state.clouds.forEach(c => {
+    c.position.z += c.userData.speed;
+    if (c.position.z > 10){
+      c.position.z = -180;
+      c.position.x = (Math.random()-0.5)*200;
+    }
+  });
+
+  // Slight camera bob (plane in flight)
+  state.camera.position.y = 2 + Math.sin(t*1.5)*0.15;
+  state.camera.position.x = Math.sin(t*0.8)*0.3;
+  state.camera.rotation.z = Math.sin(t*0.6)*0.04;
+
+  // Ground scrolls
+  if (state.ground){
+    state.ground.position.z = (t * 5) % 10;
+  }
+
+  // Yoke movement
+  if (state.yoke){
+    state.yoke.rotation.z = Math.sin(t*1.2)*0.1;
+    state.yokeTop.rotation.z = Math.sin(t*1.2)*0.1;
+  }
+
+  // Propeller spin
+  if (state.prop){
+    state.prop.rotation.z = t * 30;
+    state.prop.material.opacity = 0.1 + Math.abs(Math.sin(t*15))*0.1;
+  }
+
+  state.renderer.render(state.scene, state.camera);
+}
+
+function onResize3D(){
+  if (!state.camera || !state.renderer) return;
+  state.camera.aspect = window.innerWidth / window.innerHeight;
+  state.camera.updateProjectionMatrix();
+  state.renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function planeBoost(){
+  // Quick dip then climb
+  if (!state.camera) return;
+  let i = 0;
+  const boost = setInterval(()=>{
+    state.camera.position.y = 2 + Math.sin(i*0.3)*0.5;
+    if (++i > 20){ clearInterval(boost); }
+  }, 30);
+}
+
+function planeShake(){
+  if (!state.camera) return;
+  let i = 0;
+  const shake = setInterval(()=>{
+    state.camera.position.x = (Math.random()-0.5)*0.6;
+    state.camera.rotation.z = (Math.random()-0.5)*0.15;
+    if (++i > 15){
+      clearInterval(shake);
+      state.camera.position.x = 0;
+      state.camera.rotation.z = 0;
+    }
+  }, 40);
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+function launchConfetti(){
+  const colors = ['#FFD24A','#FF5252','#3F88FF','#52D869','#FFD93D'];
+  for (let i=0; i<60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.left = Math.random()*100 + '%';
+    c.style.top = '-20px';
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    const fall = c.animate([
+      {transform:`translate(0,0) rotate(0deg)`, opacity:1},
+      {transform:`translate(${(Math.random()-0.5)*200}px, ${window.innerHeight+50}px) rotate(${Math.random()*720}deg)`, opacity:0.3}
+    ], {duration: 2500 + Math.random()*2000, easing:'cubic-bezier(.3,.5,.6,1)'});
+    fall.onfinish = ()=> c.remove();
+  }
+}
+
+/* ============================================================
+   POPUP INFO
+   ============================================================ */
+function showPopupInfo(){ showPopup('popup-info'); }
+
+/* ============================================================
+   KUESIONER STAR RATING
+   ============================================================ */
+document.addEventListener('click', (e)=>{
+  if (e.target.classList.contains('star')){
+    const group = e.target.closest('.rate-stars');
+    const name = group.dataset.name;
+    const val = parseInt(e.target.dataset.v);
+    state.kuesionerRatings[name] = val;
+    group.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.v) <= val);
+    });
+  }
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('load', ()=>{
+  showLayer('layer-welcome');
+});
+</script>
+
+</body>
+</html>
