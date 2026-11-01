@@ -75,6 +75,24 @@ body{
 }
 .login-box input:focus{outline:none; border-color:var(--gold-d); box-shadow:0 0 0 4px rgba(255,210,74,.35);}
 
+/* Form fields (for config/password change) */
+.field{margin-bottom:12px;}
+.field label{
+  display:block; font-weight:bold; color:var(--wood-d); font-size:13px;
+  margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;
+}
+.field input, .field select{
+  width:100%; padding:12px 14px; font-size:15px; font-weight:600;
+  border:3px solid var(--wood-l); border-radius:10px;
+  background:#fff; color:var(--dark);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.08);
+  font-family:inherit;
+}
+.field input:focus, .field select:focus{
+  outline:none; border-color:var(--gold-d);
+  box-shadow:0 0 0 4px rgba(255,210,74,.35);
+}
+
 /* ===== BUTTONS (CoC style) ===== */
 .coc-btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
@@ -159,9 +177,8 @@ body{
   background:rgba(255,255,255,.7); border:3px solid var(--wood-l);
   border-radius:14px; padding:18px; text-align:center;
 }
-.token-card.kiri{border-color:var(--red-d);}
-.token-card.kanan{border-color:var(--blue-d);}
-.token-card h3{color:var(--wood-d); font-size:18px; margin-bottom:8px;}
+.token-card.kiri{border-color:var(--red-d); border-width:5px;}
+.token-card.kanan{border-color:var(--blue-d); border-width:5px;}
 .token-card .posisi-icon{font-size:30px; display:block; margin-bottom:6px;}
 .token-display{
   font-size:22px; font-weight:900; letter-spacing:2px;
@@ -172,6 +189,109 @@ body{
 }
 .token-display.empty{color:#999; font-style:italic; letter-spacing:normal; font-size:14px;}
 .token-meta{font-size:12px; color:var(--wood-l); margin-top:6px;}
+
+/* ===== BIG TOKEN DISPLAY (untuk proyektor) ===== */
+.token-grid-big{gap:24px;}
+.token-posisi-label{
+  font-size:24px; font-weight:900; color:#fff; padding:10px 16px;
+  border-radius:10px; margin-bottom:16px; text-shadow:2px 2px 0 rgba(0,0,0,.3);
+  letter-spacing:1px;
+}
+.token-card.kiri .token-posisi-label{background:linear-gradient(180deg,#FF8585,var(--red-d));}
+.token-card.kanan .token-posisi-label{background:linear-gradient(180deg,#7AB5FF,var(--blue-d));}
+.token-display-big{
+  font-size:42px; font-weight:900; letter-spacing:4px;
+  background:var(--wood-d); color:var(--gold-l);
+  padding:28px 20px; border-radius:14px; margin:14px 0;
+  border:4px dashed var(--gold-d);
+  word-break:break-all; cursor:pointer;
+  box-shadow: var(--shadow-inset), 0 0 30px rgba(255,210,74,.3);
+  transition:transform .15s, box-shadow .15s;
+  font-family:'Courier New', monospace;
+}
+.token-display-big:hover{transform:scale(1.03); box-shadow:var(--shadow-inset), 0 0 50px rgba(255,210,74,.5);}
+.token-display-big:active{transform:scale(.98);}
+.token-display-big.empty{
+  color:#777; font-style:italic; letter-spacing:normal; font-size:18px;
+  font-family:inherit; cursor:default;
+}
+.token-display-big.empty:hover{transform:none;}
+.token-meta-big{
+  font-size:14px; color:var(--wood-l); font-weight:bold; margin-top:8px;
+}
+
+/* ===== PROJECTOR MODE (fullscreen token display) ===== */
+body.projector-mode{
+  background:#0a0a0a !important;
+  overflow:hidden;
+}
+body.projector-mode .admin-header,
+body.projector-mode .tabs,
+body.projector-mode #tab-token > .panel:last-child,
+body.projector-mode .panel h2,
+body.projector-mode .panel > p{
+  display:none !important;
+}
+body.projector-mode #tab-token{
+  display:block !important;
+}
+body.projector-mode #token-panel{
+  background:transparent !important; border:none !important;
+  box-shadow:none !important; margin:0 !important; padding:20px !important;
+  height:100vh; display:flex !important; flex-direction:column; justify-content:center;
+}
+body.projector-mode .token-grid-big{
+  grid-template-columns:1fr 1fr; gap:40px; flex:1; align-items:center;
+}
+body.projector-mode .token-card{
+  padding:40px 30px; border-width:8px;
+}
+body.projector-mode .token-posisi-label{font-size:42px; padding:16px 24px; margin-bottom:24px;}
+body.projector-mode .token-display-big{
+  font-size:clamp(48px, 8vw, 96px); padding:40px 20px; letter-spacing:8px;
+}
+body.projector-mode .token-meta-big{font-size:20px;}
+body.projector-mode .coc-btn{font-size:20px; padding:16px 30px;}
+body.projector-mode #btn-projector{
+  position:fixed; top:20px; right:20px; z-index:100;
+}
+
+/* ===== CONTROL CARD (STOP/START GAME) ===== */
+.control-card{
+  background:rgba(255,255,255,.7); border:4px solid var(--wood-d);
+  border-radius:16px; padding:24px; text-align:center;
+  box-shadow: var(--shadow-inset);
+}
+.control-card.stopped{
+  background:linear-gradient(180deg,#FEE2E2,#fecaca);
+  border-color:var(--red-d);
+}
+.control-card.running{
+  background:linear-gradient(180deg,#DCFCE7,#bbf7d0);
+  border-color:var(--green-d);
+}
+.control-status{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  font-size:22px; font-weight:900; color:var(--wood-d); margin-bottom:8px;
+}
+.status-dot{
+  width:18px; height:18px; border-radius:50%; background:#999;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.5);
+  animation:dotPulse 1.5s ease-in-out infinite;
+}
+.control-card.stopped .status-dot{background:var(--red-d);}
+.control-card.running .status-dot{background:var(--green-d);}
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.control-time{
+  font-size:13px; color:var(--wood-l); font-weight:bold; margin-bottom:18px;
+}
+.control-buttons{
+  display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+}
+.control-info{
+  margin-top:14px; font-size:12px; color:var(--wood-l); font-weight:bold;
+  min-height:16px;
+}
 
 /* ===== STATS ===== */
 .stats-grid{
@@ -267,6 +387,37 @@ tbody tr:hover{background:var(--gold-l);}
   .admin-header h1{font-size:18px;}
   .tab{padding:8px 14px; font-size:12px;}
 }
+
+/* ===== ADMIN FOOTER & ABOUT POPUP ===== */
+.admin-footer{
+  text-align:center; padding:16px; color:var(--cream); font-size:12px; font-weight:bold;
+  background:rgba(26,17,8,.5); border-top:2px solid var(--gold-d);
+}
+.about-link-admin{
+  color:var(--gold-l); text-decoration:none; cursor:pointer;
+  border-bottom:1px dashed var(--gold-d); padding-bottom:1px;
+}
+.about-link-admin:hover{color:var(--gold);}
+.popup-about{width:min(420px,92vw);}
+.about-content{
+  text-align:left; margin:14px 0; background:rgba(255,255,255,.5);
+  border-radius:12px; padding:14px 18px; border:2px solid var(--gold-d);
+}
+.about-row{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:8px 0; border-bottom:1px dashed rgba(0,0,0,.15); font-size:14px;
+}
+.about-row:last-child{border-bottom:none;}
+.about-label{
+  font-weight:900; color:var(--wood-d); text-transform:uppercase; font-size:12px; min-width:70px;
+}
+.about-value{color:var(--dark); font-weight:600; text-align:right;}
+.about-link-btn{
+  display:inline-block; background:var(--blue); color:#fff;
+  padding:5px 14px; border-radius:8px; text-decoration:none;
+  font-weight:900; font-size:13px; border:2px solid var(--blue-d);
+}
+.about-link-btn:hover{transform:translateY(-2px);}
 </style>
 </head>
 <body>
@@ -283,9 +434,6 @@ tbody tr:hover{background:var(--gold-l);}
     <p>Masukkan password admin untuk lanjut</p>
     <input id="admin-pass" type="password" placeholder="PASSWORD" autocomplete="off">
     <button class="coc-btn green block" style="margin-top:14px;" onclick="adminLogin()">MASUK</button>
-    <p style="margin-top:14px; font-size:11px; color:var(--wood-l);">
-      Default: <b>admin123</b> (ganti di Code.gs)
-    </p>
   </div>
 </div>
 
@@ -303,10 +451,12 @@ tbody tr:hover{background:var(--gold-l);}
 
   <div class="tabs">
     <div class="tab active" data-tab="overview" onclick="switchTab('overview')">📊 OVERVIEW</div>
+    <div class="tab" data-tab="kontrol" onclick="switchTab('kontrol')">⏹️ KONTROL</div>
     <div class="tab" data-tab="token" onclick="switchTab('token')">🎫 TOKEN</div>
     <div class="tab" data-tab="siswa" onclick="switchTab('siswa')">👥 SISWA</div>
     <div class="tab" data-tab="hasil" onclick="switchTab('hasil')">🏆 HASIL</div>
     <div class="tab" data-tab="kuesioner" onclick="switchTab('kuesioner')">📋 KUESIONER</div>
+    <div class="tab" data-tab="konfig" onclick="switchTab('konfig')">⚙️ KONFIG</div>
   </div>
 
   <!-- TAB: OVERVIEW -->
@@ -334,28 +484,66 @@ tbody tr:hover{background:var(--gold-l);}
     </div>
   </div>
 
+  <!-- TAB: KONTROL (STOP/START GAME) -->
+  <div id="tab-kontrol" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <h2>⏹️ KONTROL GAME</h2>
+      <p style="margin-bottom:14px; color:var(--wood-l); font-size:13px;">
+        Hentikan atau lanjutkan semua game siswa yang sedang bermain. Saat dihentikan, siswa akan melihat popup
+        <b>"Waktu bermain Game Selesai"</b> dan game mereka otomatis berakhir.
+      </p>
+
+      <div class="control-card" id="control-card">
+        <div class="control-status" id="control-status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">MEMERIKSA STATUS...</span>
+        </div>
+        <div class="control-time" id="control-time"></div>
+        <div class="control-buttons">
+          <button class="coc-btn red" id="btn-stop" onclick="setGameStop(true)">
+            ⏹️ STOP GAME
+          </button>
+          <button class="coc-btn green" id="btn-start" onclick="setGameStop(false)">
+            ▶️ MULAI GAME
+          </button>
+        </div>
+        <div class="control-info" id="control-info"></div>
+      </div>
+
+      <div style="margin-top:18px; padding:12px; background:rgba(255,255,255,.5); border-radius:10px; font-size:12px; color:var(--wood-l);">
+        <b>ℹ️ Cara kerja:</b> Klik <b>STOP GAME</b> untuk menghentikan semua sesi siswa yang aktif.
+        Siswa yang sedang main akan langsung melihat popup bahwa waktu bermain selesai.
+        Klik <b>MULAI GAME</b> untuk mengizinkan siswa bermain lagi. Zona waktu: <b>WIB (GMT+7)</b>.
+      </div>
+    </div>
+  </div>
+
   <!-- TAB: TOKEN -->
   <div id="tab-token" class="tab-panel" style="display:none;">
-    <div class="panel">
-      <h2>🎫 GENERATE TOKEN MEJA</h2>
+    <div class="panel" id="token-panel">
+      <h2 style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span>🎫 TOKEN MEJA — UNTUK DIPROYEKSIKAN</span>
+        <button class="coc-btn blue small" id="btn-projector" onclick="toggleProjectorMode()">🖥️ MODE PROYEKTOR</button>
+      </h2>
       <p style="margin-bottom:14px; color:var(--wood-l); font-size:13px;">
-        Token berbeda untuk meja kiri &amp; kanan. Setiap generate akan menonaktifkan token lama pada posisi tersebut.
+        Token berbeda untuk meja kiri &amp; kanan. Tampilan besar agar siswa jelas melihat dari proyektor.
       </p>
-      <div class="token-grid">
+      <div class="token-grid token-grid-big">
         <div class="token-card kiri">
-          <span class="posisi-icon">🪑</span>
-          <h3>MEJA KIRI</h3>
-          <div class="token-display empty" id="token-kiri-display">BELUM DI-GENERATE</div>
-          <div class="token-meta" id="token-kiri-meta">-</div>
-          <button class="coc-btn red small" style="margin-top:10px;" onclick="generateToken('kiri')">🎲 GENERATE</button>
+          <div class="token-posisi-label">🪑 MEJA KIRI</div>
+          <div class="token-display-big empty" id="token-kiri-display" onclick="copyToken('kiri')">BELUM DI-GENERATE</div>
+          <div class="token-meta-big" id="token-kiri-meta">Klik tombol di bawah untuk generate</div>
+          <button class="coc-btn red" style="margin-top:14px; width:100%;" onclick="generateToken('kiri')">🎲 GENERATE TOKEN KIRI</button>
         </div>
         <div class="token-card kanan">
-          <span class="posisi-icon">💺</span>
-          <h3>MEJA KANAN</h3>
-          <div class="token-display empty" id="token-kanan-display">BELUM DI-GENERATE</div>
-          <div class="token-meta" id="token-kanan-meta">-</div>
-          <button class="coc-btn blue small" style="margin-top:10px;" onclick="generateToken('kanan')">🎲 GENERATE</button>
+          <div class="token-posisi-label">💺 MEJA KANAN</div>
+          <div class="token-display-big empty" id="token-kanan-display" onclick="copyToken('kanan')">BELUM DI-GENERATE</div>
+          <div class="token-meta-big" id="token-kanan-meta">Klik tombol di bawah untuk generate</div>
+          <button class="coc-btn blue" style="margin-top:14px; width:100%;" onclick="generateToken('kanan')">🎲 GENERATE TOKEN KANAN</button>
         </div>
+      </div>
+      <div style="margin-top:14px; text-align:center; font-size:12px; color:var(--wood-l);">
+        💡 Klik token untuk copy ke clipboard · Tekan tombol <b>MODE PROYEKTOR</b> untuk tampilan fullscreen
       </div>
     </div>
 
@@ -414,6 +602,78 @@ tbody tr:hover{background:var(--gold-l);}
       </div>
     </div>
   </div>
+
+  <!-- TAB: KONFIG (Ganti Password & Pengaturan) -->
+  <div id="tab-konfig" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <h2>⚙️ KONFIGURASI GAME</h2>
+      <p style="margin-bottom:14px; color:var(--wood-l); font-size:13px;">
+        Pengaturan game dibaca dari sheet <b>Config</b> di Google Spreadsheet. Anda bisa mengubah password
+        admin di sini, atau edit langsung di sheet Config.
+      </p>
+
+      <!-- Current config display -->
+      <div class="stats-grid" style="margin-bottom:18px;">
+        <div class="stat-card gold"><div class="num" id="cfg-pass-len">-</div><div class="lbl">PANJANG PASSWORD</div></div>
+        <div class="stat-card blue"><div class="num" id="cfg-max-salah">-</div><div class="lbl">MAX SALAH</div></div>
+        <div class="stat-card green"><div class="num" id="cfg-status">-</div><div class="lbl">STATUS GAME</div></div>
+      </div>
+
+      <!-- Config table -->
+      <div class="tbl-wrap" style="margin-bottom:18px;">
+        <table>
+          <thead><tr><th>Key</th><th>Nilai</th><th>Keterangan</th></tr></thead>
+          <tbody id="tbl-config"><tr><td colspan="3" class="empty-msg">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>🔑 GANTI PASSWORD ADMIN</h2>
+      <p style="margin-bottom:14px; color:var(--wood-l); font-size:13px;">
+        Password baru akan disimpan ke sheet Config. Setelah ganti, gunakan password baru untuk login berikutnya.
+      </p>
+      <div class="field" style="margin-bottom:12px;">
+        <label>Password Lama</label>
+        <input id="cfg-old-pass" type="password" placeholder="Password saat ini" autocomplete="off">
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label>Password Baru (min. 4 karakter)</label>
+        <input id="cfg-new-pass" type="password" placeholder="Password baru" autocomplete="off">
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Konfirmasi Password Baru</label>
+        <input id="cfg-confirm-pass" type="password" placeholder="Ulangi password baru" autocomplete="off">
+      </div>
+      <button class="coc-btn green" style="width:100%;" onclick="changePassword()">
+        🔑 GANTI PASSWORD
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer About -->
+  <div class="admin-footer">
+    © 2026 Game Edukasi Pesawat · 
+    <a href="javascript:void(0)" onclick="showAbout()" class="about-link-admin">ℹ️ About Game</a>
+  </div>
+</div>
+
+<!-- POPUP: ABOUT GAME -->
+<div id="popup-about" class="popup-mask">
+  <div class="popup popup-about">
+    <span class="icon-big">✈️</span>
+    <h3>TENTANG APLIKASI</h3>
+    <div class="about-content">
+      <div class="about-row"><span class="about-label">Game</span><span class="about-value">Pesawat Edukasi - Jaringan Komputer</span></div>
+      <div class="about-row"><span class="about-label">Untuk</span><span class="about-value">SMP Kelas 9 - Informatika</span></div>
+      <div class="about-row"><span class="about-label">Dev</span><span class="about-value">MB</span></div>
+      <div class="about-row"><span class="about-label">Build</span><span class="about-value">01 November 2026</span></div>
+      <div class="about-row"><span class="about-label">Link</span><a href="https://lynk.id/mb_dprint" target="_blank" class="about-link-btn">lynk.id/mb_dprint</a></div>
+    </div>
+    <div class="popup-btns">
+      <button class="coc-btn green small" onclick="closePopup('popup-about')">TUTUP</button>
+    </div>
+  </div>
 </div>
 
 <!-- POPUP: LOADING -->
@@ -440,8 +700,8 @@ tbody tr:hover{background:var(--gold-l);}
 /* ============================================================
    CONFIG
    ============================================================ */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxr22gYHlZkx3Tae0oN7CYy114VYTGmZgPKoyn50ZyKqTKgx_pC_iKOzcUn3-PDY33PaA/exec";
-const USE_MOCK = (GAS_URL === "https://script.google.com/macros/s/AKfycbxr22gYHlZkx3Tae0oN7CYy114VYTGmZgPKoyn50ZyKqTKgx_pC_iKOzcUn3-PDY33PaA/exec");
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyIS_XKM7d-69xEqM9uoYAu9_btAPZBEcQExNf2gB5NjrouAklwtSJHFlPgy9_0qARfMA/exec";
+const USE_MOCK = (GAS_URL === "https://script.google.com/macros/s/AKfycbyIS_XKM7d-69xEqM9uoYAu9_btAPZBEcQExNf2gB5NjrouAklwtSJHFlPgy9_0qARfMA/exec");
 const ADMIN_PASS = USE_MOCK ? "admin123" : null; // di GAS, password di Code.gs
 
 const state = {
@@ -472,6 +732,7 @@ function showPopup(title, msg, icon){
   $('popup-info').classList.add('show');
 }
 function closePopup(id){ $(id).classList.remove('show'); }
+function showAbout(){ $('popup-about').classList.add('show'); }
 function escapeHtml(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
 
 /* ============================================================
@@ -496,15 +757,57 @@ function mockApi(p){
     setTimeout(()=>{
       switch(p.action){
         case 'adminLogin':
-          resolve({status:'ok', valid: p.pass === 'admin123'});
+          // Mock: cek password dari localStorage (jika sudah diganti) atau default admin123
+          const storedPass = localStorage.getItem('adminPassword') || 'admin123';
+          resolve({status:'ok', valid: p.pass === storedPass});
           break;
         case 'generateToken':
           if (p.pass !== 'admin123'){ resolve({status:'error', message:'Akses ditolak'}); break; }
-          const kode = p.posisi.toUpperCase() + '-' + Math.random().toString(36).substr(2,6).toUpperCase();
-          state.data.token.unshift({no:state.data.token.length+1, posisi:p.posisi, token:kode, status:'aktif', dibuat:new Date().toLocaleString('id-ID')});
+          const TERMS = ["ROUTER","WIFI","LAN","WAN","MODEM","SWITCH","HUB","DNS","HTTP","HTTPS","URL","DOMAIN","FIREWALL","SERVER","CLIENT","BROWSER","EMAIL","CLOUD","BANDWIDTH","PROXY","GATEWAY","BRIDGE","REPEATER","DHCP","NAT","SSL","PACKET","NODE","HOST","BYTE","BIT","TCP","UDP","FTP","SMTP","POP3"];
+          const term = TERMS[Math.floor(Math.random()*TERMS.length)];
+          const kode = term + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+          state.data.token.unshift({no:state.data.token.length+1, posisi:p.posisi, token:kode, status:'aktif', dibuat:getWIBTime(), istilah:term});
           // Nonaktifkan lama
           state.data.token.forEach((t,i)=>{ if (i>0 && t.posisi===p.posisi) t.status='nonaktif'; });
-          resolve({status:'ok', token:kode, posisi:p.posisi, dibuat:new Date().toLocaleString('id-ID')});
+          resolve({status:'ok', token:kode, posisi:p.posisi, dibuat:getWIBTime(), istilah:term});
+          break;
+        case 'getGameStatus':
+          try {
+            const stopped = localStorage.getItem('gameStopped') === 'true';
+            const stopTime = localStorage.getItem('gameStopTime') || '';
+            const startTime = localStorage.getItem('gameStartTime') || '';
+            resolve({status:'ok', stopped:stopped, message: stopped?'Waktu bermain Game Selesai':'Game berjalan', stopTime:stopTime, startTime:startTime, serverTime:getWIBTime(), timezone:'Asia/Jakarta (GMT+7 / WIB)'});
+          } catch(e){ resolve({status:'ok', stopped:false, serverTime:getWIBTime()}); }
+          break;
+        case 'setGameStatus':
+          if (p.pass !== 'admin123'){ resolve({status:'error', message:'Akses ditolak'}); break; }
+          try {
+            const ts = getWIBTime();
+            localStorage.setItem('gameStopped', p.stopped ? 'true' : 'false');
+            if (p.stopped) localStorage.setItem('gameStopTime', ts);
+            else { localStorage.setItem('gameStartTime', ts); localStorage.removeItem('gameStopTime'); }
+            resolve({status:'ok', stopped:!!p.stopped, timestamp:ts, message: p.stopped?'Game dihentikan':'Game dilanjutkan'});
+          } catch(e){ resolve({status:'ok', stopped:!!p.stopped, timestamp:getWIBTime()}); }
+          break;
+        case 'getConfig':
+          if (p.pass !== state.pass){ resolve({status:'error', message:'Akses ditolak'}); break; }
+          resolve({status:'ok', config: {
+            admin_password_set: true,
+            admin_password_length: (state.pass||'admin123').length,
+            game_stopped: localStorage.getItem('gameStopped') === 'true',
+            game_stop_time: localStorage.getItem('gameStopTime') || '',
+            game_start_time: localStorage.getItem('gameStartTime') || '',
+            max_salah: '3', app_name: 'Game Pesawat Edukasi',
+            timezone: 'Asia/Jakarta', school_name: 'SMP Negeri'
+          }});
+          break;
+        case 'changePassword':
+          if (p.pass !== state.pass){ resolve({status:'error', message:'Password lama salah'}); break; }
+          if (!p.newPass || p.newPass.length < 4){ resolve({status:'error', message:'Password baru min. 4 karakter'}); break; }
+          // Mock: store new password in localStorage so it persists
+          localStorage.setItem('adminPassword', p.newPass);
+          state.pass = p.newPass;
+          resolve({status:'ok', message:'Password berhasil diganti', newPass: p.newPass});
           break;
         case 'getDashboard':
           if (p.pass !== 'admin123'){ resolve({status:'error', message:'Akses ditolak'}); break; }
@@ -517,6 +820,15 @@ function mockApi(p){
   });
 }
 
+/* ===== WIB (GMT+7) TIME HELPER ===== */
+function getWIBTime(){
+  try {
+    return new Date().toLocaleString('id-ID', {timeZone:'Asia/Jakarta', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  } catch(e){
+    return new Date().toLocaleString('id-ID');
+  }
+}
+
 /* ============================================================
    ADMIN LOGIN
    ============================================================ */
@@ -524,13 +836,9 @@ async function adminLogin(){
   const pass = $('admin-pass').value.trim();
   if (!pass){ toast('Masukkan password','error'); return; }
   showLoading('MEMVERIFIKASI...');
-  let valid = false;
-  if (USE_MOCK){
-    valid = pass === 'admin123';
-  } else {
-    const res = await api({action:'adminLogin', pass});
-    valid = res.valid;
-  }
+  // Always use API (mock handles localStorage password check)
+  const res = await api({action:'adminLogin', pass});
+  const valid = res.valid;
   hideLoading();
   if (valid){
     state.pass = pass;
@@ -557,6 +865,8 @@ function switchTab(name){
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
   $('tab-'+name).style.display = 'block';
+  if (name === 'kontrol') refreshGameStatus();
+  if (name === 'konfig') loadConfig();
 }
 
 /* ============================================================
@@ -570,11 +880,155 @@ async function generateToken(posisi){
     const display = $(`token-${posisi}-display`);
     display.textContent = res.token;
     display.classList.remove('empty');
-    $(`token-${posisi}-meta`).textContent = 'Dibuat: ' + (res.dibuat || '-') + ' · Status: AKTIF';
+    $(`token-${posisi}-meta`).textContent = 'Dibuat: ' + (res.dibuat || '-') + ' WIB · Klik token untuk copy';
     toast(`Token ${posisi}: ${res.token}`, 'success');
     refreshAll();
   } else {
     toast(res.message || 'Gagal generate token','error');
+  }
+}
+
+/* ============================================================
+   PROJECTOR MODE & COPY TOKEN
+   ============================================================ */
+function toggleProjectorMode(){
+  document.body.classList.toggle('projector-mode');
+  const btn = $('btn-projector');
+  const isProjector = document.body.classList.contains('projector-mode');
+  btn.textContent = isProjector ? '✖ KELUAR PROYEKTOR' : '🖥️ MODE PROYEKTOR';
+  if (isProjector){
+    // Switch to token tab if not already
+    switchTab('token');
+    // Try fullscreen
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    toast('Mode Proyektor aktif! Tekan ESC untuk keluar.','success');
+  } else {
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+    else if (document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+}
+
+// Exit projector mode on ESC
+document.addEventListener('keydown', (e)=>{
+  if (e.key === 'Escape' && document.body.classList.contains('projector-mode')){
+    document.body.classList.remove('projector-mode');
+    $('btn-projector').textContent = '🖥️ MODE PROYEKTOR';
+  }
+});
+
+function copyToken(posisi){
+  const display = $(`token-${posisi}-display`);
+  if (display.classList.contains('empty')) return;
+  const token = display.textContent.trim();
+  try {
+    navigator.clipboard.writeText(token).then(()=>{
+      toast(`Token "${token}" tersalin!`, 'success');
+    }).catch(()=>{
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = token; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      toast(`Token "${token}" tersalin!`, 'success');
+    });
+  } catch(e){
+    toast('Gagal copy token','error');
+  }
+}
+
+/* ============================================================
+   GAME CONTROL (STOP/START)
+   ============================================================ */
+async function setGameStop(stop){
+  const action = stop ? 'Menghentikan' : 'Melanjutkan';
+  showLoading(action.toUpperCase() + ' GAME...');
+  const res = await api({action:'setGameStatus', stopped:stop, pass: state.pass});
+  hideLoading();
+  if (res.status === 'ok'){
+    toast(stop ? 'Game dihentikan! Semua siswa akan berhenti.' : 'Game dilanjutkan!', stop ? 'error' : 'success');
+    updateGameStatusDisplay({stopped:stop, stopTime: res.timestamp || '', serverTime: res.timestamp || ''});
+    setTimeout(()=> refreshGameStatus(), 500);
+  } else {
+    toast(res.message || 'Gagal mengubah status','error');
+  }
+}
+
+async function refreshGameStatus(){
+  const res = await api({action:'getGameStatus', pass: state.pass});
+  if (res.status === 'ok'){
+    updateGameStatusDisplay(res);
+  }
+}
+
+function updateGameStatusDisplay(res){
+  const card = $('control-card');
+  const dot = $('status-dot');
+  const text = $('status-text');
+  const time = $('control-time');
+  const info = $('control-info');
+  if (res.stopped){
+    card.classList.add('stopped'); card.classList.remove('running');
+    text.textContent = 'GAME DIHENTIKAN';
+    time.textContent = res.stopTime ? ('Dihentikan: ' + res.stopTime + ' WIB') : '';
+    info.textContent = 'Semua siswa yang sedang main akan melihat popup "Waktu bermain Game Selesai"';
+  } else {
+    card.classList.add('running'); card.classList.remove('stopped');
+    text.textContent = 'GAME BERJALAN';
+    time.textContent = res.startTime ? ('Dimulai: ' + res.startTime + ' WIB') : ('Server: ' + (res.serverTime || '-') + ' WIB');
+    info.textContent = 'Siswa dapat bermain normally';
+  }
+}
+
+/* ============================================================
+   KONFIG (Config & Change Password)
+   ============================================================ */
+async function loadConfig(){
+  const res = await api({action:'getConfig', pass: state.pass});
+  if (res.status === 'ok' && res.config){
+    const cfg = res.config;
+    $('cfg-pass-len').textContent = cfg.admin_password_length || 0;
+    $('cfg-max-salah').textContent = cfg.max_salah || '3';
+    $('cfg-status').textContent = cfg.game_stopped ? 'STOP' : 'JALAN';
+    // Config table (sembunyikan password value)
+    const rows = [
+      ['admin_password', '•••••• (' + (cfg.admin_password_length||0) + ' karakter)', 'Password admin (tersembunyi)'],
+      ['game_stopped', cfg.game_stopped ? 'true (DIHENTIKAN)' : 'false (BERJALAN)', 'Status game'],
+      ['game_stop_time', cfg.game_stop_time || '-', 'Waktu dihentikan (WIB)'],
+      ['game_start_time', cfg.game_start_time || '-', 'Waktu dimulai (WIB)'],
+      ['max_salah', cfg.max_salah || '3', 'Maksimal salah'],
+      ['app_name', cfg.app_name || 'Game Pesawat Edukasi', 'Nama aplikasi'],
+      ['timezone', cfg.timezone || 'Asia/Jakarta', 'Zona waktu'],
+      ['school_name', cfg.school_name || '-', 'Nama sekolah']
+    ];
+    $('tbl-config').innerHTML = rows.map(r =>
+      `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td style="font-size:11px;color:#666;">${r[2]}</td></tr>`
+    ).join('');
+  }
+}
+
+async function changePassword(){
+  const oldPass = $('cfg-old-pass').value.trim();
+  const newPass = $('cfg-new-pass').value.trim();
+  const confirmPass = $('cfg-confirm-pass').value.trim();
+  if (!oldPass){ toast('Masukkan password lama','error'); return; }
+  if (!newPass){ toast('Masukkan password baru','error'); return; }
+  if (newPass.length < 4){ toast('Password baru min. 4 karakter','error'); return; }
+  if (newPass !== confirmPass){ toast('Konfirmasi password tidak cocok','error'); return; }
+
+  showLoading('MENGGANTI PASSWORD...');
+  const res = await api({action:'changePassword', pass: oldPass, newPass});
+  hideLoading();
+  if (res.status === 'ok'){
+    toast('Password berhasil diganti!','success');
+    $('cfg-old-pass').value = '';
+    $('cfg-new-pass').value = '';
+    $('cfg-confirm-pass').value = '';
+    // Update state.pass if the new password is for current session
+    state.pass = newPass;
+    setTimeout(()=> loadConfig(), 500);
+  } else {
+    toast(res.message || 'Gagal ganti password','error');
   }
 }
 
