@@ -74,6 +74,18 @@ body{
 #layer-welcome{
   flex-direction:column; align-items:center; justify-content:center;
   overflow:hidden;
+  background:linear-gradient(180deg, #1a3a5c 0%, #2d5a8c 20%, #4a8bc2 40%, #7fc8f8 55%, #b8e5ff 65%, #f0d090 75%, #e8a060 85%, #c87040 100%);
+}
+#layer-welcome::before{
+  content:""; position:absolute; bottom:15%; left:50%; transform:translateX(-50%);
+  width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,220,100,.6) 0%, rgba(255,180,80,.3) 40%, transparent 70%);
+  pointer-events:none; z-index:0;
+  animation:sunPulse 4s ease-in-out infinite;
+}
+@keyframes sunPulse{
+  0%,100%{transform:translateX(-50%) scale(1); opacity:.7;}
+  50%{transform:translateX(-50%) scale(1.1); opacity:1;}
 }
 
 /* Animated sky with floating clouds */
@@ -81,12 +93,38 @@ body{
   position:absolute; inset:0; pointer-events:none; overflow:hidden;
 }
 .cloud{
-  position:absolute; background:rgba(255,255,255,.85); border-radius:50px;
+  position:absolute; background:rgba(255,255,255,.9); border-radius:50px;
   filter:blur(.5px);
-  box-shadow: 30px 0 0 -5px rgba(255,255,255,.85),
-              55px 5px 0 -8px rgba(255,255,255,.85),
-              -25px 5px 0 -5px rgba(255,255,255,.85);
+  box-shadow: 30px 0 0 -5px rgba(255,255,255,.9),
+              55px 5px 0 -8px rgba(255,255,255,.9),
+              -25px 5px 0 -5px rgba(255,255,255,.9);
   animation:cloudFloat linear infinite;
+}
+/* Gold sparkle particles */
+.sparkle{
+  position:absolute; width:6px; height:6px; border-radius:50%;
+  background:radial-gradient(circle, #FFD700, #FFA500);
+  box-shadow:0 0 8px #FFD700;
+  pointer-events:none; z-index:1;
+  animation:sparkleFloat linear infinite;
+}
+@keyframes sparkleFloat{
+  0%{transform:translateY(0) scale(0); opacity:0;}
+  20%{transform:translateY(-30px) scale(1); opacity:1;}
+  80%{transform:translateY(-120px) scale(1); opacity:.8;}
+  100%{transform:translateY(-160px) scale(0); opacity:0;}
+}
+/* Animated plane flying across welcome */
+.welcome-plane{
+  position:absolute; top:35%; left:-60px; z-index:2;
+  font-size:40px; pointer-events:none;
+  animation:welcomePlaneFly 12s linear infinite;
+  filter:drop-shadow(2px 2px 0 rgba(0,0,0,.3));
+}
+@keyframes welcomePlaneFly{
+  0%{transform:translateX(0) translateY(0);}
+  50%{transform:translateX(50vw) translateY(-30px);}
+  100%{transform:translateX(calc(100vw + 100px)) translateY(0);}
 }
 .cloud.c1{width:80px;height:30px;top:15%;left:-100px;animation-duration:35s;}
 .cloud.c2{width:60px;height:24px;top:35%;left:-100px;animation-duration:50s;animation-delay:-10s;}
@@ -122,14 +160,20 @@ body{
 }
 .logo-title{
   font-family:'Trebuchet MS',sans-serif;
-  font-size:clamp(36px,7vw,72px);
-  font-weight:900; color:var(--gold);
-  text-shadow:
-    -2px -2px 0 var(--wood-d), 2px -2px 0 var(--wood-d),
-    -2px 2px 0 var(--wood-d), 2px 2px 0 var(--wood-d),
-    0 6px 0 var(--wood-d), 0 8px 12px rgba(0,0,0,.5);
+  font-size:clamp(40px,8vw,82px);
+  font-weight:900;
+  background:linear-gradient(180deg, #FFE994 0%, #FFD24A 40%, #C8941A 70%, #FFD24A 100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(-3px -3px 0 #3A2410) drop-shadow(3px 3px 0 #3A2410)
+         drop-shadow(0 6px 0 #3A2410) drop-shadow(0 8px 15px rgba(0,0,0,.6));
   letter-spacing:2px; line-height:1;
   transform:rotate(-3deg);
+  animation:logoShine 3s ease-in-out infinite;
+}
+@keyframes logoShine{
+  0%,100%{filter:drop-shadow(-3px -3px 0 #3A2410) drop-shadow(3px 3px 0 #3A2410) drop-shadow(0 6px 0 #3A2410) drop-shadow(0 8px 15px rgba(0,0,0,.6));}
+  50%{filter:drop-shadow(-3px -3px 0 #3A2410) drop-shadow(3px 3px 0 #3A2410) drop-shadow(0 6px 0 #3A2410) drop-shadow(0 8px 20px rgba(255,210,74,.5));}
 }
 .logo-sub{
   margin-top:8px; font-size:clamp(14px,2.2vw,22px);
@@ -142,7 +186,7 @@ body{
   background:linear-gradient(180deg,var(--red),var(--red-d));
   color:#fff; font-weight:900; font-size:14px; border-radius:20px;
   border:3px solid var(--gold);
-  box-shadow:var(--shadow);
+  box-shadow:var(--shadow), var(--shadow-inset);
   animation:badgePulse 1.6s ease-in-out infinite;
 }
 @keyframes badgePulse{
@@ -189,6 +233,27 @@ body{
   position:absolute; bottom:14px; left:0; right:0; text-align:center;
   color:var(--cream); font-size:13px; font-weight:bold;
   text-shadow:1px 1px 0 var(--wood-d); z-index:3;
+}
+/* Feature badges */
+.feature-badges{
+  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  margin-top:20px; z-index:3; position:relative;
+}
+.feature-badge{
+  background:rgba(26,17,8,.7); border:2px solid var(--gold-d);
+  border-radius:20px; padding:6px 14px;
+  color:var(--gold-l); font-weight:900; font-size:12px;
+  backdrop-filter:blur(4px);
+  box-shadow: var(--shadow-inset);
+  animation:badgeFadeIn .5s ease both;
+}
+.feature-badge:nth-child(1){animation-delay:.3s;}
+.feature-badge:nth-child(2){animation-delay:.5s;}
+.feature-badge:nth-child(3){animation-delay:.7s;}
+.feature-badge:nth-child(4){animation-delay:.9s;}
+@keyframes badgeFadeIn{
+  from{transform:translateY(20px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
 }
 .about-link{
   color:var(--gold-l); text-decoration:none; cursor:pointer;
@@ -555,13 +620,13 @@ body{
 }
 @keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
 
-/* Scene indicator (terrain + time of day) */
+/* Scene indicator (terrain + time of day) - positioned below HUD panels */
 .scene-indicator{
-  position:absolute; top:14px; right:18px; z-index:4;
+  position:absolute; top:68px; right:18px; z-index:4;
   background:rgba(26,17,8,.8); border:2px solid var(--gold-d);
-  border-radius:10px; padding:6px 14px;
-  color:var(--gold-l); font-weight:900; font-size:14px;
-  backdrop-filter:blur(4px); display:flex; gap:8px; align-items:center;
+  border-radius:10px; padding:5px 12px;
+  color:var(--gold-l); font-weight:900; font-size:13px;
+  backdrop-filter:blur(4px); display:flex; gap:6px; align-items:center;
   box-shadow: var(--shadow-inset);
 }
 .scene-indicator .scene-sep{opacity:.5;}
@@ -813,13 +878,30 @@ body{
 <!-- ============================================================
      LAYER 1: WELCOME
      ============================================================ -->
-<div id="layer-welcome" class="layer bg-grass">
+<div id="layer-welcome" class="layer">
+  <!-- Sunset gradient background + sun glow (CSS ::before) -->
+
+  <!-- Sparkle particles -->
+  <div class="sparkle" style="left:10%;bottom:20%;animation-duration:3s;animation-delay:0s;"></div>
+  <div class="sparkle" style="left:25%;bottom:15%;animation-duration:4s;animation-delay:-1s;"></div>
+  <div class="sparkle" style="left:45%;bottom:25%;animation-duration:3.5s;animation-delay:-2s;"></div>
+  <div class="sparkle" style="left:65%;bottom:18%;animation-duration:3s;animation-delay:-0.5s;"></div>
+  <div class="sparkle" style="left:80%;bottom:22%;animation-duration:4.5s;animation-delay:-1.5s;"></div>
+  <div class="sparkle" style="left:90%;bottom:16%;animation-duration:3.5s;animation-delay:-2.5s;"></div>
+  <div class="sparkle" style="left:15%;bottom:30%;animation-duration:4s;animation-delay:-3s;"></div>
+  <div class="sparkle" style="left:55%;bottom:12%;animation-duration:3s;animation-delay:-1s;"></div>
+  <div class="sparkle" style="left:75%;bottom:28%;animation-duration:3.5s;animation-delay:-2s;"></div>
+  <div class="sparkle" style="left:35%;bottom:18%;animation-duration:4s;animation-delay:-3.5s;"></div>
+
   <div class="sky-deco">
     <div class="cloud c1"></div>
     <div class="cloud c2"></div>
     <div class="cloud c3"></div>
     <div class="cloud c4"></div>
   </div>
+
+  <!-- Flying plane animation -->
+  <div class="welcome-plane">✈️</div>
 
   <!-- Floating island decoration -->
   <svg class="floating-island i1" width="120" height="90" viewBox="0 0 120 90">
@@ -846,6 +928,14 @@ body{
     <button class="coc-btn blue small" onclick="showPopupInfo()">
       ℹ CARA MAIN
     </button>
+  </div>
+
+  <!-- Feature badges -->
+  <div class="feature-badges">
+    <div class="feature-badge">🎮 3D Game</div>
+    <div class="feature-badge">✈️ Pesawat Pilot</div>
+    <div class="feature-badge">📚 25 Soal</div>
+    <div class="feature-badge">🏆 Papan Peringkat</div>
   </div>
 
   <div class="welcome-footer">
@@ -1128,6 +1218,11 @@ body{
   </div>
 </div>
 
+<!-- Background music audio element -->
+<audio id="bg-music" loop preload="auto">
+  <source src="https://apxid.github.io/informatika/jaringankomputer/game/assets/mb_clear.mp3" type="audio/mpeg">
+</audio>
+
 <!-- ============================================================
      POPUP: ABOUT GAME
      ============================================================ -->
@@ -1373,6 +1468,7 @@ function restoreState(){
       startTimer();
       startGameStatusPoll();
       Sound.startBg();
+      Sound.startMusic(); // resume background music
       // Restore fuel display
       updateFuel();
       toast('Game dilanjutkan','');
@@ -1632,6 +1728,27 @@ const Sound = {
     if (this.bgGain && this.ctx){
       this.bgGain.gain.setTargetAtTime(0.04 + v*0.08, this.ctx.currentTime, 0.1);
     }
+  },
+
+  // ===== Background music (MP3 looping) =====
+  musicEl: null,
+  startMusic(){
+    if (!this.musicEl){
+      this.musicEl = document.getElementById('bg-music');
+    }
+    if (this.musicEl && this.enabled){
+      this.musicEl.volume = 0.3;
+      this.musicEl.play().catch(()=>{ /* autoplay might be blocked */ });
+    }
+  },
+  stopMusic(){
+    if (this.musicEl){
+      this.musicEl.pause();
+      this.musicEl.currentTime = 0;
+    }
+  },
+  setMusicVolume(v){
+    if (this.musicEl) this.musicEl.volume = v;
   }
 };
 
@@ -1642,10 +1759,12 @@ function toggleSound(){
     btn.textContent = '🔊';
     btn.classList.remove('muted');
     Sound.resume();
+    Sound.startMusic(); // resume music
   } else {
     btn.textContent = '🔇';
     btn.classList.add('muted');
     Sound.stopBg();
+    Sound.stopMusic(); // pause music
   }
 }
 
@@ -1766,6 +1885,7 @@ function handleGameStopped(res){
   if (state.timerInterval) clearInterval(state.timerInterval);
   if (state.animId) cancelAnimationFrame(state.animId);
   Sound.stopBg(); // stop background sound
+  Sound.stopMusic(); // stop music
   if (state.keyHandler){
     window.removeEventListener('keydown', state.keyHandler);
     window.removeEventListener('keyup', state.keyHandler);
@@ -1883,6 +2003,7 @@ async function startGame(){
     startTimer();
     startGameStatusPoll();
     Sound.startBg(); // background engine hum
+    Sound.startMusic(); // background music MP3
   } else {
     toast('Gagal memuat soal','error');
   }
@@ -2032,6 +2153,7 @@ async function endGame(win){
   if (state.animId) cancelAnimationFrame(state.animId);
   stopGameStatusPoll();
   Sound.stopBg(); // stop background engine hum
+  Sound.stopMusic(); // stop background music
   // Remove keyboard listener
   if (state.keyHandler){
     window.removeEventListener('keydown', state.keyHandler);
