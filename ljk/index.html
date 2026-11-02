@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Koreksi LJK - Asesmen Akhir Semester</title>
+
+<!-- jsQR untuk deteksi QR code -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --accent: #f59e0b;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #cbd5e1;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warn: #d97706;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+  .header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 14px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .header h1 { font-size: 18px; font-weight: 700; }
+  .header p { font-size: 12px; opacity: 0.9; margin-top: 2px; }
+  .header .nav-right {
+    float: right;
+    margin-top: -28px;
+  }
+  .header .nav-right a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 6px;
+  }
+  .container { padding: 16px; max-width: 700px; margin: 0 auto; }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .card h2 {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: var(--primary-dark);
+    border-bottom: 2px solid var(--bg);
+    padding-bottom: 8px;
+  }
+  .form-group { margin-bottom: 12px; }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  select, input[type="text"], input[type="url"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+  }
+  select:focus, input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30,64,175,0.15);
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover, .btn-primary:active { background: var(--primary-dark); }
+  .btn-accent { background: var(--accent); color: white; }
+  .btn-accent:hover, .btn-accent:active { background: #b45309; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-block { display: block; width: 100%; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn-row .btn { flex: 1; }
+
+  /* Camera / file area */
+  .capture-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    background: #fafbfc;
+  }
+  .preview-img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #cameraVideo {
+    width: 100%;
+    border-radius: 8px;
+    background: black;
+    display: none;
+  }
+  #overlayCanvas {
+    position: relative;
+    margin-top: 12px;
+    max-width: 100%;
+  }
+
+  /* Progress */
+  .progress-bar {
+    background: var(--bg);
+    border-radius: 6px;
+    height: 8px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+  .progress-bar-fill {
+    background: var(--primary);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .status-text {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    min-height: 18px;
+  }
+
+  /* Result display */
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .result-stat {
+    background: var(--bg);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .result-stat .label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .result-stat .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary-dark);
+  }
+  .result-stat.full-width { grid-column: span 2; }
+  .result-stat.highlight .value { color: var(--success); }
+
+  /* Answer review table */
+  .answer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .answer-table th, .answer-table td {
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    text-align: center;
+  }
+  .answer-table th {
+    background: var(--bg);
+    font-weight: 600;
+  }
+  .answer-table td.correct { background: #dcfce7; color: var(--success); font-weight: 600; }
+  .answer-table td.wrong { background: #fee2e2; color: var(--danger); font-weight: 600; }
+  .answer-table td.empty { color: var(--muted); }
+
+  /* Student info */
+  .student-info {
+    background: #eff6ff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .student-info .row { display: flex; justify-content: space-between; }
+  .student-info .row + .row { margin-top: 4px; }
+  .student-info .label { color: var(--muted); }
+  .student-info .value { font-weight: 600; }
+
+  /* Settings */
+  .settings-toggle {
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: center;
+    padding: 8px;
+    margin-top: 8px;
+  }
+  .settings-panel {
+    display: none;
+    background: #fef3c7;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .settings-panel.show { display: block; }
+  .settings-panel label { font-size: 12px; }
+  .settings-panel input { font-size: 12px; font-family: monospace; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15,23,42,0.95);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    max-width: 90%;
+  }
+  .toast.show { opacity: 1; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 12px;
+  }
+  .tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .tab.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* Threshold slider */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .slider-row input[type="range"] {
+    flex: 1;
+  }
+  .slider-row .val {
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--bg);
+    padding: 4px 8px;
+    border-radius: 4px;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    .header h1 { font-size: 16px; }
+    .container { padding: 12px; }
+    .card { padding: 12px; }
+    .result-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Koreksi LJK</h1>
+  <p>Asesmen Akhir Semester &middot; Scan &amp; Otomatis</p>
+  <div class="nav-right">
+    <a href="admin.html">Admin</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SETTINGS: GAS URL -->
+  <div class="card">
+    <h2>Konfigurasi</h2>
+    <div class="form-group">
+      <label>URL Backend (Google Apps Script)</label>
+      <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec">
+    </div>
+    <div class="form-group">
+      <label>Pilih Ujian</label>
+      <select id="examSelect"><option value="">-- Memuat... --</option></select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="loadExams()">Muat Ujian</button>
+    <div class="settings-toggle" onclick="toggleSettings()">Pengaturan lanjutan &darr;</div>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="form-group">
+        <label>Ambang Deteksi Bubble (0-100)</label>
+        <div class="slider-row">
+          <input type="range" id="thresholdSlider" min="20" max="80" value="45">
+          <span class="val" id="thresholdVal">45</span>
+        </div>
+        <small>Default 45. Naikkan jika bubble kosong sering salah terdeteksi, turunkan jika jawaban tidak terbaca.</small>
+      </div>
+      <div class="form-group">
+        <label>Simpan URL ke penyimpanan lokal?</label>
+        <button class="btn btn-success btn-block" onclick="saveSettings()">Simpan Pengaturan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT: Camera / Upload -->
+  <div class="card">
+    <h2>Input Lembar Jawab</h2>
+    <div class="tabs">
+      <div class="tab active" id="tabUpload" onclick="switchTab('upload')">Upload Foto</div>
+      <div class="tab" id="tabCamera" onclick="switchTab('camera')">Kamera Langsung</div>
+    </div>
+
+    <div id="uploadPanel">
+      <div class="capture-area">
+        <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">
+          Ambil foto LJK dengan kamera HP. Pastikan:<br>
+          &bull; Marker <b>BATAS ATAS</b> &amp; <b>BATAS BAWAH</b> terlihat jelas<br>
+          &bull; QR code tidak buram/tidak terpotong<br>
+          &bull; Pencahayaan merata, tidak ada bayangan
+        </p>
+        <input type="file" id="fileInput" accept="image/*" capture="environment"
+               style="display:none">
+        <button class="btn btn-accent btn-block" onclick="document.getElementById('fileInput').click()">
+          Pilih / Ambil Foto
+        </button>
+      </div>
+    </div>
+
+    <div id="cameraPanel" style="display:none">
+      <video id="cameraVideo" autoplay playsinline></video>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn btn-primary" onclick="startCamera()">Mulai Kamera</button>
+        <button class="btn btn-accent" onclick="captureFromCamera()" id="captureBtn" disabled>Ambil Foto</button>
+        <button class="btn btn-danger" onclick="stopCamera()">Stop</button>
+      </div>
+    </div>
+
+    <img id="previewImg" class="preview-img" style="display:none">
+    <canvas id="overlayCanvas" style="display:none"></canvas>
+  </div>
+
+  <!-- PROCESS -->
+  <div class="card" id="processCard" style="display:none">
+    <h2>Proses Koreksi</h2>
+    <button class="btn btn-primary btn-block" onclick="processImage()" id="processBtn">
+      Mulai Deteksi Jawaban
+    </button>
+    <div class="progress-bar" id="progressBar" style="margin-top:10px">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="status-text" id="statusText"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="card" id="resultCard" style="display:none">
+    <h2>Hasil Koreksi</h2>
+    <div class="student-info" id="studentInfo"></div>
+    <div class="result-grid" id="resultGrid"></div>
+    <div style="margin-top:14px">
+      <h3 style="font-size:13px; margin-bottom:6px; color:var(--muted)">Rincian Jawaban</h3>
+      <div id="answerReview"></div>
+    </div>
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn btn-success" onclick="saveResult()">Simpan Hasil</button>
+      <button class="btn btn-primary" onclick="resetAll()">Koreksi Lagi</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===========================================================================
+// KONFIGURASI - GANTI URL INI DENGAN URL DEPLOYMENT GAS ANDA!
+// ===========================================================================
+var GAS_EXEC_URL = 'https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec'; // <-- WAJIB GANTI
+
+// ===========================================================================
+// STRUKTUR SOAL (HARUS SINKRON dengan Kode.gs & PDF generator)
+// ===========================================================================
+var STRUCTURE = {
+  pg:  { count: 15, options: ['A','B','C','D','E'], multiple: false },
+  pgk: { count: 10, options: ['A','B','C','D','E'], multiple: true },
+  bs:  { count: 5,  options: ['B','S'],             multiple: false }
+};
+
+// ===========================================================================
+// LAYOUT KOORDINAT LJK (dalam mm - SINKRON dengan generate_ljk.py)
+// Page A4: 210 x 297 mm, margin 12mm
+// ===========================================================================
+var LAYOUT = {
+  pageW: 210, pageH: 297, margin: 12,
+  markerThickness: 6,
+  topMarkerY: 61,        // CENTER Y marker atas (span 58-64mm)
+  bottomMarkerY: 251,    // CENTER Y marker bawah (span 248-254mm)
+  qrX: 210 - 12 - 28,  // = 170
+  qrY: 14,
+  qrSize: 28,
+  bubbleRadius: 2.75,  // 5.5mm diameter
+  rowHeight: 8.5,
+  // Section PG: 3 kolom x 5 baris
+  // startY = bubble center Y for row 0 in mm
+  // (PDF header at 68, +5 to row 0 top, +1 within row = 74)
+  pg: {
+    startY: 74,
+    cols: 3,
+    rowsPerCol: 5,
+    colWidth: 58,
+    labelOffset: 8,         // x offset dari nomor ke bubble pertama
+    bubbleSpacing: 9,
+    options: ['A','B','C','D','E']
+  },
+  // Section PGK: 2 kolom x 5 baris
+  // startY = 128 + 5 + 1 = 134
+  pgk: {
+    startY: 134,
+    cols: 2,
+    rowsPerCol: 5,
+    colWidth: 87,
+    labelOffset: 8,
+    bubbleSpacing: 12,
+    options: ['A','B','C','D','E']
+  },
+  // Section BS: 1 kolom
+  // startY = 188 + 5 + 1 = 194
+  bs: {
+    startY: 194,
+    colX: 12 + 30,  // margin + offset = 42
+    rows: 5,
+    labelOffset: 8,
+    bubbleSpacing: 18,
+    options: ['B','S']
+  }
+};
+
+// State global
+var state = {
+  currentImage: null,      // HTMLImageElement
+  imageData: null,         // { canvas, ctx, width, height, grayData }
+  markers: null,           // { topY, bottomY, topX1, topX2, bottomX1, bottomX2, scale }
+  qrData: null,            // parsed JSON dari QR
+  detectedAnswers: null,   // { pg:[], pgk:[], bs:[] }
+  answerKey: null,         // dari backend
+  examInfo: null,
+  result: null,
+  threshold: 45,
+  cameraStream: null
+};
+
+// ===========================================================================
+// UTILITAS
+// ===========================================================================
+function toast(msg, duration) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, duration || 2500);
+}
+
+function setStatus(msg) {
+  document.getElementById('statusText').textContent = msg;
+}
+
+function setProgress(pct) {
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function $(id) { return document.getElementById(id); }
+
+function toggleSettings() {
+  $('settingsPanel').classList.toggle('show');
+}
+
+function saveSettings() {
+  var url = $('gasUrl').value.trim();
+  var threshold = $('thresholdSlider').value;
+  if (url) {
+    GAS_EXEC_URL = url;
+    localStorage.setItem('ljk_gas_url', url);
+  }
+  localStorage.setItem('ljk_threshold', threshold);
+  state.threshold = parseInt(threshold, 10);
+  toast('Pengaturan disimpan');
+}
+
+function loadSettings() {
+  var savedUrl = localStorage.getItem('ljk_gas_url');
+  var savedThreshold = localStorage.getItem('ljk_threshold');
+  if (savedUrl) {
+    GAS_EXEC_URL = savedUrl;
+    $('gasUrl').value = savedUrl;
+  } else {
+    $('gasUrl').value = GAS_EXEC_URL;
+  }
+  if (savedThreshold) {
+    state.threshold = parseInt(savedThreshold, 10);
+    $('thresholdSlider').value = savedThreshold;
+    $('thresholdVal').textContent = savedThreshold;
+  }
+}
+
+// Threshold slider live update
+document.addEventListener('DOMContentLoaded', function() {
+  loadSettings();
+  $('thresholdSlider').addEventListener('input', function() {
+    $('thresholdVal').textContent = this.value;
+    state.threshold = parseInt(this.value, 10);
+  });
+  // Auto-load exams if URL configured
+  if (GAS_EXEC_URL && GAS_EXEC_URL !== 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
+    loadExams();
+  }
+});
+
+// ===========================================================================
+// TAB SWITCHING
+// ===========================================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  if (tab === 'upload') {
+    $('tabUpload').classList.add('active');
+    $('uploadPanel').style.display = 'block';
+    $('cameraPanel').style.display = 'none';
+    stopCamera();
+  } else {
+    $('tabCamera').classList.add('active');
+    $('uploadPanel').style.display = 'none';
+    $('cameraPanel').style.display = 'block';
+  }
+}
+
+// ===========================================================================
+// LOAD EXAMS FROM BACKEND
+// ===========================================================================
+function loadExams() {
+  if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
+    var url = $('gasUrl').value.trim();
+    if (url) {
+      GAS_EXEC_URL = url;
+    } else {
+      toast('Set URL backend GAS dulu di bagian Konfigurasi');
+      return;
+    }
+  }
+  setStatus('Memuat daftar ujian...');
+  var url = GAS_EXEC_URL + '?action=listExams';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        var sel = $('examSelect');
+        sel.innerHTML = '';
+        if (data.exams.length === 0) {
+          sel.innerHTML = '<option value="">-- Belum ada ujian, set di admin.html --</option>';
+          toast('Belum ada ujian. Buka admin.html untuk membuat.');
+        } else {
+          data.exams.forEach(function(e) {
+            var opt = document.createElement('option');
+            opt.value = e.examId;
+            opt.textContent = e.examId + ' - ' + e.name + ' (' + e.subject + ')';
+            sel.appendChild(opt);
+          });
+        }
+        setStatus('');
+      } else {
+        toast('Error: ' + (data.error || 'gagal'));
+        setStatus('');
+      }
+    })
+    .catch(function(err) {
+      toast('Gagal koneksi: ' + err.message);
+      setStatus('');
+    });
+}
+
+// ===========================================================================
+// FILE UPLOAD
+// ===========================================================================
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  loadImageFile(file);
+});
+
+function loadImageFile(file) {
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      state.currentImage = img;
+      var preview = $('previewImg');
+      preview.src = ev.target.result;
+      preview.style.display = 'block';
+      $('processCard').style.display = 'block';
+      $('resultCard').style.display = 'none';
+      toast('Foto dimuat. Klik "Mulai Deteksi"');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ===========================================================================
+// CAMERA
+// ===========================================================================
+function startCamera() {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+    }).then(function(stream) {
+      state.cameraStream = stream;
+      var video = $('cameraVideo');
+      video.srcObject = stream;
+      video.style.display = 'block';
+      $('captureBtn').disabled = false;
+      toast('Kamera aktif');
+    }).catch(function(err) {
+      toast('Error kamera: ' + err.message);
+    });
+  } else {
+    toast('Browser tidak mendukung kamera');
+  }
+}
+
+function stopCamera() {
+  if (state.cameraStream) {
+    state.cameraStream.getTracks().forEach(function(t) { t.stop(); });
+    state.cameraStream = null;
+    $('captureBtn').disabled = true;
+  }
+}
+
+function captureFromCamera() {
+  var video = $('cameraVideo');
+  if (!video.videoWidth) {
+    toast('Kamera belum siap');
+    return;
+  }
+  var canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+  var img = new Image();
+  img.onload = function() {
+    state.currentImage = img;
+    var preview = $('previewImg');
+    preview.src = dataUrl;
+    preview.style.display = 'block';
+    $('processCard').style.display = 'block';
+    $('resultCard').style.display = 'none';
+    stopCamera();
+    toast('Foto diambil. Klik "Mulai Deteksi"');
+  };
+  img.src = dataUrl;
+}
+
+// ===========================================================================
+// IMAGE PROCESSING - Grayscale & markers
+// ===========================================================================
+function prepareImage() {
+  var img = state.currentImage;
+  // Resize if too large (max 1600px) for performance
+  var maxDim = 1600;
+  var w = img.width, h = img.height;
+  if (w > maxDim || h > maxDim) {
+    var scale = maxDim / Math.max(w, h);
+    w = Math.round(w * scale);
+    h = Math.round(h * scale);
+  }
+  var canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+
+  var imgData = ctx.getImageData(0, 0, w, h);
+  var data = imgData.data;
+  // Build grayscale array (0-255)
+  var gray = new Uint8ClampedArray(w * h);
+  for (var i = 0; i < w * h; i++) {
+    var r = data[i*4], g = data[i*4+1], b = data[i*4+2];
+    // Luminance
+    gray[i] = Math.round(0.299*r + 0.587*g + 0.114*b);
+  }
+  state.imageData = { canvas: canvas, ctx: ctx, width: w, height: h, grayData: gray, imgData: imgData };
+  return state.imageData;
+}
+
+/**
+ * Deteksi fiducial markers (BATAS ATAS & BATAS BAWAH)
+ * Strategi: scan baris-baris horizontal, hitung rasio pixel hitam.
+ * Baris dengan >60% pixel hitam = baris marker.
+ */
+function detectMarkers() {
+  var img = state.imageData;
+  var w = img.width, h = img.height, gray = img.grayData;
+  var blackThreshold = 100;  // pixel <= ini dianggap hitam
+  var markerRowRatio = 0.55; // 55% baris hitam = marker
+
+  // Hitung black ratio per baris
+  var rowBlackRatio = new Float32Array(h);
+  for (var y = 0; y < h; y++) {
+    var blackCount = 0;
+    for (var x = 0; x < w; x++) {
+      if (gray[y*w + x] <= blackThreshold) blackCount++;
+    }
+    rowBlackRatio[y] = blackCount / w;
+  }
+
+  // Cari top marker: baris pertama yang konsisten marker-row
+  var topMarkerY = -1, topMarkerEnd = -1;
+  for (var y = Math.floor(h * 0.10); y < h * 0.40; y++) {
+    if (rowBlackRatio[y] > markerRowRatio) {
+      if (topMarkerY === -1) topMarkerY = y;
+      topMarkerEnd = y;
+    } else if (topMarkerY !== -1 && (y - topMarkerEnd) > 5) {
+      break;
+    }
+  }
+
+  // Cari bottom marker: baris terakhir yang konsisten marker-row
+  var bottomMarkerY = -1, bottomMarkerStart = -1;
+  for (var y = Math.floor(h * 0.60); y < h * 0.92; y++) {
+    if (rowBlackRatio[y] > markerRowRatio) {
+      if (bottomMarkerStart === -1) bottomMarkerStart = y;
+      bottomMarkerY = y;
+    } else if (bottomMarkerStart !== -1 && (y - bottomMarkerY) > 5) {
+      // gap detected, reset if too short
+      if (bottomMarkerY - bottomMarkerStart < 3) {
+        bottomMarkerStart = -1;
+        bottomMarkerY = -1;
+      } else {
+        break;
+      }
+    }
+  }
+
+  if (topMarkerY === -1 || bottomMarkerY === -1) {
+    throw new Error('Marker BATAS ATAS / BAWAH tidak terdeteksi. Pastikan foto lengkap & marker hitam jelas.');
+  }
+
+  // Center Y of markers
+  var topY = (topMarkerY + topMarkerEnd) / 2;
+  var bottomY = (bottomMarkerStart + bottomMarkerY) / 2;
+
+  // Detect marker X range (find left/right edges of black bar)
+  function findMarkerXRange(yStart, yEnd) {
+    var left = w, right = 0;
+    for (var y = Math.max(0, yStart); y < Math.min(h, yEnd + 1); y++) {
+      for (var x = 0; x < w; x++) {
+        if (gray[y*w + x] <= blackThreshold) {
+          if (x < left) left = x;
+          if (x > right) right = x;
+        }
+      }
+    }
+    return { left: left, right: right };
+  }
+  var topRange = findMarkerXRange(topMarkerY, topMarkerEnd);
+  var bottomRange = findMarkerXRange(bottomMarkerStart, bottomMarkerY);
+
+  // Expected distance between markers in mm = bottomMarkerY - topMarkerY (in layout)
+  // In image px: bottomY - topY
+  var expectedMarkerDistMm = LAYOUT.bottomMarkerY - LAYOUT.topMarkerY;
+  var actualMarkerDistPx = bottomY - topY;
+  var scale = actualMarkerDistPx / expectedMarkerDistMm;  // px per mm
+
+  state.markers = {
+    topY: topY, bottomY: bottomY,
+    topLeft: topRange.left, topRight: topRange.right,
+    bottomLeft: bottomRange.left, bottomRight: bottomRange.right,
+    scale: scale,
+    blackThreshold: blackThreshold
+  };
+
+  return state.markers;
+}
+
+/**
+ * Convert mm coordinates (from LAYOUT) to image pixel coordinates
+ * mm origin: top-left of page; Y increases downward
+ */
+function mmToPx(xMm, yMm) {
+  var m = state.markers;
+  // Reference: top marker Y in image = topMarkerY (in mm) = LAYOUT.topMarkerY
+  // So px_y = topY + (yMm - LAYOUT.topMarkerY) * scale
+  var pxY = m.topY + (yMm - LAYOUT.topMarkerY) * m.scale;
+  // X: use marker left/right to determine page width mapping
+  // Marker spans full content width: from margin (12mm) to pageW - margin (198mm)
+  // So 1mm horizontal = (right-left) / (pageW - 2*margin) px
+  var contentWidthMm = LAYOUT.pageW - 2 * LAYOUT.margin;  // 186mm
+  // Use average of top & bottom marker widths
+  var topWidthPx = m.topRight - m.topLeft;
+  var botWidthPx = m.bottomRight - m.bottomLeft;
+  var avgWidthPx = (topWidthPx + botWidthPx) / 2;
+  var scaleX = avgWidthPx / contentWidthMm;
+  // X in image = topLeft + (xMm - margin) * scaleX
+  var avgLeftPx = (m.topLeft + m.bottomLeft) / 2;
+  var pxX = avgLeftPx + (xMm - LAYOUT.margin) * scaleX;
+
+  return { x: pxX, y: pxY };
+}
+
+// ===========================================================================
+// QR CODE DETECTION
+// ===========================================================================
+function detectQR() {
+  var img = state.imageData;
+  var qrArea = {
+    xMm: LAYOUT.qrX, yMm: LAYOUT.qrY,
+    wMm: LAYOUT.qrSize, hMm: LAYOUT.qrSize
+  };
+  // Add some padding around QR
+  var pad = 10; // mm
+  var tl = mmToPx(qrArea.xMm - pad/2, qrArea.yMm - pad/2);
+  var br = mmToPx(qrArea.xMm + qrArea.wMm + pad/2, qrArea.yMm + qrArea.hMm + pad/2);
+
+  var x0 = Math.max(0, Math.floor(tl.x));
+  var y0 = Math.max(0, Math.floor(tl.y));
+  var x1 = Math.min(img.width, Math.ceil(br.x));
+  var y1 = Math.min(img.height, Math.ceil(br.y));
+  var w = x1 - x0, h = y1 - y0;
+  if (w < 10 || h < 10) {
+    console.warn('QR area too small', w, h);
+    return null;
+  }
+
+  // Crop QR area
+  var cropCanvas = document.createElement('canvas');
+  cropCanvas.width = w; cropCanvas.height = h;
+  var cropCtx = cropCanvas.getContext('2d');
+  cropCtx.drawImage(img.canvas, x0, y0, w, h, 0, 0, w, h);
+  var cropData = cropCtx.getImageData(0, 0, w, h);
+
+  var code = jsQR(cropData.data, w, h, { inversionAttempts: 'attemptBoth' });
+  if (code) {
+    try {
+      var parsed = JSON.parse(code.data);
+      state.qrData = parsed;
+      return parsed;
+    } catch (e) {
+      // Maybe plain text
+      state.qrData = { raw: code.data };
+      return { raw: code.data };
+    }
+  }
+
+  // Fallback: scan entire image
+  var fullData = img.ctx.getImageData(0, 0, img.width, img.height);
+  code = jsQR(fullData.data, img.width, img.height, { inversionAttempts: 'attemptBoth' });
+  if (code) {
+    try {
+      var parsed = JSON.parse(code.data);
+      state.qrData = parsed;
+      return parsed;
+    } catch (e) {
+      state.qrData = { raw: code.data };
+      return { raw: code.data };
+    }
+  }
+  return null;
+}
+
+// ===========================================================================
+// BUBBLE DETECTION
+// ===========================================================================
+/**
+ * Hitung rasio kegelapan (darkness ratio) di area bubble.
+ * @param {number} cxMm - center X mm
+ * @param {number} cyMm - center Y mm
+ * @return {number} 0-1 (1 = full black)
+ */
+function getBubbleDarkness(cxMm, cyMm) {
+  var img = state.imageData;
+  var m = state.markers;
+  var center = mmToPx(cxMm, cyMm);
+  var radiusPx = LAYOUT.bubbleRadius * m.scale;
+  // Sample within 80% of radius (avoid edge artifacts)
+  var r = Math.max(3, radiusPx * 0.8);
+  var r2 = r * r;
+
+  var cx = Math.round(center.x), cy = Math.round(center.y);
+  var blackCount = 0, totalCount = 0;
+  var threshold = m.blackThreshold;
+
+  for (var dy = -r; dy <= r; dy++) {
+    for (var dx = -r; dx <= r; dx++) {
+      if (dx*dx + dy*dy > r2) continue;
+      var px = cx + dx, py = cy + dy;
+      if (px < 0 || py < 0 || px >= img.width || py >= img.height) continue;
+      var val = img.grayData[py * img.width + px];
+      if (val <= threshold) blackCount++;
+      totalCount++;
+    }
+  }
+  if (totalCount === 0) return 0;
+  return blackCount / totalCount;
+}
+
+/**
+ * Detect answers untuk satu section.
+ * @param {string} sectionKey - 'pg' | 'pgk' | 'bs'
+ * @return {Array} jawaban per soal
+ */
+function detectSection(sectionKey) {
+  var sec = LAYOUT[sectionKey];
+  var results = [];
+  var filledThreshold = state.threshold / 100; // e.g., 0.45
+  // Untuk single-choice (PG, BS), kita pilih bubble dengan darkness tertinggi
+  //   tapi hanya jika darkness > 25% (jangan pilih bubble kosong)
+  // Untuk multi-choice (PGK), pilih semua bubble > threshold
+
+  if (sectionKey === 'pg' || sectionKey === 'pgk') {
+    for (var col = 0; col < sec.cols; col++) {
+      for (var row = 0; row < sec.rowsPerCol; row++) {
+        var qNum = col * sec.rowsPerCol + row + 1;
+        var baseXMm = LAYOUT.margin + col * sec.colWidth;
+        var yMm = sec.startY + row * LAYOUT.rowHeight;
+        // Bubbles start after label offset
+        var darknesses = sec.options.map(function(opt, i) {
+          var xMm = baseXMm + sec.labelOffset + i * sec.bubbleSpacing;
+          return { opt: opt, x: xMm, y: yMm, darkness: getBubbleDarkness(xMm, yMm) };
+        });
+        // Simpan untuk visualisasi
+        results[qNum - 1] = {
+          qNum: qNum,
+          darknesses: darknesses,
+          answer: null
+        };
+        if (sectionKey === 'pg') {
+          // Single choice: pilih darkest
+          var max = darknesses.reduce(function(a, b) {
+            return b.darkness > a.darkness ? b : a;
+          }, darknesses[0]);
+          if (max.darkness >= filledThreshold) {
+            results[qNum - 1].answer = max.opt;
+          } else {
+            results[qNum - 1].answer = null;  // tidak dijawab
+          }
+        } else {
+          // Multi choice: semua di atas threshold
+          var filled = darknesses.filter(function(d) {
+            return d.darkness >= filledThreshold;
+          }).map(function(d) { return d.opt; });
+          results[qNum - 1].answer = filled.length > 0 ? filled : null;
+        }
+      }
+    }
+  } else if (sectionKey === 'bs') {
+    for (var row = 0; row < sec.rows; row++) {
+      var qNum = row + 1;
+      var yMm = sec.startY + row * LAYOUT.rowHeight;
+      var baseXMm = sec.colX;
+      var darknesses = sec.options.map(function(opt, i) {
+        var xMm = baseXMm + sec.labelOffset + i * sec.bubbleSpacing;
+        return { opt: opt, x: xMm, y: yMm, darkness: getBubbleDarkness(xMm, yMm) };
+      });
+      var max = darknesses.reduce(function(a, b) {
+        return b.darkness > a.darkness ? b : a;
+      }, darknesses[0]);
+      results[qNum - 1] = {
+        qNum: qNum,
+        darknesses: darknesses,
+        answer: max.darkness >= filledThreshold ? max.opt : null
+      };
+    }
+  }
+  return results;
+}
+
+// ===========================================================================
+// MAIN PROCESS
+// ===========================================================================
+function processImage() {
+  if (!state.currentImage) {
+    toast('Belum ada foto');
+    return;
+  }
+  var btn = $('processBtn');
+  btn.disabled = true;
+  $('resultCard').style.display = 'none';
+
+  try {
+    setStatus('Menyiapkan gambar...');
+    setProgress(10);
+    prepareImage();
+
+    setStatus('Mendeteksi marker BATAS ATAS/BAWAH...');
+    setProgress(25);
+    detectMarkers();
+    var m = state.markers;
+    var distMm = LAYOUT.bottomMarkerY - LAYOUT.topMarkerY;
+    var distPx = Math.round(m.bottomY - m.topY);
+    console.log('Markers: topY=' + m.topY + ' bottomY=' + m.bottomY + ' scale=' + m.scale.toFixed(2) + 'px/mm');
+
+    setStatus('Mendeteksi QR code...');
+    setProgress(40);
+    var qr = detectQR();
+    if (!qr) {
+      toast('QR code tidak terbaca. Lanjut tanpa identitas siswa.');
+      state.qrData = null;
+    }
+
+    setStatus('Memuat kunci jawaban...');
+    setProgress(50);
+    var examId = $('examSelect').value;
+    if (!examId) {
+      toast('Pilih ujian dulu');
+      btn.disabled = false;
+      return;
+    }
+    loadAnswerKey(examId, function() {
+      setStatus('Mendeteksi jawaban PG (15 soal)...');
+      setProgress(60);
+      var pg = detectSection('pg');
+
+      setStatus('Mendeteksi jawaban PGK (10 soal)...');
+      setProgress(75);
+      var pgk = detectSection('pgk');
+
+      setStatus('Mendeteksi jawaban BS (5 soal)...');
+      setProgress(85);
+      var bs = detectSection('bs');
+
+      state.detectedAnswers = { pg: pg, pgk: pgk, bs: bs };
+
+      setStatus('Menghitung skor...');
+      setProgress(95);
+      computeResult();
+
+      setStatus('Selesai');
+      setProgress(100);
+      showResult();
+      btn.disabled = false;
+    });
+  } catch (err) {
+    console.error(err);
+    toast('Error: ' + err.message);
+    setStatus('');
+    btn.disabled = false;
+  }
+}
+
+// ===========================================================================
+// LOAD ANSWER KEY FROM BACKEND
+// ===========================================================================
+function loadAnswerKey(examId, callback) {
+  var url = GAS_EXEC_URL + '?action=getAnswerKey&examId=' + encodeURIComponent(examId);
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        state.answerKey = data.answerKey;
+        state.examInfo = { examId: examId };
+        callback();
+      } else {
+        toast('Kunci jawaban tidak ditemukan untuk ' + examId);
+        state.answerKey = null;
+        callback();
+      }
+    })
+    .catch(function(err) {
+      toast('Gagal ambil kunci jawaban: ' + err.message);
+      state.answerKey = null;
+      callback();
+    });
+}
+
+// ===========================================================================
+// COMPUTE RESULT - compare detected answers with answer key
+// ===========================================================================
+function computeResult() {
+  var ans = state.detectedAnswers;
+  var key = state.answerKey;
+  var points = key ? (key.points || { pg: 1, pgk: 2, bs: 1 }) : { pg: 1, pgk: 2, bs: 1 };
+
+  var result = {
+    pg: { correct: 0, wrong: 0, empty: 0, score: 0, max: STRUCTURE.pg.count * points.pg },
+    pgk: { correct: 0, wrong: 0, empty: 0, score: 0, max: STRUCTURE.pgk.count * points.pgk },
+    bs: { correct: 0, wrong: 0, empty: 0, score: 0, max: STRUCTURE.bs.count * points.bs },
+  };
+
+  // PG
+  ans.pg.forEach(function(item, i) {
+    var correctAns = key ? key.pg[i] : null;
+    item.correct = correctAns;
+    item.isCorrect = false;
+    if (!item.answer) {
+      result.pg.empty++;
+    } else if (item.answer === correctAns) {
+      result.pg.correct++; result.pg.score += points.pg; item.isCorrect = true;
+    } else {
+      result.pg.wrong++;
+    }
+  });
+
+  // PGK (multiple - all must match exactly, or use subset scoring)
+  ans.pgk.forEach(function(item, i) {
+    var correctAns = key ? key.pgk[i] : null;
+    item.correct = correctAns ? correctAns.join('') : null;
+    var userStr = item.answer ? item.answer.slice().sort().join('') : '';
+    var keyStr = correctAns ? correctAns.slice().sort().join('') : '';
+    item.isCorrect = false;
+    if (!item.answer || item.answer.length === 0) {
+      result.pgk.empty++;
+    } else if (userStr === keyStr) {
+      result.pgk.correct++; result.pgk.score += points.pgk; item.isCorrect = true;
+    } else {
+      // Partial credit: 50% if user has >=1 correct & no wrong
+      var userSet = new Set(item.answer);
+      var allCorrect = true, hasCorrect = false;
+      correctAns.forEach(function(c) {
+        if (userSet.has(c)) { hasCorrect = true; } else { allCorrect = false; }
+      });
+      // Check no wrong selections
+      var noWrong = item.answer.every(function(a) { return correctAns.indexOf(a) !== -1; });
+      if (allCorrect && noWrong) {
+        // exact match (shouldn't reach here, but safety)
+        result.pgk.correct++; result.pgk.score += points.pgk; item.isCorrect = true;
+      } else if (hasCorrect && noWrong) {
+        // partial - half credit
+        result.pgk.score += points.pgk / 2;
+        item.isCorrect = 'partial';
+      } else {
+        result.pgk.wrong++;
+      }
+    }
+  });
+
+  // BS
+  ans.bs.forEach(function(item, i) {
+    var correctAns = key ? key.bs[i] : null;
+    item.correct = correctAns;
+    item.isCorrect = false;
+    if (!item.answer) {
+      result.bs.empty++;
+    } else if (item.answer === correctAns) {
+      result.bs.correct++; result.bs.score += points.bs; item.isCorrect = true;
+    } else {
+      result.bs.wrong++;
+    }
+  });
+
+  result.totalScore = result.pg.score + result.pgk.score + result.bs.score;
+  result.maxScore = result.pg.max + result.pgk.max + result.bs.max;
+  result.percentage = result.maxScore > 0
+    ? Math.round((result.totalScore / result.maxScore) * 1000) / 10
+    : 0;
+
+  state.result = result;
+}
+
+// ===========================================================================
+// SHOW RESULT
+// ===========================================================================
+function showResult() {
+  $('resultCard').style.display = 'block';
+  $('resultCard').scrollIntoView({ behavior: 'smooth' });
+
+  // Student info
+  var qr = state.qrData;
+  var infoHtml = '<div class="row"><span class="label">Sumber:</span><span class="value">QR Code</span></div>';
+  if (qr) {
+    if (qr.studentId) infoHtml += '<div class="row"><span class="label">No. Peserta:</span><span class="value">' + qr.studentId + '</span></div>';
+    if (qr.name) infoHtml += '<div class="row"><span class="label">Nama:</span><span class="value">' + qr.name + '</span></div>';
+    if (qr.class) infoHtml += '<div class="row"><span class="label">Kelas:</span><span class="value">' + qr.class + '</span></div>';
+    if (qr.examId) infoHtml += '<div class="row"><span class="label">Ujian:</span><span class="value">' + qr.examId + '</span></div>';
+  } else {
+    infoHtml = '<div class="row"><span class="label">Status:</span><span class="value" style="color:var(--danger)">QR tidak terbaca - input manual</span></div>' +
+               '<div class="row"><span class="label">No. Peserta:</span><input type="text" id="manualStudentId" placeholder="ketik no peserta" style="flex:1; padding:2px 6px; font-size:13px"></span></div>';
+  }
+  $('studentInfo').innerHTML = infoHtml;
+
+  // Stats grid
+  var r = state.result;
+  var gridHtml = '';
+  gridHtml += '<div class="result-stat highlight full-width"><div class="label">Skor Total</div><div class="value">' + r.totalScore + ' / ' + r.maxScore + '</div></div>';
+  gridHtml += '<div class="result-stat"><div class="label">Persentase</div><div class="value">' + r.percentage + '%</div></div>';
+  gridHtml += '<div class="result-stat"><div class="label">PG (15)</div><div class="value">' + r.pg.correct + '/' + STRUCTURE.pg.count + '</div></div>';
+  gridHtml += '<div class="result-stat"><div class="label">PGK (10)</div><div class="value">' + r.pgk.correct + '/' + STRUCTURE.pgk.count + '</div></div>';
+  gridHtml += '<div class="result-stat"><div class="label">BS (5)</div><div class="value">' + r.bs.correct + '/' + STRUCTURE.bs.count + '</div></div>';
+  gridHtml += '<div class="result-stat"><div class="label">Tidak Dijawab</div><div class="value">' + (r.pg.empty + r.pgk.empty + r.bs.empty) + '</div></div>';
+  $('resultGrid').innerHTML = gridHtml;
+
+  // Answer review table
+  var ans = state.detectedAnswers;
+  var reviewHtml = '';
+  function buildTable(title, items, isMultiple) {
+    var html = '<h4 style="font-size:12px;margin:8px 0 4px;color:var(--muted)">' + title + '</h4>';
+    html += '<table class="answer-table"><thead><tr><th>No</th><th>Jawaban Siswa</th><th>Kunci</th><th>Status</th></tr></thead><tbody>';
+    items.forEach(function(item) {
+      var userAns = item.answer ? (isMultiple ? (Array.isArray(item.answer) ? item.answer.join(',') : item.answer) : item.answer) : '-';
+      var keyAns = item.correct ? (isMultiple && Array.isArray(item.correct) ? item.correct.join(',') : item.correct) : '-';
+      var status, statusClass;
+      if (item.isCorrect === true) { status = '✓'; statusClass = 'correct'; }
+      else if (item.isCorrect === 'partial') { status = '½'; statusClass = 'empty'; }
+      else if (!item.answer) { status = '-'; statusClass = 'empty'; }
+      else { status = '✗'; statusClass = 'wrong'; }
+      html += '<tr><td>' + item.qNum + '</td><td class="' + statusClass + '">' + userAns + '</td><td>' + keyAns + '</td><td class="' + statusClass + '">' + status + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    return html;
+  }
+  reviewHtml += buildTable('A. Pilihan Ganda', ans.pg, false);
+  reviewHtml += buildTable('B. Pilihan Ganda Kompleks', ans.pgk, true);
+  reviewHtml += buildTable('C. Benar / Salah', ans.bs, false);
+  $('answerReview').innerHTML = reviewHtml;
+
+  // Draw overlay on preview
+  drawDetectionOverlay();
+}
+
+function drawDetectionOverlay() {
+  // Draw bubbles colored by detection result on a copy of the image
+  var img = state.imageData;
+  if (!img) return;
+  var canvas = $('overlayCanvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  canvas.style.display = 'block';
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(img.canvas, 0, 0);
+
+  var m = state.markers;
+  var radiusPx = Math.max(3, LAYOUT.bubbleRadius * m.scale);
+
+  function drawBubbles(section, isMultiple) {
+    section.forEach(function(item) {
+      if (!item.darknesses) return;
+      item.darknesses.forEach(function(d) {
+        var p = mmToPx(d.x, d.y);
+        var isFilled = d.darkness >= (state.threshold / 100);
+        var color = isFilled ? 'rgba(220,38,38,0.7)' : 'rgba(100,116,139,0.4)';
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radiusPx * 1.1, 0, 2 * Math.PI);
+        ctx.stroke();
+        if (isFilled) {
+          // fill with translucent
+          ctx.fillStyle = 'rgba(220,38,38,0.25)';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, radiusPx * 0.9, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      });
+    });
+  }
+  drawBubbles(state.detectedAnswers.pg);
+  drawBubbles(state.detectedAnswers.pgk);
+  drawBubbles(state.detectedAnswers.bs);
+
+  // Draw marker lines
+  ctx.strokeStyle = 'rgba(30,64,175,0.6)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(0, m.topY); ctx.lineTo(img.width, m.topY);
+  ctx.moveTo(0, m.bottomY); ctx.lineTo(img.width, m.bottomY);
+  ctx.stroke();
+}
+
+// ===========================================================================
+// SAVE RESULT TO BACKEND
+// ===========================================================================
+function saveResult() {
+  if (!state.result) {
+    toast('Belum ada hasil');
+    return;
+  }
+  var examId = state.qrData && state.qrData.examId
+    ? state.qrData.examId
+    : $('examSelect').value;
+  var studentId = state.qrData && state.qrData.studentId
+    ? state.qrData.studentId
+    : ($('manualStudentId') ? $('manualStudentId').value.trim() : '');
+  if (!studentId) {
+    toast('Student ID tidak ada (QR tidak terbaca & input manual kosong)');
+    return;
+  }
+  var r = state.result;
+  var ans = state.detectedAnswers;
+
+  var payload = {
+    action: 'saveResult',
+    result: {
+      examId: examId,
+      studentId: studentId,
+      name: state.qrData ? (state.qrData.name || '') : '',
+      class: state.qrData ? (state.qrData.class || '') : '',
+      pgCorrect: r.pg.correct,
+      pgScore: r.pg.score,
+      pgkCorrect: r.pgk.correct,
+      pgkScore: r.pgk.score,
+      bsCorrect: r.bs.correct,
+      bsScore: r.bs.score,
+      totalScore: r.totalScore,
+      percentage: r.percentage,
+      points: state.answerKey ? state.answerKey.points : { pg: 1, pgk: 2, bs: 1 },
+      answers: {
+        pg: ans.pg.map(function(i) { return i.answer; }),
+        pgk: ans.pgk.map(function(i) { return i.answer; }),
+        bs: ans.bs.map(function(i) { return i.answer; })
+      },
+      source: 'scan'
+    }
+  };
+
+  toast('Menyimpan ke server...');
+  fetch(GAS_EXEC_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      toast('Tersimpan! Skor: ' + r.totalScore + '/' + r.maxScore + ' (' + r.percentage + '%)');
+    } else {
+      toast('Error simpan: ' + (data.error || 'unknown'));
+    }
+  })
+  .catch(function(err) {
+    toast('Gagal simpan: ' + err.message);
+  });
+}
+
+// ===========================================================================
+// RESET
+// ===========================================================================
+function resetAll() {
+  state.currentImage = null;
+  state.imageData = null;
+  state.markers = null;
+  state.qrData = null;
+  state.detectedAnswers = null;
+  state.result = null;
+  $('previewImg').style.display = 'none';
+  $('overlayCanvas').style.display = 'none';
+  $('processCard').style.display = 'none';
+  $('resultCard').style.display = 'none';
+  $('fileInput').value = '';
+  setProgress(0);
+  setStatus('');
+}
+
+// Test connection function
+function testConnection() {
+  if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
+    toast('Set URL backend dulu');
+    return;
+  }
+  fetch(GAS_EXEC_URL + '?action=ping')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) toast('Backend OK: ' + data.message);
+      else toast('Backend error');
+    })
+    .catch(function(err) { toast('Gagal: ' + err.message); });
+}
+</script>
+</body>
+</html>
