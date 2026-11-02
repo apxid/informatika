@@ -5,105 +5,303 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin LJK - Asesmen Akhir Semester</title>
 
+<!-- Google Fonts: Cinzel (medieval serif) + Crimson Text (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --primary: #1e40af;
-    --primary-dark: #1e3a8a;
-    --accent: #f59e0b;
-    --bg: #f1f5f9;
-    --card: #ffffff;
-    --text: #0f172a;
-    --muted: #64748b;
-    --border: #cbd5e1;
-    --success: #16a34a;
-    --danger: #dc2626;
-    --warn: #d97706;
+    /* Clash of Clans palette */
+    --wood-darkest: #1A0F08;
+    --wood-dark: #2C1810;
+    --wood-mid: #5C3A21;
+    --wood-light: #8B5A2B;
+    --gold: #D4A574;
+    --gold-bright: #FFD700;
+    --gold-dark: #8B6914;
+    --gold-glow: #F4C842;
+    --stone: #4A4A4A;
+    --stone-light: #6B6B6B;
+    --parchment: #F4E4C1;
+    --parchment-dark: #E8D5B0;
+    --parchment-darker: #D4C094;
+    --text-light: #FFF8DC;
+    --text-gold: #FFD700;
+    --text-dark: #2C1810;
+    --text-muted: #8B7355;
+    --danger: #C0392B;
+    --danger-dark: #8B0000;
+    --success: #27AE60;
+    --success-dark: #1E8449;
+    --warn: #E67E22;
+    --warn-dark: #A04000;
   }
+
+  html, body {
+    background: var(--wood-darkest);
+    min-height: 100vh;
+  }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'Crimson Text', Georgia, serif;
+    color: var(--text-dark);
     line-height: 1.5;
     padding-bottom: 40px;
+    background-color: var(--wood-darkest);
+    background-image:
+      repeating-linear-gradient(90deg,
+        rgba(0,0,0,0.08) 0px,
+        rgba(0,0,0,0.08) 1px,
+        transparent 1px,
+        transparent 4px),
+      repeating-linear-gradient(90deg,
+        rgba(139,90,43,0.04) 0px,
+        rgba(139,90,43,0.04) 80px,
+        rgba(0,0,0,0.04) 80px,
+        rgba(0,0,0,0.04) 160px),
+      linear-gradient(180deg, #2C1810 0%, #1A0F08 100%);
+    background-attachment: fixed;
   }
+
+  /* HEADER (banner) */
   .header {
-    background: linear-gradient(135deg, #0f172a, #1e3a8a);
-    color: white;
-    padding: 14px 16px;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(0,0,0,0.12) 0px,
+        rgba(0,0,0,0.12) 2px,
+        transparent 2px,
+        transparent 6px),
+      linear-gradient(180deg, #6B4423 0%, #3D2817 60%, #2C1810 100%);
+    color: var(--text-gold);
+    padding: 16px 20px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-bottom: 4px solid var(--gold-dark);
+    box-shadow:
+      inset 0 -2px 0 var(--gold),
+      inset 0 2px 4px rgba(255,215,0,0.15),
+      0 4px 12px rgba(0,0,0,0.6);
+    text-align: center;
   }
-  .header h1 { font-size: 18px; font-weight: 700; }
-  .header p { font-size: 12px; opacity: 0.9; margin-top: 2px; }
-  .header .nav-right { float: right; margin-top: -28px; }
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--gold-bright);
+    text-shadow:
+      1px 1px 0 var(--wood-darkest),
+      2px 2px 4px rgba(0,0,0,0.8),
+      0 0 12px rgba(255,215,0,0.3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--parchment);
+    margin-top: 4px;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  }
+  .header .nav-right {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+  }
   .header .nav-right a {
-    color: white; text-decoration: none; font-size: 13px;
-    background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 6px;
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(180deg, #5C3A21, #2C1810);
+    padding: 8px 14px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 var(--gold), 0 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
   }
+  .header .nav-right a:active {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+    transform: translateY(1px);
+  }
+
+  /* CONTAINER */
   .container { padding: 16px; max-width: 900px; margin: 0 auto; }
+
+  /* CARD */
   .card {
-    background: var(--card);
-    border-radius: 12px;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(139,90,43,0.04) 0px,
+        rgba(139,90,43,0.04) 60px,
+        rgba(212,165,116,0.04) 60px,
+        rgba(212,165,116,0.04) 120px),
+      linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+    border: 3px solid var(--gold-dark);
+    border-radius: 8px;
     padding: 16px;
     margin-bottom: 14px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    box-shadow:
+      inset 0 0 0 1px var(--gold),
+      inset 0 0 12px rgba(139,105,20,0.15),
+      0 4px 12px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .card::before,
+  .card::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--gold);
+    pointer-events: none;
+  }
+  .card::before {
+    top: -3px; left: -3px;
+    border-right: none; border-bottom: none;
+    box-shadow: -1px -1px 0 var(--gold-bright);
+  }
+  .card::after {
+    bottom: -3px; right: -3px;
+    border-left: none; border-top: none;
+    box-shadow: 1px 1px 0 var(--gold-bright);
   }
   .card h2 {
-    font-size: 15px;
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--wood-darkest);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
     margin-bottom: 12px;
-    color: var(--primary-dark);
-    border-bottom: 2px solid var(--bg);
     padding-bottom: 8px;
+    border-bottom: 2px solid var(--gold-dark);
+    text-shadow: 1px 1px 0 var(--parchment);
+    position: relative;
   }
+  .card h2::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 60px; height: 2px;
+    background: var(--gold);
+  }
+  .card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--wood-mid);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* FORM */
   .form-group { margin-bottom: 12px; }
   label {
     display: block;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 4px;
+    color: var(--wood-mid);
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   input[type="text"], input[type="url"], select, textarea {
     width: 100%;
     padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
+    border: 2px solid var(--wood-mid);
+    border-radius: 4px;
     font-size: 14px;
-    background: white;
+    font-family: 'Crimson Text', serif;
+    background: linear-gradient(180deg, #FFFAF0, #F4E4C1);
+    color: var(--text-dark);
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.15),
+      inset 0 0 0 1px var(--gold);
   }
   input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(30,64,175,0.15);
+    border-color: var(--gold-dark);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 0 0 3px rgba(212,165,116,0.4);
   }
+
+  /* BUTTONS (wooden plank) */
   .btn {
     display: inline-block;
     padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
     text-align: center;
     text-decoration: none;
+    color: var(--text-light);
+    background: linear-gradient(180deg, var(--wood-light) 0%, var(--wood-mid) 50%, var(--wood-dark) 100%);
+    box-shadow:
+      inset 0 1px 0 var(--gold),
+      inset 0 -2px 4px rgba(0,0,0,0.4),
+      0 3px 6px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    transition: all 0.1s ease;
+    user-select: none;
   }
-  .btn-primary { background: var(--primary); color: white; }
-  .btn-primary:hover { background: var(--primary-dark); }
-  .btn-accent { background: var(--accent); color: white; }
-  .btn-success { background: var(--success); color: white; }
-  .btn-danger { background: var(--danger); color: white; }
-  .btn-warn { background: var(--warn); color: white; }
+  .btn:hover {
+    background: linear-gradient(180deg, #A0673A 0%, #6B4423 50%, #3D2817 100%);
+    box-shadow:
+      inset 0 1px 0 var(--gold-bright),
+      0 4px 8px rgba(0,0,0,0.6),
+      0 0 12px rgba(255,215,0,0.2);
+  }
+  .btn:active {
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+    transform: translateY(2px);
+  }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.5); }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--gold-glow) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+    color: var(--wood-darkest);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+    border-color: var(--wood-dark);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(180deg, #FFE066 0%, var(--gold-bright) 50%, var(--gold) 100%);
+  }
+  .btn-accent {
+    background: linear-gradient(180deg, #E74C3C 0%, var(--danger) 50%, var(--danger-dark) 100%);
+    border-color: #5C0000;
+  }
+  .btn-success {
+    background: linear-gradient(180deg, #2ECC71 0%, var(--success) 50%, var(--success-dark) 100%);
+    border-color: #145A32;
+  }
+  .btn-danger {
+    background: linear-gradient(180deg, var(--danger) 0%, var(--danger-dark) 50%, #5C0000 100%);
+    border-color: #2C0000;
+  }
+  .btn-warn {
+    background: linear-gradient(180deg, #F39C12 0%, var(--warn) 50%, var(--warn-dark) 100%);
+    border-color: #6E2C00;
+  }
   .btn-block { display: block; width: 100%; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn-row .btn { flex: 1; min-width: 100px; }
 
+  /* TABS */
   .tabs {
     display: flex;
-    background: var(--bg);
-    border-radius: 8px;
+    background: linear-gradient(180deg, var(--wood-dark), var(--wood-darkest));
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     padding: 4px;
     margin-bottom: 12px;
     overflow-x: auto;
@@ -114,37 +312,52 @@
     padding: 10px 8px;
     text-align: center;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: 3px;
+    font-family: 'Cinzel', serif;
     font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
+    font-weight: 700;
+    color: var(--parchment-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
     white-space: nowrap;
+    transition: all 0.15s;
   }
   .tab.active {
-    background: white;
-    color: var(--primary);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background: linear-gradient(180deg, var(--gold-glow), var(--gold-dark));
+    color: var(--wood-darkest);
+    box-shadow:
+      inset 0 1px 0 var(--gold-bright),
+      inset 0 -2px 4px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
   }
 
+  /* DATA TABLE */
   table.data-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
+    background: var(--parchment);
+    border: 2px solid var(--wood-dark);
   }
   table.data-table th, table.data-table td {
-    border: 1px solid var(--border);
+    border: 1px solid var(--wood-mid);
     padding: 6px 8px;
     text-align: left;
   }
   table.data-table th {
-    background: var(--bg);
-    font-weight: 600;
+    background: linear-gradient(180deg, var(--wood-mid), var(--wood-dark));
+    color: var(--gold-bright);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
     font-size: 11px;
     text-transform: uppercase;
-    color: var(--muted);
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
   }
-  table.data-table tr:hover td { background: #f8fafc; }
+  table.data-table tr:hover td { background: rgba(212,165,116,0.2); }
 
+  /* ANSWER KEY EDITOR */
   .answer-key-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -152,42 +365,41 @@
     margin-top: 12px;
   }
   .question-block {
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     padding: 10px;
-    background: #fafbfc;
+    background: linear-gradient(180deg, var(--parchment-dark), var(--parchment-darker));
+    box-shadow: inset 0 0 0 1px var(--gold);
   }
   .question-block .qnum {
+    font-family: 'Cinzel', serif;
     font-weight: 700;
-    color: var(--primary-dark);
+    color: var(--wood-darkest);
     font-size: 13px;
     margin-bottom: 6px;
+    text-transform: uppercase;
   }
-  .option-row {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
+  .option-row { display: flex; gap: 4px; flex-wrap: wrap; }
   .option-btn {
     padding: 5px 10px;
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
-    background: white;
+    border: 2px solid var(--wood-mid);
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--parchment), var(--parchment-dark));
     cursor: pointer;
+    font-family: 'Cinzel', serif;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     min-width: 32px;
+    color: var(--wood-dark);
   }
   .option-btn.selected {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-  }
-  .option-btn.selected.partial {
-    background: var(--accent);
-    border-color: var(--accent);
+    background: linear-gradient(180deg, var(--gold-glow), var(--gold-dark));
+    color: var(--wood-darkest);
+    border-color: var(--wood-dark);
+    box-shadow: inset 0 1px 0 var(--gold-bright);
   }
 
+  /* STATS */
   .stat-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -195,67 +407,98 @@
     margin-bottom: 12px;
   }
   .stat-box {
-    background: var(--bg);
+    background: linear-gradient(180deg, var(--parchment), var(--parchment-dark));
     padding: 10px;
-    border-radius: 8px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     text-align: center;
+    box-shadow: inset 0 0 0 1px var(--gold);
   }
-  .stat-box .label { font-size: 10px; color: var(--muted); text-transform: uppercase; }
-  .stat-box .value { font-size: 18px; font-weight: 700; color: var(--primary-dark); }
+  .stat-box .label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--wood-mid);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .stat-box .value {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--wood-darkest);
+    text-shadow: 1px 1px 0 var(--gold);
+  }
 
+  /* TOAST */
   .toast {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(15,23,42,0.95);
-    color: white;
-    padding: 10px 18px;
-    border-radius: 8px;
+    background: linear-gradient(180deg, var(--wood-mid), var(--wood-darkest));
+    color: var(--gold-bright);
+    padding: 12px 24px;
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+    font-family: 'Cinzel', serif;
     font-size: 13px;
+    font-weight: 700;
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.3s;
     pointer-events: none;
     max-width: 90%;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    box-shadow: inset 0 1px 0 var(--gold-bright), 0 4px 12px rgba(0,0,0,0.7);
   }
   .toast.show { opacity: 1; }
 
   .empty-state {
     text-align: center;
     padding: 30px 20px;
-    color: var(--muted);
+    color: var(--wood-mid);
     font-size: 13px;
+    font-style: italic;
   }
 
   .info-banner {
-    background: #fef3c7;
-    border-left: 3px solid var(--warn);
+    background: var(--wood-darkest);
+    border-left: 3px solid var(--gold);
+    color: var(--parchment);
     padding: 10px 12px;
-    border-radius: 6px;
+    border-radius: 4px;
     font-size: 12px;
     margin-bottom: 12px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
   }
 
   details {
     margin-top: 8px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     padding: 8px;
+    background: var(--parchment-dark);
   }
   details summary {
     cursor: pointer;
-    font-weight: 600;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
     font-size: 13px;
+    color: var(--wood-darkest);
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
   details[open] summary { margin-bottom: 8px; }
 
   @media (max-width: 600px) {
+    .header h1 { font-size: 18px; letter-spacing: 1px; }
+    .header .nav-right a { padding: 6px 10px; font-size: 11px; }
     .container { padding: 10px; }
     .card { padding: 12px; }
     .tab { font-size: 11px; padding: 8px 4px; }
+    .btn { padding: 10px 14px; font-size: 12px; }
   }
-</style>
+</style></style>
 </head>
 <body>
 
@@ -267,22 +510,14 @@
 
 <div class="container">
 
-  <!-- KONFIGURASI -->
+  <!-- STATUS BACKEND -->
   <div class="card">
-    <h2>Konfigurasi Backend</h2>
-    <div class="info-banner">
-      <b>Penting:</b> Set URL deployment GAS (Web app URL) sekali, lalu simpan. URL akan disimpan di localStorage browser ini.
-    </div>
-    <div class="form-group">
-      <label>URL Backend (Google Apps Script Web App)</label>
-      <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec">
-    </div>
+    <h2>Status Backend</h2>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="saveConfig()">Simpan</button>
       <button class="btn btn-warn" onclick="testConnection()">Test Koneksi</button>
       <button class="btn btn-success" onclick="loadAll()">Muat Data</button>
     </div>
-    <div id="connStatus" style="font-size:12px; margin-top:8px; color:var(--muted)"></div>
+    <div id="connStatus" style="font-size:12px; margin-top:8px; color:var(--muted)">Belum diperiksa</div>
   </div>
 
   <!-- TABS -->
@@ -400,7 +635,13 @@
 
 <script>
 // ===========================================================================
-// KONFIGURASI - GANTI URL INI DENGAN URL DEPLOYMENT GAS ANDA!
+// KONFIGURASI BACKEND - GANTI URL INI DENGAN URL DEPLOYMENT GAS ANDA!
+// ===========================================================================
+// URL backend TIDAK ditampilkan di halaman (hidden di kode untuk keamanan).
+// Cara dapatkan URL:
+//   1. Deploy Google Apps Script (Kode.gs) sebagai Web App
+//   2. Salin Web app URL (format: https://script.google.com/macros/s/XXXX/exec)
+//   3. Paste di bawah ini, ganti teks 'GANTI_DENGAN_URL_EXEC_GAS_ANDA'
 // ===========================================================================
 var GAS_EXEC_URL = 'https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec'; // <-- WAJIB GANTI
 
@@ -429,26 +670,12 @@ function toast(msg, dur) {
   setTimeout(function() { t.classList.remove('show'); }, dur || 2500);
 }
 
-function saveConfig() {
-  var url = $('gasUrl').value.trim();
-  if (url) {
-    GAS_EXEC_URL = url;
-    localStorage.setItem('ljk_gas_url', url);
-    toast('URL disimpan');
-    loadAll();
-  } else {
-    toast('URL tidak boleh kosong');
-  }
-}
+// Catatan: URL backend sudah dikonfigurasi di variabel GAS_EXEC_URL (bagian atas script).
+// Tidak perlu input URL di UI - cukup edit kodenya saat deploy.
 
 function loadConfig() {
-  var saved = localStorage.getItem('ljk_gas_url');
-  if (saved) {
-    GAS_EXEC_URL = saved;
-    $('gasUrl').value = saved;
-    return true;
-  }
-  return false;
+  // Cek apakah URL sudah dikonfigurasi di kode
+  return GAS_EXEC_URL && GAS_EXEC_URL !== 'GANTI_DENGAN_URL_EXEC_GAS_ANDA';
 }
 
 // ===========================================================================
@@ -456,7 +683,7 @@ function loadConfig() {
 // ===========================================================================
 function gasGet(action, params, callback) {
   if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
-    toast('Set URL backend GAS dulu');
+    toast('URL backend belum dikonfigurasi di kode. Edit admin.html bagian GAS_EXEC_URL.');
     return;
   }
   var url = GAS_EXEC_URL + '?action=' + action;
@@ -473,7 +700,7 @@ function gasGet(action, params, callback) {
 
 function gasPost(payload, callback) {
   if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
-    toast('Set URL backend GAS dulu');
+    toast('URL backend belum dikonfigurasi di kode. Edit admin.html bagian GAS_EXEC_URL.');
     return;
   }
   fetch(GAS_EXEC_URL, {
@@ -488,8 +715,9 @@ function gasPost(payload, callback) {
 
 function testConnection() {
   if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
-    var url = $('gasUrl').value.trim();
-    if (url) GAS_EXEC_URL = url;
+    $('connStatus').innerHTML = '<span style="color:var(--danger)">✗ URL backend belum dikonfigurasi di kode admin.html</span>';
+    toast('Edit admin.html: set GAS_EXEC_URL dulu');
+    return;
   }
   $('connStatus').textContent = 'Menguji koneksi...';
   gasGet('ping', null, function(data) {
