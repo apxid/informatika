@@ -5,161 +5,446 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Koreksi LJK - Asesmen Akhir Semester</title>
 
+<!-- Google Fonts: Cinzel (medieval serif) + Crimson Text (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+
 <!-- jsQR untuk deteksi QR code -->
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --primary: #1e40af;
-    --primary-dark: #1e3a8a;
-    --accent: #f59e0b;
-    --bg: #f1f5f9;
-    --card: #ffffff;
-    --text: #0f172a;
-    --muted: #64748b;
-    --border: #cbd5e1;
-    --success: #16a34a;
-    --danger: #dc2626;
-    --warn: #d97706;
+    /* Clash of Clans palette */
+    --wood-darkest: #1A0F08;
+    --wood-dark: #2C1810;
+    --wood-mid: #5C3A21;
+    --wood-light: #8B5A2B;
+    --wood-grain: #6B4423;
+    --gold: #D4A574;
+    --gold-bright: #FFD700;
+    --gold-dark: #8B6914;
+    --gold-glow: #F4C842;
+    --stone: #4A4A4A;
+    --stone-light: #6B6B6B;
+    --stone-dark: #2A2A2A;
+    --parchment: #F4E4C1;
+    --parchment-dark: #E8D5B0;
+    --parchment-darker: #D4C094;
+    --text-light: #FFF8DC;
+    --text-gold: #FFD700;
+    --text-dark: #2C1810;
+    --text-muted: #8B7355;
+    --danger: #C0392B;
+    --danger-dark: #8B0000;
+    --success: #27AE60;
+    --success-dark: #1E8449;
+    --warn: #E67E22;
+    --warn-dark: #A04000;
   }
+
+  html, body {
+    background: var(--wood-darkest);
+    min-height: 100vh;
+  }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'Crimson Text', Georgia, serif;
+    color: var(--text-dark);
     line-height: 1.5;
     padding-bottom: 60px;
+    /* Wood plank texture background */
+    background-color: var(--wood-darkest);
+    background-image:
+      repeating-linear-gradient(90deg,
+        rgba(0,0,0,0.08) 0px,
+        rgba(0,0,0,0.08) 1px,
+        transparent 1px,
+        transparent 4px),
+      repeating-linear-gradient(90deg,
+        rgba(139,90,43,0.04) 0px,
+        rgba(139,90,43,0.04) 80px,
+        rgba(0,0,0,0.04) 80px,
+        rgba(0,0,0,0.04) 160px),
+      linear-gradient(180deg, #2C1810 0%, #1A0F08 100%);
+    background-attachment: fixed;
   }
+
+  /* ============ HEADER (banner style) ============ */
   .header {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    padding: 14px 16px;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(0,0,0,0.12) 0px,
+        rgba(0,0,0,0.12) 2px,
+        transparent 2px,
+        transparent 6px),
+      linear-gradient(180deg, #6B4423 0%, #3D2817 60%, #2C1810 100%);
+    color: var(--text-gold);
+    padding: 16px 20px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-bottom: 4px solid var(--gold-dark);
+    box-shadow:
+      inset 0 -2px 0 var(--gold),
+      inset 0 2px 4px rgba(255,215,0,0.15),
+      0 4px 12px rgba(0,0,0,0.6);
+    text-align: center;
+    position: sticky;
   }
-  .header h1 { font-size: 18px; font-weight: 700; }
-  .header p { font-size: 12px; opacity: 0.9; margin-top: 2px; }
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--gold-bright);
+    text-shadow:
+      0 0 1px var(--gold-dark),
+      1px 1px 0 var(--wood-darkest),
+      2px 2px 4px rgba(0,0,0,0.8),
+      0 0 12px rgba(255,215,0,0.3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--parchment);
+    margin-top: 4px;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  }
   .header .nav-right {
-    float: right;
-    margin-top: -28px;
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
   }
   .header .nav-right a {
-    color: white;
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
     text-decoration: none;
-    font-size: 13px;
-    background: rgba(255,255,255,0.2);
-    padding: 6px 12px;
-    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(180deg, #5C3A21, #2C1810);
+    padding: 8px 14px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
+    box-shadow:
+      inset 0 1px 0 var(--gold),
+      0 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
   }
-  .container { padding: 16px; max-width: 700px; margin: 0 auto; }
+  .header .nav-right a:active {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+    transform: translateY(1px);
+  }
+
+  /* ============ CONTAINER ============ */
+  .container {
+    padding: 16px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ============ CARD (wooden/stone panel) ============ */
   .card {
-    background: var(--card);
-    border-radius: 12px;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(139,90,43,0.04) 0px,
+        rgba(139,90,43,0.04) 60px,
+        rgba(212,165,116,0.04) 60px,
+        rgba(212,165,116,0.04) 120px),
+      linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+    border: 3px solid var(--gold-dark);
+    border-radius: 8px;
     padding: 16px;
     margin-bottom: 14px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    box-shadow:
+      inset 0 0 0 1px var(--gold),
+      inset 0 0 12px rgba(139,105,20,0.15),
+      0 4px 12px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  /* Ornate corner brackets */
+  .card::before,
+  .card::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--gold);
+    pointer-events: none;
+  }
+  .card::before {
+    top: -3px;
+    left: -3px;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: -1px -1px 0 var(--gold-bright);
+  }
+  .card::after {
+    bottom: -3px;
+    right: -3px;
+    border-left: none;
+    border-top: none;
+    box-shadow: 1px 1px 0 var(--gold-bright);
   }
   .card h2 {
-    font-size: 15px;
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--wood-darkest);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
     margin-bottom: 12px;
-    color: var(--primary-dark);
-    border-bottom: 2px solid var(--bg);
     padding-bottom: 8px;
+    border-bottom: 2px solid var(--gold-dark);
+    text-shadow: 1px 1px 0 var(--parchment);
+    position: relative;
   }
+  .card h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+  }
+  .card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--wood-mid);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .card h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: var(--wood-mid);
+    text-transform: uppercase;
+  }
+
+  /* ============ FORM ============ */
   .form-group { margin-bottom: 12px; }
   label {
     display: block;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 4px;
-    color: var(--text);
+    color: var(--wood-mid);
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   select, input[type="text"], input[type="url"] {
     width: 100%;
     padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
+    border: 2px solid var(--wood-mid);
+    border-radius: 4px;
     font-size: 14px;
-    background: white;
+    font-family: 'Crimson Text', serif;
+    background: linear-gradient(180deg, #FFFAF0, #F4E4C1);
+    color: var(--text-dark);
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.15),
+      inset 0 0 0 1px var(--gold);
   }
   select:focus, input:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(30,64,175,0.15);
+    border-color: var(--gold-dark);
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.15),
+      0 0 0 3px rgba(212,165,116,0.4);
   }
+
+  /* ============ BUTTONS (wooden plank style) ============ */
   .btn {
     display: inline-block;
     padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background 0.15s;
+    color: var(--text-light);
+    background: linear-gradient(180deg, var(--wood-light) 0%, var(--wood-mid) 50%, var(--wood-dark) 100%);
+    box-shadow:
+      inset 0 1px 0 var(--gold),
+      inset 0 -2px 4px rgba(0,0,0,0.4),
+      0 3px 6px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(0,0,0,0.3);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    transition: all 0.1s ease;
+    user-select: none;
   }
-  .btn-primary { background: var(--primary); color: white; }
-  .btn-primary:hover, .btn-primary:active { background: var(--primary-dark); }
-  .btn-accent { background: var(--accent); color: white; }
-  .btn-accent:hover, .btn-accent:active { background: #b45309; }
-  .btn-success { background: var(--success); color: white; }
-  .btn-danger { background: var(--danger); color: white; }
+  .btn:hover {
+    background: linear-gradient(180deg, #A0673A 0%, #6B4423 50%, #3D2817 100%);
+    box-shadow:
+      inset 0 1px 0 var(--gold-bright),
+      inset 0 -2px 4px rgba(0,0,0,0.4),
+      0 4px 8px rgba(0,0,0,0.6),
+      0 0 12px rgba(255,215,0,0.2);
+  }
+  .btn:active {
+    box-shadow:
+      inset 0 2px 6px rgba(0,0,0,0.6),
+      0 1px 2px rgba(0,0,0,0.4);
+    transform: translateY(2px);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+    transform: none;
+  }
+  /* Primary button - gold/royal */
+  .btn-primary {
+    background: linear-gradient(180deg, var(--gold-glow) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+    color: var(--wood-darkest);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+    border-color: var(--wood-dark);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(180deg, #FFE066 0%, var(--gold-bright) 50%, var(--gold) 100%);
+  }
+  /* Accent button - red/war */
+  .btn-accent {
+    background: linear-gradient(180deg, #E74C3C 0%, var(--danger) 50%, var(--danger-dark) 100%);
+    border-color: #5C0000;
+  }
+  .btn-accent:hover {
+    background: linear-gradient(180deg, #FF6B5A 0%, #E74C3C 50%, var(--danger) 100%);
+  }
+  /* Success button - green */
+  .btn-success {
+    background: linear-gradient(180deg, #2ECC71 0%, var(--success) 50%, var(--success-dark) 100%);
+    border-color: #145A32;
+  }
+  .btn-success:hover {
+    background: linear-gradient(180deg, #58D68D 0%, #2ECC71 50%, var(--success) 100%);
+  }
+  /* Danger button - dark red */
+  .btn-danger {
+    background: linear-gradient(180deg, var(--danger) 0%, var(--danger-dark) 50%, #5C0000 100%);
+    border-color: #2C0000;
+  }
+  .btn-danger:hover {
+    background: linear-gradient(180deg, #E74C3C 0, var(--danger) 50%, var(--danger-dark) 100%);
+  }
+  /* Warn button - orange */
+  .btn-warn {
+    background: linear-gradient(180deg, #F39C12 0%, var(--warn) 50%, var(--warn-dark) 100%);
+    border-color: #6E2C00;
+  }
   .btn-block { display: block; width: 100%; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-row { display: flex; gap: 8px; }
   .btn-row .btn { flex: 1; }
 
-  /* Camera / file area */
+  /* ============ CAPTURE AREA ============ */
   .capture-area {
-    border: 2px dashed var(--border);
-    border-radius: 12px;
+    border: 3px dashed var(--wood-mid);
+    border-radius: 8px;
     padding: 20px;
     text-align: center;
-    background: #fafbfc;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(139,90,43,0.06) 0px,
+        rgba(139,90,43,0.06) 10px,
+        transparent 10px,
+        transparent 20px),
+      linear-gradient(180deg, rgba(244,228,193,0.6), rgba(232,213,176,0.6));
   }
   .preview-img {
     max-width: 100%;
-    border-radius: 8px;
+    border-radius: 4px;
     margin-top: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border: 3px solid var(--gold-dark);
+    box-shadow:
+      inset 0 0 0 1px var(--gold),
+      0 4px 12px rgba(0,0,0,0.5);
   }
+
+  /* ============ CAMERA ============ */
   #cameraVideo {
     width: 100%;
-    border-radius: 8px;
-    background: black;
+    border-radius: 4px;
+    background: #000;
+    border: 3px solid var(--gold-dark);
+    box-shadow:
+      inset 0 0 0 1px var(--gold),
+      0 4px 12px rgba(0,0,0,0.6);
     display: none;
+  }
+  .camera-wrapper {
+    position: relative;
+    display: none;
+  }
+  .camera-wrapper.active { display: block; }
+  .camera-wrapper video { display: block; }
+  .camera-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .camera-status {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--wood-darkest);
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
+    color: var(--gold-bright);
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    min-height: 36px;
   }
   #overlayCanvas {
     position: relative;
     margin-top: 12px;
     max-width: 100%;
+    border: 3px solid var(--gold-dark);
+    background: var(--parchment-dark);
   }
 
-  /* Progress */
+  /* ============ PROGRESS ============ */
   .progress-bar {
-    background: var(--bg);
-    border-radius: 6px;
-    height: 8px;
+    background: var(--wood-darkest);
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
+    height: 12px;
     overflow: hidden;
     margin: 8px 0;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
   }
   .progress-bar-fill {
-    background: var(--primary);
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold), var(--gold-dark));
     height: 100%;
     transition: width 0.3s;
     width: 0%;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
   }
   .status-text {
     font-size: 13px;
-    color: var(--muted);
+    color: var(--wood-mid);
     margin-top: 6px;
     min-height: 18px;
+    font-style: italic;
   }
 
-  /* Result display */
+  /* ============ RESULT GRID ============ */
   .result-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -167,102 +452,180 @@
     margin-top: 10px;
   }
   .result-stat {
-    background: var(--bg);
+    background: linear-gradient(180deg, var(--parchment), var(--parchment-dark));
     padding: 10px;
-    border-radius: 8px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     text-align: center;
+    box-shadow:
+      inset 0 0 0 1px var(--gold),
+      inset 0 2px 4px rgba(139,105,20,0.1);
   }
   .result-stat .label {
-    font-size: 11px;
-    color: var(--muted);
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--wood-mid);
     text-transform: uppercase;
+    letter-spacing: 1px;
   }
   .result-stat .value {
+    font-family: 'Cinzel', serif;
     font-size: 22px;
-    font-weight: 700;
-    color: var(--primary-dark);
+    font-weight: 900;
+    color: var(--wood-darkest);
+    text-shadow: 1px 1px 0 var(--gold);
   }
   .result-stat.full-width { grid-column: span 2; }
-  .result-stat.highlight .value { color: var(--success); }
+  .result-stat.highlight {
+    background: linear-gradient(180deg, var(--gold-glow), var(--gold));
+    border-color: var(--wood-dark);
+  }
+  .result-stat.highlight .value {
+    color: var(--wood-darkest);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+  }
 
-  /* Answer review table */
+  /* ============ ANSWER TABLE ============ */
   .answer-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
     margin-top: 10px;
+    border: 2px solid var(--wood-dark);
+    background: var(--parchment);
   }
   .answer-table th, .answer-table td {
-    border: 1px solid var(--border);
+    border: 1px solid var(--wood-mid);
     padding: 6px 8px;
     text-align: center;
   }
   .answer-table th {
-    background: var(--bg);
-    font-weight: 600;
+    background: linear-gradient(180deg, var(--wood-mid), var(--wood-dark));
+    color: var(--gold-bright);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
   }
-  .answer-table td.correct { background: #dcfce7; color: var(--success); font-weight: 600; }
-  .answer-table td.wrong { background: #fee2e2; color: var(--danger); font-weight: 600; }
-  .answer-table td.empty { color: var(--muted); }
+  .answer-table td.correct {
+    background: linear-gradient(180deg, #D5F5E3, #A9DFBF);
+    color: var(--success-dark);
+    font-weight: 700;
+  }
+  .answer-table td.wrong {
+    background: linear-gradient(180deg, #FADBD8, #F1948A);
+    color: var(--danger-dark);
+    font-weight: 700;
+  }
+  .answer-table td.empty { color: var(--text-muted); }
 
-  /* Student info */
+  /* ============ STUDENT INFO ============ */
   .student-info {
-    background: #eff6ff;
-    padding: 10px;
-    border-radius: 8px;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(139,90,43,0.06) 0px,
+        rgba(139,90,43,0.06) 60px,
+        rgba(212,165,116,0.06) 60px,
+        rgba(212,165,116,0.06) 120px),
+      linear-gradient(180deg, var(--parchment-dark), var(--parchment-darker));
+    padding: 12px;
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     margin-bottom: 10px;
     font-size: 13px;
+    box-shadow: inset 0 0 0 1px var(--gold);
   }
   .student-info .row { display: flex; justify-content: space-between; }
   .student-info .row + .row { margin-top: 4px; }
-  .student-info .label { color: var(--muted); }
-  .student-info .value { font-weight: 600; }
+  .student-info .label {
+    color: var(--wood-mid);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  .student-info .value {
+    font-weight: 700;
+    color: var(--wood-darkest);
+  }
 
-  /* Settings */
+  /* ============ SETTINGS TOGGLE ============ */
   .settings-toggle {
+    font-family: 'Cinzel', serif;
     font-size: 12px;
-    color: var(--muted);
+    color: var(--gold-dark);
     cursor: pointer;
     text-align: center;
     padding: 8px;
     margin-top: 8px;
+    border: 1px dashed var(--wood-mid);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .settings-toggle:hover {
+    background: rgba(212,165,116,0.2);
+    color: var(--wood-darkest);
   }
   .settings-panel {
     display: none;
-    background: #fef3c7;
+    background: var(--wood-darkest);
     padding: 12px;
-    border-radius: 8px;
+    border-radius: 4px;
     margin-top: 8px;
     font-size: 12px;
+    border: 2px solid var(--gold-dark);
   }
   .settings-panel.show { display: block; }
-  .settings-panel label { font-size: 12px; }
-  .settings-panel input { font-size: 12px; font-family: monospace; }
+  .settings-panel label {
+    color: var(--gold-bright);
+    font-size: 11px;
+  }
+  .settings-panel input[type="text"] {
+    font-size: 12px;
+    font-family: monospace;
+    background: var(--parchment-dark);
+  }
+  .settings-panel small {
+    color: var(--parchment);
+    display: block;
+    margin-top: 4px;
+    font-style: italic;
+  }
 
-  /* Toast */
+  /* ============ TOAST ============ */
   .toast {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(15,23,42,0.95);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
+    background: linear-gradient(180deg, var(--wood-mid), var(--wood-darkest));
+    color: var(--gold-bright);
+    padding: 12px 24px;
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+    font-family: 'Cinzel', serif;
     font-size: 13px;
+    font-weight: 700;
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.3s;
     pointer-events: none;
     max-width: 90%;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    box-shadow:
+      inset 0 1px 0 var(--gold-bright),
+      0 4px 12px rgba(0,0,0,0.7);
   }
   .toast.show { opacity: 1; }
 
-  /* Tabs */
+  /* ============ TABS ============ */
   .tabs {
     display: flex;
-    background: var(--bg);
-    border-radius: 8px;
+    background: linear-gradient(180deg, var(--wood-dark), var(--wood-darkest));
+    border: 2px solid var(--gold-dark);
+    border-radius: 4px;
     padding: 4px;
     margin-bottom: 12px;
   }
@@ -271,18 +634,26 @@
     padding: 10px;
     text-align: center;
     cursor: pointer;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
+    border-radius: 3px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--parchment-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    transition: all 0.15s;
   }
   .tab.active {
-    background: white;
-    color: var(--primary);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background: linear-gradient(180deg, var(--gold-glow), var(--gold-dark));
+    color: var(--wood-darkest);
+    box-shadow:
+      inset 0 1px 0 var(--gold-bright),
+      inset 0 -2px 4px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
   }
 
-  /* Threshold slider */
+  /* ============ SLIDER ============ */
   .slider-row {
     display: flex;
     align-items: center;
@@ -290,22 +661,29 @@
   }
   .slider-row input[type="range"] {
     flex: 1;
+    accent-color: var(--gold-dark);
   }
   .slider-row .val {
-    font-size: 12px;
-    font-weight: 600;
-    background: var(--bg);
-    padding: 4px 8px;
-    border-radius: 4px;
-    min-width: 40px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--wood-mid);
+    color: var(--gold-bright);
+    padding: 4px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--gold-dark);
+    min-width: 44px;
     text-align: center;
   }
 
+  /* ============ RESPONSIVE ============ */
   @media (max-width: 480px) {
-    .header h1 { font-size: 16px; }
-    .container { padding: 12px; }
+    .header h1 { font-size: 18px; letter-spacing: 1px; }
+    .header .nav-right a { padding: 6px 10px; font-size: 11px; }
+    .container { padding: 10px; }
     .card { padding: 12px; }
     .result-grid { grid-template-columns: 1fr 1fr; }
+    .btn { padding: 10px 14px; font-size: 12px; }
   }
 </style>
 </head>
@@ -321,16 +699,12 @@
 
 <div class="container">
 
-  <!-- SETTINGS: GAS URL -->
+  <!-- KONFIGURASI: Pilih Ujian -->
   <div class="card">
-    <h2>Konfigurasi</h2>
-    <div class="form-group">
-      <label>URL Backend (Google Apps Script)</label>
-      <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec">
-    </div>
+    <h2>Pilih Ujian</h2>
     <div class="form-group">
       <label>Pilih Ujian</label>
-      <select id="examSelect"><option value="">-- Memuat... --</option></select>
+      <select id="examSelect"><option value="">-- Muat daftar ujian --</option></select>
     </div>
     <button class="btn btn-primary btn-block" onclick="loadExams()">Muat Ujian</button>
     <div class="settings-toggle" onclick="toggleSettings()">Pengaturan lanjutan &darr;</div>
@@ -344,8 +718,7 @@
         <small>Default 45. Naikkan jika bubble kosong sering salah terdeteksi, turunkan jika jawaban tidak terbaca.</small>
       </div>
       <div class="form-group">
-        <label>Simpan URL ke penyimpanan lokal?</label>
-        <button class="btn btn-success btn-block" onclick="saveSettings()">Simpan Pengaturan</button>
+        <button class="btn btn-success btn-block" onclick="saveSettings()">Simpan Ambang</button>
       </div>
     </div>
   </div>
@@ -375,12 +748,21 @@
     </div>
 
     <div id="cameraPanel" style="display:none">
-      <video id="cameraVideo" autoplay playsinline></video>
+      <div class="camera-wrapper" id="cameraWrapper">
+        <video id="cameraVideo" autoplay playsinline></video>
+        <canvas class="camera-overlay" id="cameraOverlay"></canvas>
+      </div>
+      <div class="camera-status" id="cameraStatus">Kamera belum aktif. Klik "Mulai Kamera".</div>
       <div class="btn-row" style="margin-top:10px">
         <button class="btn btn-primary" onclick="startCamera()">Mulai Kamera</button>
         <button class="btn btn-accent" onclick="captureFromCamera()" id="captureBtn" disabled>Ambil Foto</button>
+        <button class="btn btn-success" onclick="autoCapture()" id="autoCaptureBtn" disabled>Auto Capture</button>
         <button class="btn btn-danger" onclick="stopCamera()">Stop</button>
       </div>
+      <p style="font-size:11px; color:var(--wood-mid); margin-top:8px; font-style:italic;">
+        <b>Auto Capture</b>: otomatis jepret saat LJK stabil & 4 sudut terdeteksi.
+        Aplikasi akan luruskan perspektif dokumen (seperti CamScanner).
+      </p>
     </div>
 
     <img id="previewImg" class="preview-img" style="display:none">
@@ -420,7 +802,13 @@
 
 <script>
 // ===========================================================================
-// KONFIGURASI - GANTI URL INI DENGAN URL DEPLOYMENT GAS ANDA!
+// KONFIGURASI BACKEND - GANTI URL INI DENGAN URL DEPLOYMENT GAS ANDA!
+// ===========================================================================
+// URL backend TIDAK ditampilkan di halaman (hidden di kode untuk keamanan).
+// Cara dapatkan URL:
+//   1. Deploy Google Apps Script (Kode.gs) sebagai Web App
+//   2. Salin Web app URL (format: https://script.google.com/macros/s/XXXX/exec)
+//   3. Paste di bawah ini, ganti teks 'GANTI_DENGAN_URL_EXEC_GAS_ANDA'
 // ===========================================================================
 var GAS_EXEC_URL = 'https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec'; // <-- WAJIB GANTI
 
@@ -521,26 +909,14 @@ function toggleSettings() {
 }
 
 function saveSettings() {
-  var url = $('gasUrl').value.trim();
   var threshold = $('thresholdSlider').value;
-  if (url) {
-    GAS_EXEC_URL = url;
-    localStorage.setItem('ljk_gas_url', url);
-  }
   localStorage.setItem('ljk_threshold', threshold);
   state.threshold = parseInt(threshold, 10);
-  toast('Pengaturan disimpan');
+  toast('Ambang deteksi disimpan: ' + threshold);
 }
 
 function loadSettings() {
-  var savedUrl = localStorage.getItem('ljk_gas_url');
   var savedThreshold = localStorage.getItem('ljk_threshold');
-  if (savedUrl) {
-    GAS_EXEC_URL = savedUrl;
-    $('gasUrl').value = savedUrl;
-  } else {
-    $('gasUrl').value = GAS_EXEC_URL;
-  }
   if (savedThreshold) {
     state.threshold = parseInt(savedThreshold, 10);
     $('thresholdSlider').value = savedThreshold;
@@ -583,13 +959,8 @@ function switchTab(tab) {
 // ===========================================================================
 function loadExams() {
   if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
-    var url = $('gasUrl').value.trim();
-    if (url) {
-      GAS_EXEC_URL = url;
-    } else {
-      toast('Set URL backend GAS dulu di bagian Konfigurasi');
-      return;
-    }
+    toast('URL backend belum dikonfigurasi di kode. Edit index.html bagian GAS_EXEC_URL.');
+    return;
   }
   setStatus('Memuat daftar ujian...');
   var url = GAS_EXEC_URL + '?action=listExams';
@@ -636,17 +1007,547 @@ function loadImageFile(file) {
   reader.onload = function(ev) {
     var img = new Image();
     img.onload = function() {
-      state.currentImage = img;
-      var preview = $('previewImg');
-      preview.src = ev.target.result;
-      preview.style.display = 'block';
-      $('processCard').style.display = 'block';
-      $('resultCard').style.display = 'none';
-      toast('Foto dimuat. Klik "Mulai Deteksi"');
+      // Try auto-rectify (perspective correction) on uploaded photo
+      toast('Memproses - meluruskan dokumen...');
+      setTimeout(function() {
+        var rectifiedCanvas = null;
+        try {
+          rectifiedCanvas = tryAutoRectifyUploadedImage(img);
+        } catch (e) {
+          console.warn('Auto-rectify failed:', e);
+        }
+        if (rectifiedCanvas) {
+          var dataUrl = rectifiedCanvas.toDataURL('image/jpeg', 0.92);
+          var rectImg = new Image();
+          rectImg.onload = function() {
+            state.currentImage = rectImg;
+            var preview = $('previewImg');
+            preview.src = dataUrl;
+            preview.style.display = 'block';
+            $('processCard').style.display = 'block';
+            $('resultCard').style.display = 'none';
+            toast('Foto diluruskan otomatis. Klik "Mulai Deteksi"');
+          };
+          rectImg.src = dataUrl;
+        } else {
+          // Fallback: use original
+          state.currentImage = img;
+          var preview = $('previewImg');
+          preview.src = ev.target.result;
+          preview.style.display = 'block';
+          $('processCard').style.display = 'block';
+          $('resultCard').style.display = 'none';
+          toast('Foto dimuat (sudut tidak terdeteksi - pakai asli)');
+        }
+      }, 50);
     };
     img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+// ===========================================================================
+// DOCUMENT SCANNER - Corner detection + Perspective Transform
+// Mendeteksi 4 sudut dokumen LJK & luruskan perspektif (seperti CamScanner)
+// ===========================================================================
+
+// State untuk live document scanning
+var scanState = {
+  running: false,
+  lastFrameTime: 0,
+  lastCorners: null,
+  stableCount: 0,
+  corners: null,
+  autoCaptureArmed: false
+};
+
+/**
+ * Find centroid of dark pixels in a region (untuk deteksi corner mark L-shape).
+ * @param {Object} grayData - Uint8ClampedArray grayscale
+ * @param {number} w - width
+ * @param {Object} region - {x0, y0, x1, y1}
+ * @return {Object|null} {x, y, count}
+ */
+function findCornerCentroid(grayData, w, region, threshold) {
+  threshold = threshold || 100;
+  var sumX = 0, sumY = 0, count = 0;
+  for (var y = region.y0; y < region.y1; y++) {
+    for (var x = region.x0; x < region.x1; x++) {
+      if (grayData[y * w + x] <= threshold) {
+        sumX += x;
+        sumY += y;
+        count++;
+      }
+    }
+  }
+  if (count < 30) return null;
+  return { x: sumX / count, y: sumY / count, count: count };
+}
+
+/**
+ * Find dark cluster CLOSEST to the image corner (not densest).
+ * L-marks are the dark features closest to paper corners.
+ * Avoids false positives from marker bars (BATAS ATAS/BAWAH) which are larger
+ * but further from the corner.
+ * @param {Uint8ClampedArray} grayData
+ * @param {number} w
+ * @param {Object} region - {x0, y0, x1, y1}
+ * @param {Object} cornerPos - {x, y} image corner position
+ * @param {number} threshold - dark pixel threshold (default 100)
+ * @return {Object|null} {x, y, count}
+ */
+function findClosestClusterToCorner(grayData, w, region, cornerPos, threshold) {
+  threshold = threshold || 100;
+  var cx = cornerPos.x, cy = cornerPos.y;
+  var bestDist = Infinity;
+  var bestX = 0, bestY = 0;
+
+  // First pass: find dark pixel closest to corner (sample every 2px for speed)
+  for (var y = region.y0; y < region.y1; y += 2) {
+    for (var x = region.x0; x < region.x1; x += 2) {
+      if (grayData[y * w + x] <= threshold) {
+        var dx = x - cx, dy = y - cy;
+        var dist = dx * dx + dy * dy;
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestX = x;
+          bestY = y;
+        }
+      }
+    }
+  }
+
+  if (bestDist === Infinity) return null;
+
+  // Second pass: centroid of dark pixels around the closest point (window 25px)
+  var winR = 25;
+  var sumX = 0, sumY = 0, count = 0;
+  for (var dy = -winR; dy <= winR; dy++) {
+    for (var dx = -winR; dx <= winR; dx++) {
+      var px = bestX + dx, py = bestY + dy;
+      if (px >= region.x0 && px < region.x1 && py >= region.y0 && py < region.y1) {
+        if (grayData[py * w + px] <= threshold) {
+          sumX += px; sumY += py; count++;
+        }
+      }
+    }
+  }
+  if (count < 10) return null;
+  return { x: sumX / count, y: sumY / count, count: count };
+}
+
+/**
+ * Cari densest dark cluster di region (sliding window) - fallback jika closest gagal.
+ * @param {Object} grayData
+ * @param {number} w
+ * @param {Object} region
+ * @param {number} winSize - window size in px
+ * @return {Object|null} {x, y, count} - center of densest cluster
+ */
+function findDensestCluster(grayData, w, region, winSize, threshold) {
+  threshold = threshold || 100;
+  winSize = winSize || 40;
+  var step = Math.max(4, Math.floor(winSize / 3));
+  var bestX = 0, bestY = 0, bestCount = 0;
+
+  for (var y = region.y0; y + winSize < region.y1; y += step) {
+    for (var x = region.x0; x + winSize < region.x1; x += step) {
+      var count = 0;
+      // Sample every 2px for speed
+      for (var dy = 0; dy < winSize; dy += 2) {
+        for (var dx = 0; dx < winSize; dx += 2) {
+          if (grayData[(y + dy) * w + (x + dx)] <= threshold) count++;
+        }
+      }
+      if (count > bestCount) {
+        bestCount = count;
+        bestX = x + winSize / 2;
+        bestY = y + winSize / 2;
+      }
+    }
+  }
+  if (bestCount < 20) return null;
+  return { x: bestX, y: bestY, count: bestCount };
+}
+
+/**
+ * Deteksi 4 sudut dokumen dari grayscale image data.
+ * Strategi: cari corner marks (L-shape hitam) di 4 kuadran gambar.
+ * L-marks are the dark features CLOSEST to image corners (not densest) - avoids
+ * false positives from marker bars.
+ * @param {Uint8ClampedArray} grayData
+ * @param {number} w
+ * @param {number} h
+ * @return {Object|null} {tl, tr, bl, br} - each {x, y} = L-mark center
+ */
+function findDocumentCorners(grayData, w, h) {
+  var margin = 0.25; // search 25% of image from each corner
+
+  var regionsAndCorners = {
+    tl: { region: { x0: 0, y0: 0, x1: Math.floor(w * margin), y1: Math.floor(h * margin) }, corner: { x: 0, y: 0 } },
+    tr: { region: { x0: Math.floor(w * (1 - margin)), y0: 0, x1: w, y1: Math.floor(h * margin) }, corner: { x: w, y: 0 } },
+    bl: { region: { x0: 0, y0: Math.floor(h * (1 - margin)), x1: Math.floor(w * margin), y1: h }, corner: { x: 0, y: h } },
+    br: { region: { x0: Math.floor(w * (1 - margin)), y0: Math.floor(h * (1 - margin)), x1: w, y1: h }, corner: { x: w, y: h } }
+  };
+
+  var corners = {};
+  var keys = ['tl', 'tr', 'bl', 'br'];
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var rc = regionsAndCorners[key];
+    // Primary: find cluster closest to image corner (most accurate for L-marks)
+    var c = findClosestClusterToCorner(grayData, w, rc.region, rc.corner, 100);
+    if (!c) {
+      // Fallback: densest cluster
+      var winSize = Math.max(30, Math.floor(Math.min(w, h) * 0.06));
+      c = findDensestCluster(grayData, w, rc.region, winSize, 100);
+    }
+    if (!c) {
+      // Fallback 2: simple centroid
+      c = findCornerCentroid(grayData, w, rc.region, 100);
+    }
+    if (c) corners[key] = { x: c.x, y: c.y };
+  }
+
+  if (corners.tl && corners.tr && corners.bl && corners.br) {
+    // Sanity check: corners should be in correct quadrants
+    var valid = corners.tl.x < w / 2 && corners.tl.y < h / 2 &&
+                corners.tr.x > w / 2 && corners.tr.y < h / 2 &&
+                corners.bl.x < w / 2 && corners.bl.y > h / 2 &&
+                corners.br.x > w / 2 && corners.br.y > h / 2;
+    if (valid) return corners;
+  }
+  return null;
+}
+
+/**
+ * Compute homography matrix H (3x3) yang maps srcPoints -> dstPoints.
+ * Solves 8x8 linear system via Gaussian elimination.
+ * @param {Array} srcPoints - 4 points [{x,y}, ...]
+ * @param {Array} dstPoints - 4 points [{x,y}, ...]
+ * @return {Array} [h0..h7] (h8 = 1 implied)
+ */
+function computeHomography(srcPoints, dstPoints) {
+  var A = [];
+  var b = [];
+  for (var i = 0; i < 4; i++) {
+    var sx = srcPoints[i].x, sy = srcPoints[i].y;
+    var dx = dstPoints[i].x, dy = dstPoints[i].y;
+    A.push([sx, sy, 1, 0, 0, 0, -sx * dx, -sy * dx]);
+    b.push(dx);
+    A.push([0, 0, 0, sx, sy, 1, -sx * dy, -sy * dy]);
+    b.push(dy);
+  }
+  // Gaussian elimination with partial pivoting
+  var n = 8;
+  for (var i = 0; i < n; i++) {
+    var maxRow = i;
+    for (var k = i + 1; k < n; k++) {
+      if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
+    }
+    var tmpA = A[i]; A[i] = A[maxRow]; A[maxRow] = tmpA;
+    var tmpB = b[i]; b[i] = b[maxRow]; b[maxRow] = tmpB;
+    for (var k = i + 1; k < n; k++) {
+      var factor = A[k][i] / A[i][i];
+      for (var j = i; j < n; j++) {
+        A[k][j] -= factor * A[i][j];
+      }
+      b[k] -= factor * b[i];
+    }
+  }
+  // Back substitution
+  var x = new Array(n);
+  for (var i = n - 1; i >= 0; i--) {
+    x[i] = b[i];
+    for (var j = i + 1; j < n; j++) {
+      x[i] -= A[i][j] * x[j];
+    }
+    x[i] /= A[i][i];
+  }
+  return x;
+}
+
+/**
+ * Apply homography to a point (x, y) -> {x, y}.
+ * @param {Array} H - [h0..h7]
+ */
+function applyHomography(H, x, y) {
+  var denom = H[6] * x + H[7] * y + 1;
+  return {
+    x: (H[0] * x + H[1] * y + H[2]) / denom,
+    y: (H[3] * x + H[4] * y + H[5]) / denom
+  };
+}
+
+/**
+ * Perspective transform: rectify image menggunakan 4 sudut terdeteksi.
+ * @param {ImageData} srcImageData
+ * @param {Object} corners - {tl, tr, br, bl}
+ * @param {number} dstW
+ * @param {number} dstH
+ * @return {ImageData} rectified image
+ */
+function perspectiveTransform(srcImageData, corners, dstW, dstH) {
+  // Compute H mapping dst coords -> src coords
+  // dst points: rectangle corners [(0,0), (dstW,0), (dstW,dstH), (0,dstH)]
+  // src points: [corners.tl, corners.tr, corners.br, corners.bl]
+  var H = computeHomography(
+    [{ x: 0, y: 0 }, { x: dstW, y: 0 }, { x: dstW, y: dstH }, { x: 0, y: dstH }],
+    [corners.tl, corners.tr, corners.br, corners.bl]
+  );
+
+  var dst = new ImageData(dstW, dstH);
+  var dstData = dst.data;
+  var srcData = srcImageData.data;
+  var srcW = srcImageData.width;
+  var srcH = srcImageData.height;
+
+  for (var y = 0; y < dstH; y++) {
+    for (var x = 0; x < dstW; x++) {
+      var p = applyHomography(H, x, y);
+      var sx = Math.round(p.x);
+      var sy = Math.round(p.y);
+      if (sx >= 0 && sx < srcW && sy >= 0 && sy < srcH) {
+        // Bilinear sampling for better quality
+        var sx0 = Math.floor(p.x);
+        var sy0 = Math.floor(p.y);
+        var sx1 = Math.min(sx0 + 1, srcW - 1);
+        var sy1 = Math.min(sy0 + 1, srcH - 1);
+        var fx = p.x - sx0;
+        var fy = p.y - sy0;
+        var i00 = (sy0 * srcW + sx0) * 4;
+        var i01 = (sy0 * srcW + sx1) * 4;
+        var i10 = (sy1 * srcW + sx0) * 4;
+        var i11 = (sy1 * srcW + sx1) * 4;
+        var dstIdx = (y * dstW + x) * 4;
+        for (var c = 0; c < 3; c++) {
+          var top = srcData[i00 + c] * (1 - fx) + srcData[i01 + c] * fx;
+          var bot = srcData[i10 + c] * (1 - fx) + srcData[i11 + c] * fx;
+          dstData[dstIdx + c] = top * (1 - fy) + bot * fy;
+        }
+        dstData[dstIdx + 3] = 255;
+      }
+    }
+  }
+  return dst;
+}
+
+/**
+ * Perspective transform khusus untuk L-mark centers.
+ * Map L-mark centers ke posisi yang diharapkan di A4 penuh (bukan ke corner rectangle).
+ * L-mark centers di document coords: (11,11), (199,11), (199,286), (11,286) mm.
+ * Ini menghasilkan rectified A4 penuh di mana LAYOUT constants (marker Y, bubble Y) bekerja.
+ *
+ * @param {ImageData} srcImageData
+ * @param {Object} lmarkCorners - {tl, tr, br, bl} detected L-mark centers
+ * @param {number} dstW - destination width (e.g., 1240 for A4 at 150 DPI)
+ * @param {number} dstH - destination height (e.g., 1754)
+ * @return {ImageData} rectified full A4 image
+ */
+function perspectiveTransformLmarks(srcImageData, lmarkCorners, dstW, dstH) {
+  var pxPerMmX = dstW / 210;
+  var pxPerMmY = dstH / 297;
+
+  // Expected L-mark positions in destination (full A4)
+  var dstLmarks = [
+    { x: 11 * pxPerMmX, y: 11 * pxPerMmY },         // TL
+    { x: 199 * pxPerMmX, y: 11 * pxPerMmY },        // TR
+    { x: 199 * pxPerMmX, y: 286 * pxPerMmY },       // BR
+    { x: 11 * pxPerMmX, y: 286 * pxPerMmY }         // BL
+  ];
+  // Detected L-mark positions in source
+  var srcLmarks = [lmarkCorners.tl, lmarkCorners.tr, lmarkCorners.br, lmarkCorners.bl];
+
+  // Compute homography: dst -> src
+  var H = computeHomography(dstLmarks, srcLmarks);
+
+  var dst = new ImageData(dstW, dstH);
+  var dstData = dst.data;
+  var srcData = srcImageData.data;
+  var srcW = srcImageData.width;
+  var srcH = srcImageData.height;
+
+  for (var y = 0; y < dstH; y++) {
+    for (var x = 0; x < dstW; x++) {
+      var p = applyHomography(H, x, y);
+      var sx0 = Math.floor(p.x);
+      var sy0 = Math.floor(p.y);
+      if (sx0 >= 0 && sx0 < srcW && sy0 >= 0 && sy0 < srcH) {
+        var sx1 = Math.min(sx0 + 1, srcW - 1);
+        var sy1 = Math.min(sy0 + 1, srcH - 1);
+        var fx = p.x - sx0;
+        var fy = p.y - sy0;
+        var i00 = (sy0 * srcW + sx0) * 4;
+        var i01 = (sy0 * srcW + sx1) * 4;
+        var i10 = (sy1 * srcW + sx0) * 4;
+        var i11 = (sy1 * srcW + sx1) * 4;
+        var dstIdx = (y * dstW + x) * 4;
+        for (var c = 0; c < 3; c++) {
+          var top = srcData[i00 + c] * (1 - fx) + srcData[i01 + c] * fx;
+          var bot = srcData[i10 + c] * (1 - fx) + srcData[i11 + c] * fx;
+          dstData[dstIdx + c] = top * (1 - fy) + bot * fy;
+        }
+        dstData[dstIdx + 3] = 255;
+      } else {
+        // Out of bounds → white (paper background)
+        var dstIdx = (y * dstW + x) * 4;
+        dstData[dstIdx] = 255;
+        dstData[dstIdx + 1] = 255;
+        dstData[dstIdx + 2] = 255;
+        dstData[dstIdx + 3] = 255;
+      }
+    }
+  }
+  return dst;
+}
+
+/**
+ * Convert ImageData to grayscale Uint8ClampedArray.
+ */
+function toGray(imageData) {
+  var data = imageData.data;
+  var w = imageData.width;
+  var h = imageData.height;
+  var gray = new Uint8ClampedArray(w * h);
+  for (var i = 0; i < w * h; i++) {
+    gray[i] = Math.round(0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2]);
+  }
+  return gray;
+}
+
+/**
+ * Live document scanning loop - run via requestAnimationFrame.
+ * Deteksi sudut dokumen di setiap frame (throttled), gambar overlay.
+ */
+function liveScanLoop(timestamp) {
+  if (!scanState.running) return;
+  if (timestamp - scanState.lastFrameTime > 180) { // ~5-6 fps
+    scanState.lastFrameTime = timestamp;
+    processLiveFrame();
+  }
+  if (scanState.running) {
+    requestAnimationFrame(liveScanLoop);
+  }
+}
+
+function processLiveFrame() {
+  var video = $('cameraVideo');
+  if (!video.videoWidth) return;
+
+  // Downscale for processing speed (max 320px wide)
+  var procW = 320;
+  var procH = Math.round(procW * video.videoHeight / video.videoWidth);
+  var procCanvas = document.createElement('canvas');
+  procCanvas.width = procW;
+  procCanvas.height = procH;
+  var procCtx = procCanvas.getContext('2d');
+  procCtx.drawImage(video, 0, 0, procW, procH);
+  var procData = procCtx.getImageData(0, 0, procW, procH);
+  var grayData = toGray(procData);
+
+  // Find corners in downscaled image
+  var corners = findDocumentCorners(grayData, procW, procH);
+
+  // Get overlay canvas
+  var overlay = $('cameraOverlay');
+  var video_el = $('cameraVideo');
+  var dispW = video_el.offsetWidth || video_el.videoWidth;
+  var dispH = video_el.offsetHeight || video_el.videoHeight;
+  overlay.width = dispW;
+  overlay.height = dispH;
+  var ctx = overlay.getContext('2d');
+  ctx.clearRect(0, 0, dispW, dispH);
+
+  var statusEl = $('cameraStatus');
+  var captureBtn = $('captureBtn');
+  var autoBtn = $('autoCaptureBtn');
+
+  if (corners) {
+    // Scale corners to display coords
+    var scaleX = dispW / procW;
+    var scaleY = dispH / procH;
+    var scaledCorners = {};
+    var keys = ['tl', 'tr', 'br', 'bl'];
+    for (var i = 0; i < keys.length; i++) {
+      scaledCorners[keys[i]] = {
+        x: corners[keys[i]].x * scaleX,
+        y: corners[keys[i]].y * scaleY
+      };
+    }
+
+    // Check stability (movement vs last frame)
+    if (scanState.lastCorners) {
+      var movement = 0;
+      for (var i = 0; i < keys.length; i++) {
+        movement += Math.abs(scaledCorners[keys[i]].x - scanState.lastCorners[keys[i]].x);
+        movement += Math.abs(scaledCorners[keys[i]].y - scanState.lastCorners[keys[i]].y);
+      }
+      if (movement < 40) {
+        scanState.stableCount++;
+      } else {
+        scanState.stableCount = 0;
+      }
+    }
+    scanState.lastCorners = scaledCorners;
+
+    // Draw boundary polygon
+    var color = scanState.stableCount > 4 ? '#27AE60' : '#F39C12';
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.setLineDash(scanState.stableCount > 4 ? [] : [8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(scaledCorners.tl.x, scaledCorners.tl.y);
+    ctx.lineTo(scaledCorners.tr.x, scaledCorners.tr.y);
+    ctx.lineTo(scaledCorners.br.x, scaledCorners.br.y);
+    ctx.lineTo(scaledCorners.bl.x, scaledCorners.bl.y);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Fill translucent
+    ctx.fillStyle = scanState.stableCount > 4
+      ? 'rgba(39,174,96,0.12)'
+      : 'rgba(243,156,18,0.08)';
+    ctx.fill();
+
+    // Draw corner markers
+    ctx.fillStyle = color;
+    for (var i = 0; i < keys.length; i++) {
+      ctx.beginPath();
+      ctx.arc(scaledCorners[keys[i]].x, scaledCorners[keys[i]].y, 10, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Update status
+    if (scanState.stableCount > 4) {
+      statusEl.innerHTML = '✓ DOKUMEN STABIL - SIAP CAPTURE!';
+      statusEl.style.color = '#27AE60';
+      captureBtn.disabled = false;
+      autoBtn.disabled = false;
+
+      // Auto-capture if armed
+      if (scanState.autoCaptureArmed && scanState.stableCount > 8) {
+        scanState.autoCaptureArmed = false;
+        captureFromCamera();
+        return;
+      }
+    } else {
+      statusEl.innerHTML = '◑ Dokumen terdeteksi - tahan stabil...';
+      statusEl.style.color = '#F39C12';
+      captureBtn.disabled = true;
+      autoBtn.disabled = true;
+    }
+  } else {
+    scanState.stableCount = 0;
+    scanState.lastCorners = null;
+    statusEl.innerHTML = '◌ MENCARI DOKUMEN... Posisikan LJK dalam frame';
+    statusEl.style.color = '#FFF8DC';
+    captureBtn.disabled = true;
+    autoBtn.disabled = true;
+  }
 }
 
 // ===========================================================================
@@ -661,8 +1562,18 @@ function startCamera() {
       var video = $('cameraVideo');
       video.srcObject = stream;
       video.style.display = 'block';
-      $('captureBtn').disabled = false;
-      toast('Kamera aktif');
+      $('cameraWrapper').classList.add('active');
+      $('cameraStatus').innerHTML = '◌ MENCARI DOKUMEN... Posisikan LJK dalam frame';
+      $('cameraStatus').style.color = '#FFF8DC';
+      $('captureBtn').disabled = true;
+      $('autoCaptureBtn').disabled = true;
+      toast('Kamera aktif - posisikan LJK dalam frame');
+      // Start live document scanning
+      scanState.running = true;
+      scanState.stableCount = 0;
+      scanState.lastCorners = null;
+      scanState.autoCaptureArmed = false;
+      requestAnimationFrame(liveScanLoop);
     }).catch(function(err) {
       toast('Error kamera: ' + err.message);
     });
@@ -672,24 +1583,118 @@ function startCamera() {
 }
 
 function stopCamera() {
+  // Stop live scan
+  scanState.running = false;
+  scanState.autoCaptureArmed = false;
   if (state.cameraStream) {
     state.cameraStream.getTracks().forEach(function(t) { t.stop(); });
     state.cameraStream = null;
     $('captureBtn').disabled = true;
+    $('autoCaptureBtn').disabled = true;
+    $('cameraWrapper').classList.remove('active');
+    // Clear overlay
+    var overlay = $('cameraOverlay');
+    if (overlay.getContext) {
+      var ctx = overlay.getContext('2d');
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+    }
   }
 }
 
+/**
+ * Auto Capture - arm auto-capture, akan trigger saat dokumen stabil >8 frames
+ */
+function autoCapture() {
+  if (scanState.stableCount < 4) {
+    toast('Dokumen belum stabil - tunggu hijau dulu');
+    return;
+  }
+  scanState.autoCaptureArmed = true;
+  $('cameraStatus').innerHTML = '⏳ AUTO CAPTURE ARMED - tahan stabil...';
+  $('cameraStatus').style.color = '#F39C12';
+  toast('Auto capture aktif - tahan LJK stabil');
+}
+
+/**
+ * Capture foto + auto perspective transform (CamScanner-style).
+ * Deteksi 4 sudut di full-res image, lalu luruskan perspektif.
+ */
 function captureFromCamera() {
   var video = $('cameraVideo');
   if (!video.videoWidth) {
     toast('Kamera belum siap');
     return;
   }
+
+  // Capture full-res frame
   var canvas = document.createElement('canvas');
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   var ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0);
+  var fullData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  // Stop camera first (so user sees we're processing)
+  scanState.running = false;
+
+  $('cameraStatus').innerHTML = '⚙ Memproses - meluruskan dokumen...';
+  $('cameraStatus').style.color = '#FFD700';
+
+  // Process in next tick to allow UI update
+  setTimeout(function() {
+    // Detect corners at full resolution (downscaled for speed)
+    var procScale = Math.min(1, 640 / Math.max(canvas.width, canvas.height));
+    var procW = Math.round(canvas.width * procScale);
+    var procH = Math.round(canvas.height * procScale);
+    var procCanvas = document.createElement('canvas');
+    procCanvas.width = procW;
+    procCanvas.height = procH;
+    var procCtx = procCanvas.getContext('2d');
+    procCtx.drawImage(canvas, 0, 0, procW, procH);
+    var procImgData = procCtx.getImageData(0, 0, procW, procH);
+    var procGray = toGray(procImgData);
+
+    var procCorners = findDocumentCorners(procGray, procW, procH);
+
+    var finalCanvas;
+    if (procCorners) {
+      // Scale corners back to full-res
+      var fullCorners = {};
+      var keys = ['tl', 'tr', 'br', 'bl'];
+      for (var i = 0; i < keys.length; i++) {
+        fullCorners[keys[i]] = {
+          x: procCorners[keys[i]].x / procScale,
+          y: procCorners[keys[i]].y / procScale
+        };
+      }
+
+      // Perspective transform to full A4 (210:297)
+      // Uses perspectiveTransformLmarks: maps detected L-mark centers to their
+      // expected positions in a full A4 rectified image (11mm offset from corners).
+      var dstW = 1240; // ~150 DPI A4 width
+      var dstH = Math.round(dstW * 297 / 210); // 1754
+
+      $('cameraStatus').innerHTML = '⚙ Meluruskan perspektif (' + dstW + 'x' + dstH + ')...';
+
+      // Use setTimeout to allow UI update before heavy computation
+      setTimeout(function() {
+        var rectified = perspectiveTransformLmarks(fullData, fullCorners, dstW, dstH);
+        finalCanvas = document.createElement('canvas');
+        finalCanvas.width = dstW;
+        finalCanvas.height = dstH;
+        finalCanvas.getContext('2d').putImageData(rectified, 0, 0);
+        finalizeCapture(finalCanvas, 'Foto + Auto-Lurus (perspective transform)');
+      }, 50);
+    } else {
+      // Fallback: use original photo without perspective correction
+      toast('Sudut dokumen tidak terdeteksi - pakai foto asli');
+      finalCanvas = canvas;
+      finalizeCapture(finalCanvas, 'Foto asli (tanpa perspective transform)');
+    }
+  }, 50);
+}
+
+function finalizeCapture(canvas, message) {
   var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
   var img = new Image();
   img.onload = function() {
@@ -699,10 +1704,58 @@ function captureFromCamera() {
     preview.style.display = 'block';
     $('processCard').style.display = 'block';
     $('resultCard').style.display = 'none';
+    $('cameraStatus').innerHTML = '✓ Foto siap: ' + message;
+    $('cameraStatus').style.color = '#27AE60';
     stopCamera();
-    toast('Foto diambil. Klik "Mulai Deteksi"');
+    toast('Foto diproses. Klik "Mulai Deteksi"');
   };
   img.src = dataUrl;
+}
+
+/**
+ * Also apply perspective transform to uploaded photos if corners detected.
+ * Called from loadImageFile after image is loaded.
+ */
+function tryAutoRectifyUploadedImage(img) {
+  // Downscale for corner detection
+  var maxDim = 640;
+  var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+  var w = Math.round(img.width * scale);
+  var h = Math.round(img.height * scale);
+  var c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  var ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+  var data = ctx.getImageData(0, 0, w, h);
+  var gray = toGray(data);
+  var corners = findDocumentCorners(gray, w, h);
+  if (!corners) return null;
+
+  // Scale to full-res
+  var fullCorners = {};
+  var keys = ['tl', 'tr', 'br', 'bl'];
+  for (var i = 0; i < keys.length; i++) {
+    fullCorners[keys[i]] = {
+      x: corners[keys[i]].x / scale,
+      y: corners[keys[i]].y / scale
+    };
+  }
+  // Get full image data
+  var fullCanvas = document.createElement('canvas');
+  fullCanvas.width = img.width;
+  fullCanvas.height = img.height;
+  var fullCtx = fullCanvas.getContext('2d');
+  fullCtx.drawImage(img, 0, 0);
+  var fullData = fullCtx.getImageData(0, 0, img.width, img.height);
+
+  var dstW = 1240;
+  var dstH = Math.round(dstW * 297 / 210);
+  var rectified = perspectiveTransformLmarks(fullData, fullCorners, dstW, dstH);
+  var outCanvas = document.createElement('canvas');
+  outCanvas.width = dstW;
+  outCanvas.height = dstH;
+  outCanvas.getContext('2d').putImageData(rectified, 0, 0);
+  return outCanvas;
 }
 
 // ===========================================================================
