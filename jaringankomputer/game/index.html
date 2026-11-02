@@ -556,7 +556,7 @@ body{
 
 /* Question banner (top center, below fuel) */
 .q-banner{
-  position:absolute; top:90px; left:50%; transform:translateX(-50%);
+  position:absolute; top:100px; left:50%; transform:translateX(-50%);
   width:min(720px,94vw); z-index:3;
   background:linear-gradient(180deg,rgba(255,246,224,.97),rgba(255,230,170,.97));
   border:4px solid var(--wood-d); border-radius:16px;
@@ -569,8 +569,15 @@ body{
   to{transform:translate(-50%,0); opacity:1;}
 }
 .q-meta{
-  display:flex; justify-content:space-between; font-size:11px; font-weight:bold;
-  color:var(--wood-l); margin-bottom:4px;
+  display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:bold;
+  color:var(--wood-l); margin-bottom:6px;
+}
+#q-progress{
+  display:inline-block;
+  background:linear-gradient(180deg,var(--gold-l),var(--gold));
+  color:var(--wood-d); padding:3px 12px; border-radius:10px;
+  border:2px solid var(--wood-d); font-size:13px; font-weight:900;
+  box-shadow:var(--shadow-inset);
 }
 .q-text{
   font-size:clamp(16px,2.6vw,22px); font-weight:900; color:var(--wood-d);
@@ -943,12 +950,13 @@ body{
   .fuel-icons .heart{font-size:11px;}
   /* Scene indicator: below HUD, right side, compact */
   .scene-indicator{top:52px; right:8px; font-size:10px; padding:3px 8px; border-radius:8px;}
-  /* Question banner: compact, moved down slightly */
-  .q-banner{top:90px; padding:8px 10px; border-radius:12px; width:94vw;}
+  /* Question banner: moved down more to not cover plane view */
+  .q-banner{top:110px; padding:8px 12px; border-radius:12px; width:94vw;}
   .q-text{font-size:14px !important; line-height:1.3;}
-  .q-meta{font-size:10px;}
+  .q-meta{font-size:10px; margin-bottom:4px;}
+  #q-progress{font-size:11px; padding:2px 8px;}
   /* Countdown: below question banner */
-  .next-q-countdown{top:90px; font-size:12px; padding:6px 16px;}
+  .next-q-countdown{top:110px; font-size:12px; padding:6px 16px;}
   .countdown-num{font-size:18px;}
   /* Answer targets: moved DOWN (no fire button at center bottom anymore) */
   .targets-hud{
