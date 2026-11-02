@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin LJK - Asesmen Akhir Semester</title>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --accent: #f59e0b;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #cbd5e1;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warn: #d97706;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-bottom: 40px;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: white;
+    padding: 14px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .header h1 { font-size: 18px; font-weight: 700; }
+  .header p { font-size: 12px; opacity: 0.9; margin-top: 2px; }
+  .header .nav-right { float: right; margin-top: -28px; }
+  .header .nav-right a {
+    color: white; text-decoration: none; font-size: 13px;
+    background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 6px;
+  }
+  .container { padding: 16px; max-width: 900px; margin: 0 auto; }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .card h2 {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: var(--primary-dark);
+    border-bottom: 2px solid var(--bg);
+    padding-bottom: 8px;
+  }
+  .form-group { margin-bottom: 12px; }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  input[type="text"], input[type="url"], select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30,64,175,0.15);
+  }
+  .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-accent { background: var(--accent); color: white; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-warn { background: var(--warn); color: white; }
+  .btn-block { display: block; width: 100%; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-row .btn { flex: 1; min-width: 100px; }
+
+  .tabs {
+    display: flex;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+  }
+  .tab {
+    flex: 1;
+    min-width: 90px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .tab.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  table.data-table th, table.data-table td {
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    text-align: left;
+  }
+  table.data-table th {
+    background: var(--bg);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  table.data-table tr:hover td { background: #f8fafc; }
+
+  .answer-key-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .question-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    background: #fafbfc;
+  }
+  .question-block .qnum {
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .option-row {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .option-btn {
+    padding: 5px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 32px;
+  }
+  .option-btn.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .option-btn.selected.partial {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-box {
+    background: var(--bg);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .stat-box .label { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .stat-box .value { font-size: 18px; font-weight: 700; color: var(--primary-dark); }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15,23,42,0.95);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    max-width: 90%;
+  }
+  .toast.show { opacity: 1; }
+
+  .empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .info-banner {
+    background: #fef3c7;
+    border-left: 3px solid var(--warn);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  details {
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  details[open] summary { margin-bottom: 8px; }
+
+  @media (max-width: 600px) {
+    .container { padding: 10px; }
+    .card { padding: 12px; }
+    .tab { font-size: 11px; padding: 8px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Admin Panel LJK</h1>
+  <p>Kelola Ujian &middot; Kunci Jawaban &middot; Hasil</p>
+  <div class="nav-right"><a href="index.html">Koreksi</a></div>
+</div>
+
+<div class="container">
+
+  <!-- KONFIGURASI -->
+  <div class="card">
+    <h2>Konfigurasi Backend</h2>
+    <div class="info-banner">
+      <b>Penting:</b> Set URL deployment GAS (Web app URL) sekali, lalu simpan. URL akan disimpan di localStorage browser ini.
+    </div>
+    <div class="form-group">
+      <label>URL Backend (Google Apps Script Web App)</label>
+      <input type="url" id="gasUrl" placeholder="https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveConfig()">Simpan</button>
+      <button class="btn btn-warn" onclick="testConnection()">Test Koneksi</button>
+      <button class="btn btn-success" onclick="loadAll()">Muat Data</button>
+    </div>
+    <div id="connStatus" style="font-size:12px; margin-top:8px; color:var(--muted)"></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" id="tabExams" onclick="switchTab('exams')">Ujian</div>
+    <div class="tab" id="tabKey" onclick="switchTab('key')">Kunci Jawaban</div>
+    <div class="tab" id="tabResults" onclick="switchTab('results')">Hasil</div>
+    <div class="tab" id="tabStats" onclick="switchTab('stats')">Statistik</div>
+    <div class="tab" id="tabStudents" onclick="switchTab('students')">Siswa</div>
+  </div>
+
+  <!-- TAB: UJIAN -->
+  <div class="card" id="panelExams">
+    <h2>Kelola Ujian</h2>
+    <div class="form-group">
+      <label>ID Ujian (contoh: AAS-GENAP-2024)</label>
+      <input type="text" id="examIdInput" placeholder="AAS-GENAP-2024">
+    </div>
+    <div class="form-group">
+      <label>Nama Ujian</label>
+      <input type="text" id="examNameInput" placeholder="Asesmen Akhir Semester Genap">
+    </div>
+    <div class="form-group">
+      <label>Mata Pelajaran</label>
+      <input type="text" id="examSubjectInput" placeholder="Matematika">
+    </div>
+    <button class="btn btn-success btn-block" onclick="saveExam()">Simpan Ujian</button>
+
+    <h3 style="margin-top:18px; font-size:13px; color:var(--muted)">Daftar Ujian Tersimpan</h3>
+    <div id="examsList"></div>
+  </div>
+
+  <!-- TAB: KUNCI JAWABAN -->
+  <div class="card" id="panelKey" style="display:none">
+    <h2>Kunci Jawaban</h2>
+    <div class="form-group">
+      <label>Pilih Ujian</label>
+      <select id="keyExamSelect" onchange="loadAnswerKeyEditor()"></select>
+    </div>
+    <div class="form-group">
+      <label>Bobot Nilai (poin per soal)</label>
+      <div class="btn-row" style="align-items:center">
+        <div style="flex:1">
+          <label style="font-size:11px">PG</label>
+          <input type="text" id="pointsPG" value="1" style="padding:6px">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:11px">PGK</label>
+          <input type="text" id="pointsPGK" value="2" style="padding:6px">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:11px">BS</label>
+          <input type="text" id="pointsBS" value="1" style="padding:6px">
+        </div>
+      </div>
+    </div>
+    <div id="answerKeyEditor"></div>
+    <button class="btn btn-success btn-block" style="margin-top:14px" onclick="saveAnswerKey()">
+      Simpan Kunci Jawaban
+    </button>
+  </div>
+
+  <!-- TAB: HASIL -->
+  <div class="card" id="panelResults" style="display:none">
+    <h2>Hasil Koreksi</h2>
+    <div class="form-group">
+      <label>Pilih Ujian</label>
+      <select id="resultsExamSelect" onchange="loadResults()"></select>
+    </div>
+    <div class="btn-row" style="margin-bottom:10px">
+      <button class="btn btn-warn" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-danger" onclick="resetResults()">Reset Hasil</button>
+    </div>
+    <div id="resultsTable"></div>
+  </div>
+
+  <!-- TAB: STATISTIK -->
+  <div class="card" id="panelStats" style="display:none">
+    <h2>Statistik</h2>
+    <div class="form-group">
+      <label>Pilih Ujian</label>
+      <select id="statsExamSelect" onchange="loadStats()"></select>
+    </div>
+    <div id="statsContent"></div>
+  </div>
+
+  <!-- TAB: SISWA -->
+  <div class="card" id="panelStudents" style="display:none">
+    <h2>Data Siswa</h2>
+    <div class="form-group">
+      <label>Pilih Ujian</label>
+      <select id="studentExamSelect"></select>
+    </div>
+    <div class="form-group">
+      <label>No. Peserta</label>
+      <input type="text" id="studentIdInput" placeholder="2024-001">
+    </div>
+    <div class="form-group">
+      <label>Nama</label>
+      <input type="text" id="studentNameInput" placeholder="Nama lengkap">
+    </div>
+    <div class="form-group">
+      <label>Kelas</label>
+      <input type="text" id="studentClassInput" placeholder="XI-IPA-1">
+    </div>
+    <button class="btn btn-success btn-block" onclick="addStudent()">Tambah Siswa</button>
+    <p style="font-size:12px; margin-top:10px; color:var(--muted)">
+      Catatan: Data siswa juga otomatis tersimpan saat hasil scan disimpan dari halaman Koreksi.
+    </p>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===========================================================================
+// KONFIGURASI - GANTI URL INI DENGAN URL DEPLOYMENT GAS ANDA!
+// ===========================================================================
+var GAS_EXEC_URL = 'https://script.google.com/macros/s/AKfycbyTmAbLvSqzHSLdWBpfvJkdhr1l5H1Pfu_qJsoNCNS2UtrOLjnlGDEjNF7Y4Le40waB/exec'; // <-- WAJIB GANTI
+
+// Struktur soal (sinkron dengan index.html & Kode.gs)
+var STRUCTURE = {
+  pg:  { count: 15, options: ['A','B','C','D','E'], multiple: false, name: 'Pilihan Ganda' },
+  pgk: { count: 10, options: ['A','B','C','D','E'], multiple: true,  name: 'Pilihan Ganda Kompleks' },
+  bs:  { count: 5,  options: ['B','S'],             multiple: false, name: 'Benar / Salah' }
+};
+
+// State untuk editor kunci jawaban
+var answerKeyState = {
+  pg: [],
+  pgk: [],
+  bs: []
+};
+
+// ===========================================================================
+// UTILITAS
+// ===========================================================================
+function $(id) { return document.getElementById(id); }
+function toast(msg, dur) {
+  var t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, dur || 2500);
+}
+
+function saveConfig() {
+  var url = $('gasUrl').value.trim();
+  if (url) {
+    GAS_EXEC_URL = url;
+    localStorage.setItem('ljk_gas_url', url);
+    toast('URL disimpan');
+    loadAll();
+  } else {
+    toast('URL tidak boleh kosong');
+  }
+}
+
+function loadConfig() {
+  var saved = localStorage.getItem('ljk_gas_url');
+  if (saved) {
+    GAS_EXEC_URL = saved;
+    $('gasUrl').value = saved;
+    return true;
+  }
+  return false;
+}
+
+// ===========================================================================
+// API CALLS
+// ===========================================================================
+function gasGet(action, params, callback) {
+  if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
+    toast('Set URL backend GAS dulu');
+    return;
+  }
+  var url = GAS_EXEC_URL + '?action=' + action;
+  if (params) {
+    for (var k in params) {
+      url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+    }
+  }
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(callback)
+    .catch(function(err) { toast('Error: ' + err.message); });
+}
+
+function gasPost(payload, callback) {
+  if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
+    toast('Set URL backend GAS dulu');
+    return;
+  }
+  fetch(GAS_EXEC_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  })
+    .then(function(r) { return r.json(); })
+    .then(callback)
+    .catch(function(err) { toast('Error: ' + err.message); });
+}
+
+function testConnection() {
+  if (!GAS_EXEC_URL || GAS_EXEC_URL === 'GANTI_DENGAN_URL_EXEC_GAS_ANDA') {
+    var url = $('gasUrl').value.trim();
+    if (url) GAS_EXEC_URL = url;
+  }
+  $('connStatus').textContent = 'Menguji koneksi...';
+  gasGet('ping', null, function(data) {
+    if (data.ok) {
+      $('connStatus').innerHTML = '<span style="color:var(--success)">✓ Terhubung: ' + data.message + '</span>';
+      toast('Backend terhubung');
+    } else {
+      $('connStatus').innerHTML = '<span style="color:var(--danger)">✗ Error: ' + (data.error || 'unknown') + '</span>';
+    }
+  });
+}
+
+// ===========================================================================
+// TAB SWITCHING
+// ===========================================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  ['Exams','Key','Results','Stats','Students'].forEach(function(p) {
+    $('panel' + p).style.display = 'none';
+  });
+  $('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  $('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
+
+  if (tab === 'key') loadAnswerKeyEditor();
+  if (tab === 'results') loadResults();
+  if (tab === 'stats') loadStats();
+}
+
+// ===========================================================================
+// UJIAN
+// ===========================================================================
+function saveExam() {
+  var examId = $('examIdInput').value.trim();
+  var name = $('examNameInput').value.trim();
+  var subject = $('examSubjectInput').value.trim();
+  if (!examId || !name) {
+    toast('ID & Nama ujian wajib diisi');
+    return;
+  }
+  gasPost({
+    action: 'saveExam',
+    examId: examId,
+    name: name,
+    subject: subject
+  }, function(data) {
+    if (data.ok) {
+      toast('Ujian disimpan');
+      $('examIdInput').value = '';
+      $('examNameInput').value = '';
+      $('examSubjectInput').value = '';
+      loadExamsList();
+    } else {
+      toast('Error: ' + (data.error || 'unknown'));
+    }
+  });
+}
+
+function loadExamsList() {
+  gasGet('listExams', null, function(data) {
+    var html = '';
+    if (!data.ok || data.exams.length === 0) {
+      html = '<div class="empty-state">Belum ada ujian. Buat baru di atas.</div>';
+    } else {
+      html = '<table class="data-table"><thead><tr><th>ID</th><th>Nama</th><th>Mapel</th><th>Status</th></tr></thead><tbody>';
+      data.exams.forEach(function(e) {
+        html += '<tr><td><b>' + e.examId + '</b></td><td>' + e.name + '</td><td>' + (e.subject||'') + '</td><td>' + (e.active ? 'Aktif' : 'Nonaktif') + '</td></tr>';
+      });
+      html += '</tbody></table>';
+    }
+    $('examsList').innerHTML = html;
+
+    // Populate selects
+    var opts = '<option value="">-- Pilih Ujian --</option>';
+    if (data.ok) {
+      data.exams.forEach(function(e) {
+        opts += '<option value="' + e.examId + '">' + e.examId + ' - ' + e.name + '</option>';
+      });
+    }
+    $('keyExamSelect').innerHTML = opts;
+    $('resultsExamSelect').innerHTML = opts;
+    $('statsExamSelect').innerHTML = opts;
+    $('studentExamSelect').innerHTML = opts;
+  });
+}
+
+// ===========================================================================
+// KUNCI JAWABAN EDITOR
+// ===========================================================================
+function loadAnswerKeyEditor() {
+  var examId = $('keyExamSelect').value;
+  if (!examId) {
+    $('answerKeyEditor').innerHTML = '<div class="empty-state">Pilih ujian dulu</div>';
+    return;
+  }
+  gasGet('getAnswerKey', { examId: examId }, function(data) {
+    // Reset state
+    answerKeyState = {
+      pg: new Array(STRUCTURE.pg.count).fill(null),
+      pgk: new Array(STRUCTURE.pgk.count).fill([]),
+      bs: new Array(STRUCTURE.bs.count).fill(null)
+    };
+    if (data.ok) {
+      var key = data.answerKey;
+      // Fill from backend
+      if (key.pg) for (var i = 0; i < STRUCTURE.pg.count; i++) answerKeyState.pg[i] = key.pg[i] || null;
+      if (key.pgk) for (var i = 0; i < STRUCTURE.pgk.count; i++) answerKeyState.pgk[i] = key.pgk[i] || [];
+      if (key.bs) for (var i = 0; i < STRUCTURE.bs.count; i++) answerKeyState.bs[i] = key.bs[i] || null;
+      if (key.points) {
+        $('pointsPG').value = key.points.pg || 1;
+        $('pointsPGK').value = key.points.pgk || 2;
+        $('pointsBS').value = key.points.bs || 1;
+      }
+    }
+    renderAnswerKeyEditor();
+  });
+}
+
+function renderAnswerKeyEditor() {
+  var html = '';
+
+  function renderSection(sectionKey, title, multiple) {
+    var sec = STRUCTURE[sectionKey];
+    html += '<h3 style="font-size:13px; margin:14px 0 8px; color:var(--primary-dark)">' + title + '</h3>';
+    html += '<div class="answer-key-grid">';
+    for (var i = 0; i < sec.count; i++) {
+      html += '<div class="question-block"><div class="qnum">Soal ' + (i+1) + '</div><div class="option-row">';
+      sec.options.forEach(function(opt) {
+        var selected = false;
+        if (multiple) {
+          selected = answerKeyState[sectionKey][i] && answerKeyState[sectionKey][i].indexOf(opt) !== -1;
+        } else {
+          selected = answerKeyState[sectionKey][i] === opt;
+        }
+        html += '<button class="option-btn ' + (selected ? 'selected' : '') + (multiple ? ' partial' : '') +
+                '" onclick="toggleAnswer(\'' + sectionKey + '\',' + i + ',\'' + opt + '\',' + multiple + ')">' + opt + '</button>';
+      });
+      html += '</div></div>';
+    }
+    html += '</div>';
+  }
+
+  renderSection('pg', 'A. Pilihan Ganda (15 soal)', false);
+  renderSection('pgk', 'B. Pilihan Ganda Kompleks (10 soal)', true);
+  renderSection('bs', 'C. Benar / Salah (5 soal)', false);
+
+  $('answerKeyEditor').innerHTML = html;
+}
+
+function toggleAnswer(sectionKey, qIdx, opt, multiple) {
+  if (multiple) {
+    var arr = answerKeyState[sectionKey][qIdx] || [];
+    var i = arr.indexOf(opt);
+    if (i === -1) arr.push(opt);
+    else arr.splice(i, 1);
+    answerKeyState[sectionKey][qIdx] = arr;
+  } else {
+    // toggle single
+    answerKeyState[sectionKey][qIdx] = answerKeyState[sectionKey][qIdx] === opt ? null : opt;
+  }
+  renderAnswerKeyEditor();
+}
+
+function saveAnswerKey() {
+  var examId = $('keyExamSelect').value;
+  if (!examId) { toast('Pilih ujian dulu'); return; }
+  var points = {
+    pg: parseFloat($('pointsPG').value) || 1,
+    pgk: parseFloat($('pointsPGK').value) || 2,
+    bs: parseFloat($('pointsBS').value) || 1
+  };
+  gasPost({
+    action: 'saveAnswerKey',
+    examId: examId,
+    answers: answerKeyState,
+    points: points
+  }, function(data) {
+    if (data.ok) {
+      toast('Kunci jawaban disimpan (' + data.count + ' jawaban)');
+    } else {
+      toast('Error: ' + (data.error || 'unknown'));
+    }
+  });
+}
+
+// ===========================================================================
+// HASIL
+// ===========================================================================
+function loadResults() {
+  var examId = $('resultsExamSelect').value;
+  if (!examId) {
+    $('resultsTable').innerHTML = '<div class="empty-state">Pilih ujian dulu</div>';
+    return;
+  }
+  gasGet('getResults', { examId: examId }, function(data) {
+    var html = '';
+    if (!data.ok || data.count === 0) {
+      html = '<div class="empty-state">Belum ada hasil untuk ujian ini.</div>';
+    } else {
+      html = '<div style="margin-bottom:8px; font-size:12px; color:var(--muted)">' + data.count + ' siswa sudah dikoreksi</div>';
+      html += '<table class="data-table"><thead><tr><th>No.Peserta</th><th>Nama</th><th>Kelas</th><th>PG</th><th>PGK</th><th>BS</th><th>Skor</th><th>%</th><th>Aksi</th></tr></thead><tbody>';
+      data.results.forEach(function(r) {
+        html += '<tr><td><b>' + r.studentId + '</b></td><td>' + r.name + '</td><td>' + (r.class||'') + '</td>' +
+                '<td>' + r.pgCorrect + '/' + STRUCTURE.pg.count + '</td>' +
+                '<td>' + r.pgkCorrect + '/' + STRUCTURE.pgk.count + '</td>' +
+                '<td>' + r.bsCorrect + '/' + STRUCTURE.bs.count + '</td>' +
+                '<td><b>' + r.totalScore + '/' + r.maxScore + '</b></td>' +
+                '<td>' + r.percentage + '%</td>' +
+                '<td><button class="btn btn-danger" style="padding:4px 8px;font-size:11px" onclick="deleteResult(' + r.rowId + ')">Hapus</button></td>' +
+                '</tr>';
+      });
+      html += '</tbody></table>';
+    }
+    $('resultsTable').innerHTML = html;
+  });
+}
+
+function deleteResult(rowId) {
+  if (!confirm('Hapus hasil ini?')) return;
+  gasPost({ action: 'deleteResult', resultId: rowId }, function(data) {
+    if (data.ok) {
+      toast('Hasil dihapus');
+      loadResults();
+    }
+  });
+}
+
+function resetResults() {
+  var examId = $('resultsExamSelect').value;
+  if (!examId) { toast('Pilih ujian'); return; }
+  if (!confirm('Hapus SEMUA hasil untuk ujian ' + examId + '? Tidak bisa dibatalkan.')) return;
+  gasPost({ action: 'resetResults', examId: examId }, function(data) {
+    if (data.ok) {
+      toast(data.deleted + ' hasil dihapus');
+      loadResults();
+    }
+  });
+}
+
+function exportCSV() {
+  var examId = $('resultsExamSelect').value;
+  if (!examId) { toast('Pilih ujian'); return; }
+  gasGet('getResults', { examId: examId }, function(data) {
+    if (!data.ok || data.count === 0) {
+      toast('Tidak ada data untuk diexport');
+      return;
+    }
+    var rows = [['No.Peserta','Nama','Kelas','PG Benar','PG Skor','PGK Benar','PGK Skor','BS Benar','BS Skor','Total Skor','Skor Maks','Persentase','Timestamp']];
+    data.results.forEach(function(r) {
+      rows.push([
+        r.studentId, r.name, r.class || '',
+        r.pgCorrect, r.pgScore, r.pgkCorrect, r.pgkScore,
+        r.bsCorrect, r.bsScore, r.totalScore, r.maxScore, r.percentage,
+        new Date(r.timestamp).toLocaleString('id-ID')
+      ]);
+    });
+    var csv = rows.map(function(r) {
+      return r.map(function(c) {
+        c = String(c);
+        if (c.indexOf(',') !== -1 || c.indexOf('"') !== -1) c = '"' + c.replace(/"/g, '""') + '"';
+        return c;
+      }).join(',');
+    }).join('\n');
+    // BOM for Excel
+    var blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = examId + '_hasil_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('CSV diunduh');
+  });
+}
+
+// ===========================================================================
+// STATISTIK
+// ===========================================================================
+function loadStats() {
+  var examId = $('statsExamSelect').value;
+  if (!examId) {
+    $('statsContent').innerHTML = '<div class="empty-state">Pilih ujian dulu</div>';
+    return;
+  }
+  gasGet('getStats', { examId: examId }, function(data) {
+    var html = '';
+    if (!data.ok) {
+      html = '<div class="empty-state">Belum ada data statistik.</div>';
+    } else {
+      var s = data.stats;
+      if (s.count === 0) {
+        html = '<div class="empty-state">Belum ada hasil untuk ujian ini.</div>';
+      } else {
+        html += '<div class="stat-row">';
+        html += '<div class="stat-box"><div class="label">Jumlah Siswa</div><div class="value">' + s.count + '</div></div>';
+        html += '<div class="stat-box"><div class="label">Rata-rata</div><div class="value">' + s.mean + '</div></div>';
+        html += '<div class="stat-box"><div class="label">Median</div><div class="value">' + s.median + '</div></div>';
+        html += '<div class="stat-box"><div class="label">Std Dev</div><div class="value">' + s.stdDev + '</div></div>';
+        html += '<div class="stat-box"><div class="label">Skor Tertinggi</div><div class="value">' + s.maxScore + '</div></div>';
+        html += '<div class="stat-box"><div class="label">Skor Terendah</div><div class="value">' + s.minScore + '</div></div>';
+        html += '<div class="stat-box"><div class="label">Lulus (&ge;70%)</div><div class="value">' + s.passCount + '/' + s.count + '</div></div>';
+        html += '<div class="stat-box"><div class="label">Persentase Lulus</div><div class="value">' + s.passRate + '</div></div>';
+        html += '</div>';
+        html += '<details><summary>Interpretasi</summary>' +
+                '<div style="font-size:12px; line-height:1.7">' +
+                '<p><b>Rata-rata ' + s.mean + '</b>: ' + (parseFloat(s.mean) >= 70 ? 'baik, kelas memahami materi dengan baik' : (parseFloat(s.mean) >= 50 ? 'cukup, perlu perbaikan' : 'rendah, perlu evaluasi mendalam')) + '.</p>' +
+                '<p><b>Std Dev ' + s.stdDev + '</b>: ' + (parseFloat(s.stdDev) < 10 ? 'homogen, kemampuan siswa seragam' : 'heterogen, ketimpangan kemampuan tinggi') + '.</p>' +
+                '<p><b>Tingkat Ketuntasan ' + s.passRate + '</b>: ' + (parseFloat(s.passRate) >= 75 ? 'memenuhi KKM' : 'di bawah target, evaluasi pembelajaran') + '.</p>' +
+                '</div></details>';
+      }
+    }
+    $('statsContent').innerHTML = html;
+  });
+}
+
+// ===========================================================================
+// SISWA
+// ===========================================================================
+function addStudent() {
+  var studentId = $('studentIdInput').value.trim();
+  var name = $('studentNameInput').value.trim();
+  var klass = $('studentClassInput').value.trim();
+  var examId = $('studentExamSelect').value;
+  if (!studentId || !name || !examId) {
+    toast('No. Peserta, Nama, dan Ujian wajib diisi');
+    return;
+  }
+  gasPost({
+    action: 'saveStudent',
+    student: { studentId: studentId, name: name, class: klass, examId: examId }
+  }, function(data) {
+    if (data.ok) {
+      toast('Siswa ditambahkan');
+      $('studentIdInput').value = '';
+      $('studentNameInput').value = '';
+      $('studentClassInput').value = '';
+    } else {
+      toast('Error: ' + (data.error || 'unknown'));
+    }
+  });
+}
+
+// ===========================================================================
+// INIT
+// ===========================================================================
+function loadAll() {
+  loadExamsList();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (loadConfig()) {
+    loadAll();
+  }
+});
+</script>
+</body>
+</html>
