@@ -713,7 +713,8 @@ body{
 /* Up/Forward: GREEN */
 .touch-up-btn{
   background:#43A047;
-  font-size:26px;
+  font-size:16px;
+  letter-spacing:1px;
 }
 .touch-up-btn:active, .touch-up-btn.pressed{
   background:#2E7D32;
@@ -721,6 +722,8 @@ body{
 /* Left: BLUE */
 .touch-left-btn{
   background:#1E88E5;
+  font-size:20px;
+  font-weight:900;
 }
 .touch-left-btn:active, .touch-left-btn.pressed{
   background:#1565C0;
@@ -728,6 +731,8 @@ body{
 /* Right: BLUE */
 .touch-right-btn{
   background:#1E88E5;
+  font-size:20px;
+  font-weight:900;
 }
 .touch-right-btn:active, .touch-right-btn.pressed{
   background:#1565C0;
@@ -938,12 +943,12 @@ body{
   .fuel-icons .heart{font-size:11px;}
   /* Scene indicator: below HUD, right side, compact */
   .scene-indicator{top:52px; right:8px; font-size:10px; padding:3px 8px; border-radius:8px;}
-  /* Question banner: compact */
-  .q-banner{top:78px; padding:8px 10px; border-radius:12px; width:94vw;}
+  /* Question banner: compact, moved down slightly */
+  .q-banner{top:90px; padding:8px 10px; border-radius:12px; width:94vw;}
   .q-text{font-size:14px !important; line-height:1.3;}
   .q-meta{font-size:10px;}
   /* Countdown: below question banner */
-  .next-q-countdown{top:78px; font-size:12px; padding:6px 16px;}
+  .next-q-countdown{top:90px; font-size:12px; padding:6px 16px;}
   .countdown-num{font-size:18px;}
   /* Answer targets: moved DOWN (no fire button at center bottom anymore) */
   .targets-hud{
@@ -980,6 +985,38 @@ body{
   .touch-dpad{bottom:120px; right:8px;}
   .hud-panel .val{font-size:12px;}
   .fuel-gauge{width:150px;}
+}
+
+/* How-to-play & Win/Lose responsive (mobile/tablet) */
+@media (max-width:768px){
+  /* How to play */
+  #layer-howto{padding:10px; overflow-y:auto;}
+  .howto-card{padding:16px 14px; width:96vw; max-height:92vh; overflow-y:auto;}
+  .howto-card h2{font-size:18px;}
+  .howto-card .sub{font-size:11px; margin-bottom:12px;}
+  .howto-steps{gap:8px;}
+  .howto-step{padding:8px 10px;}
+  .step-num{width:30px; height:30px; font-size:14px;}
+  .step-text{font-size:12px;}
+  /* Win/Lose */
+  .result-title{font-size:42px !important; text-shadow:-2px -2px 0 var(--wood-d), 2px -2px 0 var(--wood-d), -2px 2px 0 var(--wood-d), 2px 2px 0 var(--wood-d), 0 5px 0 var(--wood-d), 0 8px 12px rgba(0,0,0,.5) !important;}
+  .result-sub{font-size:14px; margin-top:10px;}
+  .result-stats{gap:10px; margin-top:12px;}
+  .stat-box{padding:6px 12px; min-width:70px;}
+  .stat-box .v{font-size:20px;}
+  .stat-box .l{font-size:10px;}
+  .winners-list{margin-top:14px; padding:10px 14px; max-height:35vh;}
+  .winners-list h3{font-size:15px;}
+  .winner-row{padding:6px 8px; font-size:12px;}
+  .winner-row .rank{width:24px; height:24px; font-size:11px;}
+  .winner-row .time{font-size:12px;}
+  .btn-row{margin-top:14px; gap:10px;}
+  .btn-row .coc-btn{min-width:140px; font-size:13px; padding:10px 18px;}
+}
+@media (max-width:400px){
+  .result-title{font-size:32px !important;}
+  .howto-card h2{font-size:16px;}
+  .step-text{font-size:11px;}
 }
 </style>
 </head>
@@ -1277,10 +1314,10 @@ body{
     <!-- Virtual touch controls (mobile only) - one unified D-pad -->
     <div class="touch-controls" id="touch-controls">
       <div class="touch-dpad" id="touch-dpad">
-        <button class="touch-btn touch-up-btn" id="btn-touch-up">⬆</button>
+        <button class="touch-btn touch-up-btn" id="btn-touch-up">UP</button>
         <div class="dpad-row">
-          <button class="touch-btn touch-left-btn" id="btn-touch-left">⬅</button>
-          <button class="touch-btn touch-right-btn" id="btn-touch-right">➡</button>
+          <button class="touch-btn touch-left-btn" id="btn-touch-left">L</button>
+          <button class="touch-btn touch-right-btn" id="btn-touch-right">R</button>
         </div>
         <button class="touch-btn touch-fire-btn" id="btn-touch-fire">OK</button>
       </div>
@@ -2483,6 +2520,8 @@ function init3D(){
     state.flyingObjects = []; state.flyingObjTimer = 0;
     state.terrainObjects = []; state.sceneIdx = 0; state.sceneTimer = 0; state.todIdx = 0;
     state.dirLight = null; state.ambLight = null; state.terrainSpawnTimer = 0;
+    state.explosionParticles = [];
+    state.rainbowActive = false; state.rainbowTimer = 0;
   }
 
   state.scene.background = new THREE.Color(0x7FC8F8);
@@ -2534,6 +2573,7 @@ function init3D(){
   state.splitClouds = [];
   state.flyingObjects = [];
   state.flyingObjTimer = 120; // spawn first flying object after 2 seconds
+  state.explosionParticles = [];
   // Scenery state
   state.terrainObjects = [];
   state.sceneIdx = 0;
@@ -2782,36 +2822,142 @@ function createBalloon(){
   return g;
 }
 
+/* ===== ROCKET (falls from sky with smoke trail) ===== */
+function createRocket(){
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshPhongMaterial({color: 0xF5F5F5, specular: 0x999999, shininess: 80});
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 2, 12), bodyMat);
+  g.add(body);
+  // Nose cone (red)
+  const nose = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.8, 12),
+    new THREE.MeshPhongMaterial({color: 0xE53935, shininess: 60}));
+  nose.position.y = 1.4;
+  g.add(nose);
+  // Fins
+  const finMat = new THREE.MeshPhongMaterial({color: 0x1565C0, shininess: 40});
+  for (let i=0; i<3; i++){
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.6, 0.4), finMat);
+    const ang = (i/3) * Math.PI * 2;
+    fin.position.set(Math.cos(ang)*0.3, -0.9, Math.sin(ang)*0.3);
+    fin.rotation.y = ang;
+    g.add(fin);
+  }
+  // Window
+  const window = new THREE.Mesh(new THREE.CircleGeometry(0.12, 12),
+    new THREE.MeshBasicMaterial({color: 0x4FC3F7}));
+  window.position.set(0, 0.3, 0.3);
+  g.add(window);
+  g.userData.type = 'rocket';
+  g.userData.smokeTimer = 0;
+  return g;
+}
+
+/* ===== RAINBOW (appears in morning) ===== */
+function createRainbow(){
+  const g = new THREE.Group();
+  const colors = [0xFF0000, 0xFF8800, 0xFFDD00, 0x00DD00, 0x0000FF, 0x8800FF];
+  for (let i=0; i<6; i++){
+    const arc = new THREE.Mesh(
+      new THREE.TorusGeometry(20 + i*1.2, 0.5, 8, 32, Math.PI),
+      new THREE.MeshBasicMaterial({color: colors[i], transparent: true, opacity: 0.5, side: THREE.DoubleSide})
+    );
+    arc.rotation.x = Math.PI/2;
+    g.add(arc);
+  }
+  g.userData.type = 'rainbow';
+  g.userData.life = 0;
+  g.userData.maxLife = 600; // 10 seconds at 60fps
+  return g;
+}
+
+/* ===== BROCHURE PLANE (drops flyers) ===== */
+function createBrochurePlane(){
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshPhongMaterial({color: 0xFFD93D, specular: 0xaaaaaa, shininess: 60});
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 2.5, 10), bodyMat);
+  body.rotation.x = Math.PI/2;
+  g.add(body);
+  const wings = new THREE.Mesh(new THREE.BoxGeometry(3, 0.1, 0.8), bodyMat);
+  g.add(wings);
+  const tail = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.5, 0.3), bodyMat);
+  tail.position.set(0, 0.3, 1);
+  g.add(tail);
+  // Banner trailing
+  const banner = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.5, 0.8),
+    new THREE.MeshBasicMaterial({color: 0xFF5252, side: THREE.DoubleSide}));
+  banner.position.set(0, -0.8, 1.5);
+  g.add(banner);
+  g.userData.type = 'brochureplane';
+  g.userData.dropTimer = 0;
+  return g;
+}
+
 function spawnRandomFlyingObject(){
-  const types = ['bird', 'kite', 'ufo', 'otherplane', 'balloon'];
+  const types = ['bird', 'kite', 'ufo', 'otherplane', 'balloon', 'rocket', 'brochureplane'];
   const type = types[Math.floor(Math.random()*types.length)];
   let obj;
   switch(type){
-    case 'bird':       obj = createBird(); break;
-    case 'kite':       obj = createKite(); break;
-    case 'ufo':        obj = createUFO(); break;
-    case 'otherplane': obj = createOtherPlane(); break;
-    case 'balloon':    obj = createBalloon(); break;
-    default:           obj = createBird();
+    case 'bird':          obj = createBird(); break;
+    case 'kite':          obj = createKite(); break;
+    case 'ufo':           obj = createUFO(); break;
+    case 'otherplane':    obj = createOtherPlane(); break;
+    case 'balloon':       obj = createBalloon(); break;
+    case 'rocket':        obj = createRocket(); break;
+    case 'brochureplane': obj = createBrochurePlane(); break;
+    default:              obj = createBird();
   }
   // Spawn at random edge, fly across
   const fromLeft = Math.random() < 0.5;
   const y = 3 + Math.random()*15; // altitude 3-18
   const z = -30 - Math.random()*40; // depth -30 to -70
-  if (fromLeft){
-    obj.position.set(-80, y, z);
-    obj.userData.velX = 0.3 + Math.random()*0.3; // move right
-    if (obj.userData.type === 'otherplane') obj.rotation.y = Math.PI/2;
+  
+  if (type === 'rocket'){
+    // Rocket: spawn high, falls down
+    obj.position.set((Math.random()-0.5)*60, 35 + Math.random()*10, z);
+    obj.userData.velX = (Math.random()-0.5)*0.1;
+    obj.userData.velY = -0.3 - Math.random()*0.2; // falling
+    obj.userData.velZ = 0;
+    obj.rotation.z = Math.PI; // upside down (falling)
+  } else if (type === 'brochureplane'){
+    // Brochure plane: flies across dropping flyers
+    if (fromLeft){
+      obj.position.set(-80, y+5, z);
+      obj.userData.velX = 0.4 + Math.random()*0.2;
+      obj.rotation.y = Math.PI/2;
+    } else {
+      obj.position.set(80, y+5, z);
+      obj.userData.velX = -(0.4 + Math.random()*0.2);
+      obj.rotation.y = -Math.PI/2;
+    }
+    obj.userData.velY = 0;
+    obj.userData.velZ = 0;
   } else {
-    obj.position.set(80, y, z);
-    obj.userData.velX = -(0.3 + Math.random()*0.3); // move left
-    if (obj.userData.type === 'otherplane') obj.rotation.y = -Math.PI/2;
+    if (fromLeft){
+      obj.position.set(-80, y, z);
+      obj.userData.velX = 0.3 + Math.random()*0.3;
+      if (obj.userData.type === 'otherplane') obj.rotation.y = Math.PI/2;
+    } else {
+      obj.position.set(80, y, z);
+      obj.userData.velX = -(0.3 + Math.random()*0.3);
+      if (obj.userData.type === 'otherplane') obj.rotation.y = -Math.PI/2;
+    }
+    obj.userData.velY = (Math.random()-0.5) * 0.05;
   }
-  obj.userData.velY = (Math.random()-0.5) * 0.05; // slight vertical drift
   obj.userData.swayPhase = Math.random() * Math.PI * 2;
   obj.userData.flapPhase = Math.random() * Math.PI * 2;
   state.scene.add(obj);
   state.flyingObjects.push(obj);
+}
+
+/* ===== Spawn rainbow during morning ===== */
+function spawnRainbow(){
+  if (state.rainbowActive) return;
+  const rainbow = createRainbow();
+  rainbow.position.set(0, -5, -150);
+  rainbow.scale.set(1.5, 1.5, 1.5);
+  state.scene.add(rainbow);
+  state.flyingObjects.push(rainbow);
+  state.rainbowActive = true;
 }
 
 /* ============================================================
@@ -3235,6 +3381,17 @@ function updateScene(t){
     const newScene = SCENES[state.sceneIdx];
     if ($('scene-name')) $('scene-name').textContent = newScene.name;
     toast('Melewati: ' + newScene.name, '');
+  }
+
+  // Rainbow: spawn occasionally during morning (todIdx === 0)
+  if ((state.todIdx || 0) === 0 && !state.rainbowActive){
+    state.rainbowTimer = (state.rainbowTimer || 0) + 1;
+    if (state.rainbowTimer > 300){ // every ~5 seconds during morning
+      state.rainbowTimer = 0;
+      if (Math.random() < 0.3){ // 30% chance
+        spawnRainbow();
+      }
+    }
   }
 
   // Spawn terrain objects periodically
@@ -3766,21 +3923,61 @@ function flashGate(gate, color){
   if (gate.userData.panel){
     gate.userData.panel.material.color.setHex(color);
   }
+  // EXPLOSION: spawn particles + debris at gate position
+  explodeGate(gate.position.clone(), gate.userData.color || color);
   // Pop scale
   let s = 1;
   const pop = setInterval(()=>{
     s += 0.08;
     gate.scale.set(s, s, s);
     if (s >= 1.8){
-      // shrink back
       const shrink = setInterval(()=>{
         s -= 0.15;
-        gate.scale.set(Math.max(1, s), Math.max(1, s), Math.max(1, s));
-        if (s <= 1){ clearInterval(shrink); }
+        gate.scale.set(Math.max(0, s), Math.max(0, s), Math.max(0, s));
+        if (s <= 0){ clearInterval(shrink); }
       }, 25);
       clearInterval(pop);
     }
   }, 25);
+}
+
+/* ===== EXPLOSION: particles + falling debris ===== */
+function explodeGate(pos, baseColor){
+  if (!state.scene) return;
+  if (!state.explosionParticles) state.explosionParticles = [];
+  
+  const colors = [baseColor, 0xFFD93D, 0xFF5252, 0xFFFFFF, 0xFF8800];
+  
+  // Spawn 20 particles
+  for (let i=0; i<20; i++){
+    const size = 0.15 + Math.random()*0.25;
+    const geo = Math.random() < 0.5 
+      ? new THREE.BoxGeometry(size, size, size)
+      : new THREE.SphereGeometry(size, 6, 4);
+    const mat = new THREE.MeshBasicMaterial({color: colors[Math.floor(Math.random()*colors.length)]});
+    const p = new THREE.Mesh(geo, mat);
+    p.position.copy(pos);
+    // Random velocity: outward + upward
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.2 + Math.random()*0.4;
+    p.userData = {
+      vx: Math.cos(angle) * speed,
+      vy: 0.3 + Math.random()*0.4,  // upward
+      vz: Math.sin(angle) * speed,
+      rotSpeed: (Math.random()-0.5) * 0.3,
+      life: 0,
+      maxLife: 60 + Math.random()*30
+    };
+    state.scene.add(p);
+    state.explosionParticles.push(p);
+  }
+  
+  // Flash light at explosion
+  const flashLight = new THREE.PointLight(0xFFAA00, 3, 15);
+  flashLight.position.copy(pos);
+  flashLight.userData = { isFlash: true, life: 0, maxLife: 10 };
+  state.scene.add(flashLight);
+  state.explosionParticles.push(flashLight);
 }
 
 /* ===== ANIMATION LOOP ===== */
@@ -3864,11 +4061,70 @@ function animate3D(){
         // Gentle bob
         obj.position.y += Math.sin(t*0.8 + obj.userData.swayPhase) * 0.015;
         obj.rotation.z = Math.sin(t*0.5) * 0.05;
+      } else if (obj.userData.type === 'rocket'){
+        // Rocket: falls down with rotation + smoke trail
+        obj.rotation.z += 0.05;
+        // Spawn smoke particles
+        obj.userData.smokeTimer = (obj.userData.smokeTimer || 0) + 1;
+        if (obj.userData.smokeTimer > 3){
+          obj.userData.smokeTimer = 0;
+          const smoke = new THREE.Mesh(
+            new THREE.SphereGeometry(0.2+Math.random()*0.15, 6, 4),
+            new THREE.MeshBasicMaterial({color: 0xaaaaaa, transparent:true, opacity:0.6})
+          );
+          smoke.position.copy(obj.position);
+          smoke.position.y += 1;
+          smoke.userData = { isSmoke: true, vy: 0.05+Math.random()*0.05, life:0, maxLife:30, velX:(Math.random()-0.5)*0.05 };
+          state.scene.add(smoke);
+          if (!state.explosionParticles) state.explosionParticles = [];
+          state.explosionParticles.push(smoke);
+        }
+      } else if (obj.userData.type === 'rainbow'){
+        // Rainbow: fade in then fade out
+        obj.userData.life++;
+        const progress = obj.userData.life / obj.userData.maxLife;
+        const opacity = Math.sin(progress * Math.PI) * 0.5; // fade in and out
+        obj.children.forEach(arc => {
+          if (arc.material) arc.material.opacity = opacity;
+        });
+        if (obj.userData.life >= obj.userData.maxLife){
+          state.rainbowActive = false;
+        }
+      } else if (obj.userData.type === 'brochureplane'){
+        // Brochure plane: drops brochures
+        obj.userData.dropTimer = (obj.userData.dropTimer || 0) + 1;
+        if (obj.userData.dropTimer > 15){
+          obj.userData.dropTimer = 0;
+          // Drop a brochure
+          const colors = [0xFF5252, 0xFFD93D, 0x52D869, 0x3F88FF, 0xF5F5F5];
+          const brochure = new THREE.Mesh(
+            new THREE.BoxGeometry(0.25, 0.35, 0.02),
+            new THREE.MeshBasicMaterial({color: colors[Math.floor(Math.random()*colors.length)], side: THREE.DoubleSide})
+          );
+          brochure.position.copy(obj.position);
+          brochure.position.y -= 1;
+          brochure.userData = { isBrochure: true, vy: -0.05-Math.random()*0.05, life:0, maxLife:120, rotSpeed:(Math.random()-0.5)*0.2, rotZ:Math.random()*Math.PI };
+          state.scene.add(brochure);
+          if (!state.explosionParticles) state.explosionParticles = [];
+          state.explosionParticles.push(brochure);
+        }
       }
-      // Despawn when off-screen
-      if (obj.position.x > 100 || obj.position.x < -100){
-        state.scene.remove(obj);
-        state.flyingObjects.splice(fi, 1);
+      // Despawn when off-screen or below ground (for rockets)
+      if (obj.userData.type === 'rocket'){
+        if (obj.position.y < -12){
+          state.scene.remove(obj);
+          state.flyingObjects.splice(fi, 1);
+        }
+      } else if (obj.userData.type === 'rainbow'){
+        if (obj.userData.life >= obj.userData.maxLife){
+          state.scene.remove(obj);
+          state.flyingObjects.splice(fi, 1);
+        }
+      } else {
+        if (obj.position.x > 100 || obj.position.x < -100){
+          state.scene.remove(obj);
+          state.flyingObjects.splice(fi, 1);
+        }
       }
     }
   }
@@ -3954,6 +4210,69 @@ function animate3D(){
 
   // Laser cooldown
   if (pd.laserCooldown > 0) pd.laserCooldown--;
+
+  // ===== EXPLOSION PARTICLES + SMOKE + BROCHURES (gravity/fade/remove) =====
+  if (state.explosionParticles){
+    for (let pi = state.explosionParticles.length - 1; pi >= 0; pi--){
+      const p = state.explosionParticles[pi];
+      if (p.userData.isFlash){
+        // Flash light fades quickly
+        p.userData.life++;
+        p.intensity = 3 * (1 - p.userData.life / p.userData.maxLife);
+        if (p.userData.life >= p.userData.maxLife){
+          state.scene.remove(p);
+          state.explosionParticles.splice(pi, 1);
+        }
+      } else if (p.userData.isSmoke){
+        // Smoke: rises, drifts, expands, fades
+        p.userData.life++;
+        p.position.y += p.userData.vy;
+        p.position.x += p.userData.velX;
+        p.scale.set(1 + p.userData.life*0.05, 1 + p.userData.life*0.05, 1 + p.userData.life*0.05);
+        if (p.material) p.material.opacity = 0.6 * (1 - p.userData.life / p.userData.maxLife);
+        if (p.userData.life >= p.userData.maxLife){
+          state.scene.remove(p);
+          if (p.geometry) p.geometry.dispose();
+          if (p.material) p.material.dispose();
+          state.explosionParticles.splice(pi, 1);
+        }
+      } else if (p.userData.isBrochure){
+        // Brochure: falls, rotates, flutters
+        p.userData.life++;
+        p.userData.vy -= 0.005; // slight gravity
+        p.position.y += p.userData.vy;
+        p.position.x += Math.sin(p.userData.life * 0.1) * 0.03; // flutter
+        p.rotation.z = p.userData.rotZ + p.userData.life * p.userData.rotSpeed;
+        p.rotation.x = Math.sin(p.userData.life * 0.15) * 0.3; // flutter
+        if (p.material) p.material.opacity = Math.max(0, 1 - p.userData.life / p.userData.maxLife);
+        if (p.userData.life >= p.userData.maxLife || p.position.y < -10){
+          state.scene.remove(p);
+          if (p.geometry) p.geometry.dispose();
+          if (p.material) p.material.dispose();
+          state.explosionParticles.splice(pi, 1);
+        }
+      } else {
+        // Regular explosion particle: gravity, move, rotate, fade
+        p.userData.vy -= 0.015; // gravity
+        p.position.x += p.userData.vx;
+        p.position.y += p.userData.vy;
+        p.position.z += p.userData.vz;
+        p.rotation.x += p.userData.rotSpeed;
+        p.rotation.z += p.userData.rotSpeed;
+        p.userData.life++;
+        if (p.material){
+          p.material.transparent = true;
+          p.material.opacity = Math.max(0, 1 - p.userData.life / p.userData.maxLife);
+        }
+        if (p.userData.life >= p.userData.maxLife || p.position.y < -10){
+          state.scene.remove(p);
+          if (p.geometry) p.geometry.dispose();
+          if (p.material) p.material.dispose();
+          state.explosionParticles.splice(pi, 1);
+        }
+      }
+    }
+  }
 
   state.renderer.render(state.scene, state.camera);
 }
