@@ -336,6 +336,14 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 }
 .item-body p{font-size:14.5px;color:#3D2410;line-height:1.65;margin:0}
 .item-body p b{color:#5C1A0E;font-weight:700}
+.item-analogy{
+  margin-top:8px;padding:10px 12px;
+  background:linear-gradient(135deg,#FFF8E1 0%,#FFE5A8 100%);
+  border-left:4px solid var(--gold-bright);
+  border-radius:8px;font-size:13.5px;color:#5C1A0E;line-height:1.6;
+}
+.item-analogy .anal-ic{display:inline-block;margin-right:4px}
+.item-analogy b{color:#5C1A0E;font-weight:800}
 @media (max-width:560px){
   .item-card{grid-template-columns:1fr;text-align:center}
   .item-thumb{width:100%;height:160px;margin:0 auto}
@@ -1021,75 +1029,78 @@ function renderMenuCard(s){
 const MAT_INTRO = {
   heroImg:'network',
   heroCaption:'Ilustrasi koneksi perangkat dalam jaringan',
-  intro:{title:'Apa itu Jaringan Komputer?', text:'<b>Jaringan komputer</b> adalah dua atau lebih perangkat yang saling terhubung (kabel/nirkabel) untuk <b>berbagi data, informasi, dan sumber daya</b> seperti printer atau koneksi internet. Bayangkan seperti tali telepon yang menghubungkan banyak rumah — jika ada tali penghubung, anak-anak di rumah berbeda bisa saling berbicara.'},
+  intro:{title:'Apa itu Jaringan Komputer?', text:'<b>Jaringan komputer</b> adalah dua atau lebih perangkat yang saling terhubung (kabel/nirkabel) untuk <b>berbagi data, informasi, dan sumber daya</b> seperti printer atau koneksi internet. Jika ada tali penghubung, anak-anak di rumah berbeda bisa saling berbicara — itulah inti jaringan komputer.'},
   sections:[
-    {img:'wifi', title:'Wi-Fi Rumah', desc:'Contoh paling dekat: jaringan Wi-Fi di rumah menghubungkan HP, laptop, dan TV ke satu router untuk akses internet bersama.'},
-    {img:'phone', title:'Hotspot HP', desc:'HP kamu bisa menjadi "router mini" — berbagi koneksi internet ke perangkat lain lewat hotspot Wi-Fi.'},
-    {img:'server', title:'Lab Komputer Sekolah', desc:'Puluhan komputer di lab terhubung ke switch yang sama, bisa berbagi printer dan akses materi pembelajaran.'}
+    {img:'wifi', title:'Wi-Fi Rumah', desc:'Contoh paling dekat: jaringan Wi-Fi di rumah menghubungkan HP, laptop, dan TV ke satu router untuk akses internet bersama. Semua perangkat di rumah "ngobrol" lewat router.', analogy:'Seperti <b>grup WhatsApp keluarga</b> — semua anggota (HP, laptop, TV) tergabung, bisa saling kirim pesan & file lewat satu router (admin grup).'},
+    {img:'phone', title:'Hotspot HP', desc:'HP kamu bisa menjadi "router mini" — berbagi koneksi internet ke perangkat lain lewat hotspot Wi-Fi. Praktis saat tidak ada Wi-Fi rumah.', analogy:'Seperti kamu <b>berbagi pulsa internet</b> ke teman lewat hotspot — HP-mu jadi "router" kecil yang kasih akses internet ke temanmu.'},
+    {img:'server', title:'Lab Komputer Sekolah', desc:'Puluhan komputer di lab terhubung ke switch yang sama, bisa berbagi printer dan akses materi pembelajaran. Semua komputer "satu keluarga" di jaringan lab.', analogy:'Seperti <b>ruang OSIS</b> — semua murid bisa masuk, pakai Lemari arsip bersama, pakai printer bersama, karena satu ruangan (satu jaringan).'},
+    {img:'network', title:'Tujuan Jaringan', desc:'Berbagi sumber daya (printer, internet), komunikasi (chat, email, video call), dan berbagi data (file, foto). Tanpa jaringan, tiap perangkat terisolasi sendiri.', analogy:'Bayangkan kalau <b>tidak ada grup kelas</b> — kamu harus ketemu teman satu-satu untuk kasih tugas. Dengan grup (jaringan), info tersebar ke semua sekaligus.'}
   ],
-  spark:'Saat kamu membuka TikTok di rumah, lewat apa data video sampai ke HP-mu? Apakah HP terhubung langsung ke server TikTok?'
+  spark:'Saat kamu membuka TikTok di rumah, lewat apa data video sampai ke HP-mu? Coba bayangkan perjalanan videonya dari server TikTok ke layar HP-mu.'
 };
 
 const MAT_HARDWARE = {
   heroImg:'router',
   heroCaption:'Router Wi-Fi dengan antena — perangkat utama jaringan',
-  intro:{title:'Perangkat Keras Jaringan (Hardware)', text:'<b>Hardware jaringan</b> adalah perangkat fisik yang membuat koneksi terjadi. Tanpa hardware, tidak ada jaringan. Mereka seperti "jalan dan jembatan" yang dilalui data. Setiap perangkat punya tugas khusus.'},
+  intro:{title:'Perangkat Keras Jaringan (Hardware)', text:'<b>Hardware jaringan</b> adalah perangkat fisik yang membuat koneksi terjadi. Tanpa hardware, tidak ada jaringan. Mereka seperti "jalan dan jembatan" yang dilalui data. Setiap perangkat punya tugas khusus — ada yang jadi pos kurir, resepsionis, jalan aspal, atau kartu masuk.'},
   sections:[
-    {img:'router', title:'Router', desc:'Mengarahkan lalu lintas data dari satu jaringan ke jaringan lain, misal dari jaringan rumah ke internet. Router juga memberi alamat IP lokal ke tiap perangkat.'},
-    {img:'switch', title:'Switch', desc:'Menghubungkan banyak perangkat dalam satu jaringan lokal (LAN). Switch pintar: tahu port mana ke perangkat mana, kirim data hanya ke tujuan benar.'},
-    {img:'cable', title:'Kabel Ethernet (Twisted Pair)', desc:'Media kabel umum untuk menghubungkan komputer ke router/switch. Punya konektor RJ45 di ujungnya.'},
-    {img:'nic', title:'NIC (Network Interface Card)', desc:'Kartu/komponen di komputer atau HP yang membuat perangkat bisa terhubung ke jaringan. Tanpa NIC, perangkat tidak bisa "masuk" jaringan.'}
+    {img:'router', title:'Router', desc:'Mengarahkan lalu lintas data dari satu jaringan ke jaringan lain, misal dari jaringan rumah ke internet. Router juga memberi alamat IP lokal ke tiap perangkat di rumah.', analogy:'Seperti <b>pos kurir / kantor pos</b> — menerima paket dari dalam rumah (HP/laptop), lalu arahkan ke jalan raya (internet). Sebaliknya, paket dari internet masuk lewat router ke perangkat yang benar.'},
+    {img:'switch', title:'Switch', desc:'Menghubungkan banyak perangkat dalam satu jaringan lokal (LAN). Switch pintar: tahu port mana ke perangkat mana, kirim data hanya ke tujuan benar, bukan ke semua.', analogy:'Seperti <b>resepsionis sekolah</b> — kalau ada tamu cari Bu Guru A, resepsionis antar ke ruang A saja, tidak ke semua ruang. Switch antar data ke perangkat yang dituju saja.'},
+    {img:'cable', title:'Kabel Ethernet (Twisted Pair)', desc:'Media kabel umum untuk menghubungkan komputer ke router/switch. Punya konektor RJ45 di ujungnya. Stabil, cepat, cocok untuk koneksi tetap.', analogy:'Seperti <b>jalan aspal tetap</b> dari rumah ke sekolah — stabil, cepat, tidak macet (kalau jalannya baik). Berbeda dengan jembatan layang (Wi-Fi) yang bisa terganggu cuaca.'},
+    {img:'nic', title:'NIC (Network Interface Card)', desc:'Kartu/komponen di komputer atau HP yang membuat perangkat bisa terhubung ke jaringan. Tanpa NIC, perangkat tidak bisa "masuk" jaringan.', analogy:'Seperti <b>kartu pelajar</b> — tanpa kartu pelajar, kamu tidak bisa masuk gerbang sekolah. Tanpa NIC, perangkat tidak bisa masuk ke jaringan.'}
   ],
-  spark:'Di rumahmu, perangkat mana yang membuat HP bisa terhubung ke internet? Bisakah kamu menyebutkan hardware-nya?'
+  spark:'Di rumahmu, perangkat mana yang menjadi "pos kurir" (router)? Coba sebutkan hardware jaringan yang kamu kenal di rumah.'
 };
 
 const MAT_SOFTWARE = {
   heroImg:'laptop',
   heroCaption:'Laptop menjalankan berbagai software jaringan',
-  intro:{title:'Perangkat Lunak Jaringan (Software)', text:'<b>Software jaringan</b> adalah program yang menjalankan dan mengatur komunikasi data. Jika hardware seperti jalan, software seperti "aturan lalu lintas" dan "kendaraan" yang melaluinya. Tanpa software, perangkat hanya terhubung fisik tanpa bisa berkomunikasi.'},
+  intro:{title:'Perangkat Lunak Jaringan (Software)', text:'<b>Software jaringan</b> adalah program yang menjalankan dan mengatur komunikasi data. Jika hardware seperti jalan, software seperti "aturan lalu lintas" dan "kendaraan" yang melaluinya. Tanpa software, perangkat hanya terhubung fisik tanpa bisa berkomunikasi — seperti dua orang beda bahasa yang tidak bisa ngobrol.'},
   sections:[
-    {img:'os', title:'Sistem Operasi', desc:'Windows, Linux, Android, iOS — mengatur perangkat agar bisa terhubung ke jaringan dan menjalankan aplikasi. Sistem operasi punya driver jaringan bawaan.'},
-    {img:'chrome', title:'Browser', desc:'Chrome, Firefox, Edge — aplikasi untuk mengakses dan menampilkan halaman situs web. Browser "menerjemahkan" kode HTML jadi tampilan yang kita lihat.'},
-    {img:'whatsapp', title:'Aplikasi Komunikasi', desc:'WhatsApp, Zoom, Telegram — mengirim pesan, suara, dan video antarperangkat lewat internet. Memungkinkan komunikasi real-time.'},
-    {img:'gdrive', title:'Aplikasi Berbagi File', desc:'Google Drive, Share Folder, Dropbox — memungkinkan file dipakai bersama oleh banyak perangkat. File tersimpan di cloud bisa diakses kapan saja.'}
+    {img:'os', title:'Sistem Operasi', desc:'Windows, Linux, Android, iOS — mengatur perangkat agar bisa terhubung ke jaringan dan menjalankan aplikasi. Sistem operasi punya driver jaringan bawaan.', analogy:'Seperti <b>manajer gedung sekolah</b> — mengatur semua yang ada di dalam: guru, murid, listrik, air. Tanpa manajer (OS), gedung (HP/laptop) tidak berfungsi, walau bangunannya bagus.'},
+    {img:'chrome', title:'Browser', desc:'Chrome, Firefox, Edge — aplikasi untuk mengakses dan menampilkan halaman situs web. Browser "menerjemahkan" kode HTML jadi tampilan yang kita lihat.', analogy:'Seperti <b>penerjemah bahasa</b> — situs web ditulis dalam kode (HTML), browser terjemahkan jadi halaman cantik yang bisa kamu baca. Tanpa browser, kamu hanya lihat kode aneh.'},
+    {img:'whatsapp', title:'Aplikasi Komunikasi', desc:'WhatsApp, Zoom, Telegram — mengirim pesan, suara, dan video antarperangkat lewat internet. Memungkinkan komunikasi real-time jarak jauh.', analogy:'Seperti <b>kurir pesan antar</b> — kamu kasih pesan ke WA, kurir (aplikasi) antar ke temanmu di ujung kota/negara dalam hitungan detik. Dulu pakai merpati, sekarang pakai internet.'},
+    {img:'gdrive', title:'Aplikasi Berbagi File', desc:'Google Drive, Share Folder, Dropbox — memungkinkan file dipakai bersama oleh banyak perangkat. File tersimpan di cloud bisa diakses kapan saja dari mana saja.', analogy:'Seperti <b>lemari arsip kelas</b> — semua murid bisa ambil & simpan file di sana. Bedanya, lemari ini di "awan" (cloud), bisa dibuka dari rumah/sekolah/kafe.'}
   ],
-  spark:'Kenapa HP Android dan laptop Windows bisa terhubung ke jaringan yang sama, padahal sistem operasinya berbeda?'
+  spark:'Kenapa HP Android dan laptop Windows bisa terhubung ke jaringan yang sama, padahal sistem operasinya berbeda? Apa yang membuat mereka "saling paham"?'
 };
 
 const MAT_INTERNET = {
   heroImg:'internet',
   heroCaption:'Internet — jaringan global yang menghubungkan dunia',
-  intro:{title:'Apa itu Internet?', text:'<b>Internet</b> adalah <b>jaringan global</b> yang menghubungkan miliaran perangkat di seluruh dunia. Kata "internet" berasal dari <i>interconnected networks</i> — jaringan-jaringan yang saling terhubung. Internet bukan milik satu orang atau perusahaan.'},
+  intro:{title:'Apa itu Internet?', text:'<b>Internet</b> adalah <b>jaringan global</b> yang menghubungkan miliaran perangkat di seluruh dunia. Kata "internet" berasal dari <i>interconnected networks</i> — jaringan-jaringan yang saling terhubung. Internet bukan milik satu orang atau perusahaan — seperti jalan raya dunia, milik bersama semua orang.'},
   sections:[
-    {img:'wifi', title:'Wi-Fi (Bukan Internet!)', desc:'Wi-Fi adalah cara menghubungkan perangkat ke jaringan lokal secara nirkabel. Wi-Fi BUKAN internet. Bisa ada Wi-Fi aktif tanpa koneksi internet (contoh: router menyala tapi modem mati).'},
-    {img:'globe', title:'Internet = Jaringan Global', desc:'Internet adalah jaringan raksasa di luar sana, menghubungkan server-server di seluruh dunia. Saat kamu buka google.com, datamu bolak-balik ke server di negara lain.'},
-    {img:'phone', title:'Manfaat Internet', desc:'Belajar online, komunikasi (chat/video call), mencari informasi, berbagi data/file, hiburan (video/musik/game), transaksi online — semuanya butuh internet.'}
+    {img:'wifi', title:'Wi-Fi (Bukan Internet!)', desc:'Wi-Fi adalah cara menghubungkan perangkat ke jaringan lokal secara nirkabel. Wi-Fi BUKAN internet. Bisa ada Wi-Fi aktif tanpa koneksi internet (contoh: router menyala tapi modem mati).', analogy:'Wi-Fi itu seperti <b>gerbang rumahmu</b> — menghubungkan dalam rumah ke jalan luar. Internet itu <b>jalan raya di luar</b>. Gerbang terbuka tidak ada artinya kalau jalan raya macet total.'},
+    {img:'globe', title:'Internet = Jaringan Global', desc:'Internet adalah jaringan raksasa di luar sana, menghubungkan server-server di seluruh dunia. Saat kamu buka google.com, datamu bolak-balik ke server di negara lain.', analogy:'Seperti <b>jalan raya dunia</b> — semua orang bisa lewat, dari mana saja ke mana saja. Tidak ada pihak yang punya, tidak ada yang bisa tutup sendirian.'},
+    {img:'phone', title:'Manfaat Internet', desc:'Belajar online, komunikasi (chat/video call), mencari informasi, berbagi data/file, hiburan (video/musik/game), transaksi online — semuanya butuh internet.', analogy:'Internet seperti <b>perpustakaan + taman + toko + bioskop</b> sekaligus — semua bisa diakses dari HP. Tanpa internet, kamu harus datang fisik ke tiap tempat.'},
+    {img:'globe', title:'Provider Internet (ISP)', desc:'ISP (Internet Service Provider) adalah perusahaan yang menyediakan koneksi internet — seperti Telkom, IndiHome, XL, Indosat. Mereka yang "jual jalan raya" ke rumahmu.', analogy:'Seperti <b>perusahaan air minum</b> — kamu langganan bayar bulanan, mereka salurkan air (internet) ke rumahmu. Kalau tidak bayar, air (internet) diputus.'}
   ],
-  spark:'Sebutkan tiga hal yang kamu lakukan setiap hari dengan internet! Apakah kamu masih bisa melakukannya jika internet mati?'
+  spark:'Sebutkan tiga hal yang kamu lakukan tiap hari dengan internet! Apakah kamu masih bisa melakukannya jika internet mati? Coba bayangkan satu hari tanpa internet.'
 };
 
 const MAT_PROTOCOL = {
   heroImg:'globe',
   heroCaption:'Protokol — bahasa perantara perangkat di internet',
-  intro:{title:'Apa itu Protokol Jaringan?', text:'<b>Protokol</b> adalah <b>aturan kesepakatan</b> bagaimana perangkat berkomunikasi. Tanpa protokol, perangkat dari merek dan jenis berbeda tidak akan saling mengerti. Analogi: dua orang dari negara berbeda butuh bahasa yang sama untuk mengerti satu sama lain.'},
+  intro:{title:'Apa itu Protokol Jaringan?', text:'<b>Protokol</b> adalah <b>aturan kesepakatan</b> bagaimana perangkat berkomunikasi. Tanpa protokol, perangkat dari merek dan jenis berbeda tidak akan saling mengerti. Analogi: dua orang dari negara berbeda butuh bahasa yang sama (misal Inggris) untuk mengerti satu sama lain.'},
   sections:[
-    {img:'http', title:'HTTP', desc:'HyperText Transfer Protocol — aturan untuk mengirim dan menerima halaman web. Tanpa HTTP/HTTPS, browser tidak bisa membuka situs.'},
-    {img:'ssl_lock', title:'HTTPS', desc:'HTTP Secure — versi aman dari HTTP. Data dienkripsi sehingga pencuri tidak bisa membaca isinya. Ditandai dengan gembok di address bar.'},
-    {img:'packet', title:'TCP', desc:'Transmission Control Protocol — memastikan data sampai utuh dan berurutan di tujuan. Jika ada paket hilang, TCP minta dikirim ulang.'},
-    {img:'ip_addr', title:'IP', desc:'Internet Protocol — memberi alamat unik ke setiap perangkat agar data sampai ke tujuan yang benar. Seperti alamat rumah pada paket pos.'},
-    {img:'dns', title:'DNS', desc:'Domain Name System — menerjemahkan nama situs (google.com) menjadi alamat IP angka (142.250.10.78) yang dipahami komputer.'}
+    {img:'http', title:'HTTP', desc:'HyperText Transfer Protocol — aturan untuk mengirim dan menerima halaman web. Tanpa HTTP/HTTPS, browser tidak bisa membuka situs. Data dikirim dalam bentuk "terbuka".', analogy:'HTTP seperti <b>surat tanpa amplop</b> — siapa saja yang pegang surat di jalan bisa baca isinya. Tidak aman untuk data sensitif seperti password.'},
+    {img:'ssl_lock', title:'HTTPS', desc:'HTTP Secure — versi aman dari HTTP. Data dienkripsi sehingga pencuri tidak bisa membaca isinya. Ditandai dengan gembok di address bar browser.', analogy:'HTTPS seperti <b>surat di dalam amplop tertutup</b> — isinya rahasia, hanya pengirim & penerima yang bisa baca. Pencuri yang intip di jalan hanya lihat amplop kosong.'},
+    {img:'packet', title:'TCP', desc:'Transmission Control Protocol — memastikan data sampai utuh dan berurutan di tujuan. Jika ada paket hilang, TCP minta dikirim ulang.', analogy:'TCP seperti <b>kurir JNE/Pos Indonesia yang bertanggung jawab</b> — catat tiap paket, cek yang hilang, susun ulang dengan benar. Kalau ada paket hilang, kurir minta pengirim kirim ulang.'},
+    {img:'ip_addr', title:'IP', desc:'Internet Protocol — memberi alamat unik ke setiap perangkat agar data sampai ke tujuan yang benar. Seperti alamat rumah pada paket pos.', analogy:'IP seperti <b>alamat rumah</b> — tanpa alamat jelas, kurir tidak tahu harus kirim paket ke mana. Setiap perangkat internet punya alamat IP unik.'},
+    {img:'dns', title:'DNS', desc:'Domain Name System — menerjemahkan nama situs (google.com) menjadi alamat IP angka (142.250.10.78) yang dipahami komputer.', analogy:'DNS seperti <b>buku kontak di HP-mu</b> — kamu tidak hafal nomor teman, tapi hafal namanya. Kamu ketik "Andi", DNS cari nomor Andi, lalu sambungkan.'}
   ],
-  spark:'Saat kamu melihat gambar gembok di address bar browser, protokol apa yang sedang dipakai? Mengapa itu penting?'
+  spark:'Saat kamu melihat gambar gembok di address bar browser, protokol apa yang sedang dipakai? Apa beda "surat tanpa amplop" (HTTP) dan "surat di amplop" (HTTPS)?'
 };
 
 const MAT_TCPIP = {
   heroImg:'tcpip',
   heroCaption:'TCP/IP — dua protokol pondasi internet',
-  intro:{title:'TCP/IP — Pondasi Internet', text:'<b>TCP/IP</b> adalah dua protokol yang bekerja sama menjadi tulang punggung internet. Hampir semua komunikasi di internet memakai TCP/IP. Mereka bekerja seperti tim pengiriman barang: IP menentukan alamat tujuan, TCP memastikan paket sampai dengan utuh.'},
+  intro:{title:'TCP/IP — Pondasi Internet', text:'<b>TCP/IP</b> adalah dua protokol yang bekerja sama menjadi tulang punggung internet. Hampir semua komunikasi di internet memakai TCP/IP. Mereka bekerja seperti tim pengiriman barang: <b>IP</b> menentukan alamat tujuan, <b>TCP</b> memastikan paket sampai dengan utuh.'},
   sections:[
-    {img:'packet', title:'TCP — Pengiriman Andal', desc:'Memecah data besar menjadi <b>paket-paket kecil</b>, mengirim satu per satu, lalu menyusun ulang di tujuan. Jika ada paket hilang, TCP minta dikirim ulang — sehingga data <b>andal dan utuh</b>.'},
-    {img:'ip_addr', title:'IP — Pengalamatan', desc:'Memberi <b>alamat unik</b> (IP address) ke setiap perangkat di internet. IP bertugas mengarahkan paket data ke alamat yang benar, seperti alamat rumah pada paket pos.'},
-    {img:'server', title:'Cara Kerja Bersama', desc:'Saat kamu kirim foto, TCP memecah foto jadi ratusan paket, IP memberi alamat tujuan, paket dikirim lewat internet, tiba di server tujuan, TCP susun ulang jadi foto utuh.'}
+    {img:'packet', title:'TCP — Pengiriman Andal', desc:'Memecah data besar menjadi <b>paket-paket kecil</b>, mengirim satu per satu, lalu menyusun ulang di tujuan. Jika ada paket hilang, TCP minta dikirim ulang — sehingga data <b>andal dan utuh</b>.', analogy:'TCP seperti <b>kurir JNE yang bertanggung jawab</b> — kalau kamu kirim 10 potong puzzle, kurir cek semua sampai, kalau ada yang hilang dia minta kirim ulang potong itu. Hasilnya: puzzle lengkap & tersusun benar.'},
+    {img:'ip_addr', title:'IP — Pengalamatan', desc:'Memberi <b>alamat unik</b> (IP address) ke setiap perangkat di internet. IP bertugas mengarahkan paket data ke alamat yang benar, seperti alamat rumah pada paket pos.', analogy:'IP seperti <b>alamat rumah di paket</b> — "Jl. Merdeka No. 17, Moga". Tanpa alamat jelas, kurir bingung mau kirim ke mana. Begitu juga data di internet butuh IP tujuan.'},
+    {img:'server', title:'Cara Kerja Bersama', desc:'Saat kamu kirim foto di WA, TCP memecah foto jadi ratusan paket, IP memberi alamat tujuan, paket dikirim lewat internet (boleh lewat jalur berbeda), tiba di server tujuan, TCP susun ulang jadi foto utuh.', analogy:'Seperti <b>mengirim buku 100 halaman lewat kurir</b> — TCP pisah jadi 100 amplop (1 halaman/amplop), IP tulis alamat di tiap amplop, kurir boleh antar lewat jalan berbeda. Sampai tujuan, TCP susun halaman 1-100 jadi buku utuh.'},
+    {img:'packet', title:'Kenapa Dipecah Jadi Paket?', desc:'Kalau data besar dikirim utuh, kalau ada gangguan sedikit — semua harus dikirim ulang dari awal. Dipecah jadi paket, hanya paket yang hilang yang dikirim ulang. Lebih efisien & cepat.', analogy:'Bayangkan <b>antar 10 gelas kaca</b> — kalau diantar semua sekaligus dalam satu kotak besar, kalau jatuh semua pecah. Kalau diantar satu-satu, hanya 1 yang pecah kalau jatuh, tinggal antar ulang 1 itu saja.'}
   ],
   spark:'Mengapa data tidak dikirim utuh sekaligus, melainkan dipecah jadi paket-paket kecil? Apa keuntungannya?'
 };
@@ -1097,14 +1108,14 @@ const MAT_TCPIP = {
 const MAT_DNSHTTPS = {
   heroImg:'dns',
   heroCaption:'DNS — sistem penerjemah nama domain',
-  intro:{title:'DNS & HTTPS — Penerjemah Nama & Pelindung Web', text:'Dua konsep penting yang membuat internet mudah dipakai dan aman: <b>DNS</b> menerjemahkan nama situs jadi alamat IP, dan <b>HTTPS</b> mengenkripsi data agar tidak disadap. Tanpa DNS, kita harus hafal angka IP. Tanpa HTTPS, data kita bisa dibaca pencuri.'},
+  intro:{title:'DNS & HTTPS — Penerjemah Nama & Pelindung Web', text:'Dua konsep penting yang membuat internet mudah dipakai dan aman: <b>DNS</b> menerjemahkan nama situs jadi alamat IP, dan <b>HTTPS</b> mengenkripsi data agar tidak disadap. Tanpa DNS, kita harus hafal angka IP. Tanpa HTTPS, data kita bisa dibaca pencuri di jalan.'},
   sections:[
-    {img:'domain', title:'DNS — Penerjemah Nama', desc:'Menerjemahkan nama situs yang mudah diingat manusia (google.com) menjadi alamat IP berupa angka (142.250.10.78) yang dipahati komputer. Seperti buku telepon internet.'},
-    {img:'ssl_lock', title:'HTTPS — Pelindung Web', desc:'Versi aman dari HTTP. Data yang dikirim lewat HTTPS <b>dienkripsi</b> — diubah menjadi kode rahasia yang hanya bisa dibaca pengirim dan penerima. Tandai dengan gembok di browser.'},
-    {img:'http', title:'HTTP vs HTTPS', desc:'HTTP = data terbuka (bisa disadap). HTTPS = data terenkripsi (aman). Situs bank, toko online, dan media sosial wajib pakai HTTPS untuk lindungi password dan data pengguna.'},
-    {img:'ip_addr', title:'IP Address', desc:'Alamat unik tiap perangkat di internet. Ada IPv4 (contoh: 192.168.1.1) dan IPv6 (lebih panjang). DNS bekerja menerjemahkan nama domain ke IP ini.'}
+    {img:'domain', title:'DNS — Penerjemah Nama', desc:'Menerjemahkan nama situs yang mudah diingat manusia (google.com) menjadi alamat IP berupa angka (142.250.10.78) yang dipahami komputer.', analogy:'DNS seperti <b>buku kontak di HP-mu</b> — kamu tidak hafal nomor Andi, tapi hafal namanya. Kamu ketik "Andi", DNS cari nomornya, sambungkan. Tanpa DNS, kamu harus hafal "142.250.10.78" untuk buka Google!'},
+    {img:'ssl_lock', title:'HTTPS — Pelindung Web', desc:'Versi aman dari HTTP. Data yang dikirim lewat HTTPS <b>dienkripsi</b> — diubah menjadi kode rahasia yang hanya bisa dibaca pengirim dan penerima. Tandai dengan gembok di browser.', analogy:'HTTPS seperti <b>surat di dalam amplop tertutup</b> — isinya rahasia, hanya pengirim & penerima yang bisa baca. HTTP (tanpa S) seperti <b>kartu pos terbuka</b> — semua yang pegang bisa baca.'},
+    {img:'http', title:'HTTP vs HTTPS', desc:'HTTP = data terbuka (bisa disadap). HTTPS = data terenkripsi (aman). Situs bank, toko online, dan media sosial wajib pakai HTTPS untuk lindungi password dan data pengguna.', analogy:'<b>HTTP = ngomong di pasar</b> — semua orang dengar. <b>HTTPS = bisikan ke telinga</b> — hanya kamu & lawan bicara yang dengar. Pastikan situs penting pakai HTTPS (ada gembok).'},
+    {img:'ip_addr', title:'IP Address', desc:'Alamat unik tiap perangkat di internet. Ada IPv4 (contoh: 192.168.1.1) dan IPv6 (lebih panjang). DNS bekerja menerjemahkan nama domain ke IP ini.', analogy:'IP seperti <b>nomor telepon rumah</b> — unik, tidak boleh sama dengan rumah lain. DNS "buku kontak" yang hubungkan nama (domain) ke nomor (IP).'}
   ],
-  spark:'Saat membuka situs bank online, mengapa kamu harus selalu memastikan ada gembok dan "https" di address bar?'
+  spark:'Saat membuka situs bank online, mengapa kamu harus selalu memastikan ada gembok dan "https" di address bar? Apa risiko kalau hanya "http"?'
 };
 
 const MAT_ETIKA = {
@@ -1112,13 +1123,13 @@ const MAT_ETIKA = {
   heroCaption:'Etika digital — sopan santun di dunia maya',
   intro:{title:'Etika Digital', text:'<b>Etika digital</b> adalah tata krama dan sikap baik saat berkomunikasi dan beraktivitas di dunia maya. Sopan santun di internet sama pentingnya dengan di dunia nyata. Di balik layar, kita tetap berhadapan dengan manusia nyata — kata-kata kita bisa membahagiakan atau melukai.'},
   sections:[
-    {img:'chat_social', title:'Sopan Berkomunikasi', desc:'Gunakan bahasa yang baik dan menghargai, sama seperti saat bertemu langsung. Hindari kata kasar, makian, atau sindiran negatif di komentar dan chat.'},
-    {img:'chat_social', title:'Menghargai Pendapat', desc:'Walaupun berbeda, dengarkan dan hargai pendapat orang lain di grup atau forum. Beda pendapat itu wajar — tidak perlu berujar pakai emosi atau menyerang pribadi.'},
-    {img:'etiquette', title:'Tidak Sebarkan Hoaks', desc:'Selalu cek kebenaran berita sebelum membagikan. Hoaks merugikan banyak orang dan bisa melanggar hukum. Cek sumber, cek tanggal, cek ke sumber resmi.'},
-    {img:'etiquette', title:'Hindari Cyberbullying', desc:'Jangan mengejek, mengancam, atau merendahkan orang lain lewat internet. Cyberbullying bisa berdampak serius pada kesehatan mental korban.'},
-    {img:'lock', title:'Hormati Privasi', desc:'Jangan menyebarkan foto, video, atau data pribadi orang lain tanpa izin. Privasi adalah hak setiap orang, baik di dunia nyata maupun digital.'}
+    {img:'chat_social', title:'Sopan Berkomunikasi', desc:'Gunakan bahasa yang baik dan menghargai, sama seperti saat bertemu langsung. Hindari kata kasar, makian, atau sindiran negatif di komentar dan chat.', analogy:'Saat chat di grup kelas dengan guru, kamu tidak pakai "lo/gw" kan? Sopan di internet sama seperti sopan di kelas — gunakan bahasa baik, sebut nama, jangan interupsi.'},
+    {img:'chat_social', title:'Menghargai Pendapat', desc:'Walaupun berbeda, dengarkan dan hargai pendapat orang lain di grup atau forum. Beda pendapat itu wajar — tidak perlu berujar pakai emosi atau menyerang pribadi.', analogy:'Di diskusi kelas, kalau teman beda pendapat, kamu tidak langsung marah kan? Di internet juga sama — dengarkan, hormati, kalau tidak setuju jelaskan dengan baik.'},
+    {img:'etiquette', title:'Tidak Sebarkan Hoaks', desc:'Selalu cek kebenaran berita sebelum membagikan. Hoaks merugikan banyak orang dan bisa melanggar hukum. Cek sumber, cek tanggal, cek ke sumber resmi.', analogy:'Hoaks seperti <b>gosip kelas yang menyebar</b> — awalnya satu orang mulai, akhirnya semua percaya padahal salah. Gosip bisa rusak reputasi teman, hoaks bisa rusak reputasi seseorang atau negara.'},
+    {img:'etiquette', title:'Hindari Cyberbullying', desc:'Jangan mengejek, mengancam, atau merendahkan orang lain lewat internet. Cyberbullying bisa berdampak serius pada kesehatan mental korban.', analogy:'Mengejek teman di grup WA itu seperti <b>mempermalukan teman di lapangan saat upacara</b> — beda hanya lewat layar, tapi sakitnya sama. Korban bisa depresi, bahkan bunuh diri.'},
+    {img:'lock', title:'Hormati Privasi', desc:'Jangan menyebarkan foto, video, atau data pribadi orang lain tanpa izin. Privasi adalah hak setiap orang, baik di dunia nyata maupun digital.', analogy:'Privasi seperti <b>buku harian</b> — tidak boleh dibaca orang lain tanpa izin. Foto malu teman yang kamu punya, jangan disebar. Itu sama dengan membongkar buku hariannya.'}
   ],
-  spark:'Pernahkah kamu melihat komentar jelek di media sosial? Bagaimana perasaanmu jika komentar itu ditujukan ke kamu?'
+  spark:'Pernahkah kamu melihat komentar jelek di media sosial? Bagaimana perasaanmu jika komentar itu ditujukan ke kamu? Coba bayangkan posisi korban.'
 };
 
 const MAT_KEAMANAN = {
@@ -1126,11 +1137,11 @@ const MAT_KEAMANAN = {
   heroCaption:'Keamanan data — lindungi informasi pribadimu',
   intro:{title:'Keamanan Data', text:'<b>Keamanan data</b> adalah upaya melindungi informasi pribadi dan penting agar tidak dicuri, dilihat, atau disalahgunakan oleh orang lain. Data seperti foto, password, rekening, dan dokumen pribadi sangat berharga — kebocoran bisa berujung penipuan atau akun dibajak.'},
   sections:[
-    {img:'password', title:'Password Kuat', desc:'Min. 8 karakter, campuran huruf besar/kecil, angka, dan simbol. Contoh kuat: <b>BukuBiru88!</b>. Hindari nama, tanggal lahir, atau kata umum.'},
-    {img:'lock', title:'Verifikasi Dua Langkah (2FA)', desc:'Tambahkan kode dari HP selain password. Mencuri password saja tidak cukup untuk masuk — pencuri butuh HP-mu juga. Aktifkan di akun penting.'},
-    {img:'otp', title:'Jangan Bagikan OTP', desc:'Kode OTP adalah kunci rahasia satu kali. <b>Tidak pernah ada pihak sah yang memintanya</b> — termasuk bank, e-wallet, atau "polisi". Jika ada yang minta OTP, pasti penipuan.'},
-    {img:'phishing', title:'Hindari Phishing', desc:'Waspada tautan mencurigakan, email palsu, atau situs login palsu. Cek alamat situs dengan teliti. Jangan klik link dari pengirim tidak dikenal.'},
-    {img:'backup', title:'Cadangkan Data', desc:'Simpan salinan penting di cloud atau flashdisk secara berkala. Jika perangkat rusak/hilang/diserang ransomware, data tetap aman dan bisa dipulihkan.'}
+    {img:'password', title:'Password Kuat', desc:'Min. 8 karakter, campuran huruf besar/kecil, angka, dan simbol. Contoh kuat: <b>BukuBiru88!</b>. Hindari nama, tanggal lahir, atau kata umum.', analogy:'Password seperti <b>gembok rumah</b>. Gembok kecil murah gampang dipotong maling. Gembok besar dengan kombinasi susah dipotong. Password "12345" = gembok mainan, mudah dibongkar.'},
+    {img:'lock', title:'Verifikasi Dua Langkah (2FA)', desc:'Tambahkan kode dari HP selain password. Mencuri password saja tidak cukup untuk masuk — pencuri butuh HP-mu juga. Aktifkan di akun penting.', analogy:'2FA seperti <b>gerbang sekolah dengan satpam + kartu pelajar</b>. Satpam cek kartu (password), lalu minta kamu tunjukkan identitas lain (kode dari HP). Dua lapis cek = dua lapis aman.'},
+    {img:'otp', title:'Jangan Bagikan OTP', desc:'Kode OTP adalah kunci rahasia satu kali. <b>Tidak pernah ada pihak sah yang memintanya</b> — termasuk bank, e-wallet, atau "polisi". Jika ada yang minta OTP, pasti penipuan.', analogy:'OTP seperti <b>kode rahasia dari guru satu kali pakai</b> untuk buka lemari ujian. Guru tidak akan minta kode balik ke kamu! Penipun pura-pura jadi guru/bank = kalau minta OTP, pasti nipu.'},
+    {img:'phishing', title:'Hindari Phishing', desc:'Waspada tautan mencurigakan, email palsu, atau situs login palsu. Cek alamat situs dengan teliti. Jangan klik link dari pengirim tidak dikenal.', analogy:'Phishing seperti <b>orang pura-pura jadi kurir JNE</b>, minta kamu isi data lengkap di form palsu. Sebelum kasih data, cek kartu ID kurir, cek seragam, cek motor. Di internet: cek alamat situs, cek gembok, cek domain.'},
+    {img:'backup', title:'Cadangkan Data', desc:'Simpan salinan penting di cloud atau flashdisk secara berkala. Jika perangkat rusak/hilang/diserang ransomware, data tetap aman dan bisa dipulihkan.', analogy:'Backup seperti <b>menyimpan fotokopi PR di laci lain</b>. Kalau PR asli hilang/kotor/dimakan anjing, kamu masih punya fotokopi. Kalau HP hilang, foto/data masih aman di cloud.'}
   ],
   spark:'Apakah password "tanggalLahir123" aman? Mengapa? Apa yang akan kamu lakukan untuk membuat password lebih kuat?'
 };
@@ -1138,14 +1149,14 @@ const MAT_KEAMANAN = {
 const MAT_MEDIA = {
   heroImg:'fiber',
   heroCaption:'Fiber optik — media akses super cepat',
-  intro:{title:'Media Akses Jaringan', text:'<b>Media akses jaringan</b> adalah "jalur" yang dipakai data untuk berpindah dari satu perangkat ke perangkat lain. Ada dua jenis utama: <b>kabel</b> dan <b>nirkabel</b>. Pemilihan media tergantung kebutuhan: kecepatan, jarak, biaya, dan kemudahan.'},
+  intro:{title:'Media Akses Jaringan', text:'<b>Media akses jaringan</b> adalah "jalur" yang dipakai data untuk berpindah dari satu perangkat ke perangkat lain. Ada dua jenis utama: <b>kabel</b> dan <b>nirkabel</b>. Pemilihan media tergantung kebutuhan: kecepatan, jarak, biaya, dan kemudahan — seperti pilih kendaraan: motor, mobil, kereta, atau pesawat tergantung jarak & tujuan.'},
   sections:[
-    {img:'cable', title:'Ethernet / Twisted Pair', desc:'Kabel umum di lab, kantor, rumah. Punya konektor RJ45. Stabil, cepat (sampai 10 Gbps), murah. Cocok untuk koneksi tetap.'},
-    {img:'coaxial', title:'Coaxial', desc:'Kabel tembaga dengan isolasi tebal. Dulu populer untuk TV kabel dan modem lama. Sekarang banyak digantikan twisted pair dan fiber.'},
-    {img:'fiber', title:'Fiber Optik', desc:'Mengirim data sebagai pulsa cahaya lewat serat kaca. <b>Super cepat</b>, jarak jauh, tidak terganggu gelombang elektromagnetik. Dipakai untuk backbone internet.'},
-    {img:'wifi', title:'Wi-Fi', desc:'Nirkabel untuk rumah, sekolah, kafe. Praktis — perangkat bisa berpindah tanpa kabel. Jangkauan terbatas (sekitar 30-50 meter dari router).'},
-    {img:'phone', title:'Bluetooth', desc:'Nirkabel untuk perangkat jarak dekat (sampai 10 meter). Dipakai untuk headphone, mouse, transfer file antar HP. Hemat energi.'},
-    {img:'cellular', title:'Seluler 4G/5G', desc:'Internet mobile lewat menara seluler. HP dan hotspot mobile pakai ini. 5G sangat cepat, cocok untuk daerah tanpa Wi-Fi.'}
+    {img:'cable', title:'Ethernet / Twisted Pair', desc:'Kabel umum di lab, kantor, rumah. Punya konektor RJ45. Stabil, cepat (sampai 10 Gbps), murah. Cocok untuk koneksi tetap.', analogy:'Seperti <b>jalan aspal tetap</b> dari rumah ke sekolah — stabil, cepat, selalu tersedia. Tidak macet walau ramai. Cocok untuk perjalanan rutin (koneksi tetap di lab).'},
+    {img:'coaxial', title:'Coaxial', desc:'Kabel tembaga dengan isolasi tebal. Dulu populer untuk TV kabel dan modem lama. Sekarang banyak digantikan twisted pair dan fiber.', analogy:'Seperti <b>jalan setapak lama</b> — masih bisa dipakai, tapi pelan & sudah lama. Seperti TV kabel zaman dulu, sekarang sudah jarang dipakai untuk internet.'},
+    {img:'fiber', title:'Fiber Optik', desc:'Mengirim data sebagai pulsa cahaya lewat serat kaca. <b>Super cepat</b>, jarak jauh, tidak terganggu gelombang elektromagnetik. Dipakai untuk backbone internet.', analogy:'Seperti <b>jalan tol LED cahaya</b> — super cepat, sejauh apa pun tetap kencang. Karena pakai cahaya, tidak terganggu listrik/magnet. Inilah "jalan raya" internet dunia.'},
+    {img:'wifi', title:'Wi-Fi', desc:'Nirkabel untuk rumah, sekolah, kafe. Praktis — perangkat bisa berpindah tanpa kabel. Jangkauan terbatas (sekitar 30-50 meter dari router).', analogy:'Wi-Fi seperti <b>jembatan layang</b> — praktis, bisa lewat banyak orang, tidak perlu jalan aspal. Tapi terbatas jangkauan (sekitar router saja), dan bisa terganggu jika ramai.'},
+    {img:'phone', title:'Bluetooth', desc:'Nirkabel untuk perangkat jarak dekat (sampai 10 meter). Dipakai untuk headphone, mouse, transfer file antar HP. Hemat energi.', analogy:'Bluetooth seperti <b>gang sempit antar rumah tetangga</b> — cuma deket, cuma bisa ke tetangga sebelah. Tidak perlu jalan raya, cukup lompat pagar. Pakai untuk headphone, transfer file ke teman sebangku.'},
+    {img:'cellular', title:'Seluler 4G/5G', desc:'Internet mobile lewat menara seluler. HP dan hotspot mobile pakai ini. 5G sangat cepat, cocok untuk daerah tanpa Wi-Fi.', analogy:'Seluler seperti <b>angkutan umum yang ada di mana-mana</b> — bus/transit dari menara BTS. Mana-mana kamu bisa internet, walau di ladang/guna-gunung. 4G = bus kota, 5G = kereta cepat.'}
   ],
   spark:'Mengapa fiber optik bisa mengirim data lebih cepat daripada kabel tembaga? Apa kekurangan nirkabel dibanding kabel?'
 };
@@ -1154,13 +1165,13 @@ const MAT_MEDIA = {
 const MAT_SIM_JARINGAN = {
   heroImg:'switch',
   heroCaption:'Switch jaringan dengan kabel Ethernet',
-  intro:{title:'Simulasi Perangkat Jaringan', text:'Pelajari bagaimana <b>laptop, router, switch, server, HP</b> saling terhubung dalam sebuah jaringan. Setiap perangkat punya peran — klik info di bawah untuk memahami fungsi dan hubungan antarperangkat.'},
+  intro:{title:'Simulasi Perangkat Jaringan', text:'Pelajari bagaimana <b>laptop, router, switch, server, HP</b> saling terhubung dalam sebuah jaringan. Setiap perangkat punya peran — klik info di bawah untuk memahami fungsi dan hubungan antarperangkat. Bayangkan ini seperti pos satpam sekolah yang mengatur keluar masuk semua orang.'},
   sections:[
-    {img:'laptop', title:'Laptop', desc:'Perangkat akhir (end device) yang dipakai pengguna. Memiliki NIC untuk terhubung Wi-Fi atau kabel. Mengakses internet lewat router.'},
-    {img:'router', title:'Router', desc:'Penghubung jaringan lokal ke internet. Memberi alamat IP lokal ke tiap perangkat. Mengarahkan data ke tujuan yang benar.'},
-    {img:'switch', title:'Switch', desc:'Menghubungkan banyak perangkat dalam LAN. Pintar mengirim data hanya ke perangkat yang dituju berdasarkan MAC address.'},
-    {img:'server', title:'Server', desc:'Komputer khusus yang menyimpan situs web dan data. Melayani permintaan dari banyak pengguna. Menyala 24 jam.'},
-    {img:'phone', title:'HP Pintar', desc:'Perangkat mobile dengan NIC Wi-Fi dan seluler. Bisa terhubung lewat Wi-Fi rumah atau jaringan seluler provider.'}
+    {img:'laptop', title:'Laptop', desc:'Perangkat akhir (end device) yang dipakai pengguna. Memiliki NIC untuk terhubung Wi-Fi atau kabel. Mengakses internet lewat router.', analogy:'Laptop seperti <b>siswa di kelas</b> — pengguna akhir yang minta info ke perpustakaan (server) lewat pos satpam (router).'},
+    {img:'router', title:'Router', desc:'Penghubung jaringan lokal ke internet. Memberi alamat IP lokal ke tiap perangkat. Mengarahkan data ke tujuan yang benar.', analogy:'Router seperti <b>pos satpam sekolah</b> — semua keluar masuk lewat sini. Satpam arahkan tamu ke ruang yang benar, arahkan siswa keluar ke jalan raya (internet).'},
+    {img:'switch', title:'Switch', desc:'Menghubungkan banyak perangkat dalam LAN. Pintar mengirim data hanya ke perangkat yang dituju berdasarkan MAC address.', analogy:'Switch seperti <b>resepsionis kantor</b> — tamu cari ruang A, antar ke A saja. Tidak sebar ke semua ruang. Switch antar data ke perangkat yang benar.'},
+    {img:'server', title:'Server', desc:'Komputer khusus yang menyimpan situs web dan data. Melayani permintaan dari banyak pengguna. Menyala 24 jam.', analogy:'Server seperti <b>perpustakaan kota</b> — buka 24 jam, siapa saja bisa datang & meminjam buku (data). Melayani banyak orang sekaligus.'},
+    {img:'phone', title:'HP Pintar', desc:'Perangkat mobile dengan NIC Wi-Fi dan seluler. Bisa terhubung lewat Wi-Fi rumah atau jaringan seluler provider.', analogy:'HP seperti <b>siswa yang bawa tas mana-mana</b> — bisa internet lewat Wi-Fi rumah, atau lewat "angkot" (seluler) kalau lagi di luar.'}
   ],
   spark:'Urutkan alur data dari HP-mu sampai ke server situs yang kamu buka. Perangkat apa saja yang dilalui?'
 };
@@ -1168,13 +1179,13 @@ const MAT_SIM_JARINGAN = {
 const MAT_SIM_INTERNET = {
   heroImg:'globe',
   heroCaption:'Internet — perjalanan data global',
-  intro:{title:'Cara Kerja Internet', text:'Saat kamu mengetik alamat situs, data tidak langsung sampai ke tujuan. Ada <b>5 tahap</b> yang dilalui: browser → DNS → jaringan → server → kembali ke browser. Setiap tahap penting dan tidak bisa dilewati.'},
+  intro:{title:'Cara Kerja Internet', text:'Saat kamu mengetik alamat situs, data tidak langsung sampai ke tujuan. Ada <b>5 tahap</b> yang dilalui: browser → DNS → jaringan → server → kembali ke browser. Mirip seperti memesan makanan lewat GoFood — ada tahap yang jelas dari pesan sampai makanan sampai.'},
   sections:[
-    {img:'laptop', title:'1. Browser', desc:'Pengguna mengetik alamat situs (misal google.com) di browser dan menekan Enter. Browser mulai membuat permintaan.'},
-    {img:'dns', title:'2. DNS Lookup', desc:'DNS mencari alamat IP dari "google.com". DNS mengembalikan alamat IP seperti 142.250.10.78 sehingga browser tahu ke mana mengirim permintaan.'},
-    {img:'wifi', title:'3. Jaringan', desc:'Permintaan dari browser dikirim lewat router, switch, kabel/nirkabel, lalu ke provider internet (ISP). Data dipecah menjadi paket oleh TCP/IP.'},
-    {img:'server', title:'4. Server', desc:'Server tujuan menerima paket, menyusun ulang, memproses permintaan, dan menyiapkan data (halaman HTML, gambar, video) untuk dikirim balik.'},
-    {img:'laptop', title:'5. Browser Tampil', desc:'Server mengirim data balik lewat jaringan ke browser. Browser menyusun dan menampilkan halaman situs yang kita lihat di layar.'}
+    {img:'laptop', title:'1. Browser', desc:'Pengguna mengetik alamat situs (misal google.com) di browser dan menekan Enter. Browser mulai membuat permintaan.', analogy:'Seperti <b>buka aplikasi GoFood & pilih restoran</b> — kamu mulai pesan makanan. Browser = aplikasi GoFood, kamu = pengguna.'},
+    {img:'dns', title:'2. DNS Lookup', desc:'DNS mencari alamat IP dari "google.com". DNS mengembalikan alamat IP seperti 142.250.10.78 sehingga browser tahu ke mana mengirim permintaan.', analogy:'Seperti <b>aplikasi cari alamat restoran</b> — GoFood cari "Warung Bu Tini", ketemu alamatnya "Jl. Mawar No.5". DNS cari "google.com", ketemu IP "142.250.10.78".'},
+    {img:'wifi', title:'3. Jaringan', desc:'Permintaan dari browser dikirim lewat router, switch, kabel/nirkabel, lalu ke provider internet (ISP). Data dipecah menjadi paket oleh TCP/IP.', analogy:'Seperti <b>driver GoFood bawa pesananmu lewat jalan raya</b> — lewat jalan, lampu merah, sampai ke restoran. Data lewat router, switch, ISP, akhirnya sampai ke server.'},
+    {img:'server', title:'4. Server', desc:'Server tujuan menerima paket, menyusun ulang, memproses permintaan, dan menyiapkan data (halaman HTML, gambar, video) untuk dikirim balik.', analogy:'Seperti <b>restoran masak makanan</b> — terima pesanan, masak, kemas, siapkan untuk driver bawa balik. Server "masak" halaman web yang kamu minta.'},
+    {img:'laptop', title:'5. Browser Tampil', desc:'Server mengirim data balik lewat jaringan ke browser. Browser menyusun dan menampilkan halaman situs yang kita lihat di layar.', analogy:'Seperti <b>driver antar makanan ke rumahmu, kamu makan</b>. Browser terima data dari server, susun, tampilkan halaman situs di layar HP-mu.'}
   ],
   spark:'Bayangkan kamu buka youtube.com. Tahap mana yang paling lama? Mengapa kadang video lambat dimuat?'
 };
@@ -1182,13 +1193,13 @@ const MAT_SIM_INTERNET = {
 const MAT_SIM_TOPOLOGI = {
   heroImg:'topology',
   heroCaption:'Diagram 4 jenis topologi jaringan',
-  intro:{title:'Topologi Jaringan', text:'<b>Topologi</b> adalah susunan/cara perangkat terhubung dalam jaringan. Pilih topologi mempengaruhi kecepatan, keandalan, biaya, dan kemudahan perawatan. Ada 5 topologi umum yang perlu kamu kenal.'},
+  intro:{title:'Topologi Jaringan', text:'<b>Topologi</b> adalah susunan/cara perangkat terhubung dalam jaringan. Pilih topologi mempengaruhi kecepatan, keandalan, biaya, dan kemudahan perawatan. Ada 5 topologi umum yang perlu kamu kenal — masing-masing punya bentuk seperti susunan tempat duduk di kelas.'},
   sections:[
-    {img:'topology', title:'Bus', desc:'Semua perangkat terhubung ke satu kabel utama (backbone). Sederhana dan murah, tapi jika kabel utama putus, seluruh jaringan mati.'},
-    {img:'topology', title:'Star', desc:'Semua perangkat terhubung ke satu titik pusat (switch/hub). Mudah dikelola, tapi jika pusat mati, semua terhenti. Paling umum dipakai.'},
-    {img:'topology', title:'Ring', desc:'Perangkat terhubung membentuk lingkaran tertutup. Data mengalir satu arah dari satu perangkat ke perangkat berikutnya.'},
-    {img:'topology', title:'Mesh', desc:'Setiap perangkat terhubung langsung ke semua perangkat lain. Sangat andal — banyak jalur alternatif. Tapi mahal dan rumit.'},
-    {img:'topology', title:'Tree', desc:'Gabungan beberapa topologi star yang dihubungkan secara berjenjang seperti pohon. Cocok untuk jaringan besar berjenjang.'}
+    {img:'topology', title:'Bus', desc:'Semua perangkat terhubung ke satu kabel utama (backbone). Sederhana dan murah, tapi jika kabel utama putus, seluruh jaringan mati.', analogy:'Seperti <b>satu lorong kelas</b> — semua murid lewat lorong itu untuk kemana-mana. Kalau lorong macet/putus, semua terjebak di kelas.'},
+    {img:'topology', title:'Star', desc:'Semua perangkat terhubung ke satu titik pusat (switch/hub). Mudah dikelola, tapi jika pusat mati, semua terhenti. Paling umum dipakai.', analogy:'Seperti <b>meja guru di tengah kelas</b> — semua murid ke meja guru untuk tanya/ambil sesuatu. Kalau guru tidak ada (switch mati), semua tidak bisa apa-apa.'},
+    {img:'topology', title:'Ring', desc:'Perangkat terhubung membentuk lingkaran tertutup. Data mengalir satu arah dari satu perangkat ke perangkat berikutnya.', analogy:'Seperti <b>murid duduk melingkar & sapu angin berputar</b> — sapu angin lewat satu per satu, searah. Kalau satu murid tidak ikut, sapu angin berhenti di situ.'},
+    {img:'topology', title:'Mesh', desc:'Setiap perangkat terhubung langsung ke semua perangkat lain. Sangat andal — banyak jalur alternatif. Tapi mahal dan rumit.', analogy:'Seperti <b>semua anak pegang tangan semua anak lain</b> — tiap orang terhubung langsung ke semua orang. Kalau satu putus, masih banyak pegangan lain. Andal tapi ribet.'},
+    {img:'topology', title:'Tree', desc:'Gabungan beberapa topologi star yang dihubungkan secara berjenjang seperti pohon. Cocok untuk jaringan besar berjenjang.', analogy:'Seperti <b>struktur kelas</b> — wali kelas (atas) → ketua kelas → ketua baris → anggota. Berjenjang dari atas ke bawah. Cocok untuk jaringan sekolah besar.'}
   ],
   spark:'Topologi mana yang paling cocok untuk lab komputer sekolah? Mengapa? Topologi mana untuk jaringan router internet?'
 };
@@ -1196,15 +1207,15 @@ const MAT_SIM_TOPOLOGI = {
 const MAT_SIM_OSI = {
   heroImg:'osi',
   heroCaption:'Model OSI — 7 lapisan komunikasi data',
-  intro:{title:'Model OSI (Open Systems Interconnection)', text:'<b>OSI</b> adalah model 7 lapis yang menjelaskan bagaimana data berpindah dari pengguna ke media fisik, dan sebaliknya. Model ini membantu kita memahami setiap tahap komunikasi jaringan secara terstruktur.'},
+  intro:{title:'Model OSI (Open Systems Interconnection)', text:'<b>OSI</b> adalah model 7 lapis yang menjelaskan bagaimana data berpindah dari pengguna ke media fisik, dan sebaliknya. Model ini membantu kita memahami setiap tahap komunikasi jaringan secara terstruktur — seperti urutan mengirim paket dari rumah ke sekolah: nulis → amplop → titip kurir → kurir pecah → alamat → pos satpam → jalan aspal.'},
   sections:[
-    {img:'osi', title:'Lapisan 7 — Application', desc:'Antarmuka dengan pengguna. Browser, email, dan aplikasi beroperasi di sini. Menyediakan layanan jaringan langsung ke program pengguna.'},
-    {img:'osi', title:'Lapisan 6 — Presentation', desc:'Mengubah, mengompresi, dan mengenkripsi data. Mengatur format seperti JPEG, MP4, atau enkripsi SSL/TLS untuk HTTPS.'},
-    {img:'osi', title:'Lapisan 5 — Session', desc:'Membuka, mengelola, dan menutup sesi komunikasi antara dua perangkat. Memastikan sesi tetap stabil selama dibutuhkan.'},
-    {img:'packet', title:'Lapisan 4 — Transport', desc:'Memastikan data sampai andal (TCP) atau cepat (UDP). Memecah data menjadi segmen dan menyusun ulang di tujuan.'},
-    {img:'ip_addr', title:'Lapisan 3 — Network', desc:'Menentukan jalur terbaik dan alamat tujuan (IP address). Paket data diarahkan dari jaringan sumber ke jaringan tujuan.'},
-    {img:'switch', title:'Lapisan 2 — Data Link', desc:'Mengirim data antarperangkat pada jaringan lokal yang sama. Mengatur akses ke media fisik dan mendeteksi error.'},
-    {img:'cable', title:'Lapisan 1 — Physical', desc:'Mengubah data menjadi sinyal listrik, cahaya, atau gelombang radio. Kabel Ethernet, fiber optik, dan sinyal Wi-Fi bekerja di sini.'}
+    {img:'osi', title:'Lapisan 7 — Application', desc:'Antarmuka dengan pengguna. Browser, email, dan aplikasi beroperasi di sini. Menyediakan layanan jaringan langsung ke program pengguna.', analogy:'Seperti <b>kamu nulis surat untuk teman</b> — kamu yang mulai komunikasi. Browser/WhatsApp = alat yang kamu pakai untuk "nulis".'},
+    {img:'osi', title:'Lapisan 6 — Presentation', desc:'Mengubah, mengompresi, dan mengenkripsi data. Mengatur format seperti JPEG, MP4, atau enkripsi SSL/TLS untuk HTTPS.', analogy:'Seperti <b>masukin surat ke amplop & tulis kode rahasia</b> — isi surat diubah supaya hanya penerima yang bisa baca. HTTPS enkripsi di lapisan ini.'},
+    {img:'osi', title:'Lapisan 5 — Session', desc:'Membuka, mengelola, dan menutup sesi komunikasi antara dua perangkat. Memastikan sesi tetap stabil selama dibutuhkan.', analogy:'Seperti <b>titip surat ke kurir & bilang "ini untuk Andi, tunggu balasan"</b> — kurir buka sesi pengiriman, tunggu balasan, lalu tutup sesi.'},
+    {img:'packet', title:'Lapisan 4 — Transport', desc:'Memastikan data sampai andal (TCP) atau cepat (UDP). Memecah data menjadi segmen dan menyusun ulang di tujuan.', analogy:'Seperti <b>kurir pecah surat jadi 5 amplop kecil</b> — biar kalau satu hilang, tinggal kirim ulang satu itu. TCP cek semua sampai, susun lagi jadi surat utuh.'},
+    {img:'ip_addr', title:'Lapisan 3 — Network', desc:'Menentukan jalur terbaik dan alamat tujuan (IP address). Paket data diarahkan dari jaringan sumber ke jaringan tujuan.', analogy:'Seperti <b>kurir tulis alamat tujuan di amplop & pilih jalan tercepat</b> — "Jl. Mawar No.5, lewat jalan tol". IP = alamat, network = pilih rute.'},
+    {img:'switch', title:'Lapisan 2 — Data Link', desc:'Mengirim data antarperangkat pada jaringan lokal yang sama. Mengatur akses ke media fisik dan mendeteksi error.', analogy:'Seperti <b>pos satpam kompleks</b> — surat sampai di pos satpam kompleks tujuan, satpam antar ke rumah yang benar (MAC address perangkat).'},
+    {img:'cable', title:'Lapisan 1 — Physical', desc:'Mengubah data menjadi sinyal listrik, cahaya, atau gelombang radio. Kabel Ethernet, fiber optik, dan sinyal Wi-Fi bekerja di sini.', analogy:'Seperti <b>jalan aspal yang dilewati kurir</b> — media fisik: kabel, gelombang Wi-Fi, cahaya fiber. Tanpa jalan, kurir tidak bisa kemana-mana.'}
   ],
   spark:'Saat kamu mengirim pesan WhatsApp, melalui lapisan OSI apa saja pesan itu berpindah dari HP-mu ke HP temanmu?'
 };
@@ -1279,6 +1290,7 @@ function renderMaterial(s, mat, game){
           <div class="item-body">
             <h4>${sec.title}</h4>
             <p>${sec.desc}</p>
+            ${sec.analogy ? `<div class="item-analogy"><span class="anal-ic">💡</span><b>Analogi:</b> ${sec.analogy}</div>` : ''}
           </div>
         </div>
       `).join('')}
