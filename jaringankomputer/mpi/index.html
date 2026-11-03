@@ -1,0 +1,2793 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaringan Komputer dan Internet — Informatika Kelas IX | SMPN 1 Moga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1565C0;
+  --blue-d:#0D47A1;
+  --blue-l:#E3F2FD;
+  --blue-ll:#F4F9FF;
+  --yellow:#FFD600;
+  --yellow-d:#F9C000;
+  --ink:#0F172A;
+  --ink-soft:#334155;
+  --muted:#64748B;
+  --line:#E2E8F0;
+  --bg:#F8FAFC;
+  --white:#FFFFFF;
+  --green:#16A34A;
+  --red:#DC2626;
+  --orange:#EA580C;
+  --purple:#7C3AED;
+  --teal:#0D9488;
+  --pink:#DB2777;
+  --shadow-sm:0 1px 2px rgba(15,23,42,.06),0 1px 3px rgba(15,23,42,.08);
+  --shadow:0 4px 14px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.06);
+  --shadow-lg:0 24px 60px rgba(15,23,42,.18),0 8px 24px rgba(15,23,42,.1);
+  --radius:18px;
+  --radius-sm:12px;
+  --radius-lg:28px;
+  --r-blue:linear-gradient(135deg,#1565C0 0%,#0D47A1 100%);
+  --r-yellow:linear-gradient(135deg,#FFD600 0%,#F9C000 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Poppins',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+img,svg{display:block;max-width:100%}
+.hidden{display:none!important}
+
+/* ============ APP SHELL ============ */
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg)}
+
+/* Cover / Landing */
+#cover{
+  position:absolute;inset:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 20% 20%,#1E88E5 0%,#1565C0 40%,#0D47A1 100%);
+  color:#fff;overflow:hidden;
+  transition:opacity .6s ease,transform .6s ease;
+}
+#cover.hidden-cover{opacity:0;transform:scale(1.04);pointer-events:none}
+#cover::before{
+  content:"";position:absolute;inset:-20%;
+  background:
+    radial-gradient(circle at 80% 20%,rgba(255,214,0,.25) 0%,transparent 35%),
+    radial-gradient(circle at 20% 80%,rgba(255,255,255,.08) 0%,transparent 40%);
+  pointer-events:none;
+}
+.cover-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(circle at center,#000 30%,transparent 70%);
+}
+.cover-inner{position:relative;z-index:2;max-width:1100px;width:92%;padding:40px;text-align:center;animation:coverIn .9s cubic-bezier(.2,.8,.2,1)}
+@keyframes coverIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.cover-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.12);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.2);
+  padding:8px 18px;border-radius:99px;font-size:13px;font-weight:500;letter-spacing:.04em;
+  margin-bottom:28px;
+}
+.cover-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--yellow);box-shadow:0 0 12px var(--yellow)}
+.cover-title{
+  font-family:'Montserrat',sans-serif;
+  font-size:clamp(34px,6vw,76px);font-weight:800;line-height:1.05;letter-spacing:-.02em;
+  margin-bottom:18px;
+}
+.cover-title .accent{color:var(--yellow);position:relative;display:inline-block}
+.cover-title .accent::after{content:"";position:absolute;left:-4px;right:-4px;bottom:6px;height:14px;background:rgba(255,214,0,.22);z-index:-1;border-radius:4px}
+.cover-sub{font-size:clamp(15px,1.8vw,20px);font-weight:300;color:rgba(255,255,255,.85);max-width:680px;margin:0 auto 36px;line-height:1.5}
+.cover-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:40px}
+.cover-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:8px 16px;border-radius:99px;font-size:13px;font-weight:500;backdrop-filter:blur(6px)}
+.cover-illu{margin:0 auto 36px;max-width:520px}
+.cover-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{
+  background:var(--yellow);color:var(--blue-d);
+  font-weight:700;font-size:16px;letter-spacing:.01em;
+  padding:16px 32px;border-radius:99px;
+  box-shadow:0 12px 30px rgba(255,214,0,.35),inset 0 -2px 0 rgba(0,0,0,.08);
+  transition:transform .2s,box-shadow .2s;
+  display:inline-flex;align-items:center;gap:10px;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(255,214,0,.45)}
+.btn-ghost{
+  background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.25);
+  padding:16px 28px;border-radius:99px;font-weight:500;font-size:15px;backdrop-filter:blur(8px);
+  transition:background .2s;display:inline-flex;align-items:center;gap:10px;
+}
+.btn-ghost:hover{background:rgba(255,255,255,.16)}
+.cover-foot{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:12px;color:rgba(255,255,255,.5);z-index:2}
+
+/* ============ MAIN APP ============ */
+#main{flex:1;display:flex;flex-direction:column;opacity:0;transition:opacity .5s ease}
+#main.shown{opacity:1}
+
+.topbar{
+  display:flex;align-items:center;gap:16px;padding:14px 22px;
+  background:var(--white);border-bottom:1px solid var(--line);
+  box-shadow:0 1px 0 rgba(15,23,42,.03);position:relative;z-index:10;
+  flex-shrink:0;
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-logo{
+  width:42px;height:42px;border-radius:12px;background:var(--r-blue);
+  display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;
+  box-shadow:0 6px 16px rgba(21,101,192,.35);
+}
+.brand-text{min-width:0}
+.brand-text .t1{font-weight:700;font-size:14px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-text .t2{font-size:11px;color:var(--muted);white-space:nowrap}
+
+.progress-wrap{flex:1;display:flex;align-items:center;gap:12px;max-width:520px;margin:0 auto}
+.progress-track{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),#42A5F5);border-radius:99px;transition:width .4s cubic-bezier(.2,.8,.2,1);position:relative}
+.progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:shine 2s infinite}
+@keyframes shine{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.progress-label{font-size:12px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
+
+.top-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);transition:all .15s;
+}
+.icon-btn:hover{background:var(--blue-l);color:var(--blue)}
+.icon-btn svg{width:20px;height:20px}
+.menu-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;
+  background:var(--blue);color:#fff;font-weight:600;font-size:13px;
+  transition:all .15s;
+}
+.menu-btn:hover{background:var(--blue-d);transform:translateY(-1px)}
+.menu-btn svg{width:18px;height:18px}
+
+/* Stage / Slides */
+.stage{
+  flex:1;position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(21,101,192,.04) 0%,transparent 50%),
+    radial-gradient(circle at 0% 100%,rgba(255,214,0,.04) 0%,transparent 50%),
+    var(--bg);
+}
+.slide{
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  padding:34px 48px 110px;
+  opacity:0;pointer-events:none;transform:translateX(40px);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.slide.active{opacity:1;pointer-events:auto;transform:none}
+.slide.prev{transform:translateX(-40px)}
+.slide-inner{max-width:1180px;margin:0 auto}
+
+/* Slide header */
+.slide-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:22px}
+.slide-num{
+  width:54px;height:54px;border-radius:14px;background:var(--r-blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;
+  box-shadow:0 8px 20px rgba(21,101,192,.3);flex-shrink:0;font-family:'Montserrat';
+}
+.slide-title-wrap{flex:1;min-width:0}
+.slide-eyebrow{font-size:12px;font-weight:600;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.slide-title{font-family:'Montserrat';font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--ink);line-height:1.2;letter-spacing:-.01em}
+.slide-sub{font-size:14px;color:var(--muted);margin-top:4px;font-weight:400}
+
+/* Cards */
+.card{
+  background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+  padding:24px;box-shadow:var(--shadow-sm);
+}
+.card-title{font-weight:700;font-size:16px;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.card-title .ic{width:28px;height:28px;border-radius:8px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-title .ic svg{width:16px;height:16px}
+.card p{color:var(--ink-soft);line-height:1.65;font-size:14.5px}
+.card p + p{margin-top:10px}
+
+/* Layouts */
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .slide{padding:24px 20px 110px}
+}
+
+/* Two column with image */
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:stretch}
+@media (max-width:900px){.split{grid-template-columns:1fr}}
+
+/* Hero illustration block */
+.hero-illu{
+  background:linear-gradient(135deg,#E3F2FD 0%,#F4F9FF 100%);
+  border-radius:var(--radius);padding:24px;display:flex;align-items:center;justify-content:center;
+  min-height:240px;position:relative;overflow:hidden;
+}
+.hero-illu::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(21,101,192,.08),transparent 60%)}
+.hero-illu svg{position:relative;z-index:1;max-width:100%;max-height:320px}
+
+/* Concept list */
+.concept{display:flex;gap:14px;padding:14px;border-radius:14px;background:var(--blue-ll);border:1px solid var(--blue-l)}
+.concept + .concept{margin-top:10px}
+.concept-ic{width:38px;height:38px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.concept-ic svg{width:20px;height:20px}
+.concept h4{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.concept p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0}
+
+/* Spark / pemantik */
+.spark{
+  background:linear-gradient(135deg,#FFFDE7 0%,#FFF8E1 100%);
+  border-left:4px solid var(--yellow);border-radius:14px;padding:16px 18px;
+  display:flex;gap:12px;align-items:flex-start;margin-top:18px;
+}
+.spark-ic{width:32px;height:32px;border-radius:50%;background:var(--yellow);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800}
+.spark p{font-size:14px;color:var(--ink);line-height:1.55;font-weight:500}
+.spark strong{font-weight:700}
+
+/* Tag pills */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pill{padding:6px 12px;border-radius:99px;font-size:12px;font-weight:600;background:var(--blue-l);color:var(--blue-d)}
+.pill.y{background:#FFF8E1;color:#8a6d00}
+.pill.g{background:#DCFCE7;color:#15803d}
+.pill.p{background:#F3E8FF;color:#6b21a8}
+.pill.o{background:#FFEDD5;color:#9a3412}
+
+/* Device grid (simulation) */
+.sim-stage{
+  background:linear-gradient(160deg,#0D47A1 0%,#1565C0 100%);
+  border-radius:var(--radius-lg);padding:30px;color:#fff;position:relative;overflow:hidden;
+  min-height:420px;
+}
+.sim-stage::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(circle at center,#000 40%,transparent 80%);
+}
+.sim-canvas{position:relative;z-index:1;width:100%;height:100%;min-height:380px}
+.sim-title{font-family:'Montserrat';font-weight:700;font-size:18px;margin-bottom:6px;position:relative;z-index:1}
+.sim-hint{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:18px;position:relative;z-index:1}
+.dev-node{cursor:pointer;transition:transform .2s,filter .2s}
+.dev-node:hover{transform:translateY(-3px) scale(1.04);filter:drop-shadow(0 8px 16px rgba(255,214,0,.5))}
+.dev-node.active .dev-bg{fill:rgba(255,214,0,.25);stroke:#FFD600;stroke-width:2.5}
+.dev-label{font-size:11px;font-weight:600;fill:#fff;text-anchor:middle;pointer-events:none}
+
+.sim-info{
+  background:#fff;border-radius:var(--radius);padding:18px;color:var(--ink);
+  min-height:160px;display:flex;flex-direction:column;gap:6px;
+}
+.sim-info .empty{color:var(--muted);font-size:13px;text-align:center;padding:30px 10px;font-style:italic}
+.sim-info h4{font-family:'Montserrat';font-size:16px;font-weight:700;color:var(--blue-d);display:flex;align-items:center;gap:8px}
+.sim-info .role{font-size:12px;color:var(--blue);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.sim-info p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-top:4px}
+.sim-info .rel{font-size:12.5px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.sim-info .rel b{color:var(--ink);font-weight:600}
+
+/* Topology simulation */
+.topo-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.topo-btn{
+  padding:10px 16px;border-radius:99px;background:#fff;border:1.5px solid var(--line);
+  font-weight:600;font-size:13px;color:var(--ink-soft);transition:all .15s;display:inline-flex;align-items:center;gap:8px;
+}
+.topo-btn:hover{border-color:var(--blue);color:var(--blue)}
+.topo-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.topo-btn .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.topo-canvas{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:24px;min-height:340px;display:flex;align-items:center;justify-content:center;position:relative;
+}
+.topo-canvas svg{max-width:100%;max-height:340px}
+.topo-detail{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media (max-width:700px){.topo-detail{grid-template-columns:1fr}}
+.topo-detail .item{background:var(--blue-ll);border-radius:12px;padding:14px}
+.topo-detail .item h5{font-size:13px;font-weight:700;color:var(--blue-d);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.topo-detail .item p{font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0}
+
+/* OSI Layers */
+.osi-stack{display:flex;flex-direction:column;gap:6px;max-width:520px;margin:0 auto}
+.osi-layer{
+  display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+  cursor:pointer;transition:all .2s;color:#fff;font-weight:600;
+  position:relative;overflow:hidden;
+}
+.osi-layer:hover{transform:translateX(6px)}
+.osi-layer.expanded{box-shadow:0 12px 28px rgba(15,23,42,.18)}
+.osi-num{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.osi-name{font-size:14px;font-weight:700;flex:1}
+.osi-name small{display:block;font-size:11px;font-weight:400;opacity:.85;margin-top:1px}
+.osi-arrow{transition:transform .25s}
+.osi-layer.expanded .osi-arrow{transform:rotate(180deg)}
+.osi-detail{background:#fff;border-radius:12px;padding:14px 18px;margin-top:-2px;margin-bottom:6px;border:1px solid var(--line);border-top:none;font-size:13px;color:var(--ink-soft);line-height:1.55;display:none}
+.osi-detail.show{display:block;animation:slideD .3s ease}
+@keyframes slideD{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.osi-detail b{color:var(--blue-d);font-weight:700}
+.osi-detail .ex{display:block;margin-top:6px;padding:8px 10px;background:var(--blue-ll);border-radius:8px;font-size:12.5px;color:var(--ink)}
+
+/* Internet flow sim */
+.flow-stage{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden}
+.flow-svg{width:100%;height:auto;max-height:340px}
+.flow-step{cursor:pointer;transition:filter .2s}
+.flow-step:hover{filter:drop-shadow(0 4px 8px rgba(21,101,192,.25))}
+.flow-step.active .flow-bg{fill:var(--yellow);stroke:var(--yellow-d)}
+.flow-step.active .flow-ic{color:var(--blue-d)}
+.flow-step.active .flow-txt{fill:var(--blue-d);font-weight:700}
+.flow-controls{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.flow-play{
+  background:var(--blue);color:#fff;padding:10px 18px;border-radius:99px;font-weight:600;font-size:13px;
+  display:inline-flex;align-items:center;gap:8px;transition:all .15s;
+}
+.flow-play:hover{background:var(--blue-d)}
+.flow-play svg{width:16px;height:16px}
+.flow-reset{background:var(--line);color:var(--ink-soft);padding:10px 16px;border-radius:99px;font-weight:600;font-size:13px}
+.flow-reset:hover{background:#CBD5E1}
+.flow-step-info{margin-top:14px;background:var(--blue-ll);border-radius:12px;padding:14px 18px;border-left:4px solid var(--blue);min-height:60px}
+.flow-step-info h5{font-size:14px;font-weight:700;color:var(--blue-d);margin-bottom:4px}
+.flow-step-info p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0}
+
+/* Quiz */
+.quiz-wrap{max-width:820px;margin:0 auto}
+.quiz-progress{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.quiz-dots{display:flex;gap:6px;flex-wrap:wrap}
+.quiz-dot{width:10px;height:10px;border-radius:50%;background:var(--line);transition:all .2s}
+.quiz-dot.done{background:var(--green)}
+.quiz-dot.wrong{background:var(--red)}
+.quiz-dot.current{background:var(--blue);transform:scale(1.4)}
+.quiz-counter{font-size:13px;font-weight:600;color:var(--ink-soft)}
+.quiz-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)}
+.quiz-q{font-size:17px;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:20px}
+.quiz-q .num{color:var(--blue);font-weight:800;font-family:'Montserrat';margin-right:8px}
+.quiz-opts{display:flex;flex-direction:column;gap:10px}
+.quiz-opt{
+  text-align:left;padding:14px 18px;border-radius:12px;border:1.5px solid var(--line);
+  background:#fff;font-size:14.5px;color:var(--ink);transition:all .15s;
+  display:flex;align-items:center;gap:12px;
+}
+.quiz-opt:hover:not(.locked){border-color:var(--blue);background:var(--blue-ll)}
+.quiz-opt .letter{
+  width:28px;height:28px;border-radius:50%;background:var(--blue-l);color:var(--blue-d);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;
+}
+.quiz-opt.correct{border-color:var(--green);background:#DCFCE7}
+.quiz-opt.correct .letter{background:var(--green);color:#fff}
+.quiz-opt.wrong{border-color:var(--red);background:#FEE2E2}
+.quiz-opt.wrong .letter{background:var(--red);color:#fff}
+.quiz-opt.locked{cursor:not-allowed}
+.quiz-fb{margin-top:16px;padding:14px 18px;border-radius:12px;font-size:13.5px;line-height:1.55;display:none}
+.quiz-fb.show{display:block;animation:slideD .3s ease}
+.quiz-fb.ok{background:#DCFCE7;color:#15803d;border-left:4px solid var(--green)}
+.quiz-fb.no{background:#FEE2E2;color:#991b1b;border-left:4px solid var(--red)}
+.quiz-fb b{font-weight:700}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.quiz-next{background:var(--blue);color:#fff;padding:12px 24px;border-radius:99px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;transition:all .15s}
+.quiz-next:hover{background:var(--blue-d)}
+.quiz-next:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.quiz-result{text-align:center;padding:40px 20px}
+.quiz-result .score-ring{
+  width:180px;height:180px;margin:0 auto 20px;position:relative;
+}
+.quiz-result .score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.quiz-result .score-num b{font-family:'Montserrat';font-size:48px;font-weight:800;color:var(--blue-d);line-height:1}
+.quiz-result .score-num span{font-size:13px;color:var(--muted);margin-top:4px}
+.quiz-result h3{font-family:'Montserrat';font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.quiz-result p{color:var(--ink-soft);font-size:14px;margin-bottom:20px}
+.quiz-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.quiz-review{margin-top:24px;text-align:left}
+.quiz-review-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:10px}
+.quiz-review-item .qq{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.quiz-review-item .ans{font-size:13px;color:var(--ink-soft);line-height:1.5}
+.quiz-review-item .ans b.ok{color:var(--green)}
+.quiz-review-item .ans b.no{color:var(--red)}
+
+/* Matching challenge */
+.match-game{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:0 auto}
+@media (max-width:700px){.match-game{grid-template-columns:1fr}}
+.match-col h4{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.match-col h4 .badge{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.match-col.left h4 .badge{background:var(--blue-l);color:var(--blue-d)}
+.match-col.right h4 .badge{background:#FFF8E1;color:#8a6d00}
+.match-list{display:flex;flex-direction:column;gap:8px}
+.match-item{
+  padding:14px 16px;border-radius:12px;background:#fff;border:2px solid var(--line);
+  font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;gap:10px;
+}
+.match-item:hover{border-color:var(--blue)}
+.match-item.selected{border-color:var(--blue);background:var(--blue-ll);box-shadow:0 4px 14px rgba(21,101,192,.18)}
+.match-item.matched{border-color:var(--green);background:#DCFCE7;color:#15803d;cursor:default}
+.match-item.matched::after{content:"✓";margin-left:auto;font-weight:800}
+.match-item.wrong-flash{animation:wrongFlash .5s ease}
+@keyframes wrongFlash{0%,100%{border-color:var(--red)}50%{background:#FEE2E2}}
+.match-progress{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:0 auto 20px;max-width:900px;display:flex;align-items:center;justify-content:space-between}
+.match-progress .info{font-size:13px;color:var(--ink-soft)}
+.match-progress .info b{color:var(--blue-d);font-weight:700}
+.match-reset{font-size:12px;color:var(--muted);padding:6px 12px;border-radius:8px}
+.match-reset:hover{background:var(--line);color:var(--ink)}
+
+/* Reflection */
+.reflect-card{max-width:720px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)}
+.reflect-q{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.5}
+.reflect-q .num{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-right:10px}
+.reflect-ta{
+  width:100%;min-height:80px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;
+  font-size:14px;color:var(--ink);resize:vertical;transition:border-color .15s;background:var(--bg);
+}
+.reflect-ta:focus{outline:none;border-color:var(--blue);background:#fff}
+.reflect-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.btn-save{background:var(--green);color:#fff;padding:10px 20px;border-radius:99px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:8px}
+.btn-save:hover{background:#15803d}
+.saved-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green);font-weight:600}
+
+/* LKPD */
+.lkpd-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.lkpd-tab{
+  padding:10px 16px;border-radius:99px;background:#fff;border:1.5px solid var(--line);
+  font-weight:600;font-size:13px;color:var(--ink-soft);transition:all .15s;
+}
+.lkpd-tab:hover{border-color:var(--blue);color:var(--blue)}
+.lkpd-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.lkpd-tab .gnum{font-weight:800}
+.lkpd-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm)}
+.lkpd-q{margin-bottom:22px}
+.lkpd-q .qtext{font-size:15px;font-weight:600;color:var(--ink);line-height:1.55;margin-bottom:10px;display:flex;gap:10px}
+.lkpd-q .qtext .qn{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;font-family:'Montserrat'}
+.lkpd-ta{
+  width:100%;min-height:110px;border:1.5px solid var(--line);border-radius:12px;padding:14px;
+  font-size:14px;color:var(--ink);resize:vertical;transition:all .15s;background:var(--bg);line-height:1.55;
+}
+.lkpd-ta:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(21,101,192,.12)}
+.lkpd-ta.saved{border-color:var(--green);background:#F0FDF4}
+.lkpd-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;flex-wrap:wrap;gap:10px}
+.lkpd-status{font-size:12px;color:var(--muted)}
+.lkpd-status b{color:var(--green);font-weight:700}
+
+/* Teacher mode */
+.teacher-lock{max-width:420px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:32px;text-align:center;box-shadow:var(--shadow)}
+.teacher-lock .ic{width:64px;height:64px;border-radius:50%;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.teacher-lock .ic svg{width:30px;height:30px}
+.teacher-lock h3{font-family:'Montserrat';font-size:18px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.teacher-lock p{color:var(--muted);font-size:13px;margin-bottom:18px}
+.teacher-lock input{
+  width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;text-align:center;
+  letter-spacing:.1em;margin-bottom:12px;
+}
+.teacher-lock input:focus{outline:none;border-color:var(--blue)}
+.teacher-lock .err{color:var(--red);font-size:12px;margin-bottom:10px;display:none}
+.teacher-lock .err.show{display:block}
+.teacher-content{max-width:1000px;margin:0 auto}
+.answer-key{background:#FFFDE7;border:1px solid #FFE082;border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.answer-key h5{font-size:14px;font-weight:700;color:#8a6d00;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.answer-key h5 .num{padding:2px 8px;background:#FFD600;color:var(--ink);border-radius:6px;font-size:11px}
+.answer-key p{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+.answer-key .rubric{margin-top:8px;padding-top:8px;border-top:1px dashed #FFE082;font-size:12.5px;color:var(--muted)}
+.answer-key .rubric b{color:var(--ink-soft);font-weight:700}
+
+/* Bottom nav */
+.botnav{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:14px 24px;background:#fff;border-top:1px solid var(--line);flex-shrink:0;
+  box-shadow:0 -2px 12px rgba(15,23,42,.04);
+}
+.nav-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:99px;
+  background:var(--blue-l);color:var(--blue-d);font-weight:600;font-size:13px;transition:all .15s;
+}
+.nav-btn:hover:not(:disabled){background:var(--blue);color:#fff}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn svg{width:16px;height:16px}
+.nav-center{font-size:12px;color:var(--muted);text-align:center}
+.nav-center b{color:var(--ink);font-weight:700}
+
+/* Menu drawer */
+.drawer-mask{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s;z-index:80}
+.drawer-mask.show{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:380px;max-width:90vw;background:#fff;
+  box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+  z-index:90;display:flex;flex-direction:column;
+}
+.drawer.show{transform:none}
+.drawer-head{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.drawer-head h3{font-family:'Montserrat';font-size:17px;font-weight:700;color:var(--ink)}
+.drawer-body{flex:1;overflow-y:auto;padding:16px}
+.drawer-section{margin-bottom:18px}
+.drawer-section h4{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;padding:0 8px}
+.drawer-item{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;
+  font-size:13.5px;color:var(--ink-soft);font-weight:500;transition:all .12s;width:100%;text-align:left;
+}
+.drawer-item:hover{background:var(--blue-ll);color:var(--blue-d)}
+.drawer-item.active{background:var(--blue);color:#fff}
+.drawer-item .di-num{width:26px;height:26px;border-radius:7px;background:var(--blue-l);color:var(--blue-d);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.drawer-item.active .di-num{background:rgba(255,255,255,.2);color:#fff}
+.drawer-item .di-check{margin-left:auto;color:var(--green)}
+.drawer-item.active .di-check{color:#fff}
+.drawer-foot{padding:14px 24px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.drawer-link{padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;color:var(--ink-soft);display:flex;align-items:center;gap:10px;transition:all .12s}
+.drawer-link:hover{background:var(--blue-ll);color:var(--blue-d)}
+.drawer-link svg{width:18px;height:18px}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;padding:12px 22px;border-radius:99px;font-size:13px;font-weight:600;
+  box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:all .3s;z-index:100;
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{width:16px;height:16px;color:var(--yellow)}
+
+/* Modal generic */
+.modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .25s;z-index:70;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-mask.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;border-radius:var(--radius-lg);max-width:560px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:scale(.95);transition:transform .25s;padding:28px}
+.modal-mask.show .modal{transform:none}
+.modal h3{font-family:'Montserrat';font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.modal p{color:var(--ink-soft);font-size:14px;line-height:1.55;margin-bottom:18px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.btn-outline{padding:10px 18px;border-radius:10px;border:1.5px solid var(--line);font-weight:600;font-size:13px;color:var(--ink-soft)}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+.btn-danger{padding:10px 18px;border-radius:10px;background:var(--red);color:#fff;font-weight:600;font-size:13px}
+.btn-danger:hover{background:#B91C1C}
+
+/* Fullscreen */
+:fullscreen #app{background:var(--bg)}
+:-webkit-full-screen{width:100%;height:100%}
+
+/* Scrollbar */
+.slide::-webkit-scrollbar,.drawer-body::-webkit-scrollbar,.modal::-webkit-scrollbar{width:8px}
+.slide::-webkit-scrollbar-thumb,.drawer-body::-webkit-scrollbar-thumb,.modal::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:99px}
+.slide::-webkit-scrollbar-track,.drawer-body::-webkit-scrollbar-track{background:transparent}
+
+/* Misc animations */
+.fade-up{animation:fadeUp .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.stagger > *{animation:fadeUp .5s cubic-bezier(.2,.8,.2,1) both}
+.stagger > *:nth-child(1){animation-delay:.05s}
+.stagger > *:nth-child(2){animation-delay:.1s}
+.stagger > *:nth-child(3){animation-delay:.15s}
+.stagger > *:nth-child(4){animation-delay:.2s}
+.stagger > *:nth-child(5){animation-delay:.25s}
+.stagger > *:nth-child(6){animation-delay:.3s}
+
+/* Pulse */
+.pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(22,163,74,.5);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.5)}70%{box-shadow:0 0 0 10px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+
+/* Data packet animation for internet flow */
+.packet{fill:var(--yellow);filter:drop-shadow(0 0 6px rgba(255,214,0,.8))}
+
+/* Device info badges in network sim */
+.dev-info-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+@media (max-width:700px){.dev-info-list{grid-template-columns:1fr}}
+.dev-mini{background:var(--blue-ll);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-soft)}
+.dev-mini b{color:var(--blue-d);font-weight:700;display:block;font-size:13px}
+
+/* Numbered icon */
+.num-ic{width:32px;height:32px;border-radius:8px;background:var(--r-yellow);color:var(--blue-d);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;font-family:'Montserrat'}
+
+/* Comparison table */
+.cmp-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
+.cmp-table th{background:var(--blue);color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:13px}
+.cmp-table th:first-child{border-radius:10px 0 0 0}
+.cmp-table th:last-child{border-radius:0 10px 0 0}
+.cmp-table td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink-soft)}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:nth-child(even) td{background:var(--blue-ll)}
+.cmp-table td b{color:var(--ink);font-weight:600}
+
+/* Final / closing slide */
+.final-card{max-width:680px;margin:0 auto;text-align:center;padding:48px 28px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.final-card .ic{width:80px;height:80px;border-radius:24px;background:var(--r-yellow);color:var(--blue-d);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 12px 30px rgba(255,214,0,.4)}
+.final-card .ic svg{width:40px;height:40px}
+.final-card h2{font-family:'Montserrat';font-size:26px;font-weight:800;color:var(--ink);margin-bottom:10px}
+.final-card p{color:var(--ink-soft);font-size:14.5px;line-height:1.6;margin-bottom:24px}
+.final-stats{display:flex;gap:14px;justify-content:center;margin:24px 0;flex-wrap:wrap}
+.final-stat{background:var(--blue-ll);border-radius:14px;padding:14px 22px;min-width:120px}
+.final-stat b{display:block;font-family:'Montserrat';font-size:24px;font-weight:800;color:var(--blue-d)}
+.final-stat span{font-size:12px;color:var(--muted)}
+
+/* Hide on small screen */
+@media (max-width:640px){
+  .topbar{padding:10px 14px;gap:8px}
+  .brand-text .t2{display:none}
+  .progress-wrap{max-width:none}
+  .menu-btn span{display:none}
+  .menu-btn{padding:9px 12px}
+  .slide{padding:20px 16px 110px}
+  .slide-head{gap:12px}
+  .slide-num{width:44px;height:44px;font-size:16px}
+  .botnav{padding:10px 14px}
+  .nav-btn span{display:none}
+  .nav-btn{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ============ COVER ============ -->
+<div id="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-inner">
+    <div class="cover-badge"><span class="dot"></span> MEDIA PEMBELAJARAN INTERAKTIF</div>
+    <h1 class="cover-title">Jaringan Komputer<br>dan <span class="accent">Internet</span></h1>
+    <p class="cover-sub">Mengenal cara perangkat terhubung dan berkomunikasi — lewat simulasi, kuis, dan permainan yang seru.</p>
+    <div class="cover-meta">
+      <span class="cover-chip">Informatika</span>
+      <span class="cover-chip">Kelas IX SMP</span>
+      <span class="cover-chip">SMP Negeri 1 Moga</span>
+      <span class="cover-chip">TA 2026/2027</span>
+    </div>
+    <div class="cover-illu">
+      <svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#FFD600"/><stop offset="1" stop-color="#FFA000"/></linearGradient>
+        </defs>
+        <!-- central router -->
+        <circle cx="260" cy="100" r="38" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.3)"/>
+        <rect x="240" y="86" width="40" height="28" rx="6" fill="url(#g1)"/>
+        <circle cx="250" cy="100" r="2" fill="#0D47A1"/><circle cx="258" cy="100" r="2" fill="#0D47A1"/><circle cx="266" cy="100" r="2" fill="#0D47A1"/><circle cx="274" cy="100" r="2" fill="#0D47A1"/>
+        <!-- devices -->
+        <g fill="rgba(255,255,255,.95)">
+          <rect x="40" y="40" width="56" height="36" rx="4"/><rect x="52" y="48" width="32" height="20" rx="2" fill="#1565C0"/>
+          <rect x="424" y="40" width="56" height="36" rx="4"/><rect x="436" y="48" width="32" height="20" rx="2" fill="#1565C0"/>
+          <rect x="40" y="124" width="46" height="36" rx="4"/><rect x="48" y="132" width="30" height="20" rx="2" fill="#1565C0"/>
+          <rect x="434" y="124" width="46" height="36" rx="4"/><rect x="442" y="132" width="30" height="20" rx="2" fill="#1565C0"/>
+          <rect x="20" y="92" width="34" height="20" rx="3"/>
+          <rect x="466" y="92" width="34" height="20" rx="3"/>
+        </g>
+        <!-- lines -->
+        <g stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-dasharray="4 4">
+          <line x1="96" y1="58" x2="240" y2="92"/>
+          <line x1="424" y1="58" x2="280" y2="92"/>
+          <line x1="86" y1="142" x2="240" y2="108"/>
+          <line x1="434" y1="142" x2="280" y2="108"/>
+          <line x1="54" y1="102" x2="240" y2="100"/>
+          <line x1="466" y1="102" x2="280" y2="100"/>
+        </g>
+        <!-- moving packet -->
+        <circle r="5" fill="#FFD600">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M96,58 L240,92 L280,108 L434,142"/>
+        </circle>
+      </svg>
+    </div>
+    <div class="cover-actions">
+      <button class="btn-primary" onclick="startApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Mulai Belajar
+      </button>
+      <button class="btn-ghost" onclick="startApp(true)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        Daftar Materi
+      </button>
+    </div>
+  </div>
+  <div class="cover-foot">SMP Negeri 1 Moga · Informatika Kelas IX · Tahun Ajaran 2026/2027</div>
+</div>
+
+<!-- ============ MAIN ============ -->
+<div id="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="brand-text">
+        <div class="t1">Jaringan Komputer &amp; Internet</div>
+        <div class="t2">Informatika IX · SMPN 1 Moga</div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 0</div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" onclick="toggleFullscreen()" title="Layar Penuh">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V3h4M21 7V3h-4M3 17v4h4M21 17v4h-4"/></svg>
+      </button>
+      <button class="icon-btn" onclick="openSettings()" title="Pengaturan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="menu-btn" onclick="toggleMenu(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <span>Materi</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stage -->
+  <div class="stage" id="stage">
+    <!-- Slides injected here -->
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="botnav">
+    <button class="nav-btn" id="prevBtn" onclick="go(-1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Sebelumnya</span>
+    </button>
+    <div class="nav-center" id="navCenter">—</div>
+    <button class="nav-btn" id="nextBtn" onclick="go(1)">
+      <span>Berikutnya</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Drawer menu -->
+<div class="drawer-mask" id="drawerMask" onclick="toggleMenu(false)"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>Daftar Materi</h3>
+    <button class="icon-btn" onclick="toggleMenu(false)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot">
+    <button class="drawer-link" onclick="toggleMenu(false);goTo('lkpd')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      LKPD Kelompok
+    </button>
+    <button class="drawer-link" onclick="toggleMenu(false);openTeacher()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Mode Guru
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  <span id="toastMsg">Tersimpan</span>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-mask" id="settingsModal" onclick="if(event.target===this)closeModal('settingsModal')">
+  <div class="modal">
+    <h3>Pengaturan</h3>
+    <p>Kelola progres belajar dan tampilan aplikasi.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin:18px 0">
+      <button class="btn-outline" onclick="toggleFullscreen();closeModal('settingsModal')" style="text-align:left;display:flex;align-items:center;gap:10px;justify-content:flex-start">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V3h4M21 7V3h-4M3 17v4h4M21 17v4h-4"/></svg>
+        Mode Layar Penuh
+      </button>
+      <button class="btn-outline" onclick="exportProgress()" style="text-align:left;display:flex;align-items:center;gap:10px;justify-content:flex-start">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Ekspor Jawaban LKPD (Teks)
+      </button>
+      <button class="btn-danger" onclick="confirmReset()" style="text-align:left;display:flex;align-items:center;gap:10px;justify-content:flex-start">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Reset Semua Progres
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('settingsModal')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset confirm -->
+<div class="modal-mask" id="resetModal" onclick="if(event.target===this)closeModal('resetModal')">
+  <div class="modal" style="max-width:420px">
+    <h3>Reset Progres?</h3>
+    <p>Seluruh jawaban LKPD, refleksi, skor kuis, dan tantangan akan dihapus. Tindakan ini tidak dapat dibatalkan.</p>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('resetModal')">Batal</button>
+      <button class="btn-danger" onclick="resetProgress()">Ya, Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- Teacher modal -->
+<div class="modal-mask" id="teacherModal" onclick="if(event.target===this)closeModal('teacherModal')">
+  <div class="modal" style="max-width:900px">
+    <div id="teacherLock">
+      <div class="teacher-lock" style="box-shadow:none;border:none;padding:0">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Mode Guru</h3>
+        <p>Masukkan kata sandi untuk melihat kunci jawaban LKPD, kunci jawaban kuis, dan pedoman penilaian.</p>
+        <div id="teacherInputWrap">
+          <input type="password" id="teacherPass" placeholder="Kata sandi guru" onkeydown="if(event.key==='Enter')checkTeacher()">
+          <div class="err" id="teacherErr">Kata sandi salah. Coba lagi.</div>
+          <button class="btn-primary" style="width:100%;justify-content:center" onclick="checkTeacher()">Buka Kunci</button>
+          <p style="font-size:11px;color:var(--muted);margin-top:10px;margin-bottom:0">Kata sandi default: <b>guru2026</b></p>
+        </div>
+      </div>
+    </div>
+    <div id="teacherContent" class="hidden"></div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+/* ========================================================
+   STATE & DATA
+======================================================== */
+const TEACHER_PASS = "guru2026";
+const STORAGE_KEY = "jaringan_interaktif_v1";
+
+const state = {
+  current: 0,
+  visited: {},
+  quiz: {current:0, answers:{}, firstAttempt:{}, score:0, done:false},
+  match: {matched:[], selected:null, done:false},
+  lkpd: {answers:{}},
+  reflect: {answers:{}},
+  teacherUnlocked: false
+};
+
+/* Slide definitions - registered with metadata */
+const SLIDES = [
+  {id:'intro', type:'material', num:'01', eyebrow:'Pengantar', title:'Jaringan Komputer', sub:'Pengertian, tujuan, dan contoh penerapan'},
+  {id:'hardware', type:'material', num:'02', eyebrow:'Perangkat Keras', title:'Hardware Jaringan', sub:'Router, switch, kabel, NIC, dan fungsinya'},
+  {id:'software', type:'material', num:'03', eyebrow:'Perangkat Lunak', title:'Software Jaringan', sub:'Sistem operasi, browser, dan aplikasi'},
+  {id:'internet', type:'material', num:'04', eyebrow:'Jaringan Global', title:'Internet', sub:'Bukan sekadar Wi-Fi, tetapi jaringan dunia'},
+  {id:'protocol', type:'material', num:'05', eyebrow:'Aturan Komunikasi', title:'Protokol Jaringan', sub:'HTTP, HTTPS, TCP, IP, DNS'},
+  {id:'tcpip', type:'material', num:'06', eyebrow:'Pondasi Internet', title:'TCP/IP', sub:'Pengiriman data yang andal dan teralamati'},
+  {id:'dns-https', type:'material', num:'07', eyebrow:'Nama & Keamanan', title:'DNS dan HTTPS', sub:'Penerjemah nama dan pelindung data'},
+  {id:'etika', type:'material', num:'08', eyebrow:'Sopan Digital', title:'Etika Digital', sub:'Tata krama berkomunikasi di dunia maya'},
+  {id:'keamanan', type:'material', num:'09', eyebrow:'Lindungi Data', title:'Keamanan Data', sub:'Password, OTP, phishing, dan cadangan'},
+  {id:'media', type:'material', num:'10', eyebrow:'Jalur Komunikasi', title:'Media Akses Jaringan', sub:'Kabel dan nirkabel'},
+  {id:'sim-jaringan', type:'sim', num:'S1', eyebrow:'Simulasi', title:'Simulasi Jaringan', sub:'Klik perangkat untuk mengetahui fungsinya'},
+  {id:'sim-internet', type:'sim', num:'S2', eyebrow:'Simulasi', title:'Cara Kerja Internet', sub:'Ikuti perjalanan data dari browser'},
+  {id:'sim-topologi', type:'sim', num:'S3', eyebrow:'Simulasi', title:'Topologi Jaringan', sub:'Pilih dan pelajari 5 topologi'},
+  {id:'sim-osi', type:'sim', num:'S4', eyebrow:'Simulasi', title:'Model OSI', sub:'Klik tiap lapisan untuk memahaminya'},
+  {id:'kuis', type:'quiz', num:'Q', eyebrow:'Evaluasi', title:'Kuis Interaktif', sub:'12 soal pilihan ganda dengan umpan balik langsung'},
+  {id:'tantangan', type:'game', num:'T', eyebrow:'Permainan', title:'Tantangan Akhir', sub:'Cocokkan istilah dan fungsinya'},
+  {id:'refleksi', type:'reflect', num:'R', eyebrow:'Refleksi', title:'Refleksi Belajar', sub:'Apa yang sudah kamu pahami?'},
+  {id:'lkpd', type:'lkpd', num:'L', eyebrow:'Lembar Kerja', title:'LKPD Kelompok', sub:'8 kelompok · 10 pertanyaan uraian'},
+  {id:'final', type:'final', num:'F', eyebrow:'Selesai', title:'Penutup', sub:'Rangkuman pembelajaran'}
+];
+
+/* ========================================================
+   MATERIAL CONTENT BUILDERS
+======================================================== */
+function icon(name, size=20, stroke=2){
+  const icons = {
+    network:'<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',
+    router:'<rect x="3" y="11" width="18" height="7" rx="2"/><circle cx="7" cy="14.5" r="1" fill="currentColor"/><circle cx="10" cy="14.5" r="1" fill="currentColor"/><path d="M16 8a4 4 0 0 0-8 0"/><path d="M12 4v2"/>',
+    cable:'<path d="M4 4a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V6a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V6a2 2 0 0 1 2-2"/>',
+    software:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+    globe:'<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    wifi:'<path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    bulb:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>',
+    layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+    star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    play:'<path d="M8 5v14l11-7z"/>',
+    check:'<polyline points="20 6 9 17 4 12"/>',
+    refresh:'<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
+    trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>',
+    arrow_right:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    hand:'<path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+    server:'<rect x="2" y="2" width="20" height="8" rx="2" transform="translate(0,0)"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>',
+    phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+    laptop:'<rect x="3" y="4" width="18" height="12" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/>'
+  };
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${icons[name]||icons.book}</svg>`;
+}
+
+/* SVG illustration: Wi-Fi rumah */
+const illu_wifi_rumah = `<svg viewBox="0 0 380 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#1565C0"/><stop offset="1" stop-color="#42A5F5"/></linearGradient>
+  </defs>
+  <!-- house -->
+  <polygon points="50,140 110,90 170,140 170,200 50,200" fill="#FFF8E1" stroke="#F9C000" stroke-width="2"/>
+  <rect x="80" y="160" width="30" height="40" fill="#F9C000"/>
+  <rect x="120" y="150" width="30" height="25" fill="#42A5F5" opacity="0.6"/>
+  <!-- router -->
+  <rect x="230" y="120" width="60" height="40" rx="6" fill="url(#rg)"/>
+  <circle cx="245" cy="135" r="2.5" fill="#fff"/><circle cx="253" cy="135" r="2.5" fill="#fff"/><circle cx="261" cy="135" r="2.5" fill="#fff"/><circle cx="269" cy="135" r="2.5" fill="#fff"/>
+  <rect x="240" y="148" width="40" height="6" rx="3" fill="#0D47A1"/>
+  <!-- wifi waves -->
+  <g stroke="#FFD600" stroke-width="2.5" fill="none" stroke-linecap="round">
+    <path d="M260 110 Q260 95 275 95" opacity="0.9"/>
+    <path d="M255 100 Q255 80 280 80" opacity="0.7"/>
+    <path d="M250 90 Q250 65 285 65" opacity="0.5"/>
+  </g>
+  <!-- devices -->
+  <rect x="290" y="170" width="40" height="28" rx="4" fill="#1565C0"/>
+  <rect x="298" y="176" width="24" height="16" rx="2" fill="#fff"/>
+  <rect x="290" y="200" width="20" height="30" rx="3" fill="#0D47A1"/>
+  <rect x="293" y="205" width="14" height="20" fill="#FFD600"/>
+  <!-- lines -->
+  <line x1="170" y1="170" x2="230" y2="140" stroke="#1565C0" stroke-width="2" stroke-dasharray="4 3"/>
+  <line x1="290" y1="184" x2="260" y2="160" stroke="#1565C0" stroke-width="2" stroke-dasharray="4 3"/>
+  <line x1="300" y1="200" x2="280" y2="160" stroke="#1565C0" stroke-width="2" stroke-dasharray="4 3"/>
+  <!-- labels -->
+  <text x="110" y="220" font-size="11" fill="#0D47A1" font-weight="700" text-anchor="middle" font-family="Poppins">Wi-Fi Rumah</text>
+  <text x="260" y="180" font-size="11" fill="#0D47A1" font-weight="700" text-anchor="middle" font-family="Poppins">Router</text>
+</svg>`;
+
+const illu_topo_icon = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="20" cy="50" r="8" fill="#1565C0"/><circle cx="50" cy="20" r="8" fill="#1565C0"/><circle cx="80" cy="50" r="8" fill="#1565C0"/><circle cx="50" cy="80" r="8" fill="#1565C0"/><circle cx="50" cy="50" r="10" fill="#FFD600"/>
+  <line x1="20" y1="50" x2="50" y2="50" stroke="#94A3B8" stroke-width="2"/><line x1="80" y1="50" x2="50" y2="50" stroke="#94A3B8" stroke-width="2"/><line x1="50" y1="20" x2="50" y2="50" stroke="#94A3B8" stroke-width="2"/><line x1="50" y1="80" x2="50" y2="50" stroke="#94A3B8" stroke-width="2"/>
+</svg>`;
+
+const illu_protocol = `<svg viewBox="0 0 380 240" xmlns="http://www.w3.org/2000/svg">
+  <rect x="20" y="100" width="80" height="60" rx="8" fill="#1565C0"/>
+  <rect x="28" y="110" width="64" height="36" rx="3" fill="#fff"/>
+  <text x="60" y="135" font-size="11" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">Browser</text>
+  <rect x="280" y="100" width="80" height="60" rx="8" fill="#0D47A1"/>
+  <rect x="290" y="110" width="60" height="36" rx="3" fill="#FFD600"/>
+  <text x="320" y="135" font-size="11" font-weight="700" fill="#0D47A1" text-anchor="middle" font-family="Poppins">Server</text>
+  <line x1="100" y1="120" x2="280" y2="120" stroke="#1565C0" stroke-width="2"/>
+  <line x1="280" y1="140" x2="100" y2="140" stroke="#FFD600" stroke-width="2"/>
+  <text x="190" y="115" font-size="10" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">HTTP/HTTPS Request</text>
+  <text x="190" y="155" font-size="10" font-weight="700" fill="#F9C000" text-anchor="middle" font-family="Poppins">Response (HTML)</text>
+  <rect x="100" y="80" width="180" height="20" rx="10" fill="#E3F2FD"/>
+  <text x="190" y="93" font-size="10" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">TCP/IP memecah data jadi paket</text>
+  <rect x="100" y="160" width="180" height="20" rx="10" fill="#FFF8E1"/>
+  <text x="190" y="173" font-size="10" font-weight="700" fill="#8a6d00" text-anchor="middle" font-family="Poppins">DNS menerjemahkan nama domain</text>
+</svg>`;
+
+/* ========================================================
+   SLIDE RENDERERS
+======================================================== */
+function renderSlide(s){
+  const head = `<div class="slide-head">
+    <div class="slide-num">${s.num}</div>
+    <div class="slide-title-wrap">
+      <div class="slide-eyebrow">${s.eyebrow}</div>
+      <h2 class="slide-title">${s.title}</h2>
+      <div class="slide-sub">${s.sub}</div>
+    </div>
+  </div>`;
+  let body = '';
+  switch(s.id){
+    case 'intro': body = slide_intro(); break;
+    case 'hardware': body = slide_hardware(); break;
+    case 'software': body = slide_software(); break;
+    case 'internet': body = slide_internet(); break;
+    case 'protocol': body = slide_protocol(); break;
+    case 'tcpip': body = slide_tcpip(); break;
+    case 'dns-https': body = slide_dns_https(); break;
+    case 'etika': body = slide_etika(); break;
+    case 'keamanan': body = slide_keamanan(); break;
+    case 'media': body = slide_media(); break;
+    case 'sim-jaringan': body = slide_sim_jaringan(); break;
+    case 'sim-internet': body = slide_sim_internet(); break;
+    case 'sim-topologi': body = slide_sim_topologi(); break;
+    case 'sim-osi': body = slide_sim_osi(); break;
+    case 'kuis': body = slide_kuis(); break;
+    case 'tantangan': body = slide_tantangan(); break;
+    case 'refleksi': body = slide_refleksi(); break;
+    case 'lkpd': body = slide_lkpd(); break;
+    case 'final': body = slide_final(); break;
+  }
+  return `<div class="slide-inner">${head}${body}</div>`;
+}
+
+/* --- Slide 1: Jaringan Komputer --- */
+function slide_intro(){
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('network')}</span>Apa itu Jaringan Komputer?</div>
+        <p><b>Jaringan komputer</b> adalah dua atau lebih perangkat komputer yang saling terhubung lewat kabel atau nirkabel, sehingga bisa <b>saling berbagi data, informasi, dan sumber daya</b> seperti printer atau koneksi internet.</p>
+        <p>Bayangkan seperti tali telepon yang menghubungkan banyak rumah. Jika ada tali penghubung, anak-anak di rumah yang berbeda bisa saling berbicara. Itulah cara kerja jaringan komputer—menghubungkan perangkat agar dapat "berbicara" satu sama lain.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="ic">${icon('check')}</span>Tujuan Jaringan Komputer</div>
+        <div class="stagger">
+          <div class="concept"><div class="concept-ic">${icon('refresh',18)}</div><div><h4>Berbagi Sumber Daya</h4><p>Satu printer atau koneksi internet dapat dipakai bersama banyak komputer.</p></div></div>
+          <div class="concept"><div class="concept-ic">${icon('chat',18)}</div><div><h4>Berkomunikasi</h4><p>Mengirim pesan, email, video call, dan data dengan cepat.</p></div></div>
+          <div class="concept"><div class="concept-ic">${icon('server',18)}</div><div><h4>Berbagi Data</h4><p>File, foto, video bisa diakses dari perangkat lain yang terhubung.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="hero-illu">${illu_wifi_rumah}</div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-title"><span class="ic">${icon('star')}</span>Contoh Sehari-hari</div>
+        <div class="pills">
+          <span class="pill">Wi-Fi di rumah</span>
+          <span class="pill y">Hotspot HP</span>
+          <span class="pill g">Lab komputer sekolah</span>
+          <span class="pill p">Indomaret/market</span>
+          <span class="pill o">Kafe dengan Wi-Fi gratis</span>
+        </div>
+        <div class="spark" style="margin-top:14px">
+          <div class="spark-ic">?</div>
+          <p><strong>Pertanyaan pemantik:</strong> Saat kamu membuka TikTok di rumah, data video melalui apa agar sampai di HP-mu? Apakah HP-mu terhubung langsung ke server TikTok?</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* --- Slide 2: Hardware --- */
+function slide_hardware(){
+  const devices = [
+    {n:'Router', d:'Mengarahkan lalu lintas data dari satu jaringan ke jaringan lain, misalnya dari jaringan rumah ke internet.', ic:'router', c:'#1565C0'},
+    {n:'Switch', d:'Menghubungkan beberapa perangkat dalam satu jaringan lokal dan mengirim data hanya ke perangkat yang dituju.', ic:'server', c:'#0D9488'},
+    {n:'Kabel Ethernet', d:'Media kabel yang umum dipakai untuk menghubungkan komputer ke router/switch (twisted pair).', ic:'cable', c:'#7C3AED'},
+    {n:'NIC', d:'Network Interface Card — kartu/komponen di komputer atau HP yang membuat perangkat bisa terhubung ke jaringan.', ic:'laptop', c:'#DB2777'}
+  ];
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('router')}</span>Perangkat Keras Jaringan</div>
+        <p><b>Hardware jaringan</b> adalah perangkat fisik yang membuat koneksi terjadi. Tanpa hardware, tidak ada jaringan. Mereka seperti "jalan dan jembatan" yang dilalui data.</p>
+        <p>Setiap perangkat punya tugas khusus—ada yang mengarahkan, menghubungkan, menjadi jalur, atau menjadi "gerbang" bagi perangkat untuk masuk ke jaringan.</p>
+      </div>
+      <div class="spark">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Di rumahmu, perangkat mana yang membuat HP bisa terhubung ke internet? Apakah kamu bisa menyebutkan hardware-nya?</p>
+      </div>
+    </div>
+    <div class="grid g2 stagger">
+      ${devices.map(d=>`
+        <div class="card" style="padding:18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="width:38px;height:38px;border-radius:10px;background:${d.c};color:#fff;display:flex;align-items:center;justify-content:center">${icon(d.ic,20)}</div>
+            <h4 style="font-size:15px;font-weight:700;color:var(--ink)">${d.n}</h4>
+          </div>
+          <p style="font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0">${d.d}</p>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+/* --- Slide 3: Software --- */
+function slide_software(){
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('software')}</span>Perangkat Lunak Jaringan</div>
+        <p><b>Software jaringan</b> adalah program yang menjalankan dan mengatur komunikasi data. Jika hardware seperti jalan, software seperti "aturan lalu lintas" dan "kendaraan" yang melaluinya.</p>
+        <p>Tanpa software, perangkat tidak tahu bagaimana cara mengirim atau menerima data—mereka hanya terhubung secara fisik tanpa bisa berkomunikasi.</p>
+      </div>
+      <div class="spark">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Kenapa HP Android dan laptop Windows bisa terhubung ke jaringan yang sama, padahal sistem operasinya berbeda?</p>
+      </div>
+    </div>
+    <div class="grid g2 stagger">
+      <div class="card" style="padding:16px">
+        <h4 style="font-size:14px;font-weight:700;color:var(--blue-d);margin-bottom:8px">Sistem Operasi</h4>
+        <div class="pills"><span class="pill">Windows</span><span class="pill p">Linux</span><span class="pill g">Android</span><span class="pill o">iOS</span></div>
+        <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:10px;margin-bottom:0">Mengatur perangkat agar bisa terhubung jaringan dan menjalankan aplikasi.</p>
+      </div>
+      <div class="card" style="padding:16px">
+        <h4 style="font-size:14px;font-weight:700;color:var(--blue-d);margin-bottom:8px">Browser</h4>
+        <div class="pills"><span class="pill">Chrome</span><span class="pill y">Firefox</span><span class="pill g">Edge</span></div>
+        <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:10px;margin-bottom:0">Mengakses dan menampilkan halaman situs web.</p>
+      </div>
+      <div class="card" style="padding:16px">
+        <h4 style="font-size:14px;font-weight:700;color:var(--blue-d);margin-bottom:8px">Aplikasi Komunikasi</h4>
+        <div class="pills"><span class="pill">WhatsApp</span><span class="pill p">Zoom</span><span class="pill o">Telegram</span></div>
+        <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:10px;margin-bottom:0">Mengirim pesan, suara, dan video antarperangkat.</p>
+      </div>
+      <div class="card" style="padding:16px">
+        <h4 style="font-size:14px;font-weight:700;color:var(--blue-d);margin-bottom:8px">Berbagi File</h4>
+        <div class="pills"><span class="pill">Google Drive</span><span class="pill y">Share Folder</span></div>
+        <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:10px;margin-bottom:0">Memungkinkan file dipakai bersama oleh banyak perangkat.</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* --- Slide 4: Internet --- */
+function slide_internet(){
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('globe')}</span>Apa itu Internet?</div>
+        <p><b>Internet</b> adalah <b>jaringan global</b> yang menghubungkan miliaran perangkat di seluruh dunia. Kata "internet" berasal dari <i>interconnected networks</i>—jaringan-jaringan yang saling terhubung.</p>
+        <p>Internet bukan milik satu orang atau satu perusahaan. Ia terbentuk dari ribuan jaringan kecil yang terhubung menjadi satu jaringan raksasa yang melingkupi seluruh dunia.</p>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,#FFFDE7,#FFF8E1);border-color:#FFE082">
+        <div class="card-title" style="color:#8a6d00"><span class="ic" style="background:#FFE082;color:#8a6d00">${icon('wifi')}</span>Wi-Fi ≠ Internet</div>
+        <p><b>Wi-Fi</b> adalah cara menghubungkan perangkat ke jaringan lokal secara nirkabel. <b>Internet</b> adalah jaringan global di luar sana. Kamu bisa punya Wi-Fi aktif di rumah, tetapi jika koneksi internetnya terputus, kamu tetap tidak bisa membuka situs web.</p>
+        <p style="margin-bottom:0">Analogi: Wi-Fi itu seperti gerbang rumahmu, internet itu jalan raya di luar. Gerbang terbuka tidak ada artinya jika jalan raya macet total.</p>
+      </div>
+    </div>
+    <div>
+      <div class="hero-illu" style="background:linear-gradient(135deg,#0D47A1,#1565C0);min-height:220px">
+        <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="180" cy="110" r="90" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+          <circle cx="180" cy="110" r="60" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+          <circle cx="180" cy="110" r="30" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.3)"/>
+          <circle cx="180" cy="110" r="18" fill="#FFD600"/>
+          <text x="180" y="115" font-size="10" font-weight="800" fill="#0D47A1" text-anchor="middle" font-family="Poppins">YOU</text>
+          <g fill="#fff">
+            <circle cx="100" cy="50" r="6"/><circle cx="260" cy="60" r="6"/><circle cx="80" cy="160" r="6"/><circle cx="270" cy="170" r="6"/><circle cx="180" cy="30" r="6"/><circle cx="180" cy="190" r="6"/>
+          </g>
+          <g stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-dasharray="3 3">
+            <line x1="180" y1="110" x2="100" y2="50"/><line x1="180" y1="110" x2="260" y2="60"/><line x1="180" y1="110" x2="80" y2="160"/><line x1="180" y1="110" x2="270" y2="170"/>
+          </g>
+        </svg>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-title"><span class="ic">${icon('star')}</span>Manfaat Internet</div>
+        <div class="grid g2" style="gap:8px">
+          <div class="concept" style="padding:10px"><div class="concept-ic" style="background:#16A34A">${icon('book',16)}</div><div><h4 style="font-size:13px">Belajar</h4><p style="font-size:12px;margin:0">Akses materi, video, dan kursus online.</p></div></div>
+          <div class="concept" style="padding:10px"><div class="concept-ic" style="background:#1565C0">${icon('chat',16)}</div><div><h4 style="font-size:13px">Komunikasi</h4><p style="font-size:12px;margin:0">Chat, email, video call dengan siapa pun.</p></div></div>
+          <div class="concept" style="padding:10px"><div class="concept-ic" style="background:#7C3AED">${icon('globe',16)}</div><div><h4 style="font-size:13px">Informasi</h4><p style="font-size:12px;margin:0">Mencari berita dan pengetahuan terbaru.</p></div></div>
+          <div class="concept" style="padding:10px"><div class="concept-ic" style="background:#EA580C">${icon('server',16)}</div><div><h4 style="font-size:13px">Berbagi Data</h4><p style="font-size:12px;margin:0">Upload dan download file dengan cepat.</p></div></div>
+        </div>
+      </div>
+      <div class="spark" style="margin-top:14px">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Sebutkan tiga hal yang kamu lakukan setiap hari dengan internet. Apakah kamu masih bisa melakukannya jika internet mati?</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* --- Slide 5: Protokol --- */
+function slide_protocol(){
+  const protos = [
+    {n:'HTTP', f:'HyperText Transfer Protocol — aturan untuk mengirim dan menerima halaman web. Tanpa HTTPS (yang terenkripsi), data bisa dilihat orang lain.', c:'#1565C0', a:'seperti bahasa yang dipakai server dan browser untuk saling paham'},
+    {n:'HTTPS', f:'HTTP Secure — versi aman dari HTTP. Data dienkripsi sehingga pencuri tidak bisa membaca isinya.', c:'#16A34A', a:'seperti HTTP, tapi suratnya dimasukkan ke amplop tertutup'},
+    {n:'TCP', f:'Transmission Control Protocol — memastikan data sampai utuh dan berurutan di tujuan.', c:'#7C3AED', a:'seperti kurir yang mencatat dan mengecek setiap paket sampai'},
+    {n:'IP', f:'Internet Protocol — memberi alamat unik ke setiap perangkat agar data sampai ke tujuan yang benar.', c:'#EA580C', a:'seperti alamat rumah—tanpa alamat, paket tidak akan sampai'},
+    {n:'DNS', f:'Domain Name System — menerjemahkan nama situs (seperti google.com) menjadi alamat IP.', c:'#DB2777', a:'seperti buku telepon—mencari nomor seseorang dari namanya'}
+  ];
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('shield')}</span>Apa itu Protokol?</div>
+        <p><b>Protokol</b> adalah <b>aturan kesepakatan</b> bagaimana perangkat berkomunikasi. Tanpa protokol, perangkat dari merek dan jenis berbeda tidak akan saling mengerti.</p>
+        <p>Analogi sederhana: dua orang dari negara berbeda butuh bahasa yang sama untuk mengerti satu sama lain. Protokol adalah "bahasa" yang dipakai semua perangkat di internet.</p>
+      </div>
+      <div class="hero-illu" style="min-height:180px">${illu_protocol}</div>
+    </div>
+    <div>
+      <h4 style="font-size:13px;font-weight:700;color:var(--blue-d);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Protokol yang Umum Digunakan</h4>
+      <div class="stagger">
+        ${protos.map(p=>`
+          <div class="card" style="padding:14px 16px;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+              <span style="padding:4px 10px;border-radius:8px;background:${p.c};color:#fff;font-weight:800;font-size:13px;font-family:Montserrat">${p.n}</span>
+              <span style="font-size:12px;color:var(--muted);font-style:italic">${p.a}</span>
+            </div>
+            <p style="font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0">${p.f}</p>
+          </div>
+        `).join('')}
+      </div>
+      <div class="spark" style="margin-top:14px">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Saat kamu melihat gambar gembok di address bar browser, protokol apa yang sedang dipakai? Mengapa itu penting?</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* --- Slide 6: TCP/IP --- */
+function slide_tcpip(){
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('layers')}</span>TCP/IP — Pondasi Internet</div>
+        <p><b>TCP/IP</b> adalah dua protokol yang bekerja sama menjadi tulang punggung internet. Hampir semua komunikasi di internet memakai TCP/IP.</p>
+        <p>Mereka bekerja seperti tim pengiriman barang: <b>IP</b> menentukan alamat tujuan, <b>TCP</b> memastikan paketnya sampai dengan utuh.</p>
+      </div>
+      <div class="grid g2" style="gap:14px">
+        <div class="card" style="padding:18px;border-top:4px solid #7C3AED">
+          <div style="font-family:Montserrat;font-weight:800;font-size:22px;color:#7C3AED;margin-bottom:6px">TCP</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Transmission Control Protocol</p>
+          <p style="font-size:13.5px;color:var(--ink-soft);line-height:1.55">Memecah data besar menjadi <b>paket-paket kecil</b>, mengirim satu per satu, lalu menyusun ulang di tujuan. Jika ada paket hilang, TCP akan minta dikirim ulang—sehingga data <b>andal dan utuh</b>.</p>
+        </div>
+        <div class="card" style="padding:18px;border-top:4px solid #EA580C">
+          <div style="font-family:Montserrat;font-weight:800;font-size:22px;color:#EA580C;margin-bottom:6px">IP</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Internet Protocol</p>
+          <p style="font-size:13.5px;color:var(--ink-soft);line-height:1.55">Memberi <b>alamat unik</b> (IP address) ke setiap perangkat di internet. IP bertugas mengarahkan paket data ke alamat yang benar, seperti alamat rumah pada paket pos.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="hero-illu" style="background:linear-gradient(135deg,#FFFDE7,#FFF8E1)">
+        <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="80" height="50" rx="8" fill="#1565C0"/>
+          <text x="60" y="50" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" font-family="Poppins">Pengirim</text>
+          <rect x="260" y="170" width="80" height="50" rx="8" fill="#0D47A1"/>
+          <text x="300" y="200" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" font-family="Poppins">Penerima</text>
+          <!-- packets -->
+          <g>
+            <rect x="130" y="40" width="30" height="22" rx="4" fill="#7C3AED"/>
+            <rect x="170" y="60" width="30" height="22" rx="4" fill="#7C3AED" opacity="0.8"/>
+            <rect x="210" y="80" width="30" height="22" rx="4" fill="#7C3AED" opacity="0.6"/>
+            <text x="155" y="38" font-size="9" font-weight="700" fill="#7C3AED" text-anchor="middle" font-family="Poppins">Pkt 1</text>
+            <text x="185" y="58" font-size="9" font-weight="700" fill="#7C3AED" text-anchor="middle" font-family="Poppins">Pkt 2</text>
+            <text x="225" y="78" font-size="9" font-weight="700" fill="#7C3AED" text-anchor="middle" font-family="Poppins">Pkt 3</text>
+          </g>
+          <!-- IP address labels -->
+          <rect x="20" y="80" width="80" height="18" rx="9" fill="#FFD600"/>
+          <text x="60" y="93" font-size="10" font-weight="700" fill="#0D47A1" text-anchor="middle" font-family="Poppins">IP: 192.168.1.5</text>
+          <rect x="260" y="200" width="80" height="18" rx="9" fill="#FFD600"/>
+          <text x="300" y="213" font-size="10" font-weight="700" fill="#0D47A1" text-anchor="middle" font-family="Poppins">IP: 142.10.5.8</text>
+          <!-- path -->
+          <path d="M100 45 Q180 120 260 195" stroke="#1565C0" stroke-width="2" fill="none" stroke-dasharray="5 4"/>
+          <text x="180" y="135" font-size="11" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">Data dipecah → dikirim → disusun ulang</text>
+        </svg>
+      </div>
+      <div class="spark" style="margin-top:14px">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Mengapa data tidak dikirim utuh sekaligus, melainkan dipecah jadi paket-paket kecil?</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* --- Slide 7: DNS & HTTPS --- */
+function slide_dns_https(){
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px;border-left:4px solid #DB2777">
+        <div class="card-title"><span class="ic" style="background:#FCE7F3;color:#DB2777">${icon('book')}</span>DNS — Penerjemah Nama</div>
+        <p><b>DNS (Domain Name System)</b> menerjemahkan nama situs yang mudah diingat manusia (seperti <code style="background:var(--blue-l);padding:2px 6px;border-radius:4px;font-family:monospace">google.com</code>) menjadi <b>alamat IP</b> berupa angka (seperti <code style="background:var(--blue-l);padding:2px 6px;border-radius:4px;font-family:monospace">142.250.10.78</code>) yang dipahami komputer.</p>
+        <p style="margin-bottom:0">Tanpa DNS, kita harus menghafal deretan angka IP untuk membuka setiap situs. Bayangkan harus menghafal 142.250.10.78 hanya untuk membuka Google!</p>
+      </div>
+      <div class="card" style="border-left:4px solid #16A34A">
+        <div class="card-title"><span class="ic" style="background:#DCFCE7;color:#16A34A">${icon('lock')}</span>HTTPS — Pelindung Web</div>
+        <p><b>HTTPS (HyperText Transfer Protocol Secure)</b> adalah versi aman dari HTTP. Data yang dikirim lewat HTTPS <b>dienkripsi</b>—diubah menjadi kode rahasia yang hanya bisa dibaca oleh pengirim dan penerima.</p>
+        <p style="margin-bottom:0">Saat kamu melihat <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:#DCFCE7;border-radius:6px;font-weight:600;color:#15803d">${icon('lock',12)} gembok</span> di address bar, artinya situs itu memakai HTTPS dan datamu terlindungi.</p>
+      </div>
+    </div>
+    <div>
+      <div class="hero-illu">
+        <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- DNS translation -->
+          <rect x="20" y="20" width="120" height="40" rx="8" fill="#1565C0"/>
+          <text x="80" y="45" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" font-family="Poppins">google.com</text>
+          <text x="160" y="45" font-size="13" font-weight="800" fill="#DB2777" text-anchor="middle" font-family="Poppins">→</text>
+          <rect x="180" y="20" width="160" height="40" rx="8" fill="#FFD600"/>
+          <text x="260" y="45" font-size="13" font-weight="700" fill="#0D47A1" text-anchor="middle" font-family="Poppins">142.250.10.78</text>
+          <text x="180" y="80" font-size="11" font-weight="700" fill="#DB2777" text-anchor="middle" font-family="Poppins">DNS menerjemahkan</text>
+          <!-- HTTPS encryption -->
+          <rect x="20" y="110" width="140" height="50" rx="8" fill="#FFF8E1" stroke="#F9C000" stroke-width="2"/>
+          <text x="90" y="132" font-size="11" font-weight="700" fill="#8a6d00" text-anchor="middle" font-family="Poppins">"password123"</text>
+          <text x="90" y="148" font-size="9" fill="#8a6d00" text-anchor="middle" font-family="Poppins">(teks asli)</text>
+          <text x="180" y="138" font-size="14" font-weight="800" fill="#16A34A" text-anchor="middle" font-family="Poppins">🔒</text>
+          <rect x="200" y="110" width="140" height="50" rx="8" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+          <text x="270" y="132" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle" font-family="Poppins">xJ7$kP9mL2#qR</text>
+          <text x="270" y="148" font-size="9" fill="#15803d" text-anchor="middle" font-family="Poppins">(terenkripsi)</text>
+          <text x="180" y="180" font-size="11" font-weight="700" fill="#16A34A" text-anchor="middle" font-family="Poppins">HTTPS mengenkripsi</text>
+          <!-- Browser bar -->
+          <rect x="20" y="210" width="320" height="32" rx="16" fill="#fff" stroke="#E2E8F0"/>
+          <circle cx="40" cy="226" r="6" fill="#16A34A"/>
+          <path d="M37 226 L40 229 L44 224" stroke="#fff" stroke-width="2" fill="none"/>
+          <text x="55" y="231" font-size="11" font-weight="600" fill="#15803d" font-family="Poppins">https://www.google.com</text>
+        </svg>
+      </div>
+      <div class="spark">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Saat membuka situs bank online, mengapa kamu harus selalu memastikan ada gembok dan "https" di address bar?</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* --- Slide 8: Etika Digital --- */
+function slide_etika(){
+  const items = [
+    {t:'Sopan Berkomunikasi', d:'Gunakan bahasa yang baik dan menghargai, sama seperti saat bertemu langsung.', c:'#1565C0', ic:'chat'},
+    {t:'Menghargai Pendapat', d:'Walaupun berbeda, dengarkan dan hargai pendapat orang lain di grup atau forum.', c:'#16A34A', ic:'hand'},
+    {t:'Tidak Sebarkan Hoaks', d:'Selalu cek kebenaran berita sebelum membagikan. Hoaks merugikan banyak orang.', c:'#EA580C', ic:'shield'},
+    {t:'Hindari Cyberbullying', d:'Jangan mengejek, mengancam, atau merendahkan orang lain lewat internet.', c:'#DC2626', ic:'lock'},
+    {t:'Hormati Privasi', d:'Jangan menyebarkan foto atau data pribadi orang lain tanpa izin.', c:'#7C3AED', ic:'book'}
+  ];
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('chat')}</span>Etika Digital</div>
+        <p><b>Etika digital</b> adalah tata krama dan sikap baik saat berkomunikasi dan beraktivitas di dunia maya. Sopan santun di internet sama pentingnya dengan di dunia nyata.</p>
+        <p>Di balik layar, kita tetap berhadapan dengan manusia nyata. Kata-kata yang kita tulis bisa membahagiakan atau melukai orang lain.</p>
+      </div>
+      <div class="spark">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Pernahkah kamu melihat komentar jelek di media sosial? Bagaimana perasaanmu jika itu ditujukan ke kamu?</p>
+      </div>
+    </div>
+    <div class="stagger">
+      ${items.map(i=>`
+        <div class="concept">
+          <div class="concept-ic" style="background:${i.c}">${icon(i.ic,18)}</div>
+          <div><h4>${i.t}</h4><p>${i.d}</p></div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+/* --- Slide 9: Keamanan Data --- */
+function slide_keamanan(){
+  const tips = [
+    {t:'Password Kuat', d:'Min. 8 karakter, campuran huruf besar, kecil, angka, dan simbol. Contoh: <b>BukuBiru88!</b>', c:'#1565C0'},
+    {t:'Verifikasi Dua Langkah (2FA)', d:'Tambahkan kode dari HP selain password. Mencuri password saja tidak cukup untuk masuk.', c:'#16A34A'},
+    {t:'Jangan Bagikan OTP', d:'Kode OTP adalah kunci rahasia. Tidak pernah ada pihak sah yang memintanya, termasuk bank atau "polisi".', c:'#EA580C'},
+    {t:'Hindari Phishing', d:'Waspada tautan mencurigakan, email palsu, atau login palsu. Cek alamat situs dengan teliti.', c:'#DC2626'},
+    {t:'Cadangkan Data', d:'Simpan salinan penting di cloud atau flashdisk. Jika perangkat rusak/hilang, data tetap aman.', c:'#7C3AED'}
+  ];
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic" style="background:#FEE2E2;color:#DC2626">${icon('shield')}</span>Keamanan Data</div>
+        <p><b>Keamanan data</b> adalah upaya melindungi informasi pribadi dan penting agar tidak dicuri, dilihat, atau disalahgunakan oleh orang lain.</p>
+        <p>Data seperti foto, password, rekening, dan dokumen pribadi sangat berharga. Kebocoran data bisa berujung pada penipuan, akun dibajak, atau reputasi rusak.</p>
+      </div>
+      <div class="hero-illu" style="background:linear-gradient(135deg,#FEE2E2,#FECACA)">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <path d="M180 30 L240 50 V100 C240 130 215 155 180 170 C145 155 120 130 120 100 V50 Z" fill="#DC2626"/>
+          <path d="M180 30 L240 50 V100 C240 130 215 155 180 170 C145 155 120 130 120 100 V50 Z" fill="rgba(255,255,255,.15)"/>
+          <rect x="165" y="95" width="30" height="40" rx="4" fill="#fff"/>
+          <rect x="170" y="100" width="20" height="14" rx="2" fill="#DC2626"/>
+          <path d="M175 100 V94 a5 5 0 0 1 10 0 V100" stroke="#fff" stroke-width="2.5" fill="none"/>
+          <text x="180" y="190" font-size="11" font-weight="700" fill="#991b1b" text-anchor="middle" font-family="Poppins">Lindungi Datamu</text>
+        </svg>
+      </div>
+    </div>
+    <div class="stagger">
+      ${tips.map((t,i)=>`
+        <div class="card" style="padding:14px 16px;margin-bottom:8px;display:flex;gap:14px;align-items:flex-start">
+          <div class="num-ic" style="background:${t.c};color:#fff">${i+1}</div>
+          <div style="flex:1">
+            <h4 style="font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:4px">${t.t}</h4>
+            <p style="font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0">${t.d}</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+/* --- Slide 10: Media Akses --- */
+function slide_media(){
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('cable')}</span>Media Akses Jaringan</div>
+        <p><b>Media akses jaringan</b> adalah "jalur" yang dipakai data untuk berpindah dari satu perangkat ke perangkat lain. Ada dua jenis utama: <b>kabel</b> dan <b>nirkabel</b>.</p>
+        <p>Pemilihan media tergantung kebutuhan: kecepatan, jarak, biaya, dan kemudahan pemasangan.</p>
+      </div>
+      <table class="cmp-table">
+        <thead><tr><th>Media</th><th>Jenis</th><th>Cocok untuk</th></tr></thead>
+        <tbody>
+          <tr><td><b>Ethernet/Twisted Pair</b></td><td>Kabel</td><td>Lab, kantor, rumah</td></tr>
+          <tr><td><b>Coaxial</b></td><td>Kabel</td><td>TV kabel & modem lama</td></tr>
+          <tr><td><b>Fiber Optik</b></td><td>Kabel</td><td>Internet super cepat jarak jauh</td></tr>
+          <tr><td><b>Wi-Fi</b></td><td>Nirkabel</td><td>Rumah, sekolah, kafe</td></tr>
+          <tr><td><b>Bluetooth</b></td><td>Nirkabel</td><td>Perangkat jarak dekat</td></tr>
+          <tr><td><b>Seluler (4G/5G)</b></td><td>Nirkabel</td><td>HP, hotspot mobile</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="grid g2 stagger" style="gap:12px">
+        <div class="card" style="padding:16px;border-top:4px solid #7C3AED">
+          <h4 style="font-size:14px;font-weight:700;color:#7C3AED;margin-bottom:6px">Kabel</h4>
+          <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0">Lebih stabil dan cepat. Cocok untuk transfer data besar dan koneksi tetap.</p>
+        </div>
+        <div class="card" style="padding:16px;border-top:4px solid #1565C0">
+          <h4 style="font-size:14px;font-weight:700;color:#1565C0;margin-bottom:6px">Nirkabel</h4>
+          <p style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0">Praktis dan fleksibel. Perangkat bisa berpindah tanpa perlu kabel.</p>
+        </div>
+      </div>
+      <div class="hero-illu" style="margin-top:14px;min-height:200px;background:linear-gradient(135deg,#E3F2FD,#F4F9FF)">
+        <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- cable types -->
+          <path d="M20 60 Q90 50 160 60 Q230 70 340 60" stroke="#7C3AED" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <text x="180" y="45" font-size="10" font-weight="700" fill="#7C3AED" text-anchor="middle" font-family="Poppins">Twisted Pair / Ethernet</text>
+          <path d="M20 100 Q90 90 160 100 Q230 110 340 100" stroke="#EA580C" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <text x="180" y="85" font-size="10" font-weight="700" fill="#EA580C" text-anchor="middle" font-family="Poppins">Coaxial</text>
+          <line x1="20" y1="140" x2="340" y2="140" stroke="#16A34A" stroke-width="3"/>
+          <line x1="20" y1="144" x2="340" y2="144" stroke="#16A34A" stroke-width="1" opacity="0.5"/>
+          <text x="180" y="135" font-size="10" font-weight="700" fill="#16A34A" text-anchor="middle" font-family="Poppins">Fiber Optik</text>
+          <!-- wireless waves -->
+          <g stroke="#1565C0" stroke-width="2" fill="none">
+            <path d="M180 170 Q200 165 220 170" opacity="0.9"/>
+            <path d="M170 175 Q200 168 230 175" opacity="0.7"/>
+            <path d="M160 180 Q200 170 240 180" opacity="0.5"/>
+          </g>
+          <text x="200" y="195" font-size="10" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">Wi-Fi / Bluetooth</text>
+        </svg>
+      </div>
+      <div class="spark" style="margin-top:14px">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Mengapa fiber optik bisa mengirim data lebih cepat daripada kabel tembaga? Apa kekurangan nirkabel dibanding kabel?</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ========================================================
+   SIMULATION SLIDES
+======================================================== */
+
+/* --- Sim Jaringan --- */
+const DEVICES = {
+  laptop: {name:'Laptop', role:'Perangkat Pengguna', ic:'laptop', color:'#1565C0',
+    desc:'Laptop adalah perangkat akhir (end device) yang dipakai pengguna untuk mengakses jaringan. Laptop memiliki NIC yang membuatnya bisa terhubung ke Wi-Fi atau kabel Ethernet.',
+    rel:'Laptop terhubung ke <b>router</b> (lewat Wi-Fi/kabel) untuk mengakses internet, dan ke <b>server</b> untuk mengambil halaman web.'},
+  router: {name:'Router', role:'Pengarah Lalu Lintas', ic:'router', color:'#0D9488',
+    desc:'Router menghubungkan jaringan lokal (seperti Wi-Fi rumah) ke jaringan yang lebih luas, yaitu internet. Router juga memberi alamat IP lokal ke setiap perangkat.',
+    rel:'Router menerima data dari <b>laptop/HP</b>, lalu meneruskannya ke <b>server</b> di internet. Ia juga menghubungkan ke <b>switch</b> untuk jaringan kabel.'},
+  switch: {name:'Switch', role:'Penghubung Lokal', ic:'server', color:'#7C3AED',
+    desc:'Switch menghubungkan banyak perangkat dalam satu jaringan lokal (LAN). Switch pintar: ia tahu port mana yang menuju perangkat mana, sehingga data hanya dikirim ke tujuan yang benar.',
+    rel:'Switch berada di bawah <b>router</b>, menghubungkan beberapa <b>laptop</b> dan <b>server lokal</b> agar saling bisa berbagi data.'},
+  server: {name:'Server', role:'Penyedia Layanan', ic:'server', color:'#EA580C',
+    desc:'Server adalah komputer khusus yang menyimpan situs web, file, atau layanan lain, dan melayani permintaan dari banyak pengguna sekaligus. Server internet biasanya menyala 24 jam.',
+    rel:'Server menerima permintaan dari <b>laptop/HP</b> lewat <b>router</b>, lalu mengirimkan data (halaman web, file) kembali ke perangkat pengguna.'},
+  hp: {name:'HP Pintar', role:'Perangkat Mobile', ic:'phone', color:'#DB2777',
+    desc:'HP pintar adalah perangkat mobile dengan NIC Wi-Fi dan seluler. HP bisa terhubung ke internet lewat Wi-Fi rumah atau lewat jaringan seluler (4G/5G) dari provider.',
+    rel:'HP terhubung ke <b>router</b> lewat Wi-Fi, atau langsung ke <b>menara seluler</b> untuk internet mobile. Lalu mengakses <b>server</b> seperti laptop.'}
+};
+
+function slide_sim_jaringan(){
+  return `
+  <div class="sim-stage">
+    <div class="sim-title">Klik Perangkat untuk Mengetahui Fungsi</div>
+    <div class="sim-hint">Pelajari bagaimana laptop, router, switch, server, dan HP saling terhubung dalam sebuah jaringan.</div>
+    <div class="sim-canvas">
+      <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:820px;margin:0 auto;display:block">
+        <!-- connections -->
+        <g stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-dasharray="5 4">
+          <line x1="120" y1="100" x2="400" y2="180"/>
+          <line x1="680" y1="100" x2="400" y2="180"/>
+          <line x1="120" y1="260" x2="400" y2="200"/>
+          <line x1="680" y1="260" x2="400" y2="200"/>
+          <line x1="400" y1="180" x2="400" y2="280"/>
+        </g>
+        <!-- labels on lines -->
+        <text x="250" y="135" font-size="10" fill="rgba(255,255,255,.6)" font-family="Poppins">Wi-Fi</text>
+        <text x="540" y="135" font-size="10" fill="rgba(255,255,255,.6)" font-family="Poppins">Wi-Fi</text>
+        <text x="250" y="240" font-size="10" fill="rgba(255,255,255,.6)" font-family="Poppins">kabel</text>
+        <text x="540" y="240" font-size="10" fill="rgba(255,255,255,.6)" font-family="Poppins">kabel</text>
+
+        <!-- Router (center top) -->
+        <g class="dev-node" data-dev="router" transform="translate(360,160)">
+          <rect class="dev-bg" x="-50" y="-30" width="100" height="60" rx="10" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.3)"/>
+          <rect x="-30" y="-12" width="60" height="24" rx="4" fill="#0D9488"/>
+          <circle cx="-18" cy="0" r="2.5" fill="#fff"/><circle cx="-10" cy="0" r="2.5" fill="#fff"/><circle cx="-2" cy="0" r="2.5" fill="#fff"/><circle cx="6" cy="0" r="2.5" fill="#fff"/><circle cx="14" cy="0" r="2.5" fill="#fff"/>
+          <path d="M-10 -16 Q0 -26 10 -16" stroke="#FFD600" stroke-width="2" fill="none"/>
+          <text class="dev-label" x="0" y="48">ROUTER</text>
+        </g>
+
+        <!-- Laptop kiri atas -->
+        <g class="dev-node" data-dev="laptop" transform="translate(80,80)">
+          <rect class="dev-bg" x="-40" y="-30" width="80" height="60" rx="10" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.3)"/>
+          <rect x="-22" y="-18" width="44" height="26" rx="2" fill="#1565C0"/>
+          <rect x="-18" y="-14" width="36" height="18" fill="#E3F2FD"/>
+          <rect x="-30" y="8" width="60" height="6" rx="2" fill="#1565C0"/>
+          <text class="dev-label" x="0" y="48">LAPTOP</text>
+        </g>
+
+        <!-- HP kanan atas -->
+        <g class="dev-node" data-dev="hp" transform="translate(720,80)">
+          <rect class="dev-bg" x="-30" y="-35" width="60" height="70" rx="10" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.3)"/>
+          <rect x="-16" y="-26" width="32" height="48" rx="3" fill="#DB2777"/>
+          <circle cx="0" cy="18" r="2.5" fill="#fff"/>
+          <text class="dev-label" x="0" y="48">HP</text>
+        </g>
+
+        <!-- Switch kiri bawah -->
+        <g class="dev-node" data-dev="switch" transform="translate(80,260)">
+          <rect class="dev-bg" x="-50" y="-25" width="100" height="50" rx="8" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.3)"/>
+          <rect x="-38" y="-12" width="76" height="24" rx="3" fill="#7C3AED"/>
+          <g fill="#fff"><rect x="-32" y="-3" width="6" height="6"/><rect x="-22" y="-3" width="6" height="6"/><rect x="-12" y="-3" width="6" height="6"/><rect x="-2" y="-3" width="6" height="6"/><rect x="8" y="-3" width="6" height="6"/><rect x="18" y="-3" width="6" height="6"/><rect x="28" y="-3" width="6" height="6"/></g>
+          <text class="dev-label" x="0" y="40">SWITCH</text>
+        </g>
+
+        <!-- Server kanan bawah -->
+        <g class="dev-node" data-dev="server" transform="translate(720,260)">
+          <rect class="dev-bg" x="-40" y="-40" width="80" height="80" rx="8" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.3)"/>
+          <rect x="-28" y="-30" width="56" height="20" rx="3" fill="#EA580C"/>
+          <circle cx="-18" cy="-20" r="2" fill="#FFD600"/><rect x="-10" y="-22" width="20" height="4" fill="#fff"/>
+          <rect x="-28" y="-6" width="56" height="20" rx="3" fill="#EA580C"/>
+          <circle cx="-18" cy="4" r="2" fill="#FFD600"/><rect x="-10" y="2" width="20" height="4" fill="#fff"/>
+          <rect x="-28" y="18" width="56" height="20" rx="3" fill="#EA580C"/>
+          <circle cx="-18" cy="28" r="2" fill="#FFD600"/><rect x="-10" y="26" width="20" height="4" fill="#fff"/>
+          <text class="dev-label" x="0" y="55">SERVER</text>
+        </g>
+
+        <!-- Internet cloud (center bottom) -->
+        <g class="dev-node" data-dev="internet" transform="translate(400,290)">
+          <ellipse class="dev-bg" cx="0" cy="0" rx="55" ry="28" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.3)"/>
+          <text x="0" y="4" font-size="11" font-weight="800" fill="#FFD600" text-anchor="middle" font-family="Poppins">INTERNET</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="sim-info" id="simJaringanInfo" style="margin-top:14px">
+    <div class="empty">👆 Klik salah satu perangkat pada diagram di atas untuk melihat penjelasan dan hubungannya dengan perangkat lain.</div>
+  </div>
+  <div class="dev-info-list">
+    <div class="dev-mini"><div><b>5 Perangkat</b>Pelajari fungsi tiap perangkat</b></div></div>
+    <div class="dev-mini"><div><b>Hubungan</b>Lihat bagaimana mereka terhubung</div></div>
+    <div class="dev-mini"><div><b>Wi-Fi & Kabel</b>Perhatikan media tiap koneksi</div></div>
+    <div class="dev-mini"><div><b>Internet</b>Jaringan global di luar sana</div></div>
+  </div>`;
+}
+
+function selectDevice(dev){
+  if(dev==='internet'){
+    document.getElementById('simJaringanInfo').innerHTML = `
+      <h4>${icon('globe',16)} Internet</h4>
+      <div class="role">Jaringan Global</div>
+      <p>Internet adalah jaringan global yang menghubungkan miliaran perangkat di seluruh dunia. Router rumah/sekolah terhubung ke internet lewat provider (ISP).</p>
+      <div class="rel"><b>Hubungan:</b> Semua perangkat lokal (laptop, HP, server) mengakses internet <b>lewat router</b>. Server internet di seluruh dunia menyimpan situs yang kita buka setiap hari.</div>`;
+  } else {
+    const d = DEVICES[dev];
+    document.getElementById('simJaringanInfo').innerHTML = `
+      <h4>${icon(d.ic,16)} ${d.name}</h4>
+      <div class="role">${d.role}</div>
+      <p>${d.desc}</p>
+      <div class="rel"><b>Hubungan:</b> ${d.rel}</div>`;
+  }
+  document.querySelectorAll('.dev-node').forEach(n=>n.classList.remove('active'));
+  const node = document.querySelector(`.dev-node[data-dev="${dev}"]`);
+  if(node) node.classList.add('active');
+  // Scroll info panel into view smoothly
+  const info = document.getElementById('simJaringanInfo');
+  if(info){
+    info.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+
+/* --- Sim Cara Kerja Internet --- */
+const FLOW_STEPS = [
+  {n:1, name:'Browser', desc:'Pengguna mengetik alamat situs (misal google.com) di browser dan menekan Enter. Browser mulai membuat permintaan.', ic:'globe'},
+  {n:2, name:'DNS Lookup', desc:'DNS mencari alamat IP dari "google.com". DNS mengembalikan alamat IP seperti 142.250.10.78 sehingga browser tahu ke mana harus mengirim permintaan.', ic:'book'},
+  {n:3, name:'Jaringan', desc:'Permintaan dari browser dikirim lewat router, switch, kabel/nirkabel, lalu ke provider internet (ISP). Data dipecah menjadi paket-paket oleh TCP/IP.', ic:'wifi'},
+  {n:4, name:'Server', desc:'Server tujuan menerima paket-paket, menyusun ulang, memproses permintaan, dan menyiapkan data (halaman HTML, gambar, video) untuk dikirim balik.', ic:'server'},
+  {n:5, name:'Browser Tampil', desc:'Server mengirim data balik lewat jaringan ke browser. Browser menyusun dan menampilkan halaman situs yang kita lihat di layar.', ic:'check'}
+];
+
+function slide_sim_internet(){
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title"><span class="ic">${icon('play')}</span>Perjalanan Data di Internet</div>
+    <p>Saat kamu mengetik alamat situs, data tidak langsung sampai ke tujuan. Ada 5 tahap yang dilalui. Klik tombol <b>Mainkan</b> untuk melihat animasi, atau klik tiap tahap di diagram untuk penjelasan.</p>
+  </div>
+  <div class="flow-stage">
+    <svg class="flow-svg" viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- path -->
+      <path id="flowPath" d="M80 140 Q200 80 320 140 Q440 200 560 140 Q680 80 720 140" stroke="#E2E8F0" stroke-width="3" fill="none" stroke-dasharray="6 4"/>
+      <!-- step 1: Browser -->
+      <g class="flow-step" data-step="0" transform="translate(60,100)">
+        <rect class="flow-bg" x="0" y="0" width="80" height="80" rx="14" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <foreignObject x="14" y="20" width="52" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#1565C0;display:flex;justify-content:center">${iconSvgString('globe',28)}</div></foreignObject>
+        <text class="flow-txt" x="40" y="100" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">1. Browser</text>
+      </g>
+      <!-- step 2: DNS -->
+      <g class="flow-step" data-step="1" transform="translate(240,80)">
+        <rect class="flow-bg" x="0" y="0" width="80" height="80" rx="14" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <foreignObject x="14" y="20" width="52" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#1565C0;display:flex;justify-content:center">${iconSvgString('book',28)}</div></foreignObject>
+        <text class="flow-txt" x="40" y="100" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">2. DNS</text>
+      </g>
+      <!-- step 3: Network -->
+      <g class="flow-step" data-step="2" transform="translate(420,160)">
+        <rect class="flow-bg" x="0" y="0" width="80" height="80" rx="14" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <foreignObject x="14" y="20" width="52" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#1565C0;display:flex;justify-content:center">${iconSvgString('wifi',28)}</div></foreignObject>
+        <text class="flow-txt" x="40" y="100" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">3. Jaringan</text>
+      </g>
+      <!-- step 4: Server -->
+      <g class="flow-step" data-step="3" transform="translate(600,80)">
+        <rect class="flow-bg" x="0" y="0" width="80" height="80" rx="14" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <foreignObject x="14" y="20" width="52" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#1565C0;display:flex;justify-content:center">${iconSvgString('server',28)}</div></foreignObject>
+        <text class="flow-txt" x="40" y="100" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">4. Server</text>
+      </g>
+      <!-- step 5: Browser result -->
+      <g class="flow-step" data-step="4" transform="translate(700,200)">
+        <rect class="flow-bg" x="-40" y="0" width="80" height="80" rx="14" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+        <foreignObject x="-26" y="20" width="52" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="color:#1565C0;display:flex;justify-content:center">${iconSvgString('check',28)}</div></foreignObject>
+        <text class="flow-txt" x="0" y="100" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle" font-family="Poppins">5. Tampil</text>
+      </g>
+      <!-- packet -->
+      <circle id="flowPacket" r="9" class="packet" cx="80" cy="140" opacity="0">
+        <text x="0" y="3" font-size="9" font-weight="800" fill="#0D47A1" text-anchor="middle">📦</text>
+      </circle>
+      <!-- arrow path for animation (will be reused) -->
+    </svg>
+    <div class="flow-controls">
+      <button class="flow-play" onclick="playFlow()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Mainkan Animasi
+      </button>
+      <button class="flow-reset" onclick="resetFlow()">Reset</button>
+      <span style="font-size:12px;color:var(--muted);margin-left:auto">Klik tiap kotak untuk penjelasan</span>
+    </div>
+    <div class="flow-step-info" id="flowStepInfo">
+      <h5>Pilih tahap untuk melihat penjelasan</h5>
+      <p>Atau tekan tombol "Mainkan Animasi" untuk melihat seluruh perjalanan data secara visual.</p>
+    </div>
+  </div>`;
+}
+
+function iconSvgString(name, size=20){
+  const map = {
+    network:'<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',
+    router:'<rect x="3" y="11" width="18" height="7" rx="2"/><circle cx="7" cy="14.5" r="1" fill="currentColor"/><circle cx="10" cy="14.5" r="1" fill="currentColor"/><path d="M16 8a4 4 0 0 0-8 0"/><path d="M12 4v2"/>',
+    cable:'<path d="M4 4a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V6a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V6a2 2 0 0 1 2-2"/>',
+    globe:'<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    wifi:'<path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>',
+    server:'<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>',
+    check:'<polyline points="20 6 9 17 4 12"/>',
+    chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+    phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+    laptop:'<rect x="3" y="4" width="18" height="12" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/>',
+    hand:'<path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+    bulb:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>'
+  };
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${map[name]||map.book}</svg>`;
+}
+
+let flowTimer = null;
+function selectFlowStep(i){
+  const s = FLOW_STEPS[i];
+  document.getElementById('flowStepInfo').innerHTML = `<h5>Tahap ${s.n}: ${s.name}</h5><p>${s.desc}</p>`;
+  document.querySelectorAll('.flow-step').forEach(n=>n.classList.remove('active'));
+  const node = document.querySelector(`.flow-step[data-step="${i}"]`);
+  if(node) node.classList.add('active');
+}
+function playFlow(){
+  resetFlow();
+  const packet = document.getElementById('flowPacket');
+  const path = document.getElementById('flowPath');
+  if(!packet || !path) return;
+  packet.style.opacity = 1;
+  const len = path.getTotalLength();
+  let step = 0;
+  let t = 0;
+  const dur = 6000;
+  const start = performance.now();
+  function frame(now){
+    const e = (now-start)/dur;
+    if(e >= 1){
+      packet.setAttribute('cx', 720);
+      packet.setAttribute('cy', 140);
+      selectFlowStep(4);
+      return;
+    }
+    const p = path.getPointAtLength(e*len);
+    packet.setAttribute('cx', p.x);
+    packet.setAttribute('cy', p.y);
+    const curStep = Math.min(4, Math.floor(e*5));
+    if(curStep !== step){
+      step = curStep;
+      selectFlowStep(step);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+function resetFlow(){
+  const packet = document.getElementById('flowPacket');
+  if(packet){
+    packet.style.opacity = 0;
+    packet.setAttribute('cx', 80);
+    packet.setAttribute('cy', 140);
+  }
+  document.querySelectorAll('.flow-step').forEach(n=>n.classList.remove('active'));
+  document.getElementById('flowStepInfo').innerHTML = `<h5>Pilih tahap untuk melihat penjelasan</h5><p>Atau tekan tombol "Mainkan Animasi" untuk melihat seluruh perjalanan data secara visual.</p>`;
+}
+
+/* --- Sim Topologi --- */
+const TOPOLOGIES = {
+  bus: {
+    name:'Bus', color:'#EA580C',
+    desc:'Semua perangkat terhubung ke satu kabel utama (backbone). Sederhana dan murah, tapi jika kabel utama putus, seluruh jaringan mati.',
+    ex:'Jaringan komputer lama dengan kabel coaxial tunggal.',
+    svg:`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+      <line x1="40" y1="120" x2="360" y2="120" stroke="#EA580C" stroke-width="6" stroke-linecap="round"/>
+      <g fill="#1565C0">
+        <circle cx="80" cy="120" r="14"/><rect x="72" y="80" width="16" height="30"/>
+        <circle cx="160" cy="120" r="14"/><rect x="152" y="80" width="16" height="30"/>
+        <circle cx="240" cy="120" r="14"/><rect x="232" y="80" width="16" height="30"/>
+        <circle cx="320" cy="120" r="14"/><rect x="312" y="80" width="16" height="30"/>
+      </g>
+      <text x="200" y="180" font-size="12" font-weight="700" fill="#EA580C" text-anchor="middle" font-family="Poppins">Satu Kabel Utama</text>
+    </svg>`
+  },
+  star: {
+    name:'Star', color:'#1565C0',
+    desc:'Semua perangkat terhubung ke satu titik pusat (biasanya switch/hub). Mudah dikelola, tapi jika pusat mati, semua terhenti.',
+    ex:'Lab komputer sekolah dengan switch di tengah.',
+    svg:`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#1565C0" stroke-width="2" stroke-dasharray="4 3">
+        <line x1="80" y1="60" x2="200" y2="120"/>
+        <line x1="320" y1="60" x2="200" y2="120"/>
+        <line x1="80" y1="180" x2="200" y2="120"/>
+        <line x1="320" y1="180" x2="200" y2="120"/>
+        <line x1="200" y1="40" x2="200" y2="120"/>
+      </g>
+      <rect x="180" y="105" width="40" height="30" rx="6" fill="#FFD600"/>
+      <text x="200" y="125" font-size="10" font-weight="800" fill="#0D47A1" text-anchor="middle" font-family="Poppins">SWITCH</text>
+      <g fill="#1565C0">
+        <rect x="65" y="45" width="30" height="22" rx="3"/>
+        <rect x="305" y="45" width="30" height="22" rx="3"/>
+        <rect x="65" y="170" width="30" height="22" rx="3"/>
+        <rect x="305" y="170" width="30" height="22" rx="3"/>
+        <rect x="185" y="25" width="30" height="22" rx="3"/>
+      </g>
+    </svg>`
+  },
+  ring: {
+    name:'Ring', color:'#7C3AED',
+    desc:'Perangkat terhubung membentuk lingkaran tertutup. Data mengalir satu arah dari satu perangkat ke perangkat berikutnya.',
+    ex:'Jaringan token ring lama di kantor.',
+    svg:`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="120" r="80" stroke="#7C3AED" stroke-width="3" fill="none" stroke-dasharray="6 4"/>
+      <g fill="#1565C0">
+        <rect x="185" y="32" width="30" height="22" rx="3"/>
+        <rect x="288" y="105" width="30" height="22" rx="3"/>
+        <rect x="185" y="190" width="30" height="22" rx="3"/>
+        <rect x="80" y="105" width="30" height="22" rx="3"/>
+      </g>
+      <text x="200" y="130" font-size="11" font-weight="700" fill="#7C3AED" text-anchor="middle" font-family="Poppins">Data mengalir<br>melingkar</text>
+    </svg>`
+  },
+  mesh: {
+    name:'Mesh', color:'#16A34A',
+    desc:'Setiap perangkat terhubung langsung ke semua perangkat lain. Sangat andal—jika satu koneksi putus, masih banyak jalur lain. Tapi mahal dan rumit.',
+    ex:'Jaringan router besar internet atau jaringan militer.',
+    svg:`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#16A34A" stroke-width="1.5" opacity="0.6">
+        <line x1="80" y1="60" x2="200" y2="60"/><line x1="80" y1="60" x2="320" y2="60"/>
+        <line x1="80" y1="60" x2="80" y2="180"/><line x1="80" y1="60" x2="200" y2="180"/><line x1="80" y1="60" x2="320" y2="180"/>
+        <line x1="200" y1="60" x2="320" y2="60"/><line x1="200" y1="60" x2="80" y2="180"/><line x1="200" y1="60" x2="200" y2="180"/><line x1="200" y1="60" x2="320" y2="180"/>
+        <line x1="320" y1="60" x2="80" y2="180"/><line x1="320" y1="60" x2="200" y2="180"/><line x1="320" y1="60" x2="320" y2="180"/>
+        <line x1="80" y1="180" x2="200" y2="180"/><line x1="80" y1="180" x2="320" y2="180"/>
+        <line x1="200" y1="180" x2="320" y2="180"/>
+      </g>
+      <g fill="#1565C0">
+        <circle cx="80" cy="60" r="14"/><circle cx="200" cy="60" r="14"/><circle cx="320" cy="60" r="14"/>
+        <circle cx="80" cy="180" r="14"/><circle cx="200" cy="180" r="14"/><circle cx="320" cy="180" r="14"/>
+      </g>
+    </svg>`
+  },
+  tree: {
+    name:'Tree', color:'#DB2777',
+    desc:'Gabungan beberapa topologi star yang dihubungkan secara berjenjang seperti pohon. Cocok untuk jaringan besar berjenjang.',
+    ex:'Jaringan kantor besar dengan beberapa lantai.',
+    svg:`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#DB2777" stroke-width="2" stroke-dasharray="4 3">
+        <line x1="200" y1="40" x2="100" y2="120"/>
+        <line x1="200" y1="40" x2="300" y2="120"/>
+        <line x1="100" y1="120" x2="50" y2="200"/>
+        <line x1="100" y1="120" x2="150" y2="200"/>
+        <line x1="300" y1="120" x2="250" y2="200"/>
+        <line x1="300" y1="120" x2="350" y2="200"/>
+      </g>
+      <rect x="185" y="25" width="30" height="22" rx="4" fill="#FFD600"/>
+      <rect x="85" y="105" width="30" height="22" rx="4" fill="#DB2777"/>
+      <rect x="285" y="105" width="30" height="22" rx="4" fill="#DB2777"/>
+      <g fill="#1565C0">
+        <rect x="35" y="190" width="30" height="22" rx="3"/>
+        <rect x="135" y="190" width="30" height="22" rx="3"/>
+        <rect x="235" y="190" width="30" height="22" rx="3"/>
+        <rect x="335" y="190" width="30" height="22" rx="3"/>
+      </g>
+    </svg>`
+  }
+};
+
+let activeTopo = 'star';
+function slide_sim_topologi(){
+  return `
+  <div class="topo-bar">
+    ${Object.keys(TOPOLOGIES).map(k=>`<button class="topo-btn ${k==='star'?'active':''}" data-topo="${k}" onclick="selectTopo('${k}')"><span class="dot"></span>${TOPOLOGIES[k].name}</button>`).join('')}
+  </div>
+  <div class="split">
+    <div class="topo-canvas" id="topoCanvas">${TOPOLOGIES.star.svg}</div>
+    <div>
+      <div class="card">
+        <div class="card-title"><span class="ic" id="topoIc">${icon('star')}</span><span id="topoName">Topologi Star</span></div>
+        <p id="topoDesc">${TOPOLOGIES.star.desc}</p>
+      </div>
+      <div class="topo-detail">
+        <div class="item"><h5>Ciri Khas</h5><p id="topoCiri">Ada titik pusat (switch/hub) yang menjadi penghubung semua perangkat.</p></div>
+        <div class="item"><h5>Contoh Penggunaan</h5><p id="topoEx">${TOPOLOGIES.star.ex}</p></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function selectTopo(k){
+  activeTopo = k;
+  const t = TOPOLOGIES[k];
+  document.querySelectorAll('.topo-btn').forEach(b=>b.classList.toggle('active', b.dataset.topo===k));
+  document.getElementById('topoCanvas').innerHTML = t.svg;
+  document.getElementById('topoName').textContent = 'Topologi ' + t.name;
+  document.getElementById('topoDesc').textContent = t.desc;
+  document.getElementById('topoEx').textContent = t.ex;
+  const ciris = {
+    bus:'Satu kabel utama sebagai tulang punggung jaringan.',
+    star:'Ada titik pusat (switch/hub) yang menjadi penghubung semua perangkat.',
+    ring:'Perangkat membentuk lingkaran tertutup, data mengalir satu arah.',
+    mesh:'Setiap perangkat terhubung langsung ke semua perangkat lain.',
+    tree:'Berjenjang seperti pohon, gabungan beberapa topologi star.'
+  };
+  document.getElementById('topoCiri').textContent = ciris[k];
+}
+
+/* --- Sim OSI --- */
+const OSI_LAYERS = [
+  {n:7, name:'Application', color:'#DC2626', sub:'Antarmuka dengan pengguna',
+    desc:'Lapisan teratas yang dilihat pengguna. Browser, email, dan aplikasi beroperasi di sini. Menyediakan layanan jaringan langsung ke program pengguna.',
+    ex:'Saat kamu membuka browser dan mengetik alamat situs, browser berjalan di lapisan Application.'},
+  {n:6, name:'Presentation', color:'#EA580C', sub:'Enkripsi & format data',
+    desc:'Mengubah, mengompresi, dan mengenkripsi data agar bisa dipahami oleh aplikasi. Mengatur format seperti JPEG, MP4, atau enkripsi SSL/TLS.',
+    ex:'HTTPS melakukan enkripsi data di lapisan Presentation sebelum dikirim.'},
+  {n:5, name:'Session', color:'#F9C000', sub:'Mengatur sesi',
+    desc:'Membuka, mengelola, dan menutup sesi komunikasi antara dua perangkat. Memastikan sesi tetap stabil selama dibutuhkan.',
+    ex:'Saat login ke sebuah situs, sesi kamu dipelihara oleh lapisan Session.'},
+  {n:4, name:'Transport', color:'#16A34A', sub:'TCP / UDP',
+    desc:'Memastikan data sampai dengan andal (TCP) atau cepat (UDP). Memecah data menjadi segmen dan menyusun ulang di tujuan.',
+    ex:'TCP pada lapisan Transport memastikan paket-paket dikirim lengkap dan berurutan.'},
+  {n:3, name:'Network', color:'#0D9488', sub:'IP Address & routing',
+    desc:'Menentukan jalur terbaik dan alamat tujuan (IP address). Paket data diarahkan dari jaringan sumber ke jaringan tujuan.',
+    ex:'IP address 142.250.10.78 ditentukan dan dirutekan di lapisan Network.'},
+  {n:2, name:'Data Link', color:'#1565C0', sub:'MAC & frame',
+    desc:'Mengirim data antara perangkat pada jaringan lokal yang sama. Mengatur akses ke media fisik dan mendeteksi error.',
+    ex:'MAC address perangkat dan switch bekerja di lapisan Data Link.'},
+  {n:1, name:'Physical', color:'#7C3AED', sub:'Kabel, sinyal, bit',
+    desc:'Lapisan paling bawah. Mengubah data menjadi sinyal listrik, cahaya, atau gelombang radio yang dikirim lewat media fisik (kabel/udara).',
+    ex:'Kabel Ethernet, fiber optik, dan sinyal Wi-Fi bekerja di lapisan Physical.'}
+];
+
+function slide_sim_osi(){
+  return `
+  <div class="split">
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span class="ic">${icon('layers')}</span>Model OSI</div>
+        <p><b>OSI (Open Systems Interconnection)</b> adalah model 7 lapis yang menjelaskan bagaimana data berpindah dari pengguna ke media fisik, dan sebaliknya. Model ini membantu kita memahami setiap tahap komunikasi jaringan.</p>
+        <p>Setiap lapisan punya tugas khusus. Data dari aplikasi turun lapis per lapis hingga menjadi sinyal fisik, lalu naik kembali di sisi penerima.</p>
+      </div>
+      <div class="spark">
+        <div class="spark-ic">?</div>
+        <p><strong>Pertanyaan pemantik:</strong> Saat kamu mengirim pesan WhatsApp, melalui lapisan apa saja pesan itu berpindah dari HP-mu ke HP temanmu?</p>
+      </div>
+    </div>
+    <div class="osi-stack" id="osiStack">
+      ${OSI_LAYERS.map(l=>`
+        <div class="osi-layer" style="background:${l.color}" onclick="toggleOsi(${l.n})" data-layer="${l.n}">
+          <div class="osi-num">${l.n}</div>
+          <div class="osi-name">${l.name}<small>${l.sub}</small></div>
+          <svg class="osi-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="osi-detail" id="osi-detail-${l.n}">
+          <b>${l.name} Layer (Lapisan ${l.n})</b><br>${l.desc}
+          <span class="ex"><b>Contoh:</b> ${l.ex}</span>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function toggleOsi(n){
+  const layer = document.querySelector(`.osi-layer[data-layer="${n}"]`);
+  const detail = document.getElementById(`osi-detail-${n}`);
+  const isOpen = detail.classList.contains('show');
+  document.querySelectorAll('.osi-detail').forEach(d=>d.classList.remove('show'));
+  document.querySelectorAll('.osi-layer').forEach(l=>l.classList.remove('expanded'));
+  if(!isOpen){
+    detail.classList.add('show');
+    layer.classList.add('expanded');
+  }
+}
+
+/* ========================================================
+   QUIZ
+======================================================== */
+const QUIZ_QUESTIONS = [
+  {
+    q:'Dua atau lebih perangkat komputer yang saling terhubung untuk berbagi data dan sumber daya disebut...',
+    opts:['Internet','Jaringan komputer','Server','Browser'],
+    a:1,
+    why:'Jaringan komputer adalah kumpulan perangkat yang terhubung agar bisa berbagi data dan sumber daya.'
+  },
+  {
+    q:'Perangkat yang berfungsi menghubungkan beberapa komputer dalam satu jaringan lokal dan pintar mengirim data ke tujuan yang benar adalah...',
+    opts:['Router','Switch','Modem','Repeater'],
+    a:1,
+    why:'Switch bekerja di LAN dan mengirim data hanya ke perangkat yang dituju berdasarkan MAC address.'
+  },
+  {
+    q:'Manakah yang BUKAN contoh software jaringan?',
+    opts:['Windows','Google Chrome','WhatsApp','Kabel Ethernet'],
+    a:3,
+    why:'Kabel Ethernet adalah perangkat keras (hardware), bukan software. Software jaringan adalah program seperti OS, browser, dan aplikasi komunikasi.'
+  },
+  {
+    q:'Pernyataan yang benar tentang Wi-Fi dan internet adalah...',
+    opts:['Wi-Fi sama dengan internet','Wi-Fi adalah cara menghubungkan perangkat ke jaringan lokal, bukan internet itu sendiri','Wi-Fi hanya untuk HP','Wi-Fi tidak butuh internet'],
+    a:1,
+    why:'Wi-Fi adalah media koneksi nirkabel lokal. Internet adalah jaringan global. Bisa ada Wi-Fi aktif tanpa internet.'
+  },
+  {
+    q:'DNS berfungsi untuk...',
+    opts:['Mengenkripsi data web','Menerjemahkan nama domain menjadi alamat IP','Memecah data jadi paket','Mengarahkan lalu lintas data'],
+    a:1,
+    why:'DNS (Domain Name System) menerjemahkan nama seperti google.com menjadi IP seperti 142.250.10.78.'
+  },
+  {
+    q:'Protokol yang memastikan data sampai utuh dan berurutan di tujuan adalah...',
+    opts:['IP','HTTP','TCP','DNS'],
+    a:2,
+    why:'TCP (Transmission Control Protocol) memecah data menjadi paket, mengirim, dan menyusun ulang. Jika ada paket hilang, TCP minta dikirim ulang.'
+  },
+  {
+    q:'Saat kamu melihat gembok di address bar, protokol yang sedang aktif adalah...',
+    opts:['HTTP','HTTPS','FTP','SMTP'],
+    a:1,
+    why:'HTTPS (HTTP Secure) mengenkripsi data. Gembok menandakan koneksi aman dan terenkripsi.'
+  },
+  {
+    q:'Manakah yang merupakan praktik etika digital yang baik?',
+    opts:['Menyebarkan gosip di grup','Menghargai pendapat orang lain walaupun berbeda','Membagikan OTP ke teman','Memposting foto teman tanpa izin'],
+    a:1,
+    why:'Menghargai pendapat adalah bagian dari etika digital. Menyebarkan gosip, membagikan OTP, dan memposting foto tanpa izin melanggar etika.'
+  },
+  {
+    q:'Ciri password yang kuat adalah...',
+    opts:['Mudah diingat seperti tanggal lahir','Hanya 4 angka','Min. 8 karakter, campuran huruf, angka, dan simbol','Nama pacar'],
+    a:2,
+    why:'Password kuat minimal 8 karakter, campuran huruf besar/kecil, angka, dan simbol. Hindari info pribadi yang mudah ditebak.'
+  },
+  {
+    q:'Topologi yang memiliki satu titik pusat (switch/hub) sebagai penghubung semua perangkat adalah...',
+    opts:['Bus','Ring','Star','Mesh'],
+    a:2,
+    why:'Topologi Star menggunakan satu titik pusat (switch/hub) tempat semua perangkat terhubung.'
+  },
+  {
+    q:'Lapisan OSI yang berhubungan langsung dengan aplikasi yang dilihat pengguna (misal browser) adalah...',
+    opts:['Physical','Network','Application','Data Link'],
+    a:2,
+    why:'Lapisan Application (lapisan 7) adalah antarmuka yang dilihat pengguna, tempat browser dan aplikasi beroperasi.'
+  },
+  {
+    q:'Media akses jaringan yang menggunakan cahaya untuk mengirim data dengan kecepatan sangat tinggi adalah...',
+    opts:['Kabel Ethernet','Coaxial','Fiber optik','Bluetooth'],
+    a:2,
+    why:'Fiber optik mengirim data sebagai pulsa cahaya lewat serat kaca, sangat cepat dan jarak jauh.'
+  }
+];
+
+function slide_kuis(){
+  if(state.quiz.done){
+    return renderQuizResult();
+  }
+  const q = state.quiz;
+  const i = q.current || 0;
+  if(i >= QUIZ_QUESTIONS.length){
+    return renderQuizResult();
+  }
+  const item = QUIZ_QUESTIONS[i];
+  const correctIdx = item.a;
+  const firstAtt = q.firstAttempt[i];
+  const lastAns = q.lastAns;
+  const isCorrect = q.answers[i] !== undefined; // means user found correct answer
+  const dots = QUIZ_QUESTIONS.map((_,idx)=>{
+    let cls = '';
+    if(q.firstAttempt[idx] !== undefined){
+      cls = q.firstAttempt[idx] === QUIZ_QUESTIONS[idx].a ? 'done' : 'wrong';
+    }
+    if(idx === i && !q.done){ cls = 'current'; }
+    return `<div class="quiz-dot ${cls}"></div>`;
+  }).join('');
+  return `
+  <div class="quiz-wrap">
+    <div class="quiz-progress">
+      <div class="quiz-dots">${dots}</div>
+      <div class="quiz-counter">Soal ${i+1} dari ${QUIZ_QUESTIONS.length}</div>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-q"><span class="num">${i+1}.</span>${item.q}</div>
+      <div class="quiz-opts">
+        ${item.opts.map((o,idx)=>{
+          let cls = '';
+          if(isCorrect){
+            // lock everything; highlight correct
+            cls = idx === correctIdx ? 'correct locked' : 'locked';
+          } else if(lastAns === idx){
+            cls = idx === correctIdx ? 'correct' : 'wrong locked';
+          } else if(firstAtt !== undefined){
+            cls = 'locked';
+          }
+          return `<button class="quiz-opt ${cls}" onclick="answerQuiz(${idx})">
+            <span class="letter">${String.fromCharCode(65+idx)}</span>
+            <span>${o}</span>
+          </button>`;
+        }).join('')}
+      </div>
+      <div class="quiz-fb ${isCorrect?'ok show':(lastAns!==null?'no show':'')}" id="quizFb">
+        ${isCorrect ? `<b>Benar!</b> ${item.why}` : (lastAns!==null ? `<b>Coba lagi.</b> Jawaban benar: <b>${String.fromCharCode(65+item.a)}. ${item.opts[item.a]}</b>. ${item.why}` : '')}
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-next" onclick="nextQuiz()" ${!isCorrect?'disabled':''}>
+          ${i+1 === QUIZ_QUESTIONS.length ? 'Lihat Hasil' : 'Soal Berikutnya'}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function answerQuiz(idx){
+  const q = state.quiz;
+  const i = q.current || 0;
+  if(i >= QUIZ_QUESTIONS.length) return;
+  const correctIdx = QUIZ_QUESTIONS[i].a;
+  // If already correctly answered, ignore
+  if(q.answers[i] !== undefined) return;
+  // Record first attempt for scoring
+  if(q.firstAttempt[i] === undefined){
+    q.firstAttempt[i] = idx;
+  }
+  q.lastAns = idx;
+  if(idx === correctIdx){
+    q.answers[i] = idx;
+  }
+  renderCurrent();
+  saveState();
+}
+
+function nextQuiz(){
+  const q = state.quiz;
+  const i = q.current || 0;
+  if(q.answers[i] === undefined) return; // must answer correctly first
+  q.lastAns = null;
+  q.current = i + 1;
+  if(q.current >= QUIZ_QUESTIONS.length){
+    const correctFirst = Object.keys(q.firstAttempt).filter(k => q.firstAttempt[k] === QUIZ_QUESTIONS[k].a).length;
+    q.score = Math.round(correctFirst / QUIZ_QUESTIONS.length * 100);
+    q.done = true;
+  }
+  renderCurrent();
+  saveState();
+  updateProgress();
+}
+
+function renderQuizResult(){
+  const q = state.quiz;
+  // Score based on first attempts
+  const correctFirst = Object.keys(q.firstAttempt).filter(k => q.firstAttempt[k] === QUIZ_QUESTIONS[k].a).length;
+  const total = QUIZ_QUESTIONS.length;
+  const score = q.score || Math.round(correctFirst/total*100);
+  q.score = score;
+  const pct = score;
+  const circ = 2*Math.PI*70;
+  const off = circ*(1-pct/100);
+  const msg = score>=80?'Luar biasa! Kamu sudah menguasai materi ini.':score>=60?'Bagus! Terus tingkatkan pemahamanmu.':'Tetap semangat! Pelajari lagi materinya ya.';
+  return `
+  <div class="quiz-wrap">
+    <div class="quiz-card quiz-result">
+      <div class="score-ring">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="70" stroke="#E2E8F0" stroke-width="12" fill="none"/>
+          <circle cx="90" cy="90" r="70" stroke="${score>=80?'#16A34A':score>=60?'#1565C0':'#EA580C'}" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 90 90)" style="transition:stroke-dashoffset 1s"/>
+        </svg>
+        <div class="score-num"><b>${score}</b><span> dari 100</span></div>
+      </div>
+      <h3>${msg}</h3>
+      <p>Benar pada percobaan pertama: <b style="color:var(--green)">${correctFirst}</b> dari <b>${total}</b> soal.</p>
+      <div class="quiz-actions">
+        <button class="btn-primary" onclick="restartQuiz()">${icon('refresh',16)} Ulangi Kuis</button>
+        <button class="btn-outline" onclick="goTo('tantangan')">Lanjut ke Tantangan</button>
+      </div>
+      <div class="quiz-review">
+        <h4 style="font-family:Montserrat;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:12px">Pembahasan Jawaban</h4>
+        ${QUIZ_QUESTIONS.map((it,idx)=>{
+          const firstA = state.quiz.firstAttempt[idx];
+          const correctAns = it.a;
+          const ok = firstA === correctAns;
+          return `<div class="quiz-review-item">
+            <div class="qq">${idx+1}. ${it.q}</div>
+            <div class="ans">Jawaban benar: <b class="ok">${String.fromCharCode(65+correctAns)}. ${it.opts[correctAns]}</b>${firstA!==undefined && !ok ? ` · Jawaban pertamamu: <b class="no">${String.fromCharCode(65+firstA)}. ${it.opts[firstA]}</b>`:''}<br><span style="color:var(--muted)">${it.why}</span></div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function restartQuiz(){
+  state.quiz = {current:0, answers:{}, firstAttempt:{}, score:0, done:false};
+  renderCurrent();
+  saveState();
+  updateProgress();
+}
+
+/* ========================================================
+   MATCHING CHALLENGE
+======================================================== */
+const MATCH_PAIRS = [
+  {term:'Router', def:'Mengarahkan data antarjaringan'},
+  {term:'Switch', def:'Menghubungkan perangkat dalam LAN'},
+  {term:'DNS', def:'Menerjemahkan nama domain ke IP'},
+  {term:'TCP', def:'Memastikan data sampai utuh'},
+  {term:'IP', def:'Memberi alamat unik perangkat'},
+  {term:'HTTPS', def:'Versi aman/terenkripsi dari HTTP'},
+  {term:'OSI', def:'Model 7 lapis komunikasi jaringan'},
+  {term:'Wi-Fi', def:'Koneksi nirkabel jaringan lokal'}
+];
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function getMatchData(){
+  if(!state.matchData || state.match.matched.length===0){
+    state.matchData = shuffle(MATCH_PAIRS);
+  }
+  return state.matchData;
+}
+
+function slide_tantangan(){
+  if(!state.matchData){
+    state.matchData = shuffle(MATCH_PAIRS);
+  }
+  const matched = state.match.matched;
+  const selected = state.match.selected;
+  const termsHtml = MATCH_PAIRS.map((p,i)=>{
+    const isMatched = matched.includes(i);
+    return `<div class="match-item ${isMatched?'matched':''} ${selected==='term-'+i?'selected':''}" onclick="selectMatch('term',${i})">${p.term}</div>`;
+  }).join('');
+  const defsData = state.matchData;
+  const defsHtml = defsData.map((p,i)=>{
+    const origIdx = MATCH_PAIRS.findIndex(m=>m.def===p.def);
+    const isMatched = matched.includes(origIdx);
+    return `<div class="match-item ${isMatched?'matched':''} ${selected==='def-'+i?'selected':''}" onclick="selectMatch('def',${i})" data-orig="${origIdx}">${p.def}</div>`;
+  }).join('');
+  const done = matched.length === MATCH_PAIRS.length;
+  return `
+  <div class="match-progress">
+    <div class="info">Pasangan cocok: <b>${matched.length}/${MATCH_PAIRS.length}</b> ${done?'· Selesai! 🎉':''}</div>
+    <button class="match-reset" onclick="resetMatch()">${icon('refresh',14)} Ulangi</button>
+  </div>
+  ${done ? `
+    <div class="card" style="text-align:center;padding:30px;background:linear-gradient(135deg,#DCFCE7,#F0FDF4);border-color:#86EFAC">
+      <div style="font-size:48px;margin-bottom:10px">🏆</div>
+      <h3 style="font-family:Montserrat;font-size:22px;font-weight:800;color:#15803d;margin-bottom:6px">Selamat! Tantangan Selesai</h3>
+      <p style="color:var(--ink-soft);font-size:14px;margin-bottom:18px">Kamu berhasil mencocokkan semua istilah dengan fungsinya. Lanjut ke refleksi untuk merangkum pembelajaranmu.</p>
+      <button class="btn-primary" onclick="goTo('refleksi')">${icon('arrow_right',16)} Lanjut ke Refleksi</button>
+    </div>
+  ` : `
+    <div class="match-game">
+      <div class="match-col left">
+        <h4>Istilah <span class="badge">klik dulu</span></h4>
+        <div class="match-list">${termsHtml}</div>
+      </div>
+      <div class="match-col right">
+        <h4>Fungsi <span class="badge">lalu klik pasangan</span></h4>
+        <div class="match-list">${defsHtml}</div>
+      </div>
+    </div>
+  `}
+  <div class="spark" style="max-width:900px;margin:18px auto 0">
+    <div class="spark-ic">i</div>
+    <p><strong>Cara bermain:</strong> Klik sebuah <b>istilah</b> di kolom kiri, lalu klik <b>fungsi</b> yang sesuai di kolom kanan. Jika benar, keduanya akan berubah hijau. Jika salah, coba lagi.</p>
+  </div>`;
+}
+
+function selectMatch(side, i){
+  const m = state.match;
+  if(side==='term'){
+    const origIdx = i;
+    if(m.matched.includes(origIdx)) return;
+    m.selected = 'term-'+i;
+  } else {
+    // def i in shuffled data
+    const origIdx = MATCH_PAIRS.findIndex(p=>p.def===state.matchData[i].def);
+    if(m.matched.includes(origIdx)) return;
+    m.selected = 'def-'+i;
+  }
+  // check if both selected
+  if(m.selected && m.selected.startsWith('term') && m.selectedDefIdx===undefined){
+    // store term idx
+  }
+  // simpler: track termIdx and defIdx
+  if(side==='term') m.termIdx = i;
+  else m.defIdx = i;
+  if(m.termIdx !== undefined && m.defIdx !== undefined){
+    // check
+    const term = MATCH_PAIRS[m.termIdx];
+    const def = state.matchData[m.defIdx];
+    if(term.def === def.def){
+      m.matched.push(m.termIdx);
+      m.termIdx = undefined; m.defIdx = undefined; m.selected = null;
+      showToast('Cocok! Pasangan benar');
+    } else {
+      // flash wrong
+      m.termIdx = undefined; m.defIdx = undefined; m.selected = null;
+      renderCurrent();
+      // flash
+      setTimeout(()=>{
+        document.querySelectorAll('.match-item').forEach(el=>{
+          el.classList.remove('wrong-flash');
+        });
+      },500);
+    }
+  }
+  renderCurrent();
+  saveState();
+  updateProgress();
+  // apply wrong flash to clicked items if applicable
+}
+
+function resetMatch(){
+  state.match = {matched:[], selected:null, done:false};
+  state.matchData = shuffle(MATCH_PAIRS);
+  renderCurrent();
+  saveState();
+  updateProgress();
+}
+
+/* ========================================================
+   REFLECTION
+======================================================== */
+const REFLECT_QUESTIONS = [
+  'Hal baru apa yang paling kamu pahami dari materi jaringan komputer dan internet hari ini?',
+  'Bagian mana yang menurutmu paling menarik? Mengapa?',
+  'Bagian mana yang masih membuatmu bingung? Apa yang akan kamu lakukan untuk memahaminya?',
+  'Bagaimana kamu akan menerapkan etika digital dan keamanan data dalam kehidupan sehari-hari?'
+];
+
+function slide_refleksi(){
+  return `
+  <div class="reflect-card">
+    <p style="color:var(--ink-soft);font-size:14px;margin-bottom:18px">Jawab pertanyaan berikut dengan jujur dan singkat. Jawabanmu disimpan otomatis di perangkat ini.</p>
+    ${REFLECT_QUESTIONS.map((q,i)=>`
+      <div style="margin-bottom:18px">
+        <div class="reflect-q"><span class="num">${i+1}</span>${q}</div>
+        <textarea class="reflect-ta" id="reflect-${i}" oninput="saveReflect(${i},this.value)" placeholder="Tulis jawabanmu di sini...">${state.reflect.answers[i]||''}</textarea>
+        ${state.reflect.answers[i] ? '<span class="saved-tag">'+icon('check',14)+' Tersimpan</span>' : ''}
+      </div>
+    `).join('')}
+    <div class="reflect-actions">
+      <button class="btn-save" onclick="saveAllReflect()">${icon('check',14)} Simpan Semua</button>
+      <button class="btn-outline" onclick="goTo('lkpd')">Lanjut ke LKPD</button>
+    </div>
+  </div>`;
+}
+
+function saveReflect(i, val){
+  state.reflect.answers[i] = val;
+  saveState();
+}
+function saveAllReflect(){
+  saveState();
+  showToast('Semua jawaban refleksi tersimpan');
+}
+
+/* ========================================================
+   LKPD
+======================================================== */
+const LKPD_QUESTIONS = [
+  'Jelaskan apa itu jaringan komputer dan sebutkan beberapa contoh penerapannya dalam kehidupan sehari-hari.',
+  'Jelaskan perbedaan antara hardware dan software dalam jaringan komputer.',
+  'Jelaskan apa itu protokol jaringan dan berikan beberapa contoh protokol yang umum digunakan.',
+  'Jelaskan apa itu internet dan sebutkan beberapa manfaatnya.',
+  'Jelaskan apa itu etika berkomunikasi di dunia digital dan berikan beberapa contohnya.',
+  'Jelaskan apa itu keamanan data dan berikan beberapa tips untuk menjaga keamanan data di jaringan komputer.',
+  'Jelaskan apa itu topologi jaringan dan sebutkan beberapa jenis topologi jaringan yang umum digunakan.',
+  'Jelaskan apa itu media akses jaringan dan sebutkan beberapa jenis media akses jaringan yang umum digunakan.',
+  'Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer.',
+  'Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer.'
+];
+
+const LKPD_GROUPS = [
+  {g:1, q:[0,1]},
+  {g:2, q:[2]},
+  {g:3, q:[3]},
+  {g:4, q:[4]},
+  {g:5, q:[5]},
+  {g:6, q:[6]},
+  {g:7, q:[7]},
+  {g:8, q:[8,9]}
+];
+
+const LKPD_KEYS = [
+  'Jaringan komputer adalah dua atau lebih perangkat komputer yang saling terhubung (kabel/nirkabel) untuk berbagi data, informasi, dan sumber daya. Contoh: Wi-Fi rumah, hotspot HP, lab komputer sekolah, jaringan kantor, kafe dengan Wi-Fi.',
+  'Hardware jaringan adalah perangkat fisik seperti router, switch, kabel Ethernet, dan NIC. Software jaringan adalah program seperti sistem operasi (Windows/Linux), browser, aplikasi komunikasi (WhatsApp), dan aplikasi berbagi file. Hardware = perangkat fisik; software = program yang menjalankan komunikasi.',
+  'Protokol jaringan adalah aturan kesepakatan bagaimana perangkat berkomunikasi. Contoh: HTTP/HTTPS (untuk web), TCP (pengiriman data andal), IP (pengalamatan), DNS (penerjemah nama domain), FTP (transfer file), SMTP (email).',
+  'Internet adalah jaringan global yang menghubungkan miliaran perangkat di seluruh dunia. Manfaat: belajar online, komunikasi (chat/video call), mencari informasi, berbagi data/file, hiburan (video/musik/game), transaksi online.',
+  'Etika berkomunikasi digital adalah tata krama yang baik di dunia maya. Contoh: sopan berkomunikasi, menghargai pendapat orang lain, tidak menyebarkan hoaks, menghindari cyberbullying, menghormati privasi, menggunakan bahasa yang baik.',
+  'Keamanan data adalah upaya melindungi informasi pribadi/penting dari pencurian dan penyalahgunaan. Tips: gunakan password kuat, aktifkan verifikasi dua langkah (2FA), jangan bagikan OTP, waspada phishing, cadangkan data secara berkala.',
+  'Topologi jaringan adalah susunan/cara perangkat terhubung dalam jaringan. Jenis umum: Bus (satu kabel utama), Star (pusat switch), Ring (lingkaran), Mesh (semua terhubung semua), Tree (berjenjang seperti pohon).',
+  'Media akses jaringan adalah jalur yang dipakai data berpindah antarperangkat. Jenis: kabel (Ethernet/twisted pair, coaxial, fiber optik) dan nirkabel (Wi-Fi, Bluetooth, jaringan seluler 4G/5G).',
+  'Model OSI (Open Systems Interconnection) adalah model 7 lapis yang menjelaskan tahapan komunikasi data: Application, Presentation, Session, Transport, Network, Data Link, Physical. Fungsinya sebagai standar pemahaman bagaimana data berpindah dari pengguna ke media fisik dan sebaliknya.',
+  'TCP/IP adalah dua protokol yang bekerja sama sebagai pondasi internet. TCP memecah data jadi paket dan memastikan sampai utuh. IP memberi alamat unik dan mengarahkan paket ke tujuan. Fungsi: memungkinkan komunikasi data yang andal dan terarah di seluruh internet.'
+];
+
+let activeLkpdGroup = 1;
+function slide_lkpd(){
+  return `
+  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,#E3F2FD,#F4F9FF);border-color:#90CAF9">
+    <div style="display:flex;align-items:flex-start;gap:14px">
+      <div style="width:44px;height:44px;border-radius:12px;background:var(--r-blue);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">${icon('book',22)}</div>
+      <div style="flex:1">
+        <h4 style="font-family:Montserrat;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px">Lembar Kerja Peserta Didik (LKPD)</h4>
+        <p style="font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0">Kerjakan secara berkelompok. Pilih kelompokmu, baca pertanyaan, lalu tulis jawaban di kolom yang tersedia. Jawaban tersimpan otomatis di perangkat ini. <b>10 pertanyaan</b> dibagi ke <b>8 kelompok</b>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="lkpd-tabs">
+    ${LKPD_GROUPS.map(g=>`<button class="lkpd-tab ${g.g===activeLkpdGroup?'active':''}" onclick="selectLkpdGroup(${g.g})"><span class="gnum">Kelompok ${g.g}</span> · ${g.q.length} soal</button>`).join('')}
+  </div>
+  <div class="lkpd-panel" id="lkpdPanel">
+    ${renderLkpdGroup(activeLkpdGroup)}
+  </div>
+  <div class="lkpd-foot" style="margin-top:14px">
+    <div class="lkpd-status">Total jawaban tersimpan: <b id="lkpdCount">${countLkpdSaved()}</b> dari 10</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-outline" onclick="exportProgress()">${icon('server',14)} Ekspor Jawaban</button>
+      <button class="btn-outline" onclick="openTeacher()">${icon('lock',14)} Mode Guru</button>
+    </div>
+  </div>`;
+}
+
+function renderLkpdGroup(g){
+  const grp = LKPD_GROUPS.find(x=>x.g===g);
+  return `<div style="margin-bottom:10px;font-size:13px;color:var(--blue-d);font-weight:600">KELOMPOK ${g} — Soal nomor ${grp.q.map(i=>i+1).join(', ')}</div>` +
+    grp.q.map(qi=>{
+      const ans = state.lkpd.answers[qi] || '';
+      const saved = ans.trim().length > 0;
+      return `<div class="lkpd-q">
+        <div class="qtext"><span class="qn">${qi+1}</span><span>${LKPD_QUESTIONS[qi]}</span></div>
+        <textarea class="lkpd-ta ${saved?'saved':''}" id="lkpd-${qi}" oninput="saveLkpd(${qi},this.value)" placeholder="Tulis jawaban kelompokmu di sini...">${escapeHtml(ans)}</textarea>
+        ${saved ? '<span class="saved-tag">'+icon('check',12)+' Tersimpan</span>' : ''}
+      </div>`;
+    }).join('');
+}
+
+function selectLkpdGroup(g){
+  activeLkpdGroup = g;
+  const tabs = document.querySelectorAll('.lkpd-tab');
+  tabs.forEach((t, idx) => {
+    const grp = LKPD_GROUPS[idx];
+    t.classList.toggle('active', grp && grp.g === g);
+  });
+  // re-render panel
+  const panel = document.getElementById('lkpdPanel');
+  if(panel) panel.innerHTML = renderLkpdGroup(g);
+  // scroll panel into view
+  if(panel) panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function saveLkpd(i, val){
+  state.lkpd.answers[i] = val;
+  saveState();
+  const ta = document.getElementById(`lkpd-${i}`);
+  if(ta){
+    ta.classList.toggle('saved', val.trim().length>0);
+  }
+  const cnt = document.getElementById('lkpdCount');
+  if(cnt) cnt.textContent = countLkpdSaved();
+}
+
+function countLkpdSaved(){
+  return Object.keys(state.lkpd.answers).filter(k=>state.lkpd.answers[k] && state.lkpd.answers[k].trim().length>0).length;
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ========================================================
+   FINAL SLIDE
+======================================================== */
+function slide_final(){
+  const quizScore = state.quiz.done ? state.quiz.score : 0;
+  const matchDone = state.match.matched.length===MATCH_PAIRS.length;
+  const lkpdCount = countLkpdSaved();
+  return `
+  <div class="final-card">
+    <div class="ic">${icon('trophy',40)}</div>
+    <h2>Selamat! Kamu Telah Menyelesaikan Pembelajaran</h2>
+    <p>Kamu telah mempelajari <b>jaringan komputer dan internet</b>—dari pengertian, hardware, software, protokol, TCP/IP, DNS, HTTPS, etika digital, keamanan data, topologi, media akses, hingga model OSI. Teruslah belajar dan berlatih!</p>
+    <div class="final-stats">
+      <div class="final-stat"><b>${quizScore}</b><span>Skor Kuis</span></div>
+      <div class="final-stat"><b>${state.match.matched.length}/${MATCH_PAIRS.length}</b><span>Tantangan</span></div>
+      <div class="final-stat"><b>${lkpdCount}/10</b><span>LKPD</span></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px">
+      <button class="btn-primary" onclick="goTo('intro')">${icon('refresh',16)} Ulangi dari Awal</button>
+      <button class="btn-outline" onclick="goTo('lkpd')">Buka LKPD</button>
+      <button class="btn-outline" onclick="openTeacher()">${icon('lock',14)} Mode Guru</button>
+    </div>
+    <p style="margin-top:24px;font-size:12px;color:var(--muted)">SMP Negeri 1 Moga · Informatika Kelas IX · TA 2026/2027</p>
+  </div>`;
+}
+
+/* ========================================================
+   APP CONTROL
+======================================================== */
+function startApp(skipToMenu){
+  document.getElementById('cover').classList.add('hidden-cover');
+  setTimeout(()=>{
+    document.getElementById('cover').style.display='none';
+    document.getElementById('main').classList.add('shown');
+  }, 500);
+  setTimeout(()=>{
+    buildSlides();
+    buildDrawer();
+    goTo(skipToMenu ? 'intro' : 0);
+  }, 100);
+}
+
+function buildSlides(){
+  const stage = document.getElementById('stage');
+  stage.innerHTML = SLIDES.map((s,i)=>`<div class="slide" data-index="${i}" data-id="${s.id}">${renderSlide(s)}</div>`).join('');
+  // attach flow listeners
+  document.querySelectorAll('.flow-step').forEach(el=>{
+    el.addEventListener('click', ()=>selectFlowStep(parseInt(el.dataset.step)));
+  });
+  // attach device listeners
+  document.querySelectorAll('.dev-node').forEach(el=>{
+    el.addEventListener('click', ()=>selectDevice(el.dataset.dev));
+  });
+}
+
+function buildDrawer(){
+  const body = document.getElementById('drawerBody');
+  const sections = [
+    {title:'Materi Pokok', ids:['intro','hardware','software','internet','protocol','tcpip','dns-https','etika','keamanan','media']},
+    {title:'Simulasi Interaktif', ids:['sim-jaringan','sim-internet','sim-topologi','sim-osi']},
+    {title:'Evaluasi & Tugas', ids:['kuis','tantangan','refleksi','lkpd','final']}
+  ];
+  body.innerHTML = sections.map(sec=>`
+    <div class="drawer-section">
+      <h4>${sec.title}</h4>
+      ${sec.ids.map(id=>{
+        const s = SLIDES.find(x=>x.id===id);
+        return `<button class="drawer-item" data-id="${id}" onclick="goTo('${id}')">
+          <span class="di-num">${s.num}</span>
+          <span>${s.title}</span>
+          ${state.visited[id]?'<span class="di-check">'+icon('check',14)+'</span>':''}
+        </button>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+function renderCurrent(){
+  const slide = document.querySelector('.slide.active');
+  if(!slide) return;
+  const s = SLIDES[parseInt(slide.dataset.index)];
+  slide.querySelector('.slide-inner').innerHTML = renderSlide(s).match(/<div class="slide-inner">([\s\S]*?)<\/div>\s*$/)?.[1] || '';
+  // re-attach listeners for interactive slides
+  if(s.id==='sim-internet'){
+    document.querySelectorAll('.flow-step').forEach(el=>{
+      el.addEventListener('click', ()=>selectFlowStep(parseInt(el.dataset.step)));
+    });
+  }
+  if(s.id==='sim-jaringan'){
+    document.querySelectorAll('.dev-node').forEach(el=>{
+      el.addEventListener('click', ()=>selectDevice(el.dataset.dev));
+    });
+  }
+}
+
+function goTo(idOrIdx){
+  let idx = typeof idOrIdx === 'number' ? idOrIdx : SLIDES.findIndex(s=>s.id===idOrIdx);
+  if(idx<0) idx=0;
+  if(idx>=SLIDES.length) idx=SLIDES.length-1;
+  const slides = document.querySelectorAll('.slide');
+  slides.forEach((s,i)=>{
+    s.classList.remove('active','prev');
+    if(i<idx) s.classList.add('prev');
+    if(i===idx) s.classList.add('active');
+  });
+  state.current = idx;
+  state.visited[SLIDES[idx].id] = true;
+  updateNav();
+  updateProgress();
+  buildDrawer();
+  saveState();
+  // scroll to top
+  const active = document.querySelector('.slide.active');
+  if(active) active.scrollTop = 0;
+}
+
+function go(delta){
+  let idx = state.current + delta;
+  if(idx<0) idx=0;
+  if(idx>=SLIDES.length) idx=SLIDES.length-1;
+  goTo(idx);
+}
+
+function updateNav(){
+  document.getElementById('prevBtn').disabled = state.current===0;
+  document.getElementById('nextBtn').disabled = state.current===SLIDES.length-1;
+  document.getElementById('navCenter').innerHTML = `<b>${SLIDES[state.current].num}</b> · ${SLIDES[state.current].title}`;
+}
+
+function updateProgress(){
+  const total = SLIDES.length;
+  const visited = Object.keys(state.visited).filter(k=>state.visited[k]).length;
+  const pct = Math.round(visited/total*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = visited+' / '+total;
+}
+
+/* Menu drawer */
+function toggleMenu(show){
+  document.getElementById('drawer').classList.toggle('show', show);
+  document.getElementById('drawerMask').classList.toggle('show', show);
+}
+
+/* Settings */
+function openSettings(){
+  closeModal('settingsModal');
+  setTimeout(()=>document.getElementById('settingsModal').classList.add('show'),50);
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+}
+
+function confirmReset(){
+  closeModal('settingsModal');
+  setTimeout(()=>document.getElementById('resetModal').classList.add('show'),50);
+}
+
+function resetProgress(){
+  localStorage.removeItem(STORAGE_KEY);
+  state.visited = {};
+  state.quiz = {current:0, answers:{}, firstAttempt:{}, score:0, done:false};
+  state.match = {matched:[], selected:null, done:false};
+  state.matchData = null;
+  state.lkpd = {answers:{}};
+  state.reflect = {answers:{}};
+  state.teacherUnlocked = false;
+  state.current = 0;
+  buildSlides();
+  buildDrawer();
+  goTo(0);
+  closeModal('resetModal');
+  showToast('Progres berhasil direset');
+}
+
+function exportProgress(){
+  let txt = '=== JAWABAN LKPD ===\n\n';
+  LKPD_QUESTIONS.forEach((q,i)=>{
+    const ans = state.lkpd.answers[i] || '(belum dijawab)';
+    txt += `${i+1}. ${q}\nJawaban: ${ans}\n\n`;
+  });
+  txt += '\n=== REFLESI ===\n\n';
+  REFLECT_QUESTIONS.forEach((q,i)=>{
+    const ans = state.reflect.answers[i] || '(belum dijawab)';
+    txt += `${i+1}. ${q}\nJawaban: ${ans}\n\n`;
+  });
+  txt += `\n=== HASIL KUIS ===\nSkor: ${state.quiz.done?state.quiz.score:'(belum selesai)'}\n`;
+  const blob = new Blob([txt], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'jawaban_lkpd_jaringan.txt';
+  a.click();
+  showToast('Jawaban diekspor ke file teks');
+}
+
+/* Fullscreen */
+function toggleFullscreen(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
+  }
+}
+
+/* Teacher mode */
+function openTeacher(){
+  toggleMenu(false);
+  closeModal('teacherModal');
+  setTimeout(()=>document.getElementById('teacherModal').classList.add('show'),50);
+  if(state.teacherUnlocked){
+    document.getElementById('teacherLock').classList.add('hidden');
+    document.getElementById('teacherContent').classList.remove('hidden');
+    document.getElementById('teacherContent').innerHTML = renderTeacherContent();
+  } else {
+    document.getElementById('teacherLock').classList.remove('hidden');
+    document.getElementById('teacherContent').classList.add('hidden');
+    document.getElementById('teacherPass').value = '';
+  }
+}
+
+function checkTeacher(){
+  const pass = document.getElementById('teacherPass').value;
+  if(pass === TEACHER_PASS){
+    state.teacherUnlocked = true;
+    document.getElementById('teacherLock').classList.add('hidden');
+    document.getElementById('teacherContent').classList.remove('hidden');
+    document.getElementById('teacherContent').innerHTML = renderTeacherContent();
+  } else {
+    document.getElementById('teacherErr').classList.add('show');
+  }
+}
+
+function renderTeacherContent(){
+  return `
+    <h3 style="margin-bottom:14px">Mode Guru — Kunci Jawaban & Pedoman Penilaian</h3>
+    <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+      <button class="btn-outline" onclick="showTeacherTab('lkpd')" id="tab-lkpd-btn" style="background:var(--blue);color:#fff;border-color:var(--blue)">Kunci LKPD</button>
+      <button class="btn-outline" onclick="showTeacherTab('quiz')" id="tab-quiz-btn">Kunci Kuis</button>
+      <button class="btn-outline" onclick="showTeacherTab('rubric')" id="tab-rubric-btn">Pedoman Penilaian</button>
+    </div>
+    <div id="tab-lkpd">
+      <h4 style="font-family:Montserrat;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:12px">Kunci Jawaban LKPD (10 Soal)</h4>
+      ${LKPD_QUESTIONS.map((q,i)=>`
+        <div class="answer-key">
+          <h5><span class="num">${i+1}</span> Soal</h5>
+          <p style="margin-bottom:6px">${q}</p>
+          <p style="background:#fff;padding:10px;border-radius:8px;font-size:13.5px"><b>Kunci:</b> ${LKPD_KEYS[i]}</p>
+          <div class="rubric">
+            <b>Skor maksimal:</b> 10 poin<br>
+            <b>Pedoman:</b> Jawaban benar & lengkap = 10; benar tapi kurang lengkap = 6–8; jawaban dangkal = 3–5; jawaban salah/kosong = 0.
+            ${LKPD_GROUPS.filter(g=>g.q.includes(i)).map(g=>`<br><b>Kelompok ${g.g}.</b>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div id="tab-quiz" class="hidden">
+      <h4 style="font-family:Montserrat;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:12px">Kunci Jawaban Kuis (${QUIZ_QUESTIONS.length} Soal)</h4>
+      ${QUIZ_QUESTIONS.map((q,i)=>`
+        <div class="answer-key">
+          <h5><span class="num">${i+1}</span> Soal</h5>
+          <p style="margin-bottom:6px">${q.q}</p>
+          <p style="background:#fff;padding:10px;border-radius:8px;font-size:13.5px"><b>Jawaban:</b> ${String.fromCharCode(65+q.a)}. ${q.opts[q.a]}</p>
+          <div class="rubric"><b>Pembahasan:</b> ${q.why}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div id="tab-rubric" class="hidden">
+      <h4 style="font-family:Montserrat;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:12px">Pedoman Penilaian</h4>
+      <table class="cmp-table">
+        <thead><tr><th>Komponen</th><th>Bobot</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td><b>Kuis Pilihan Ganda</b></td><td>40%</td><td>10 soal × 4 poin = 40. Otomatis dinilai sistem.</td></tr>
+          <tr><td><b>LKPD Kelompok</b></td><td>40%</td><td>10 soal × 4 poin = 40. Dinilai guru berdasarkan kelengkapan jawaban.</td></tr>
+          <tr><td><b>Tantangan Matching</b></td><td>10%</td><td>Dinilai otomatis: jumlah pasangan benar / total.</td></tr>
+          <tr><td><b>Refleksi & Partisipasi</b></td><td>10%</td><td>Dinilai guru berdasarkan kualitas refleksi dan partisipasi diskusi kelompok.</td></tr>
+        </tbody>
+      </table>
+      <div class="answer-key" style="margin-top:14px">
+        <h5>Cara Menghitung Nilai Akhir</h5>
+        <p>Nilai Akhir = (Skor Kuis/40 × 40) + (Skor LKPD/40 × 40) + (Skor Matching/8 × 10) + (Skor Refleksi/10 × 10)</p>
+        <p style="margin-top:6px">Contoh: Kuis 36 + LKPD 32 + Matching 8 + Refleksi 8 = <b>84</b></p>
+      </div>
+      <div class="answer-key" style="background:#DCFCE7;border-color:#86EFAC">
+        <h5 style="color:#15803d">Kriteria Ketuntasan</h5>
+        <p><b>Tuntas:</b> Nilai ≥ 75 · <b>Perlu perbaikan:</b> 60–74 · <b>Belum tuntas:</b> &lt; 60</p>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('teacherModal')">Tutup</button>
+    </div>
+  `;
+}
+
+function showTeacherTab(tab){
+  ['lkpd','quiz','rubric'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==tab);
+    document.getElementById('tab-'+t+'-btn').style.background = t===tab?'var(--blue)':'';
+    document.getElementById('tab-'+t+'-btn').style.color = t===tab?'#fff':'';
+    document.getElementById('tab-'+t+'-btn').style.borderColor = t===tab?'var(--blue)':'';
+  });
+}
+
+/* Toast */
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* Storage */
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      visited: state.visited,
+      quiz: state.quiz,
+      match: state.match,
+      lkpd: state.lkpd,
+      reflect: state.reflect,
+      teacherUnlocked: false // never persist
+    }));
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const d = JSON.parse(raw);
+      state.visited = d.visited || {};
+      // Migrate quiz state to new structure
+      if(d.quiz){
+        const q = d.quiz;
+        state.quiz = {
+          current: q.current || 0,
+          answers: q.answers || {},
+          firstAttempt: q.firstAttempt || (q.answers ? {...q.answers} : {}),
+          score: q.score || 0,
+          done: !!q.done
+        };
+        state.quiz.lastAns = null;
+      } else {
+        state.quiz = {current:0, answers:{}, firstAttempt:{}, score:0, done:false};
+      }
+      state.match = d.match || {matched:[], selected:null, done:false};
+      state.lkpd = d.lkpd || {answers:{}};
+      state.reflect = d.reflect || {answers:{}};
+    }
+  }catch(e){}
+}
+
+/* Keyboard nav */
+document.addEventListener('keydown', e=>{
+  // Only handle keys when main app is shown (cover hidden)
+  if(!document.getElementById('main').classList.contains('shown')) return;
+  // Ignore when typing in textarea/input
+  const tag = (e.target.tagName || '').toLowerCase();
+  if(tag === 'textarea' || tag === 'input') {
+    if(e.key === 'Escape') e.target.blur();
+    return;
+  }
+  if(e.key==='ArrowRight' || e.key==='PageDown'){go(1);e.preventDefault()}
+  else if(e.key==='ArrowLeft' || e.key==='PageUp'){go(-1);e.preventDefault()}
+  else if(e.key==='Home'){goTo(0);e.preventDefault()}
+  else if(e.key==='End'){goTo(SLIDES.length-1);e.preventDefault()}
+  else if(e.key==='Escape'){toggleMenu(false);closeModal('settingsModal');closeModal('resetModal');closeModal('teacherModal')}
+  else if(e.key==='m' || e.key==='M'){toggleMenu(true)}
+  else if(e.key==='f' || e.key==='F'){toggleFullscreen()}
+});
+
+/* Init on load */
+loadState();
+</script>
+</body>
+</html>
