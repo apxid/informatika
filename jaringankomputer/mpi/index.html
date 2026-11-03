@@ -6,39 +6,19 @@
 <title>Jaringan Komputer & Internet — Informatika IX | SMPN 1 Moga</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cinzel+Decorative:wght@700;900&family=Lato:wght@400;700;900&family=MedievalSharp&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cinzel+Decorative:wght@700;900&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 
-<!-- ========================================================
-     GANTI URL INI DENGAN URL EXEC APPS SCRIPT KAMU
-     Contoh: https://script.google.com/macros/s/AKfycb.../exec
-     ======================================================== -->
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwccSVcmctZVl30HHXH8a-BaT4ETmOEkhX6OozU2BU6PTdGDSOq_krTOTyjhfoybT1rwQ/exec
-';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwccSVcmctZVl30HHXH8a-BaT4ETmOEkhX6OozU2BU6PTdGDSOq_krTOTyjhfoybT1rwQ/exec';
 </script>
 
 <style>
 :root{
-  --wood-darkest:#1a0e08;
-  --wood-dark:#2C1810;
-  --wood:#4A2C17;
-  --wood-mid:#6B4423;
-  --wood-gold:#8B6B3A;
-  --gold:#D4A849;
-  --gold-bright:#F4D03F;
-  --gold-glow:#FFD700;
-  --parchment:#F5E6C8;
-  --parchment-l:#FAF0DC;
-  --cream:#FFF8E7;
-  --stone:#5C5C5C;
-  --stone-d:#3D3D3D;
-  --green:#4A7C2A;
-  --green-d:#2D5016;
-  --red:#8B2C1B;
-  --red-d:#5C1A0E;
-  --blue:#2C5F8B;
-  --blue-l:#5A8FBC;
-  --shadow-deep:0 8px 24px rgba(0,0,0,.5);
+  --wood-darkest:#1a0e08; --wood-dark:#2C1810; --wood:#4A2C17; --wood-mid:#6B4423;
+  --wood-gold:#8B6B3A; --gold:#D4A849; --gold-bright:#F4D03F; --gold-glow:#FFD700;
+  --parchment:#F5E6C8; --parchment-l:#FAF0DC; --cream:#FFF8E7;
+  --stone:#5C5C5C; --stone-d:#3D3D3D; --green:#4A7C2A; --green-d:#2D5016;
+  --red:#8B2C1B; --red-d:#5C1A0E; --blue:#2C5F8B; --blue-l:#5A8FBC;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'Lato',system-ui,sans-serif}
@@ -47,9 +27,7 @@ body{
     radial-gradient(circle at 20% 20%,rgba(212,168,73,.12),transparent 40%),
     radial-gradient(circle at 80% 80%,rgba(74,124,42,.08),transparent 40%),
     linear-gradient(135deg,#1a0e08 0%,#2C1810 50%,#1a0e08 100%);
-  background-attachment:fixed;
-  color:var(--parchment);
-  overflow-x:hidden;
+  background-attachment:fixed;color:var(--parchment);overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
@@ -58,523 +36,407 @@ img{display:block;max-width:100%}
 h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 .hidden{display:none!important}
 
-/* ===== WOOD/PARCHMENT PANELS ===== */
+/* ===== PANELS ===== */
 .panel-wood{
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.05),transparent 30%),
-    linear-gradient(135deg,#4A2C17 0%,#3D2410 100%);
-  border:3px solid #6B4423;
-  border-radius:14px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.15),
-    inset 0 -3px 0 rgba(0,0,0,.4),
-    0 6px 18px rgba(0,0,0,.5);
+  background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 30%),linear-gradient(135deg,#4A2C17 0%,#3D2410 100%);
+  border:3px solid #6B4423;border-radius:14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),inset 0 -3px 0 rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.5);
   position:relative;
 }
-.panel-wood::before{
-  content:"";position:absolute;inset:6px;border:1px solid rgba(212,168,73,.25);border-radius:8px;pointer-events:none;
-}
+.panel-wood::before{content:"";position:absolute;inset:6px;border:1px solid rgba(212,168,73,.25);border-radius:8px;pointer-events:none}
 .panel-parchment{
   background:linear-gradient(135deg,#F5E6C8 0%,#E8D5A8 100%);
-  border:3px solid #8B6B3A;
-  border-radius:14px;
-  color:#2C1810;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.5),
-    inset 0 -3px 0 rgba(0,0,0,.15),
-    0 6px 18px rgba(0,0,0,.5);
+  border:3px solid #8B6B3A;border-radius:14px;color:#2C1810;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 0 -3px 0 rgba(0,0,0,.15),0 6px 18px rgba(0,0,0,.5);
   position:relative;
 }
-.panel-parchment::before{
-  content:"";position:absolute;inset:4px;border:1px dashed rgba(139,107,58,.4);border-radius:8px;pointer-events:none;
-}
+.panel-parchment::before{content:"";position:absolute;inset:4px;border:1px dashed rgba(139,107,58,.4);border-radius:8px;pointer-events:none}
 
 /* ===== 3D BUTTONS ===== */
 .btn-3d{
-  background:linear-gradient(180deg,#8B6B3A 0%,#6B4423 100%);
-  color:var(--cream);
-  font-family:'Cinzel',serif;font-weight:700;letter-spacing:.04em;font-size:15px;
-  border:2px solid #4A2C17;
-  border-radius:12px;
-  padding:14px 26px;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.25),
-    0 6px 0 #3D2410,
-    0 9px 16px rgba(0,0,0,.55);
-  transition:all .12s;
-  text-shadow:0 1px 2px rgba(0,0,0,.6);
+  background:linear-gradient(180deg,#8B6B3A 0%,#6B4423 100%);color:var(--cream);
+  font-family:'Cinzel',serif;font-weight:700;letter-spacing:.04em;font-size:16px;
+  border:2px solid #4A2C17;border-radius:12px;padding:14px 26px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 6px 0 #3D2410,0 9px 16px rgba(0,0,0,.55);
+  transition:all .12s;text-shadow:0 1px 2px rgba(0,0,0,.6);
   display:inline-flex;align-items:center;gap:10px;
 }
 .btn-3d:hover{background:linear-gradient(180deg,#A07D45 0%,#7B5229 100%);transform:translateY(-1px)}
-.btn-3d:active{
-  transform:translateY(4px);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.25),
-    0 2px 0 #3D2410,
-    0 4px 8px rgba(0,0,0,.5);
-}
+.btn-3d:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 2px 0 #3D2410,0 4px 8px rgba(0,0,0,.5)}
 .btn-3d:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
 .btn-gold{
   background:linear-gradient(180deg,#FFE17A 0%,#F4D03F 40%,#D4A849 70%,#A8821E 100%);
-  color:#2C1810;
-  border:2px solid #8B6B3A;
-  border-radius:12px;
-  padding:14px 30px;
-  font-family:'Cinzel',serif;font-weight:900;font-size:15px;letter-spacing:.04em;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.6),
-    inset 0 -2px 0 rgba(0,0,0,.25),
-    0 6px 0 #6B4423,
-    0 12px 22px rgba(0,0,0,.55),
-    0 0 24px rgba(244,208,63,.4);
-  text-shadow:0 1px 1px rgba(255,255,255,.4);
-  cursor:pointer;
-  transition:all .12s;
+  color:#2C1810;border:2px solid #8B6B3A;border-radius:12px;padding:14px 30px;
+  font-family:'Cinzel',serif;font-weight:900;font-size:16px;letter-spacing:.04em;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(0,0,0,.25),0 6px 0 #6B4423,0 12px 22px rgba(0,0,0,.55),0 0 24px rgba(244,208,63,.4);
+  text-shadow:0 1px 1px rgba(255,255,255,.4);cursor:pointer;transition:all .12s;
   display:inline-flex;align-items:center;gap:10px;
 }
 .btn-gold:hover{transform:translateY(-1px);filter:brightness(1.08)}
-.btn-gold:active{
-  transform:translateY(4px);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.6),
-    0 2px 0 #6B4423,
-    0 4px 10px rgba(0,0,0,.5);
-}
-.btn-gold:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:grayscale(.6)}
+.btn-gold:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 2px 0 #6B4423,0 4px 10px rgba(0,0,0,.5)}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:grayscale(.6)}
 
 .btn-red{
-  background:linear-gradient(180deg,#C0392B 0%,#8B2C1B 100%);
-  color:#fff;
-  border:2px solid #5C1A0E;
-  border-radius:12px;
-  padding:12px 22px;
-  font-family:'Cinzel',serif;font-weight:700;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.2),
-    0 5px 0 #5C1A0E,
-    0 8px 14px rgba(0,0,0,.5);
-  text-shadow:0 1px 2px rgba(0,0,0,.5);
-  transition:all .12s;
+  background:linear-gradient(180deg,#C0392B 0%,#8B2C1B 100%);color:#fff;
+  border:2px solid #5C1A0E;border-radius:12px;padding:12px 22px;
+  font-family:'Cinzel',serif;font-weight:700;font-size:14px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.2),0 5px 0 #5C1A0E,0 8px 14px rgba(0,0,0,.5);
+  text-shadow:0 1px 2px rgba(0,0,0,.5);transition:all .12s;
   display:inline-flex;align-items:center;gap:8px;
 }
 .btn-red:hover{transform:translateY(-1px);filter:brightness(1.1)}
 .btn-red:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.2),0 1px 0 #5C1A0E,0 3px 6px rgba(0,0,0,.5)}
 
 .btn-green{
-  background:linear-gradient(180deg,#5A9332 0%,#3D6B1F 100%);
-  color:#fff;
-  border:2px solid #2D5016;
-  border-radius:12px;
-  padding:12px 22px;
-  font-family:'Cinzel',serif;font-weight:700;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.2),
-    0 5px 0 #2D5016,
-    0 8px 14px rgba(0,0,0,.5);
-  text-shadow:0 1px 2px rgba(0,0,0,.5);
-  transition:all .12s;
+  background:linear-gradient(180deg,#5A9332 0%,#3D6B1F 100%);color:#fff;
+  border:2px solid #2D5016;border-radius:12px;padding:14px 26px;
+  font-family:'Cinzel',serif;font-weight:700;font-size:16px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.2),0 5px 0 #2D5016,0 8px 14px rgba(0,0,0,.5);
+  text-shadow:0 1px 2px rgba(0,0,0,.5);transition:all .12s;
   display:inline-flex;align-items:center;gap:8px;
 }
 .btn-green:hover{transform:translateY(-1px);filter:brightness(1.1)}
 .btn-green:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.2),0 1px 0 #2D5016,0 3px 6px rgba(0,0,0,.5)}
 
-/* ===== LOGIN SCREEN ===== */
+/* ===== LOGIN ===== */
 #screen-login{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  padding:24px;
-  background:
-    radial-gradient(ellipse at center,rgba(212,168,73,.15) 0%,transparent 60%),
-    linear-gradient(135deg,#1a0e08 0%,#2C1810 100%);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(ellipse at center,rgba(212,168,73,.15) 0%,transparent 60%),linear-gradient(135deg,#1a0e08 0%,#2C1810 100%);
 }
-.login-card{
-  width:100%;max-width:480px;
-  padding:36px 32px;
-  position:relative;
-  animation:slideUp .8s cubic-bezier(.2,.8,.2,1);
-}
+.login-card{width:100%;max-width:480px;padding:36px 32px;position:relative;animation:slideUp .8s cubic-bezier(.2,.8,.2,1)}
 @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
-.login-banner{
-  text-align:center;margin-bottom:24px;
-}
+.login-banner{text-align:center;margin-bottom:24px}
 .login-banner .crest{
   width:88px;height:88px;margin:0 auto 14px;
   background:radial-gradient(circle,#FFD700 30%,#D4A849 70%,#8B6B3A 100%);
-  border:3px solid #4A2C17;
-  border-radius:50%;
+  border:3px solid #4A2C17;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 30px rgba(255,215,0,.5),inset 0 -4px 8px rgba(0,0,0,.4);
 }
 .login-banner .crest svg{width:50px;height:50px;color:#2C1810}
 .login-banner h1{
-  font-family:'Cinzel Decorative',serif;
-  font-size:clamp(22px,4vw,30px);
-  color:var(--gold-bright);
-  text-shadow:0 2px 6px rgba(0,0,0,.7),0 0 14px rgba(244,208,63,.4);
+  font-family:'Cinzel Decorative',serif;font-size:clamp(22px,4vw,30px);
+  color:var(--gold-bright);text-shadow:0 2px 6px rgba(0,0,0,.7),0 0 14px rgba(244,208,63,.4);
   margin-bottom:6px;line-height:1.15;
 }
-.login-banner p{color:var(--parchment);font-size:13.5px;opacity:.85}
+.login-banner p{color:var(--parchment);font-size:14px;opacity:.85}
 .login-banner .school{
   display:inline-block;margin-top:10px;padding:5px 14px;
   background:rgba(212,168,73,.15);border:1px solid rgba(212,168,73,.35);
-  border-radius:99px;font-size:11.5px;color:var(--gold);font-weight:600;letter-spacing:.06em;
+  border-radius:99px;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.06em;
 }
 .field{margin-bottom:16px}
-.field label{
-  display:block;font-family:'Cinzel',serif;font-weight:700;font-size:13px;
-  color:var(--gold-bright);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase;
-}
+.field label{display:block;font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:var(--gold-bright);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}
 .field input{
-  width:100%;padding:14px 16px;
-  background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
-  border:2px solid #6B4423;border-radius:10px;
-  font-size:15px;color:#2C1810;font-weight:600;
-  box-shadow:inset 0 2px 4px rgba(0,0,0,.15),inset 0 -1px 0 rgba(255,255,255,.5);
-  transition:all .15s;
+  width:100%;padding:14px 16px;background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
+  border:2px solid #6B4423;border-radius:10px;font-size:16px;color:#2C1810;font-weight:600;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.15),inset 0 -1px 0 rgba(255,255,255,.5);transition:all .15s;
 }
-.field input:focus{
-  outline:none;border-color:var(--gold);box-shadow:inset 0 2px 4px rgba(0,0,0,.15),0 0 0 3px rgba(244,208,63,.25);
-}
-.field .err{font-size:12px;color:#FF8888;margin-top:5px;display:none}
+.field input:focus{outline:none;border-color:var(--gold);box-shadow:inset 0 2px 4px rgba(0,0,0,.15),0 0 0 3px rgba(244,208,63,.25)}
+.field .err{font-size:13px;color:#FF8888;margin-top:5px;display:none}
 .field .err.show{display:block}
 .login-actions{margin-top:8px}
-.login-actions .btn-gold{width:100%;justify-content:center;font-size:16px;padding:16px}
-.login-note{
-  margin-top:18px;text-align:center;font-size:11.5px;color:var(--parchment);opacity:.6;line-height:1.5;
-}
+.login-actions .btn-gold{width:100%;justify-content:center;font-size:17px;padding:16px}
+.login-note{margin-top:18px;text-align:center;font-size:12.5px;color:var(--parchment);opacity:.6;line-height:1.5}
 
 /* ===== MAIN APP ===== */
 #app-main{display:none;min-height:100vh;flex-direction:column}
 #app-main.shown{display:flex}
 
-/* Top bar */
 .topbar{
   display:flex;align-items:center;gap:14px;padding:12px 20px;
   background:linear-gradient(180deg,#3D2410 0%,#2C1810 100%);
-  border-bottom:3px solid #6B4423;
-  box-shadow:0 4px 12px rgba(0,0,0,.5);
+  border-bottom:3px solid #6B4423;box-shadow:0 4px 12px rgba(0,0,0,.5);
   position:sticky;top:0;z-index:30;
 }
 .brand{display:flex;align-items:center;gap:12px;min-width:0;flex-shrink:0}
 .brand-crest{
   width:42px;height:42px;border-radius:10px;
   background:radial-gradient(circle,#FFD700 30%,#D4A849 80%);
-  border:2px solid #4A2C17;
-  display:flex;align-items:center;justify-content:center;
+  border:2px solid #4A2C17;display:flex;align-items:center;justify-content:center;
   box-shadow:0 0 12px rgba(255,215,0,.4);
 }
 .brand-crest svg{width:24px;height:24px;color:#2C1810}
-.brand-text{min-width:0}
 .brand-text .t1{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:var(--gold-bright);white-space:nowrap}
-.brand-text .t2{font-size:11px;color:var(--parchment);opacity:.7;white-space:nowrap}
+.brand-text .t2{font-size:11.5px;color:var(--parchment);opacity:.7;white-space:nowrap}
 .progress-wrap{flex:1;display:flex;align-items:center;gap:10px;max-width:420px;margin:0 auto}
-.progress-track{
-  flex:1;height:14px;
-  background:#1a0e08;border:2px solid #6B4423;border-radius:99px;
-  overflow:hidden;position:relative;
-  box-shadow:inset 0 2px 4px rgba(0,0,0,.6);
-}
-.progress-fill{
-  height:100%;
-  background:linear-gradient(180deg,#FFE17A 0%,#F4D03F 40%,#D4A849 100%);
-  border-radius:99px;
-  transition:width .5s cubic-bezier(.2,.8,.2,1);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 8px rgba(244,208,63,.5);
-}
+.progress-track{flex:1;height:14px;background:#1a0e08;border:2px solid #6B4423;border-radius:99px;overflow:hidden;position:relative;box-shadow:inset 0 2px 4px rgba(0,0,0,.6)}
+.progress-fill{height:100%;background:linear-gradient(180deg,#FFE17A 0%,#F4D03F 40%,#D4A849 100%);border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 8px rgba(244,208,63,.5)}
 .progress-label{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--gold-bright);white-space:nowrap}
 .player-chip{
   display:flex;align-items:center;gap:8px;padding:8px 14px;
   background:linear-gradient(180deg,#4A2C17 0%,#3D2410 100%);
-  border:2px solid #8B6B3A;border-radius:99px;
-  font-size:12.5px;font-weight:600;color:var(--gold-bright);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 3px 8px rgba(0,0,0,.4);
-  flex-shrink:0;
+  border:2px solid #8B6B3A;border-radius:99px;font-size:12.5px;font-weight:600;color:var(--gold-bright);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 3px 8px rgba(0,0,0,.4);flex-shrink:0;
 }
-.player-chip .av{
-  width:24px;height:24px;border-radius:50%;
-  background:radial-gradient(circle,#FFD700,#8B6B3A);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-weight:800;font-size:11px;color:#2C1810;
-}
+.player-chip .av{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle,#FFD700,#8B6B3A);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:800;font-size:11px;color:#2C1810}
 .top-actions{display:flex;gap:6px;flex-shrink:0}
 .icon-btn{
   width:38px;height:38px;border-radius:10px;
   background:linear-gradient(180deg,#6B4423 0%,#4A2C17 100%);
   border:2px solid #8B6B3A;color:var(--gold-bright);
-  display:flex;align-items:center;justify-content:center;
-  transition:all .12s;
+  display:flex;align-items:center;justify-content:center;transition:all .12s;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 3px 6px rgba(0,0,0,.4);
 }
 .icon-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
 .icon-btn:active{transform:translateY(1px)}
 .icon-btn svg{width:18px;height:18px}
 
-/* Stage */
 .stage{flex:1;padding:24px;max-width:1280px;margin:0 auto;width:100%}
 .screen{display:none;animation:fadeIn .5s ease}
 .screen.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-/* ===== MENU (Town Hall) ===== */
-.menu-hero{
-  text-align:center;margin-bottom:24px;padding:24px;
-}
+/* ===== MENU ===== */
+.menu-hero{text-align:center;margin-bottom:24px;padding:24px}
 .menu-hero h1{
-  font-family:'Cinzel Decorative',serif;
-  font-size:clamp(26px,4vw,40px);
-  color:var(--gold-bright);
-  text-shadow:0 3px 8px rgba(0,0,0,.8),0 0 18px rgba(244,208,63,.5);
-  margin-bottom:6px;
+  font-family:'Cinzel Decorative',serif;font-size:clamp(26px,4vw,40px);
+  color:var(--gold-bright);text-shadow:0 3px 8px rgba(0,0,0,.8),0 0 18px rgba(244,208,63,.5);margin-bottom:6px;
 }
-.menu-hero p{color:var(--parchment);font-size:14px;opacity:.9}
-.menu-hero .stats-row{
-  display:flex;gap:14px;justify-content:center;margin-top:18px;flex-wrap:wrap;
-}
+.menu-hero p{color:var(--parchment);font-size:15px;opacity:.9}
+.menu-hero .stats-row{display:flex;gap:14px;justify-content:center;margin-top:18px;flex-wrap:wrap}
 .stat-medal{
   background:linear-gradient(180deg,#4A2C17 0%,#2C1810 100%);
-  border:2px solid #8B6B3A;border-radius:12px;
-  padding:10px 18px;display:flex;align-items:center;gap:10px;
+  border:2px solid #8B6B3A;border-radius:12px;padding:10px 18px;display:flex;align-items:center;gap:10px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 10px rgba(0,0,0,.4);
 }
-.stat-medal .ic{
-  width:34px;height:34px;border-radius:50%;
-  background:radial-gradient(circle,#FFD700 30%,#8B6B3A 100%);
-  display:flex;align-items:center;justify-content:center;color:#2C1810;
-}
+.stat-medal .ic{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#FFD700 30%,#8B6B3A 100%);display:flex;align-items:center;justify-content:center;color:#2C1810}
 .stat-medal .ic svg{width:18px;height:18px}
 .stat-medal .info{display:flex;flex-direction:column}
 .stat-medal .info b{font-family:'Cinzel',serif;font-size:18px;font-weight:800;color:var(--gold-bright);line-height:1}
 .stat-medal .info span{font-size:10.5px;color:var(--parchment);opacity:.7;text-transform:uppercase;letter-spacing:.05em}
-
-.menu-section-title{
-  font-family:'Cinzel',serif;font-size:18px;color:var(--gold-bright);
-  margin:24px 0 14px;text-align:center;letter-spacing:.08em;
-  position:relative;
-}
-.menu-section-title::before,.menu-section-title::after{
-  content:"";display:inline-block;width:60px;height:2px;
-  background:linear-gradient(90deg,transparent,#8B6B3A);
-  vertical-align:middle;margin:0 14px;
-}
+.menu-section-title{font-family:'Cinzel',serif;font-size:18px;color:var(--gold-bright);margin:24px 0 14px;text-align:center;letter-spacing:.08em}
+.menu-section-title::before,.menu-section-title::after{content:"";display:inline-block;width:60px;height:2px;background:linear-gradient(90deg,transparent,#8B6B3A);vertical-align:middle;margin:0 14px}
 .menu-section-title::after{background:linear-gradient(90deg,#8B6B3A,transparent)}
-
-.material-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:16px;
-}
+.material-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
 .mat-card{
   background:linear-gradient(180deg,#5A3A1F 0%,#3D2410 100%);
-  border:3px solid #8B6B3A;border-radius:16px;
-  padding:18px 14px;text-align:center;
-  cursor:pointer;transition:all .2s;
-  position:relative;overflow:hidden;
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.15),
-    inset 0 -3px 0 rgba(0,0,0,.4),
-    0 5px 14px rgba(0,0,0,.5);
+  border:3px solid #8B6B3A;border-radius:16px;padding:18px 14px;text-align:center;
+  cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.15),inset 0 -3px 0 rgba(0,0,0,.4),0 5px 14px rgba(0,0,0,.5);
 }
-.mat-card::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:60%;
-  background:linear-gradient(180deg,rgba(244,208,63,.08),transparent);
-  pointer-events:none;
-}
-.mat-card:hover{
-  transform:translateY(-3px);
-  border-color:var(--gold);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.15),
-    inset 0 -3px 0 rgba(0,0,0,.4),
-    0 8px 20px rgba(0,0,0,.6),
-    0 0 20px rgba(244,208,63,.25);
-}
+.mat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:60%;background:linear-gradient(180deg,rgba(244,208,63,.08),transparent);pointer-events:none}
+.mat-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:inset 0 2px 0 rgba(255,255,255,.15),inset 0 -3px 0 rgba(0,0,0,.4),0 8px 20px rgba(0,0,0,.6),0 0 20px rgba(244,208,63,.25)}
 .mat-card:active{transform:translateY(0)}
-.mat-card .mat-ic{
-  width:64px;height:64px;margin:0 auto 10px;
-  background:radial-gradient(circle,rgba(244,208,63,.2),transparent 70%);
-  display:flex;align-items:center;justify-content:center;
-}
+.mat-card .mat-ic{width:64px;height:64px;margin:0 auto 10px;background:radial-gradient(circle,rgba(244,208,63,.2),transparent 70%);display:flex;align-items:center;justify-content:center}
 .mat-card .mat-ic svg{width:42px;height:42px;color:var(--gold-bright);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
-.mat-card .mat-num{
-  font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--gold);
-  letter-spacing:.1em;margin-bottom:4px;
-}
-.mat-card .mat-title{
-  font-family:'Cinzel',serif;font-weight:700;font-size:14.5px;color:var(--cream);
-  line-height:1.25;min-height:38px;
-  text-shadow:0 1px 2px rgba(0,0,0,.6);
-}
-.mat-card .mat-stars{
-  margin-top:8px;display:flex;justify-content:center;gap:3px;
-}
-.mat-card .mat-stars .star{
-  width:14px;height:14px;color:#3D2410;
-}
+.mat-card .mat-num{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:4px}
+.mat-card .mat-title{font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:var(--cream);line-height:1.25;min-height:38px;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.mat-card .mat-stars{margin-top:8px;display:flex;justify-content:center;gap:3px}
+.mat-card .mat-stars .star{width:14px;height:14px;color:#3D2410}
 .mat-card .mat-stars .star.lit{color:var(--gold-bright);filter:drop-shadow(0 0 4px rgba(244,208,63,.6))}
-.mat-card .mat-badge{
-  position:absolute;top:8px;right:8px;
-  width:24px;height:24px;border-radius:50%;
-  background:linear-gradient(180deg,#5A9332,#2D5016);
-  border:2px solid #2D5016;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 6px rgba(0,0,0,.5);
-}
+.mat-card .mat-badge{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#5A9332,#2D5016);border:2px solid #2D5016;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.5)}
 .mat-card .mat-badge svg{width:14px;height:14px;color:#fff}
-.mat-card.locked{opacity:.5;cursor:not-allowed}
-.mat-card.locked::after{
-  content:"🔒";position:absolute;top:8px;right:8px;font-size:18px;
-}
 
 /* ===== MATERIAL PAGE ===== */
 .mat-page{max-width:1100px;margin:0 auto}
-.mat-header{
-  display:flex;align-items:center;gap:16px;margin-bottom:18px;
-}
+.mat-header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
 .mat-header .back-btn{
   width:48px;height:48px;border-radius:12px;
   background:linear-gradient(180deg,#6B4423 0%,#4A2C17 100%);
   border:2px solid #8B6B3A;color:var(--gold-bright);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 8px rgba(0,0,0,.4);
-  transition:all .12s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 8px rgba(0,0,0,.4);transition:all .12s;
 }
 .mat-header .back-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
 .mat-header .back-btn:active{transform:translateY(2px)}
 .mat-header .back-btn svg{width:24px;height:24px}
 .mat-header .titles{flex:1;min-width:0}
-.mat-header .eyebrow{
-  font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--gold);
-  letter-spacing:.12em;text-transform:uppercase;
-}
-.mat-header h2{
-  font-family:'Cinzel Decorative',serif;font-size:clamp(20px,3vw,28px);
-  color:var(--gold-bright);
-  text-shadow:0 2px 4px rgba(0,0,0,.7);
-  line-height:1.15;
-}
-.mat-header .sub{font-size:13px;color:var(--parchment);opacity:.85;margin-top:2px}
+.mat-header .eyebrow{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase}
+.mat-header h2{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,3vw,30px);color:var(--gold-bright);text-shadow:0 2px 4px rgba(0,0,0,.7);line-height:1.15}
+.mat-header .sub{font-size:14px;color:var(--parchment);opacity:.85;margin-top:2px}
 
-.split-img-text{
-  display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;
-}
-@media (max-width:780px){.split-img-text{grid-template-columns:1fr}}
-
-.mat-image{
+/* Hero image - FIXED SIZE */
+.mat-hero-img{
+  width:100%;height:280px;
   background:linear-gradient(135deg,#FAF0DC 0%,#E8D5A8 100%);
-  border:3px solid #8B6B3A;border-radius:14px;
-  padding:10px;overflow:hidden;
+  border:3px solid #8B6B3A;border-radius:14px;overflow:hidden;
   box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);
-  min-height:240px;display:flex;align-items:center;justify-content:center;
+  position:relative;margin-bottom:18px;
+}
+.mat-hero-img img{width:100%;height:100%;object-fit:cover;display:block}
+.mat-hero-img .img-caption{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(180deg,transparent,rgba(44,24,16,.9));
+  color:var(--gold-bright);padding:18px 16px 10px;
+  font-size:14px;font-weight:600;text-align:center;
+  border-top:1px solid rgba(212,168,73,.4);
+}
+
+/* Reading timer bar */
+.reading-timer{
+  background:linear-gradient(180deg,#4A2C17 0%,#2C1810 100%);
+  border:3px solid #8B6B3A;border-radius:14px;padding:16px 20px;
+  margin-bottom:18px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 10px rgba(0,0,0,.4);
   position:relative;
 }
-.mat-image img{
-  width:100%;height:100%;max-height:340px;object-fit:cover;
-  border-radius:8px;
-  box-shadow:0 4px 12px rgba(0,0,0,.3);
+.reading-timer.unlocked{border-color:var(--green);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 10px rgba(0,0,0,.4),0 0 16px rgba(74,124,42,.4)}
+.timer-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.timer-icon{
+  width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle,#FFD700 30%,#8B6B3A 100%);
+  border:2px solid #4A2C17;display:flex;align-items:center;justify-content:center;color:#2C1810;flex-shrink:0;
+  box-shadow:0 0 12px rgba(255,215,0,.4);
 }
-.mat-image .img-caption{
-  position:absolute;bottom:14px;left:14px;right:14px;
-  background:rgba(44,24,16,.85);color:var(--gold-bright);
-  padding:6px 12px;border-radius:8px;
-  font-size:12px;font-weight:600;text-align:center;
-  backdrop-filter:blur(4px);
-  border:1px solid rgba(212,168,73,.4);
-}
+.timer-icon svg{width:22px;height:22px}
+.timer-info{flex:1;min-width:200px}
+.timer-info .t-label{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:var(--gold-bright);margin-bottom:4px}
+.timer-info .t-status{font-size:13px;color:var(--parchment);opacity:.85}
+.timer-info .t-status b{color:var(--gold-bright);font-weight:700}
+.timer-bar-track{flex:1;min-width:200px;height:12px;background:#1a0e08;border:2px solid #6B4423;border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+.timer-bar-fill{height:100%;background:linear-gradient(90deg,#C0392B,#EA580C,#F4D03F,#5A9332);background-size:300% 100%;border-radius:99px;transition:width 1s linear;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.timer-display{font-family:'Cinzel',serif;font-weight:800;font-size:22px;color:var(--gold-bright);min-width:80px;text-align:center;text-shadow:0 2px 4px rgba(0,0,0,.5)}
 
+/* Content sections with per-item images */
 .mat-content{
   background:linear-gradient(135deg,#F5E6C8 0%,#E8D5A8 100%);
-  border:3px solid #8B6B3A;border-radius:14px;
-  padding:20px 22px;color:#2C1810;
+  border:3px solid #8B6B3A;border-radius:14px;padding:24px;color:#2C1810;
   box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);
-  position:relative;
+  position:relative;margin-bottom:18px;
 }
-.mat-content::before{
-  content:"";position:absolute;inset:5px;border:1px dashed rgba(139,107,58,.4);border-radius:8px;pointer-events:none;
+.mat-content::before{content:"";position:absolute;inset:5px;border:1px dashed rgba(139,107,58,.4);border-radius:8px;pointer-events:none}
+.mat-content > h3{
+  font-family:'Cinzel',serif;font-size:20px;color:#5C1A0E;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;border-bottom:2px solid rgba(139,107,58,.3);padding-bottom:8px;
 }
-.mat-content h4{
-  font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:#5C1A0E;
-  margin-bottom:8px;display:flex;align-items:center;gap:8px;
-}
-.mat-content h4 .ic{
-  width:26px;height:26px;border-radius:7px;
-  background:linear-gradient(180deg,#8B6B3A,#4A2C17);
-  color:var(--gold-bright);
+.mat-content > h3 .ic{
+  width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.mat-content h4 .ic svg{width:14px;height:14px}
-.mat-content p{font-size:13.5px;color:#3D2410;line-height:1.6;margin-bottom:8px}
-.mat-content .concept{display:flex;gap:10px;padding:10px;background:rgba(212,168,73,.15);border-radius:10px;margin-bottom:6px;border:1px solid rgba(139,107,58,.3)}
-.mat-content .concept .c-ic{width:30px;height:30px;border-radius:8px;background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.mat-content .concept .c-ic svg{width:16px;height:16px}
-.mat-content .concept h5{font-family:'Cinzel',serif;font-size:13.5px;font-weight:700;color:#2C1810;margin-bottom:2px}
-.mat-content .concept p{font-size:12.5px;color:#3D2410;line-height:1.5;margin:0}
-.mat-content .spark{
-  background:linear-gradient(135deg,#FFF3D6 0%,#FFE5A8 100%);
-  border-left:4px solid var(--gold-bright);
-  border-radius:10px;padding:12px 14px;margin-top:12px;
-  display:flex;gap:10px;align-items:flex-start;
-}
-.mat-content .spark .q-ic{
-  width:26px;height:26px;border-radius:50%;
-  background:radial-gradient(circle,#FFD700,#8B6B3A);
-  color:#2C1810;font-weight:800;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-family:'Cinzel',serif;
-}
-.mat-content .spark p{font-size:13px;color:#2C1810;margin:0;font-weight:500;line-height:1.55}
+.mat-content > h3 .ic svg{width:18px;height:18px}
+.mat-content > p{font-size:16px;color:#3D2410;line-height:1.7;margin-bottom:14px}
+.mat-content > p b{color:#5C1A0E;font-weight:700}
 
-/* ===== MINI-GAME ===== */
-.game-zone{
+/* Item card with thumbnail - NEW */
+.item-card{
+  display:grid;grid-template-columns:140px 1fr;gap:16px;
+  background:rgba(212,168,73,.12);border:1.5px solid rgba(139,107,58,.35);
+  border-radius:12px;padding:14px;margin-bottom:12px;
+  transition:all .2s;
+}
+.item-card:hover{border-color:var(--gold);background:rgba(244,208,63,.18)}
+.item-thumb{
+  width:140px;height:140px;border-radius:10px;overflow:hidden;
+  background:linear-gradient(135deg,#FAF0DC,#E8D5A8);
+  border:2px solid #8B6B3A;flex-shrink:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 8px rgba(0,0,0,.3);
+}
+.item-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.item-body{min-width:0}
+.item-body h4{
+  font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:#5C1A0E;margin-bottom:5px;
+  display:flex;align-items:center;gap:8px;
+}
+.item-body h4 .badge{
+  padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;
+  background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);
+}
+.item-body p{font-size:14.5px;color:#3D2410;line-height:1.65;margin:0}
+.item-body p b{color:#5C1A0E;font-weight:700}
+@media (max-width:560px){
+  .item-card{grid-template-columns:1fr;text-align:center}
+  .item-thumb{width:100%;height:160px;margin:0 auto}
+}
+
+/* Pertanyaan pemantik */
+.spark{
+  background:linear-gradient(135deg,#FFF3D6 0%,#FFE5A8 100%);
+  border-left:5px solid var(--gold-bright);border-radius:12px;padding:16px 18px;
+  margin-top:18px;display:flex;gap:14px;align-items:flex-start;
+}
+.spark .q-ic{
+  width:36px;height:36px;border-radius:50%;
+  background:radial-gradient(circle,#FFD700,#8B6B3A);color:#2C1810;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Cinzel',serif;font-size:18px;
+}
+.spark p{font-size:15px;color:#2C1810;margin:0;font-weight:600;line-height:1.6}
+.spark p b{color:#5C1A0E;font-weight:800}
+
+/* Game launcher button */
+.game-launcher{
+  text-align:center;padding:24px;margin-bottom:18px;
+  background:linear-gradient(180deg,#4A2C17 0%,#2C1810 100%);
+  border:3px solid #8B6B3A;border-radius:14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 10px rgba(0,0,0,.4);
+}
+.game-launcher.unlocked{border-color:var(--green);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 10px rgba(0,0,0,.4),0 0 18px rgba(74,124,42,.4)}
+.game-launcher h3{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold-bright);margin-bottom:8px;text-shadow:0 2px 4px rgba(0,0,0,.7)}
+.game-launcher p{font-size:14px;color:var(--parchment);opacity:.85;margin-bottom:14px}
+.game-launcher .btn-gold[disabled]{filter:grayscale(.8) brightness(.7)}
+.game-launcher .lock-msg{font-size:13px;color:rgba(244,208,63,.7);margin-top:10px;font-style:italic}
+
+/* ===== GAME OVERLAY MODAL ===== */
+.game-overlay{
+  position:fixed;inset:0;z-index:90;
+  background:rgba(10,5,2,.85);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+  animation:fadeIn .3s ease;
+}
+.game-overlay.show{display:flex}
+.game-modal{
+  width:100%;max-width:1000px;max-height:92vh;overflow-y:auto;
   background:linear-gradient(180deg,#3D2410 0%,#2C1810 100%);
   border:3px solid #8B6B3A;border-radius:16px;
-  padding:22px;margin-top:18px;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.1),0 6px 18px rgba(0,0,0,.5);
+  box-shadow:0 12px 40px rgba(0,0,0,.7),inset 0 2px 0 rgba(255,255,255,.15);
   position:relative;
+  animation:slideUp .4s cubic-bezier(.2,.8,.2,1);
 }
-.game-zone::before{
-  content:"";position:absolute;inset:6px;border:1px solid rgba(212,168,73,.25);border-radius:10px;pointer-events:none;
+.game-modal::before{content:"";position:absolute;inset:6px;border:1px solid rgba(212,168,73,.25);border-radius:10px;pointer-events:none}
+.game-modal-head{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:18px 22px;border-bottom:2px solid #6B4423;
+  background:linear-gradient(180deg,rgba(244,208,63,.08),transparent);
 }
-.game-head{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;
-}
-.game-head h3{
-  font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold-bright);
+.game-modal-head h3{
+  font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold-bright);
   text-shadow:0 2px 4px rgba(0,0,0,.7);
-  display:flex;align-items:center;gap:10px;
+  display:flex;align-items:center;gap:10px;flex:1;min-width:0;
 }
-.game-head h3 .trophy{
-  width:32px;height:32px;
+.game-modal-head h3 .trophy{
+  width:36px;height:36px;
   background:radial-gradient(circle,#FFD700 30%,#8B6B3A 100%);
   border:2px solid #4A2C17;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;color:#2C1810;
+  display:flex;align-items:center;justify-content:center;color:#2C1810;flex-shrink:0;
 }
-.game-head h3 .trophy svg{width:18px;height:18px}
-.game-head .score-badge{
-  padding:8px 14px;background:linear-gradient(180deg,#4A2C17,#2C1810);
-  border:2px solid #8B6B3A;border-radius:99px;
-  font-family:'Cinzel',serif;font-weight:700;color:var(--gold-bright);font-size:14px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.15);
+.game-modal-head h3 .trophy svg{width:20px;height:20px}
+.game-modal-head .close-btn{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(180deg,#C0392B,#8B2C1B);
+  border:2px solid #5C1A0E;color:#fff;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 6px rgba(0,0,0,.4);
 }
+.game-modal-head .close-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.game-modal-head .close-btn svg{width:20px;height:20px}
+.game-modal-body{padding:22px}
 .game-instr{
-  background:rgba(212,168,73,.1);border:1px solid rgba(212,168,73,.3);
-  border-radius:10px;padding:10px 14px;
-  font-size:13px;color:var(--parchment);margin-bottom:14px;line-height:1.5;
+  background:rgba(212,168,73,.12);border:1px solid rgba(212,168,73,.3);
+  border-radius:10px;padding:14px 18px;font-size:15px;color:var(--parchment);
+  margin-bottom:18px;line-height:1.6;
 }
 .game-instr b{color:var(--gold-bright)}
-
-/* DRAG-SORT game */
-.dnd-pool{
-  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;justify-content:center;
-  min-height:60px;padding:10px;
-  background:rgba(0,0,0,.25);border:2px dashed rgba(212,168,73,.35);border-radius:10px;
+.game-feedback{
+  padding:14px 18px;border-radius:10px;font-size:15px;font-weight:600;
+  display:none;margin-bottom:14px;
 }
+.game-feedback.show{display:block;animation:fadeIn .3s ease}
+.game-feedback.win{background:linear-gradient(180deg,#9EDB6E,#5A9332);color:#fff;border:2px solid #2D5016}
+.game-feedback.partial{background:linear-gradient(180deg,#FFE17A,#D4A849);color:#2C1810;border:2px solid #8B6B3A}
+.game-feedback.lose{background:linear-gradient(180deg,#E89A8A,#C0392B);color:#fff;border:2px solid #5C1A0E}
+.game-feedback b{font-weight:800}
+.game-modal-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+/* Drag-sort game */
+.dnd-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;justify-content:center;min-height:60px;padding:12px;background:rgba(0,0,0,.25);border:2px dashed rgba(212,168,73,.35);border-radius:10px}
 .dnd-item{
-  padding:9px 14px;
-  background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
+  padding:10px 16px;background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
   border:2px solid #8B6B3A;border-radius:10px;
-  font-family:'Cinzel',serif;font-weight:600;font-size:13px;color:#2C1810;
+  font-family:'Cinzel',serif;font-weight:600;font-size:14px;color:#2C1810;
   cursor:grab;user-select:none;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4);
-  transition:all .12s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4);transition:all .12s;
 }
 .dnd-item:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 5px 10px rgba(0,0,0,.5)}
 .dnd-item:active{cursor:grabbing}
@@ -582,95 +444,58 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 .dnd-item.placed{display:none}
 .dnd-bins{display:grid;gap:12px}
 .dnd-bins.two{grid-template-columns:1fr 1fr}
-.dnd-bins.four{grid-template-columns:repeat(4,1fr)}
-@media (max-width:680px){.dnd-bins.two,.dnd-bins.four{grid-template-columns:1fr}}
+@media (max-width:680px){.dnd-bins.two{grid-template-columns:1fr}}
 .dnd-bin{
-  min-height:120px;padding:10px;
-  background:rgba(0,0,0,.25);border:2px dashed rgba(212,168,73,.4);border-radius:12px;
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  transition:all .15s;
+  min-height:120px;padding:12px;background:rgba(0,0,0,.25);border:2px dashed rgba(212,168,73,.4);border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .15s;
 }
 .dnd-bin.over{border-color:var(--gold-bright);background:rgba(244,208,63,.12)}
-.dnd-bin .bin-title{
-  font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:var(--gold-bright);
-  letter-spacing:.06em;text-align:center;padding-bottom:6px;
-  border-bottom:1px solid rgba(212,168,73,.3);width:100%;
-}
+.dnd-bin .bin-title{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:var(--gold-bright);letter-spacing:.06em;text-align:center;padding-bottom:6px;border-bottom:1px solid rgba(212,168,73,.3);width:100%}
 .dnd-bin .bin-items{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
-.dnd-bin .bin-items .dnd-item{
-  font-size:11.5px;padding:6px 10px;
-  background:linear-gradient(180deg,#FFE17A,#D4A849);
-  border-color:#6B4423;color:#2C1810;
-}
+.dnd-bin .bin-items .dnd-item{font-size:12.5px;padding:7px 11px;background:linear-gradient(180deg,#FFE17A,#D4A849);border-color:#6B4423;color:#2C1810}
 
-/* MATCH-PAIRS game */
+/* Match game */
 .match-game{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media (max-width:680px){.match-game{grid-template-columns:1fr}}
-.match-col h4{
-  font-family:'Cinzel',serif;font-size:13px;color:var(--gold-bright);
-  margin-bottom:10px;text-align:center;letter-spacing:.06em;
-}
+.match-col h4{font-family:'Cinzel',serif;font-size:14px;color:var(--gold-bright);margin-bottom:10px;text-align:center;letter-spacing:.06em}
 .match-list{display:flex;flex-direction:column;gap:8px}
 .match-item{
-  padding:12px 14px;
-  background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
+  padding:13px 16px;background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
   border:2px solid #8B6B3A;border-radius:10px;
-  font-family:'Lato',sans-serif;font-weight:700;font-size:13.5px;color:#2C1810;
+  font-family:'Lato',sans-serif;font-weight:700;font-size:15px;color:#2C1810;
   cursor:pointer;transition:all .12s;text-align:center;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4);
 }
 .match-item:hover{border-color:var(--gold);transform:translateY(-1px)}
-.match-item.selected{
-  background:linear-gradient(180deg,#FFE17A,#F4D03F);
-  border-color:var(--gold-bright);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4),0 0 14px rgba(244,208,63,.5);
-}
-.match-item.matched{
-  background:linear-gradient(180deg,#9EDB6E,#5A9332);border-color:#2D5016;color:#fff;cursor:default;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 6px rgba(0,0,0,.4);
-}
+.match-item.selected{background:linear-gradient(180deg,#FFE17A,#F4D03F);border-color:var(--gold-bright);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4),0 0 14px rgba(244,208,63,.5)}
+.match-item.matched{background:linear-gradient(180deg,#9EDB6E,#5A9332);border-color:#2D5016;color:#fff;cursor:default}
 .match-item.matched::after{content:" ✓";font-weight:800}
 .match-item.wrong-flash{animation:wrongFlash .5s ease}
 @keyframes wrongFlash{0%,100%{border-color:#8B2C1B}50%{background:#FEE2E2;border-color:#FF0000}}
 
-/* SEQUENCE game */
+/* Sequence game */
 .seq-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .seq-item{
-  padding:12px 14px;
-  background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
+  padding:13px 16px;background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
   border:2px solid #8B6B3A;border-radius:10px;
-  font-family:'Lato',sans-serif;font-weight:600;font-size:13.5px;color:#2C1810;
-  cursor:grab;user-select:none;
-  display:flex;align-items:center;gap:10px;
+  font-family:'Lato',sans-serif;font-weight:600;font-size:15px;color:#2C1810;
+  cursor:grab;user-select:none;display:flex;align-items:center;gap:12px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4);
 }
 .seq-item:hover{transform:translateY(-1px);border-color:var(--gold)}
-.seq-item .seq-num{
-  width:26px;height:26px;border-radius:50%;
-  background:linear-gradient(180deg,#8B6B3A,#4A2C17);
-  color:var(--gold-bright);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-weight:800;font-size:13px;flex-shrink:0;
-}
+.seq-item .seq-num{width:30px;height:30px;border-radius:50%;background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:800;font-size:14px;flex-shrink:0}
 .seq-item.dragging{opacity:.4}
 .seq-item.correct{background:linear-gradient(180deg,#9EDB6E,#5A9332);border-color:#2D5016;color:#fff}
 .seq-item.correct .seq-num{background:#2D5016;color:#fff}
 .seq-item.wrong{background:linear-gradient(180deg,#E89A8A,#C0392B);border-color:#5C1A0E;color:#fff}
 .seq-item.wrong .seq-num{background:#5C1A0E;color:#fff}
 
-/* TRUE/FALSE game */
+/* True/False */
 .tf-list{display:flex;flex-direction:column;gap:10px}
-.tf-item{
-  background:rgba(0,0,0,.2);border:2px solid rgba(212,168,73,.3);border-radius:10px;
-  padding:14px;
-}
-.tf-item .tf-q{font-size:13.5px;color:var(--parchment);margin-bottom:10px;font-weight:500}
+.tf-item{background:rgba(0,0,0,.2);border:2px solid rgba(212,168,73,.3);border-radius:10px;padding:14px}
+.tf-item .tf-q{font-size:15px;color:var(--parchment);margin-bottom:10px;font-weight:500;line-height:1.6}
 .tf-item .tf-btns{display:flex;gap:8px}
-.tf-btn{
-  flex:1;padding:10px;border-radius:8px;
-  font-family:'Cinzel',serif;font-weight:700;font-size:13px;
-  transition:all .12s;
-}
+.tf-btn{flex:1;padding:12px;border-radius:8px;font-family:'Cinzel',serif;font-weight:700;font-size:14px;transition:all .12s}
 .tf-btn.benar{background:linear-gradient(180deg,#5A9332,#3D6B1F);color:#fff;border:2px solid #2D5016;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 6px rgba(0,0,0,.4)}
 .tf-btn.salah{background:linear-gradient(180deg,#C0392B,#8B2C1B);color:#fff;border:2px solid #5C1A0E;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 6px rgba(0,0,0,.4)}
 .tf-btn:hover:not(.answered){filter:brightness(1.15);transform:translateY(-1px)}
@@ -678,45 +503,27 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 .tf-btn.answered.correct{opacity:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 12px rgba(244,208,63,.5)}
 .tf-btn.answered.wrong{opacity:.7;border-color:#FF0000}
 
-/* MULTI-PICK game */
+/* Multi-pick */
 .mp-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .mp-item{
-  padding:12px 14px;
-  background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
+  padding:13px 16px;background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
   border:2px solid #8B6B3A;border-radius:10px;
-  font-family:'Lato',sans-serif;font-weight:700;font-size:14px;color:#2C1810;
-  cursor:pointer;transition:all .12s;
-  display:flex;align-items:center;gap:10px;
+  font-family:'Lato',sans-serif;font-weight:700;font-size:15px;color:#2C1810;
+  cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:12px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4);
 }
 .mp-item:hover{border-color:var(--gold);transform:translateY(-1px)}
 .mp-item.selected{background:linear-gradient(180deg,#FFE17A,#F4D03F);border-color:var(--gold-bright);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.4),0 0 12px rgba(244,208,63,.5)}
 .mp-item.locked.correct{background:linear-gradient(180deg,#9EDB6E,#5A9332);border-color:#2D5016;color:#fff}
 .mp-item.locked.wrong{background:linear-gradient(180deg,#E89A8A,#C0392B);border-color:#5C1A0E;color:#fff}
-.mp-item .mp-ic{width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mp-item .mp-ic{width:26px;height:26px;border-radius:50%;background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .mp-item.selected .mp-ic,.mp-item.locked .mp-ic{background:rgba(255,255,255,.25);color:#fff}
 
-/* Game footer */
-.game-foot{
-  display:flex;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap;gap:10px;
-}
-.game-feedback{
-  padding:12px 16px;border-radius:10px;font-size:13.5px;font-weight:600;
-  display:none;
-}
-.game-feedback.show{display:block;animation:fadeIn .3s ease}
-.game-feedback.win{background:linear-gradient(180deg,#9EDB6E,#5A9332);color:#fff;border:2px solid #2D5016;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 4px 10px rgba(0,0,0,.4)}
-.game-feedback.partial{background:linear-gradient(180deg,#FFE17A,#D4A849);color:#2C1810;border:2px solid #8B6B3A}
-.game-feedback.lose{background:linear-gradient(180deg,#E89A8A,#C0392B);color:#fff;border:2px solid #5C1A0E}
-.game-feedback b{font-weight:800}
-
-/* Bottom nav */
+/* ===== Bottom nav ===== */
 .botnav{
   display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:14px 24px;
-  background:linear-gradient(180deg,#3D2410 0%,#2C1810 100%);
-  border-top:3px solid #8B6B3A;
-  position:sticky;bottom:0;z-index:30;
+  padding:14px 24px;background:linear-gradient(180deg,#3D2410 0%,#2C1810 100%);
+  border-top:3px solid #8B6B3A;position:sticky;bottom:0;z-index:30;
   box-shadow:0 -4px 12px rgba(0,0,0,.5);
 }
 .nav-center{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);text-align:center;letter-spacing:.04em}
@@ -725,33 +532,27 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 /* Toast */
 .toast{
   position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:linear-gradient(180deg,#FFE17A,#D4A849);
-  color:#2C1810;
-  padding:14px 22px;border-radius:12px;
-  font-family:'Cinzel',serif;font-weight:700;font-size:13.5px;
-  border:2px solid #6B4423;
-  box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4);
-  opacity:0;pointer-events:none;transition:all .3s;z-index:100;
-  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,#FFE17A,#D4A849);color:#2C1810;
+  padding:14px 22px;border-radius:12px;font-family:'Cinzel',serif;font-weight:700;font-size:14px;
+  border:2px solid #6B4423;box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4);
+  opacity:0;pointer-events:none;transition:all .3s;z-index:100;display:flex;align-items:center;gap:8px;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast svg{width:18px;height:18px}
 
-/* Modal */
+/* Modal generic */
 .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .25s;z-index:70;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal-mask.show{opacity:1;pointer-events:auto}
 .modal{
   background:linear-gradient(135deg,#F5E6C8 0%,#E8D5A8 100%);
-  border:3px solid #8B6B3A;border-radius:16px;
-  max-width:480px;width:100%;max-height:88vh;overflow-y:auto;
+  border:3px solid #8B6B3A;border-radius:16px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;
   padding:28px;color:#2C1810;
   box-shadow:0 12px 40px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.5);
-  transform:scale(.92);transition:transform .25s;
-  position:relative;
+  transform:scale(.92);transition:transform .25s;position:relative;
 }
 .modal-mask.show .modal{transform:none}
 .modal h3{font-family:'Cinzel Decorative',serif;font-size:22px;color:#5C1A0E;margin-bottom:8px;text-align:center}
-.modal p{color:#3D2410;font-size:14px;line-height:1.55;margin-bottom:14px;text-align:center}
+.modal p{color:#3D2410;font-size:15px;line-height:1.6;margin-bottom:14px;text-align:center}
 .modal-actions{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
 
 /* Quiz */
@@ -762,39 +563,30 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 .quiz-dot.done{background:linear-gradient(180deg,#FFE17A,#D4A849);box-shadow:0 0 6px rgba(244,208,63,.5)}
 .quiz-dot.wrong{background:#8B2C1B;border-color:#5C1A0E}
 .quiz-dot.current{background:#FFD700;transform:scale(1.4);box-shadow:0 0 10px rgba(255,215,0,.6)}
-.quiz-counter{font-family:'Cinzel',serif;font-weight:700;color:var(--gold-bright);font-size:13px}
+.quiz-counter{font-family:'Cinzel',serif;font-weight:700;color:var(--gold-bright);font-size:14px}
 .quiz-card{
   background:linear-gradient(135deg,#F5E6C8 0%,#E8D5A8 100%);
-  border:3px solid #8B6B3A;border-radius:14px;
-  padding:24px;color:#2C1810;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);
-  position:relative;
+  border:3px solid #8B6B3A;border-radius:14px;padding:24px;color:#2C1810;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);position:relative;
 }
 .quiz-card::before{content:"";position:absolute;inset:5px;border:1px dashed rgba(139,107,58,.4);border-radius:8px;pointer-events:none}
-.quiz-q{font-size:16px;font-weight:700;color:#2C1810;line-height:1.5;margin-bottom:18px;font-family:'Cinzel',serif}
+.quiz-q{font-size:17px;font-weight:700;color:#2C1810;line-height:1.6;margin-bottom:18px;font-family:'Cinzel',serif}
 .quiz-q .num{color:#5C1A0E;margin-right:8px}
 .quiz-opts{display:flex;flex-direction:column;gap:9px}
 .quiz-opt{
-  text-align:left;padding:13px 16px;
-  background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
-  border:2px solid #8B6B3A;border-radius:10px;
-  font-size:14px;font-weight:600;color:#2C1810;transition:all .12s;
-  display:flex;align-items:center;gap:10px;
+  text-align:left;padding:14px 18px;background:linear-gradient(180deg,#FAF0DC 0%,#E8D5A8 100%);
+  border:2px solid #8B6B3A;border-radius:10px;font-size:15px;font-weight:600;color:#2C1810;transition:all .12s;
+  display:flex;align-items:center;gap:12px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 6px rgba(0,0,0,.3);
 }
 .quiz-opt:hover:not(.locked){border-color:var(--gold);transform:translateY(-1px)}
-.quiz-opt .letter{
-  width:28px;height:28px;border-radius:50%;
-  background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);
-  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;
-  font-family:'Cinzel',serif;
-}
+.quiz-opt .letter{width:30px;height:30px;border-radius:50%;background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;font-family:'Cinzel',serif}
 .quiz-opt.correct{background:linear-gradient(180deg,#9EDB6E,#5A9332);border-color:#2D5016;color:#fff}
 .quiz-opt.correct .letter{background:#2D5016;color:#fff}
 .quiz-opt.wrong{background:linear-gradient(180deg,#E89A8A,#C0392B);border-color:#5C1A0E;color:#fff}
 .quiz-opt.wrong .letter{background:#5C1A0E;color:#fff}
 .quiz-opt.locked{cursor:not-allowed}
-.quiz-fb{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.55;display:none;font-weight:500}
+.quiz-fb{margin-top:14px;padding:14px 18px;border-radius:10px;font-size:14px;line-height:1.6;display:none;font-weight:500}
 .quiz-fb.show{display:block;animation:fadeIn .3s ease}
 .quiz-fb.ok{background:rgba(74,124,42,.15);color:#2D5016;border-left:4px solid #5A9332}
 .quiz-fb.no{background:rgba(192,57,43,.15);color:#5C1A0E;border-left:4px solid #8B2C1B}
@@ -806,9 +598,7 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 .result-card .crown{
   width:88px;height:88px;margin:0 auto 16px;
   background:radial-gradient(circle,#FFD700 30%,#8B6B3A 100%);
-  border:3px solid #4A2C17;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 30px rgba(255,215,0,.5);
+  border:3px solid #4A2C17;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,215,0,.5);
 }
 .result-card .crown svg{width:50px;height:50px;color:#2C1810}
 .result-card h3{font-family:'Cinzel Decorative',serif;font-size:24px;color:var(--gold-bright);margin-bottom:6px}
@@ -821,91 +611,62 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 /* LKPD */
 .lkpd-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .lkpd-tab{
-  padding:9px 14px;border-radius:99px;
-  background:linear-gradient(180deg,#4A2C17,#2C1810);
-  border:2px solid #8B6B3A;color:var(--parchment);
-  font-family:'Cinzel',serif;font-weight:600;font-size:12.5px;
-  transition:all .12s;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 3px 6px rgba(0,0,0,.4);
+  padding:10px 16px;border-radius:99px;background:linear-gradient(180deg,#4A2C17,#2C1810);
+  border:2px solid #8B6B3A;color:var(--parchment);font-family:'Cinzel',serif;font-weight:600;font-size:13px;
+  transition:all .12s;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 3px 6px rgba(0,0,0,.4);
 }
 .lkpd-tab:hover{border-color:var(--gold)}
 .lkpd-tab.active{background:linear-gradient(180deg,#FFE17A,#D4A849);color:#2C1810;border-color:var(--gold-bright);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 12px rgba(244,208,63,.4)}
 .lkpd-panel{
   background:linear-gradient(135deg,#F5E6C8 0%,#E8D5A8 100%);
   border:3px solid #8B6B3A;border-radius:14px;padding:22px;color:#2C1810;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);
-  position:relative;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);position:relative;
 }
 .lkpd-panel::before{content:"";position:absolute;inset:5px;border:1px dashed rgba(139,107,58,.4);border-radius:8px;pointer-events:none}
 .lkpd-q{margin-bottom:18px}
-.lkpd-q .qtext{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:#5C1A0E;margin-bottom:8px;display:flex;gap:10px;line-height:1.5}
-.lkpd-q .qn{flex-shrink:0;width:28px;height:28px;border-radius:7px;background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
-.lkpd-ta{width:100%;min-height:100px;border:2px solid #8B6B3A;border-radius:10px;padding:12px;font-size:14px;color:#2C1810;resize:vertical;background:#FFF8E7;line-height:1.55;font-family:'Lato',sans-serif}
+.lkpd-q .qtext{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#5C1A0E;margin-bottom:8px;display:flex;gap:10px;line-height:1.55}
+.lkpd-q .qn{flex-shrink:0;width:30px;height:30px;border-radius:7px;background:linear-gradient(180deg,#8B6B3A,#4A2C17);color:var(--gold-bright);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.lkpd-ta{width:100%;min-height:110px;border:2px solid #8B6B3A;border-radius:10px;padding:14px;font-size:15px;color:#2C1810;resize:vertical;background:#FFF8E7;line-height:1.6;font-family:'Lato',sans-serif}
 .lkpd-ta:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(244,208,63,.2)}
 
 /* Refleksi */
 .reflect-card{
   background:linear-gradient(135deg,#F5E6C8 0%,#E8D5A8 100%);
-  border:3px solid #8B6B3A;border-radius:14px;
-  padding:24px;color:#2C1810;max-width:680px;margin:0 auto;
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);
-  position:relative;
+  border:3px solid #8B6B3A;border-radius:14px;padding:24px;color:#2C1810;max-width:680px;margin:0 auto;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 6px 18px rgba(0,0,0,.4);position:relative;
 }
 .reflect-card::before{content:"";position:absolute;inset:5px;border:1px dashed rgba(139,107,58,.4);border-radius:8px;pointer-events:none}
-.reflect-q{font-family:'Cinzel',serif;font-size:14.5px;font-weight:700;color:#5C1A0E;margin-bottom:8px;line-height:1.5}
-.reflect-ta{width:100%;min-height:80px;border:2px solid #8B6B3A;border-radius:10px;padding:12px;font-size:14px;color:#2C1810;resize:vertical;background:#FFF8E7;line-height:1.55;margin-bottom:14px;font-family:'Lato',sans-serif}
+.reflect-q{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#5C1A0E;margin-bottom:8px;line-height:1.55}
+.reflect-ta{width:100%;min-height:90px;border:2px solid #8B6B3A;border-radius:10px;padding:14px;font-size:15px;color:#2C1810;resize:vertical;background:#FFF8E7;line-height:1.6;margin-bottom:14px;font-family:'Lato',sans-serif}
 .reflect-ta:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(244,208,63,.2)}
 
-/* ===== ICONS (SVG inline helper) ===== */
-.icon-svg{display:inline-block;vertical-align:middle}
-
-/* ===== RESPONSIVE ===== */
 @media (max-width:640px){
   .topbar{padding:10px 12px;gap:8px;flex-wrap:wrap}
   .progress-wrap{order:3;max-width:none;width:100%}
   .player-chip{font-size:11px;padding:6px 10px}
-  .player-chip .av{width:20px;height:20px;font-size:10px}
   .stage{padding:14px}
-  .mat-header{flex-wrap:wrap}
   .menu-section-title::before,.menu-section-title::after{width:30px}
   .botnav{padding:10px 14px}
+  .mat-hero-img{height:200px}
 }
-
-/* Disable text selection on game elements for cleaner UX */
 .dnd-item,.seq-item,.match-item,.mp-item,.quiz-opt{user-select:none;-webkit-user-select:none}
 
-/* Drag image ghost */
-.dnd-item[draggable=true]:active, .seq-item[draggable=true]:active{cursor:grabbing}
-
-/* Loading state */
-.loading-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.7);
-  display:flex;align-items:center;justify-content:center;
-  z-index:200;color:var(--gold-bright);font-family:'Cinzel',serif;font-size:18px;
-}
-.loading-overlay .spinner{
-  width:48px;height:48px;border:4px solid rgba(244,208,63,.2);
-  border-top-color:var(--gold-bright);border-radius:50%;
-  animation:spin 1s linear infinite;margin-right:14px;
-}
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200;color:var(--gold-bright);font-family:'Cinzel',serif;font-size:18px}
+.loading-overlay .spinner{width:48px;height:48px;border:4px solid rgba(244,208,63,.2);border-top-color:var(--gold-bright);border-radius:50%;animation:spin 1s linear infinite;margin-right:14px}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
-<!-- ============ LOADING OVERLAY ============ -->
 <div class="loading-overlay hidden" id="loading">
-  <div class="spinner"></div>
-  <span>Menyimpan...</span>
+  <div class="spinner"></div><span>Menyimpan...</span>
 </div>
 
-<!-- ============ LOGIN SCREEN ============ -->
+<!-- ============ LOGIN ============ -->
 <div id="screen-login">
   <div class="login-card panel-wood">
     <div class="login-banner">
-      <div class="crest">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      </div>
+      <div class="crest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
       <h1>Jaringan Komputer<br>&amp; Internet</h1>
       <p>Petualangan Belajar Informatika Kelas IX</p>
       <div class="school">SMP NEGERI 1 MOGA · TA 2026/2027</div>
@@ -931,58 +692,43 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
         Mulai Petualangan
       </button>
     </div>
-    <div class="login-note">
-      Data jawabanmu akan tercatat otomatis di spreadsheet guru.<br>
-      Pastikan menggunakan nama dan kelas yang benar.
-    </div>
+    <div class="login-note">Data jawabanmu akan tercatat otomatis di spreadsheet guru.<br>Pastikan menggunakan nama dan kelas yang benar.</div>
   </div>
 </div>
 
 <!-- ============ MAIN APP ============ -->
 <div id="app-main">
-  <!-- Topbar -->
   <div class="topbar">
     <div class="brand">
-      <div class="brand-crest">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      </div>
-      <div class="brand-text">
-        <div class="t1">Jaringan &amp; Internet</div>
-        <div class="t2">Informatika IX · SMPN 1 Moga</div>
-      </div>
+      <div class="brand-crest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <div class="brand-text"><div class="t1">Jaringan &amp; Internet</div><div class="t2">Informatika IX · SMPN 1 Moga</div></div>
     </div>
     <div class="progress-wrap">
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       <div class="progress-label" id="progressLabel">0 / 0</div>
     </div>
-    <div class="player-chip" id="playerChip">
-      <div class="av" id="playerAv">?</div>
-      <span id="playerName">-</span>
-    </div>
+    <div class="player-chip"><div class="av" id="playerAv">?</div><span id="playerName">-</span></div>
     <div class="top-actions">
-      <button class="icon-btn" onclick="goToMenu()" title="Menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <button class="icon-btn" onclick="toggleFullscreen()" title="Layar Penuh">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V3h4M21 7V3h-4M3 17v4h4M21 17v4h-4"/></svg>
-      </button>
+      <button class="icon-btn" onclick="goToMenu()" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <button class="icon-btn" onclick="toggleFullscreen()" title="Layar Penuh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V3h4M21 7V3h-4M3 17v4h4M21 17v4h-4"/></svg></button>
     </div>
   </div>
-
-  <!-- Stage -->
   <div class="stage" id="stage"></div>
-
-  <!-- Bottom nav -->
   <div class="botnav">
-    <button class="btn-3d" id="prevBtn" onclick="go(-1)">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-      <span>Kembali</span>
-    </button>
+    <button class="btn-3d" id="prevBtn" onclick="go(-1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg><span>Kembali</span></button>
     <div class="nav-center" id="navCenter">—</div>
-    <button class="btn-3d" id="nextBtn" onclick="go(1)">
-      <span>Lanjut</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
+    <button class="btn-3d" id="nextBtn" onclick="go(1)"><span>Lanjut</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+</div>
+
+<!-- Game Overlay Modal -->
+<div class="game-overlay" id="gameOverlay">
+  <div class="game-modal" id="gameModal">
+    <div class="game-modal-head">
+      <h3><span class="trophy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></span><span id="gameModalTitle">Game</span></h3>
+      <button class="close-btn" onclick="closeGameModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="game-modal-body" id="gameModalBody"></div>
   </div>
 </div>
 
@@ -1006,9 +752,10 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.02em}
 
 <script>
 /* ========================================================
-   IMAGE URLS (real photos)
+   IMAGE URLS — per-item images for materials
 ======================================================== */
 const IMAGES = {
+  // Devices
   router:    'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/5ef2b7b7b98b.jpg',
   switch:    'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ba3c50eec4b8.jpg',
   cable:     'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/bff1fe6a7c80.jpg',
@@ -1019,17 +766,36 @@ const IMAGES = {
   wifi:      'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/c66e05bbf776.jpg',
   coaxial:   'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/022152b70938.jpg',
   cellular:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/80057f4ec1ba.jpg',
+  nic:       'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/92ce764a3a62.png',
+  network:   'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/5f73d03da562.jpg',
+  // Software
+  os:        'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ae582b35adcd.png',
+  chrome:    'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/c7caac16c795.png',
+  whatsapp:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/3e9d576083fd.jpg',
+  gdrive:    'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f31b8ec16847.jpg',
+  // Internet & protocols
   internet:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/57285f3672b8.jpg',
   globe:     'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/57285f3672b8.jpg',
-  security:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1ef76a2fbd26.jpg',
-  etiquette: 'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1da031846bf5.jpg',
-  password:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/026f27efc60b.jpg',
+  http:      'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ab98ded3d993.jpg',
+  packet:    'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f41d01648255.jpg',
+  ip_addr:   'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/24c578e4af56.png',
+  // DNS / HTTPS
   tcpip:     'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f6f072db80aa.png',
   dns:       'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/db14c0ead665.png',
+  domain:    'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/8a9f5363307f.png',
   https:     'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f35326909a26.png',
+  ssl_lock:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/4aed519ea266.jpg',
+  // Etika & keamanan
+  etiquette: 'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1da031846bf5.jpg',
+  chat_social:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/0a7c3af924ae.jpg',
+  security:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1ef76a2fbd26.jpg',
+  password:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/026f27efc60b.jpg',
+  otp:       'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/68ada791eb64.png',
+  phishing:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/bafd2c85847c.jpg',
+  backup:    'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/e51850ba8561.jpg',
+  // Diagrams
   osi:       'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/875da3b03982.png',
-  topology:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f0d3482ed4e3.png',
-  network:   'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/5f73d03da562.jpg'
+  topology:  'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f0d3482ed4e3.png'
 };
 
 /* ========================================================
@@ -1060,54 +826,58 @@ function ic(name, size=20, sw=2){
     phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
     laptop:'<rect x="3" y="4" width="18" height="12" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/>',
     home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
-    fullscreen:'<path d="M3 7V3h4M21 7V3h-4M3 17v4h4M21 17v4h-4"/>',
     crown:'<path d="M2 4l5 5 5-7 5 7 5-5-2 14H4z"/>',
-    sword:'<path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/>',
     target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
     zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
     award:'<circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>',
-    flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'
+    flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',
+    clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    sword:'<path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/>'
   };
-  return `<svg class="icon-svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${icons[name]||icons.book}</svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${icons[name]||icons.book}</svg>`;
 }
 
 /* ========================================================
    STATE
 ======================================================== */
-const STORAGE_KEY = 'jaringan_coc_v1';
-const PLAYER_KEY = 'jaringan_coc_player_v1';
+const STORAGE_KEY = 'jaringan_coc_v2';
+const PLAYER_KEY = 'jaringan_coc_player_v2';
+const READ_TIME = 300; // 5 minutes in seconds
 
 const state = {
-  player: null, // {nama, absen, kelas, session_id}
+  player: null,
   current: 0,
   visited: {},
-  games: {}, // {materi_id: {skor, max, done}}
+  games: {},
   quiz: {current:0, answers:{}, firstAttempt:{}, score:0, done:false},
-  match: {matched:[], done:false},
+  match: {matched:[], termIdx:null, defIdx:null, done:false},
   lkpd: {answers:{}},
   reflect: {answers:{}},
-  matchData: null
+  matchData: null,
+  timers: {}, // {materiId: secondsRemaining}
+  activeMateri: null
 };
+let timerInterval = null;
 
 /* ========================================================
-   SLIDES DEFINITION (Town Hall cards)
+   SLIDES
 ======================================================== */
 const SLIDES = [
   {id:'menu', type:'menu', num:'M', eyebrow:'Markas', title:'Markas Petualangan', sub:'Pilih materi untuk mulai'},
-  {id:'intro', type:'material', num:'01', eyebrow:'Materi 1', title:'Jaringan Komputer', sub:'Pengertian, tujuan, contoh', img:'network'},
-  {id:'hardware', type:'material', num:'02', eyebrow:'Materi 2', title:'Hardware Jaringan', sub:'Router, switch, kabel, NIC', img:'router'},
-  {id:'software', type:'material', num:'03', eyebrow:'Materi 3', title:'Software Jaringan', sub:'OS, browser, aplikasi', img:'laptop'},
-  {id:'internet', type:'material', num:'04', eyebrow:'Materi 4', title:'Internet', sub:'Jaringan global vs Wi-Fi', img:'internet'},
-  {id:'protocol', type:'material', num:'05', eyebrow:'Materi 5', title:'Protokol Jaringan', sub:'HTTP, HTTPS, TCP, IP, DNS', img:'globe'},
-  {id:'tcpip', type:'material', num:'06', eyebrow:'Materi 6', title:'TCP/IP', sub:'Pondasi internet', img:'tcpip'},
-  {id:'dns-https', type:'material', num:'07', eyebrow:'Materi 7', title:'DNS & HTTPS', sub:'Nama & keamanan web', img:'dns'},
-  {id:'etika', type:'material', num:'08', eyebrow:'Materi 8', title:'Etika Digital', sub:'Sopan di dunia maya', img:'etiquette'},
-  {id:'keamanan', type:'material', num:'09', eyebrow:'Materi 9', title:'Keamanan Data', sub:'Password, OTP, phishing', img:'password'},
-  {id:'media', type:'material', num:'10', eyebrow:'Materi 10', title:'Media Akses Jaringan', sub:'Kabel & nirkabel', img:'fiber'},
-  {id:'sim-jaringan', type:'material', num:'S1', eyebrow:'Simulasi', title:'Simulasi Jaringan', sub:'Klik perangkat untuk lihat fungsi', img:'switch'},
-  {id:'sim-internet', type:'material', num:'S2', eyebrow:'Simulasi', title:'Cara Kerja Internet', sub:'Perjalanan data dari browser', img:'globe'},
-  {id:'sim-topologi', type:'material', num:'S3', eyebrow:'Simulasi', title:'Topologi Jaringan', sub:'5 jenis topologi', img:'topology'},
-  {id:'sim-osi', type:'material', num:'S4', eyebrow:'Simulasi', title:'Model OSI', sub:'7 lapisan jaringan', img:'osi'},
+  {id:'intro', type:'material', num:'01', eyebrow:'Materi 1', title:'Jaringan Komputer', sub:'Pengertian, tujuan, contoh'},
+  {id:'hardware', type:'material', num:'02', eyebrow:'Materi 2', title:'Hardware Jaringan', sub:'Router, switch, kabel, NIC'},
+  {id:'software', type:'material', num:'03', eyebrow:'Materi 3', title:'Software Jaringan', sub:'OS, browser, aplikasi'},
+  {id:'internet', type:'material', num:'04', eyebrow:'Materi 4', title:'Internet', sub:'Jaringan global vs Wi-Fi'},
+  {id:'protocol', type:'material', num:'05', eyebrow:'Materi 5', title:'Protokol Jaringan', sub:'HTTP, HTTPS, TCP, IP, DNS'},
+  {id:'tcpip', type:'material', num:'06', eyebrow:'Materi 6', title:'TCP/IP', sub:'Pondasi internet'},
+  {id:'dns-https', type:'material', num:'07', eyebrow:'Materi 7', title:'DNS & HTTPS', sub:'Nama & keamanan web'},
+  {id:'etika', type:'material', num:'08', eyebrow:'Materi 8', title:'Etika Digital', sub:'Sopan di dunia maya'},
+  {id:'keamanan', type:'material', num:'09', eyebrow:'Materi 9', title:'Keamanan Data', sub:'Password, OTP, phishing'},
+  {id:'media', type:'material', num:'10', eyebrow:'Materi 10', title:'Media Akses Jaringan', sub:'Kabel & nirkabel'},
+  {id:'sim-jaringan', type:'material', num:'S1', eyebrow:'Simulasi', title:'Simulasi Jaringan', sub:'Klik perangkat untuk lihat fungsi'},
+  {id:'sim-internet', type:'material', num:'S2', eyebrow:'Simulasi', title:'Cara Kerja Internet', sub:'Perjalanan data dari browser'},
+  {id:'sim-topologi', type:'material', num:'S3', eyebrow:'Simulasi', title:'Topologi Jaringan', sub:'5 jenis topologi'},
+  {id:'sim-osi', type:'material', num:'S4', eyebrow:'Simulasi', title:'Model OSI', sub:'7 lapisan jaringan'},
   {id:'kuis', type:'quiz', num:'Q', eyebrow:'Evaluasi', title:'Kuis Akhir', sub:'12 soal pilihan ganda'},
   {id:'tantangan', type:'challenge', num:'T', eyebrow:'Tantangan', title:'Tantangan Akhir', sub:'Cocokkan 8 istilah & fungsi'},
   {id:'refleksi', type:'reflect', num:'R', eyebrow:'Refleksi', title:'Refleksi Belajar', sub:'Apa yang kamu pahami?'},
@@ -1129,33 +899,21 @@ function doLogin(){
     if(!v) ok = false;
   });
   if(!ok) return;
-
-  // Generate session ID locally (also server generates its own)
   const sid = makeLocalSessionId(nama, absen, kelas);
   state.player = {nama, absen, kelas, session_id: sid};
   localStorage.setItem(PLAYER_KEY, JSON.stringify(state.player));
-
-  // Send login to server (fire and forget)
-  postToServer({action:'login', nama, absen, kelas}, function(){
-    showToast('Login tersimpan di server');
-  });
-
-  // Show main app
+  postToServer({action:'login', nama, absen, kelas}, ()=>showToast('Login tersimpan di server'));
   document.getElementById('screen-login').style.display='none';
   document.getElementById('app-main').classList.add('shown');
   updatePlayerChip();
   buildSlides();
   goTo(0);
 }
-
-function makeLocalSessionId(nama, absen, kelas){
-  const d = new Date();
-  const pad = n => n<10?'0'+n:''+n;
-  const dateStr = ''+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
-  const hash = btoa(nama+absen+kelas+dateStr).replace(/[^a-zA-Z0-9]/g,'').substring(0,8).toUpperCase();
-  return 'S-'+dateStr+'-'+hash;
+function makeLocalSessionId(n,a,k){
+  const d=new Date(),p=n=>n<10?'0'+n:''+n;
+  const ds=''+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());
+  return 'S-'+ds+'-'+btoa(n+a+k+ds).replace(/[^a-zA-Z0-9]/g,'').substring(0,8).toUpperCase();
 }
-
 function updatePlayerChip(){
   if(!state.player) return;
   document.getElementById('playerName').textContent = state.player.nama + ' · ' + state.player.kelas;
@@ -1163,38 +921,14 @@ function updatePlayerChip(){
 }
 
 /* ========================================================
-   SERVER COMMUNICATION
+   SERVER COMMS
 ======================================================== */
-function postToServer(payload, callback){
-  if(!SCRIPT_URL || SCRIPT_URL.indexOf('GANTI_')===0){
-    // No URL configured — skip server save, keep local only
-    if(callback) callback({success:false, message:'no_url'});
-    return;
-  }
+function postToServer(payload, cb){
+  if(!SCRIPT_URL || SCRIPT_URL.indexOf('GANTI_')===0){ if(cb)cb({success:false}); return; }
   try{
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
-    })
-    .then(r => r.json())
-    .then(data => { if(callback) callback(data); })
-    .catch(err => { if(callback) callback({success:false, message:err.message}); });
-  }catch(e){
-    if(callback) callback({success:false, message:e.message});
-  }
-}
-
-function fetchFromServer(params, callback){
-  if(!SCRIPT_URL || SCRIPT_URL.indexOf('GANTI_')===0){
-    if(callback) callback({success:false, message:'no_url'});
-    return;
-  }
-  const url = SCRIPT_URL + '?' + Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&');
-  fetch(url)
-    .then(r => r.json())
-    .then(data => { if(callback) callback(data); })
-    .catch(err => { if(callback) callback({success:false, message:err.message}); });
+    fetch(SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload)})
+    .then(r=>r.json()).then(d=>{if(cb)cb(d)}).catch(e=>{if(cb)cb({success:false,message:e.message})});
+  }catch(e){ if(cb)cb({success:false,message:e.message}); }
 }
 
 /* ========================================================
@@ -1208,20 +942,20 @@ function buildSlides(){
 function renderScreen(s){
   switch(s.id){
     case 'menu': return renderMenu();
-    case 'intro': return renderMaterial(s, MATERIAL_INTRO, GAME_INTRO);
-    case 'hardware': return renderMaterial(s, MATERIAL_HARDWARE, GAME_HARDWARE);
-    case 'software': return renderMaterial(s, MATERIAL_SOFTWARE, GAME_SOFTWARE);
-    case 'internet': return renderMaterial(s, MATERIAL_INTERNET, GAME_INTERNET);
-    case 'protocol': return renderMaterial(s, MATERIAL_PROTOCOL, GAME_PROTOCOL);
-    case 'tcpip': return renderMaterial(s, MATERIAL_TCPIP, GAME_TCPIP);
-    case 'dns-https': return renderMaterial(s, MATERIAL_DNSHTTPS, GAME_DNSHTTPS);
-    case 'etika': return renderMaterial(s, MATERIAL_ETIKA, GAME_ETIKA);
-    case 'keamanan': return renderMaterial(s, MATERIAL_KEAMANAN, GAME_KEAMANAN);
-    case 'media': return renderMaterial(s, MATERIAL_MEDIA, GAME_MEDIA);
-    case 'sim-jaringan': return renderSimJaringan(s);
-    case 'sim-internet': return renderSimInternet(s);
-    case 'sim-topologi': return renderSimTopologi(s);
-    case 'sim-osi': return renderSimOsi(s);
+    case 'intro': return renderMaterial(s, MAT_INTRO, GAME_INTRO);
+    case 'hardware': return renderMaterial(s, MAT_HARDWARE, GAME_HARDWARE);
+    case 'software': return renderMaterial(s, MAT_SOFTWARE, GAME_SOFTWARE);
+    case 'internet': return renderMaterial(s, MAT_INTERNET, GAME_INTERNET);
+    case 'protocol': return renderMaterial(s, MAT_PROTOCOL, GAME_PROTOCOL);
+    case 'tcpip': return renderMaterial(s, MAT_TCPIP, GAME_TCPIP);
+    case 'dns-https': return renderMaterial(s, MAT_DNSHTTPS, GAME_DNSHTTPS);
+    case 'etika': return renderMaterial(s, MAT_ETIKA, GAME_ETIKA);
+    case 'keamanan': return renderMaterial(s, MAT_KEAMANAN, GAME_KEAMANAN);
+    case 'media': return renderMaterial(s, MAT_MEDIA, GAME_MEDIA);
+    case 'sim-jaringan': return renderMaterial(s, MAT_SIM_JARINGAN, GAME_SIM_JARINGAN);
+    case 'sim-internet': return renderMaterial(s, MAT_SIM_INTERNET, GAME_SIM_INTERNET);
+    case 'sim-topologi': return renderMaterial(s, MAT_SIM_TOPOLOGI, GAME_SIM_TOPOLOGI);
+    case 'sim-osi': return renderMaterial(s, MAT_SIM_OSI, GAME_SIM_OSI);
     case 'kuis': return renderQuiz();
     case 'tantangan': return renderChallenge();
     case 'refleksi': return renderReflect();
@@ -1232,52 +966,35 @@ function renderScreen(s){
 }
 
 /* ========================================================
-   MENU (Town Hall)
+   MENU
 ======================================================== */
 function renderMenu(){
   const totalGames = Object.values(state.games).filter(g=>g.done).length;
-  const totalMaterials = 13; // materials 1-10 + sims excluding menu
   const materialsDone = SLIDES.filter(s=>s.type==='material' && state.visited[s.id]).length;
   const quizScore = state.quiz.done ? state.quiz.score : 0;
   const matchDone = state.match.matched.length;
-
   return `
   <div class="menu-hero panel-wood">
     <h1>⚔️ Markas Petualangan ⚔️</h1>
-    <p>Jelajahi 13 materi, kerjakan game di setiap materi, dan kumpulkan trofi!</p>
+    <p>Jelajahi 13 materi, baca minimal 5 menit lalu mainkan game di tiap materi!</p>
     <div class="stats-row">
-      <div class="stat-medal">
-        <div class="ic">${ic('book',16)}</div>
-        <div class="info"><b>${materialsDone}/${totalMaterials}</b><span>Materi Dikunjungi</span></div>
-      </div>
-      <div class="stat-medal">
-        <div class="ic">${ic('trophy',16)}</div>
-        <div class="info"><b>${totalGames}</b><span>Game Selesai</span></div>
-      </div>
-      <div class="stat-medal">
-        <div class="ic">${ic('star',16)}</div>
-        <div class="info"><b>${quizScore}</b><span>Skor Kuis</span></div>
-      </div>
-      <div class="stat-medal">
-        <div class="ic">${ic('flag',16)}</div>
-        <div class="info"><b>${matchDone}/8</b><span>Tantangan</span></div>
-      </div>
+      <div class="stat-medal"><div class="ic">${ic('book',16)}</div><div class="info"><b>${materialsDone}/14</b><span>Materi Dikunjungi</span></div></div>
+      <div class="stat-medal"><div class="ic">${ic('trophy',16)}</div><div class="info"><b>${totalGames}</b><span>Game Selesai</span></div></div>
+      <div class="stat-medal"><div class="ic">${ic('star',16)}</div><div class="info"><b>${quizScore}</b><span>Skor Kuis</span></div></div>
+      <div class="stat-medal"><div class="ic">${ic('flag',16)}</div><div class="info"><b>${matchDone}/8</b><span>Tantangan</span></div></div>
     </div>
   </div>
-
   <div class="menu-section-title">🏰 Materi Pokok</div>
   <div class="material-grid">
-    ${SLIDES.filter(s=>['intro','hardware','software','internet','protocol','tcpip','dns-https','etika','keamanan','media'].includes(s.id)).map(s=>renderMenuCard(s)).join('')}
+    ${['intro','hardware','software','internet','protocol','tcpip','dns-https','etika','keamanan','media'].map(id=>renderMenuCard(SLIDES.find(s=>s.id===id))).join('')}
   </div>
-
   <div class="menu-section-title">⚡ Simulasi Interaktif</div>
   <div class="material-grid">
-    ${SLIDES.filter(s=>['sim-jaringan','sim-internet','sim-topologi','sim-osi'].includes(s.id)).map(s=>renderMenuCard(s)).join('')}
+    ${['sim-jaringan','sim-internet','sim-topologi','sim-osi'].map(id=>renderMenuCard(SLIDES.find(s=>s.id===id))).join('')}
   </div>
-
   <div class="menu-section-title">🏆 Evaluasi & Tugas</div>
   <div class="material-grid">
-    ${SLIDES.filter(s=>['kuis','tantangan','refleksi','lkpd','final'].includes(s.id)).map(s=>renderMenuCard(s)).join('')}
+    ${['kuis','tantangan','refleksi','lkpd','final'].map(id=>renderMenuCard(SLIDES.find(s=>s.id===id))).join('')}
   </div>`;
 }
 
@@ -1286,13 +1003,7 @@ function renderMenuCard(s){
   const gameDone = state.games[s.id]?.done;
   const starCount = visited ? (gameDone ? 3 : 1) : 0;
   const starHtml = Array(3).fill(0).map((_,i)=>`<span class="star ${i<starCount?'lit':''}">${ic('star',14)}</span>`).join('');
-  const icName = {
-    intro:'network', hardware:'router', software:'software', internet:'globe',
-    protocol:'shield', tcpip:'layers', 'dns-https':'book', etika:'chat',
-    keamanan:'lock', media:'cable', 'sim-jaringan':'switch', 'sim-internet':'globe',
-    'sim-topologi':'star', 'sim-osi':'layers', kuis:'target', tantangan:'trophy',
-    refleksi:'bulb', lkpd:'book', final:'crown'
-  }[s.id] || 'book';
+  const icName = {intro:'network',hardware:'router',software:'software',internet:'globe',protocol:'shield',tcpip:'layers','dns-https':'book',etika:'chat',keamanan:'lock',media:'cable','sim-jaringan':'switch','sim-internet':'globe','sim-topologi':'star','sim-osi':'layers',kuis:'target',tantangan:'trophy',refleksi:'bulb',lkpd:'book',final:'crown'}[s.id]||'book';
   const badge = visited ? `<div class="mat-badge">${ic('check',12)}</div>` : '';
   return `<div class="mat-card" onclick="goTo('${s.id}')">
     ${badge}
@@ -1304,352 +1015,232 @@ function renderMenuCard(s){
 }
 
 /* ========================================================
-   MATERIAL CONTENT DEFINITIONS
+   MATERIAL DEFINITIONS — with per-item images
+   Each material has: heroImg, intro, sections[{img,title,desc}], spark
 ======================================================== */
-const MATERIAL_INTRO = {
-  img:'network',
-  caption:'Ilustrasi koneksi perangkat dalam jaringan',
-  body:`
-    <h4>${ic('network',14)} Apa itu Jaringan Komputer?</h4>
-    <p><b>Jaringan komputer</b> adalah dua atau lebih perangkat yang saling terhubung (kabel/nirkabel) untuk <b>berbagi data, informasi, dan sumber daya</b> seperti printer atau koneksi internet.</p>
-    <h4 style="margin-top:14px">${ic('target',14)} Tujuan Jaringan</h4>
-    <div class="concept"><div class="c-ic">${ic('refresh',14)}</div><div><h5>Berbagi Sumber Daya</h5><p>Satu printer/internet untuk banyak komputer.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('chat',14)}</div><div><h5>Berkomunikasi</h5><p>Kirim pesan, email, video call dengan cepat.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>Berbagi Data</h5><p>File & foto bisa diakses perangkat lain.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Saat kamu buka TikTok di rumah, lewat apa data video sampai ke HP-mu?</p></div>`
+const MAT_INTRO = {
+  heroImg:'network',
+  heroCaption:'Ilustrasi koneksi perangkat dalam jaringan',
+  intro:{title:'Apa itu Jaringan Komputer?', text:'<b>Jaringan komputer</b> adalah dua atau lebih perangkat yang saling terhubung (kabel/nirkabel) untuk <b>berbagi data, informasi, dan sumber daya</b> seperti printer atau koneksi internet. Bayangkan seperti tali telepon yang menghubungkan banyak rumah — jika ada tali penghubung, anak-anak di rumah berbeda bisa saling berbicara.'},
+  sections:[
+    {img:'wifi', title:'Wi-Fi Rumah', desc:'Contoh paling dekat: jaringan Wi-Fi di rumah menghubungkan HP, laptop, dan TV ke satu router untuk akses internet bersama.'},
+    {img:'phone', title:'Hotspot HP', desc:'HP kamu bisa menjadi "router mini" — berbagi koneksi internet ke perangkat lain lewat hotspot Wi-Fi.'},
+    {img:'server', title:'Lab Komputer Sekolah', desc:'Puluhan komputer di lab terhubung ke switch yang sama, bisa berbagi printer dan akses materi pembelajaran.'}
+  ],
+  spark:'Saat kamu membuka TikTok di rumah, lewat apa data video sampai ke HP-mu? Apakah HP terhubung langsung ke server TikTok?'
 };
 
-const MATERIAL_HARDWARE = {
-  img:'router',
-  caption:'Router Wi-Fi dengan antena',
-  body:`
-    <h4>${ic('router',14)} Perangkat Keras Jaringan</h4>
-    <p><b>Hardware jaringan</b> adalah perangkat fisik yang membuat koneksi terjadi. Tanpa hardware, tidak ada jaringan.</p>
-    <div class="concept"><div class="c-ic">${ic('router',14)}</div><div><h5>Router</h5><p>Mengarahkan data antarjaringan, misal dari rumah ke internet.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>Switch</h5><p>Menghubungkan banyak perangkat dalam satu jaringan lokal.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('cable',14)}</div><div><h5>Kabel Ethernet</h5><p>Media kabel umum untuk menghubungkan komputer ke router/switch.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('laptop',14)}</div><div><h5>NIC</h5><p>Kartu/komponen agar perangkat bisa terhubung ke jaringan.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Di rumahmu, perangkat apa yang membuat HP bisa terhubung ke internet?</p></div>`
+const MAT_HARDWARE = {
+  heroImg:'router',
+  heroCaption:'Router Wi-Fi dengan antena — perangkat utama jaringan',
+  intro:{title:'Perangkat Keras Jaringan (Hardware)', text:'<b>Hardware jaringan</b> adalah perangkat fisik yang membuat koneksi terjadi. Tanpa hardware, tidak ada jaringan. Mereka seperti "jalan dan jembatan" yang dilalui data. Setiap perangkat punya tugas khusus.'},
+  sections:[
+    {img:'router', title:'Router', desc:'Mengarahkan lalu lintas data dari satu jaringan ke jaringan lain, misal dari jaringan rumah ke internet. Router juga memberi alamat IP lokal ke tiap perangkat.'},
+    {img:'switch', title:'Switch', desc:'Menghubungkan banyak perangkat dalam satu jaringan lokal (LAN). Switch pintar: tahu port mana ke perangkat mana, kirim data hanya ke tujuan benar.'},
+    {img:'cable', title:'Kabel Ethernet (Twisted Pair)', desc:'Media kabel umum untuk menghubungkan komputer ke router/switch. Punya konektor RJ45 di ujungnya.'},
+    {img:'nic', title:'NIC (Network Interface Card)', desc:'Kartu/komponen di komputer atau HP yang membuat perangkat bisa terhubung ke jaringan. Tanpa NIC, perangkat tidak bisa "masuk" jaringan.'}
+  ],
+  spark:'Di rumahmu, perangkat mana yang membuat HP bisa terhubung ke internet? Bisakah kamu menyebutkan hardware-nya?'
 };
 
-const MATERIAL_SOFTWARE = {
-  img:'laptop',
-  caption:'Laptop menjalankan software jaringan',
-  body:`
-    <h4>${ic('software',14)} Perangkat Lunak Jaringan</h4>
-    <p><b>Software jaringan</b> adalah program yang menjalankan dan mengatur komunikasi data. Jika hardware seperti jalan, software seperti aturan lalu lintas.</p>
-    <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>Sistem Operasi</h5><p>Windows, Linux, Android — mengatur perangkat agar bisa terhubung.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('globe',14)}</div><div><h5>Browser</h5><p>Chrome, Firefox, Edge — menampilkan halaman web.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('chat',14)}</div><div><h5>Aplikasi Komunikasi</h5><p>WhatsApp, Zoom, Telegram — kirim pesan/suara/video.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>Berbagi File</h5><p>Google Drive, Share Folder — berbagi file antarperangkat.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Kenapa HP Android dan laptop Windows bisa terhubung ke jaringan yang sama walau OS-nya beda?</p></div>`
+const MAT_SOFTWARE = {
+  heroImg:'laptop',
+  heroCaption:'Laptop menjalankan berbagai software jaringan',
+  intro:{title:'Perangkat Lunak Jaringan (Software)', text:'<b>Software jaringan</b> adalah program yang menjalankan dan mengatur komunikasi data. Jika hardware seperti jalan, software seperti "aturan lalu lintas" dan "kendaraan" yang melaluinya. Tanpa software, perangkat hanya terhubung fisik tanpa bisa berkomunikasi.'},
+  sections:[
+    {img:'os', title:'Sistem Operasi', desc:'Windows, Linux, Android, iOS — mengatur perangkat agar bisa terhubung ke jaringan dan menjalankan aplikasi. Sistem operasi punya driver jaringan bawaan.'},
+    {img:'chrome', title:'Browser', desc:'Chrome, Firefox, Edge — aplikasi untuk mengakses dan menampilkan halaman situs web. Browser "menerjemahkan" kode HTML jadi tampilan yang kita lihat.'},
+    {img:'whatsapp', title:'Aplikasi Komunikasi', desc:'WhatsApp, Zoom, Telegram — mengirim pesan, suara, dan video antarperangkat lewat internet. Memungkinkan komunikasi real-time.'},
+    {img:'gdrive', title:'Aplikasi Berbagi File', desc:'Google Drive, Share Folder, Dropbox — memungkinkan file dipakai bersama oleh banyak perangkat. File tersimpan di cloud bisa diakses kapan saja.'}
+  ],
+  spark:'Kenapa HP Android dan laptop Windows bisa terhubung ke jaringan yang sama, padahal sistem operasinya berbeda?'
 };
 
-const MATERIAL_INTERNET = {
-  img:'internet',
-  caption:'Jaringan global internet',
-  body:`
-    <h4>${ic('globe',14)} Apa itu Internet?</h4>
-    <p><b>Internet</b> adalah <b>jaringan global</b> yang menghubungkan miliaran perangkat di seluruh dunia. berasal dari <i>interconnected networks</i>.</p>
-    <h4 style="margin-top:14px">${ic('wifi',14)} Wi-Fi ≠ Internet</h4>
-    <p><b>Wi-Fi</b> menghubungkan perangkat ke jaringan lokal (nirkabel). <b>Internet</b> adalah jaringan global di luar sana. Bisa ada Wi-Fi aktif tanpa internet.</p>
-    <div class="concept"><div class="c-ic">${ic('book',14)}</div><div><h5>Manfaat Internet</h5><p>Belajar, komunikasi, informasi, berbagi data, hiburan.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Sebutkan 3 hal yang kamu lakukan tiap hari dengan internet!</p></div>`
+const MAT_INTERNET = {
+  heroImg:'internet',
+  heroCaption:'Internet — jaringan global yang menghubungkan dunia',
+  intro:{title:'Apa itu Internet?', text:'<b>Internet</b> adalah <b>jaringan global</b> yang menghubungkan miliaran perangkat di seluruh dunia. Kata "internet" berasal dari <i>interconnected networks</i> — jaringan-jaringan yang saling terhubung. Internet bukan milik satu orang atau perusahaan.'},
+  sections:[
+    {img:'wifi', title:'Wi-Fi (Bukan Internet!)', desc:'Wi-Fi adalah cara menghubungkan perangkat ke jaringan lokal secara nirkabel. Wi-Fi BUKAN internet. Bisa ada Wi-Fi aktif tanpa koneksi internet (contoh: router menyala tapi modem mati).'},
+    {img:'globe', title:'Internet = Jaringan Global', desc:'Internet adalah jaringan raksasa di luar sana, menghubungkan server-server di seluruh dunia. Saat kamu buka google.com, datamu bolak-balik ke server di negara lain.'},
+    {img:'phone', title:'Manfaat Internet', desc:'Belajar online, komunikasi (chat/video call), mencari informasi, berbagi data/file, hiburan (video/musik/game), transaksi online — semuanya butuh internet.'}
+  ],
+  spark:'Sebutkan tiga hal yang kamu lakukan setiap hari dengan internet! Apakah kamu masih bisa melakukannya jika internet mati?'
 };
 
-const MATERIAL_PROTOCOL = {
-  img:'globe',
-  caption:'Protokol — bahasa perantara perangkat',
-  body:`
-    <h4>${ic('shield',14)} Apa itu Protokol?</h4>
-    <p><b>Protokol</b> adalah aturan kesepakatan bagaimana perangkat berkomunikasi. Analogi: dua orang dari negara berbeda butuh bahasa yang sama untuk mengerti.</p>
-    <div class="concept"><div class="c-ic">${ic('globe',14)}</div><div><h5>HTTP</h5><p>Aturan kirim/terima halaman web.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('lock',14)}</div><div><h5>HTTPS</h5><p>HTTP aman, data dienkripsi.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('layers',14)}</div><div><h5>TCP</h5><p>Memastikan data sampai utuh & berurutan.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('router',14)}</div><div><h5>IP</h5><p>Alamat unik tiap perangkat di internet.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('book',14)}</div><div><h5>DNS</h5><p>Menerjemahkan nama situs ke alamat IP.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Saat melihat gembok di address bar, protokol apa yang dipakai?</p></div>`
+const MAT_PROTOCOL = {
+  heroImg:'globe',
+  heroCaption:'Protokol — bahasa perantara perangkat di internet',
+  intro:{title:'Apa itu Protokol Jaringan?', text:'<b>Protokol</b> adalah <b>aturan kesepakatan</b> bagaimana perangkat berkomunikasi. Tanpa protokol, perangkat dari merek dan jenis berbeda tidak akan saling mengerti. Analogi: dua orang dari negara berbeda butuh bahasa yang sama untuk mengerti satu sama lain.'},
+  sections:[
+    {img:'http', title:'HTTP', desc:'HyperText Transfer Protocol — aturan untuk mengirim dan menerima halaman web. Tanpa HTTP/HTTPS, browser tidak bisa membuka situs.'},
+    {img:'ssl_lock', title:'HTTPS', desc:'HTTP Secure — versi aman dari HTTP. Data dienkripsi sehingga pencuri tidak bisa membaca isinya. Ditandai dengan gembok di address bar.'},
+    {img:'packet', title:'TCP', desc:'Transmission Control Protocol — memastikan data sampai utuh dan berurutan di tujuan. Jika ada paket hilang, TCP minta dikirim ulang.'},
+    {img:'ip_addr', title:'IP', desc:'Internet Protocol — memberi alamat unik ke setiap perangkat agar data sampai ke tujuan yang benar. Seperti alamat rumah pada paket pos.'},
+    {img:'dns', title:'DNS', desc:'Domain Name System — menerjemahkan nama situs (google.com) menjadi alamat IP angka (142.250.10.78) yang dipahami komputer.'}
+  ],
+  spark:'Saat kamu melihat gambar gembok di address bar browser, protokol apa yang sedang dipakai? Mengapa itu penting?'
 };
 
-const MATERIAL_TCPIP = {
-  img:'tcpip',
-  caption:'TCP/IP — Pondasi internet',
-  body:`
-    <h4>${ic('layers',14)} TCP/IP — Pondasi Internet</h4>
-    <p><b>TCP/IP</b> adalah dua protokol yang bekerja sama sebagai tulang punggung internet.</p>
-    <div class="concept"><div class="c-ic">${ic('layers',14)}</div><div><h5>TCP (Transmission Control Protocol)</h5><p>Memecah data jadi paket kecil, kirim satu per satu, susun ulang di tujuan. Jika paket hilang, minta dikirim ulang — <b>andal dan utuh</b>.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('router',14)}</div><div><h5>IP (Internet Protocol)</h5><p>Memberi <b>alamat unik</b> ke tiap perangkat. Mengarahkan paket ke alamat yang benar — seperti alamat rumah.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Mengapa data dipecah jadi paket kecil, bukan dikirim utuh sekaligus?</p></div>`
+const MAT_TCPIP = {
+  heroImg:'tcpip',
+  heroCaption:'TCP/IP — dua protokol pondasi internet',
+  intro:{title:'TCP/IP — Pondasi Internet', text:'<b>TCP/IP</b> adalah dua protokol yang bekerja sama menjadi tulang punggung internet. Hampir semua komunikasi di internet memakai TCP/IP. Mereka bekerja seperti tim pengiriman barang: IP menentukan alamat tujuan, TCP memastikan paket sampai dengan utuh.'},
+  sections:[
+    {img:'packet', title:'TCP — Pengiriman Andal', desc:'Memecah data besar menjadi <b>paket-paket kecil</b>, mengirim satu per satu, lalu menyusun ulang di tujuan. Jika ada paket hilang, TCP minta dikirim ulang — sehingga data <b>andal dan utuh</b>.'},
+    {img:'ip_addr', title:'IP — Pengalamatan', desc:'Memberi <b>alamat unik</b> (IP address) ke setiap perangkat di internet. IP bertugas mengarahkan paket data ke alamat yang benar, seperti alamat rumah pada paket pos.'},
+    {img:'server', title:'Cara Kerja Bersama', desc:'Saat kamu kirim foto, TCP memecah foto jadi ratusan paket, IP memberi alamat tujuan, paket dikirim lewat internet, tiba di server tujuan, TCP susun ulang jadi foto utuh.'}
+  ],
+  spark:'Mengapa data tidak dikirim utuh sekaligus, melainkan dipecah jadi paket-paket kecil? Apa keuntungannya?'
 };
 
-const MATERIAL_DNSHTTPS = {
-  img:'dns',
-  caption:'DNS — penerjemah nama domain',
-  body:`
-    <h4>${ic('book',14)} DNS — Penerjemah Nama</h4>
-    <p><b>DNS</b> menerjemahkan nama situs (<code>google.com</code>) menjadi alamat IP (<code>142.250.10.78</code>) yang dipahami komputer.</p>
-    <h4 style="margin-top:14px">${ic('lock',14)} HTTPS — Pelindung Web</h4>
-    <p><b>HTTPS</b> mengenkripsi data — diubah jadi kode rahasia yang hanya bisa dibaca pengirim & penerima. Tandai dengan <b>gembok</b> di browser.</p>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Saat membuka situs bank, mengapa harus selalu cek gembok & "https"?</p></div>`
+const MAT_DNSHTTPS = {
+  heroImg:'dns',
+  heroCaption:'DNS — sistem penerjemah nama domain',
+  intro:{title:'DNS & HTTPS — Penerjemah Nama & Pelindung Web', text:'Dua konsep penting yang membuat internet mudah dipakai dan aman: <b>DNS</b> menerjemahkan nama situs jadi alamat IP, dan <b>HTTPS</b> mengenkripsi data agar tidak disadap. Tanpa DNS, kita harus hafal angka IP. Tanpa HTTPS, data kita bisa dibaca pencuri.'},
+  sections:[
+    {img:'domain', title:'DNS — Penerjemah Nama', desc:'Menerjemahkan nama situs yang mudah diingat manusia (google.com) menjadi alamat IP berupa angka (142.250.10.78) yang dipahati komputer. Seperti buku telepon internet.'},
+    {img:'ssl_lock', title:'HTTPS — Pelindung Web', desc:'Versi aman dari HTTP. Data yang dikirim lewat HTTPS <b>dienkripsi</b> — diubah menjadi kode rahasia yang hanya bisa dibaca pengirim dan penerima. Tandai dengan gembok di browser.'},
+    {img:'http', title:'HTTP vs HTTPS', desc:'HTTP = data terbuka (bisa disadap). HTTPS = data terenkripsi (aman). Situs bank, toko online, dan media sosial wajib pakai HTTPS untuk lindungi password dan data pengguna.'},
+    {img:'ip_addr', title:'IP Address', desc:'Alamat unik tiap perangkat di internet. Ada IPv4 (contoh: 192.168.1.1) dan IPv6 (lebih panjang). DNS bekerja menerjemahkan nama domain ke IP ini.'}
+  ],
+  spark:'Saat membuka situs bank online, mengapa kamu harus selalu memastikan ada gembok dan "https" di address bar?'
 };
 
-const MATERIAL_ETIKA = {
-  img:'etiquette',
-  caption:'Etika digital — sopan di dunia maya',
-  body:`
-    <h4>${ic('chat',14)} Etika Digital</h4>
-    <p><b>Etika digital</b> adalah tata krama di dunia maya. Di balik layar, kita tetap berhadapan dengan manusia nyata.</p>
-    <div class="concept"><div class="c-ic">${ic('chat',14)}</div><div><h5>Sopan Berkomunikasi</h5><p>Gunakan bahasa baik & menghargai.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('book',14)}</div><div><h5>Menghargai Pendapat</h5><p>Dengarkan walaupun berbeda.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('shield',14)}</div><div><h5>Tidak Sebarkan Hoaks</h5><p>Cek kebenaran sebelum share.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('lock',14)}</div><div><h5>Hindari Cyberbullying</h5><p>Jangan ejek/ancam orang lain.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('shield',14)}</div><div><h5>Hormati Privasi</h5><p>Jangan sebar foto/data tanpa izin.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Pernah lihat komentar jelek di medsos? Bagaimana perasaanmu jika itu ditujukan ke kamu?</p></div>`
+const MAT_ETIKA = {
+  heroImg:'chat_social',
+  heroCaption:'Etika digital — sopan santun di dunia maya',
+  intro:{title:'Etika Digital', text:'<b>Etika digital</b> adalah tata krama dan sikap baik saat berkomunikasi dan beraktivitas di dunia maya. Sopan santun di internet sama pentingnya dengan di dunia nyata. Di balik layar, kita tetap berhadapan dengan manusia nyata — kata-kata kita bisa membahagiakan atau melukai.'},
+  sections:[
+    {img:'chat_social', title:'Sopan Berkomunikasi', desc:'Gunakan bahasa yang baik dan menghargai, sama seperti saat bertemu langsung. Hindari kata kasar, makian, atau sindiran negatif di komentar dan chat.'},
+    {img:'chat_social', title:'Menghargai Pendapat', desc:'Walaupun berbeda, dengarkan dan hargai pendapat orang lain di grup atau forum. Beda pendapat itu wajar — tidak perlu berujar pakai emosi atau menyerang pribadi.'},
+    {img:'etiquette', title:'Tidak Sebarkan Hoaks', desc:'Selalu cek kebenaran berita sebelum membagikan. Hoaks merugikan banyak orang dan bisa melanggar hukum. Cek sumber, cek tanggal, cek ke sumber resmi.'},
+    {img:'etiquette', title:'Hindari Cyberbullying', desc:'Jangan mengejek, mengancam, atau merendahkan orang lain lewat internet. Cyberbullying bisa berdampak serius pada kesehatan mental korban.'},
+    {img:'lock', title:'Hormati Privasi', desc:'Jangan menyebarkan foto, video, atau data pribadi orang lain tanpa izin. Privasi adalah hak setiap orang, baik di dunia nyata maupun digital.'}
+  ],
+  spark:'Pernahkah kamu melihat komentar jelek di media sosial? Bagaimana perasaanmu jika komentar itu ditujukan ke kamu?'
 };
 
-const MATERIAL_KEAMANAN = {
-  img:'password',
-  caption:'Keamanan data — lindungi informasi pribadi',
-  body:`
-    <h4>${ic('shield',14)} Keamanan Data</h4>
-    <p><b>Keamanan data</b> adalah upaya melindungi informasi pribadi/penting dari pencurian & penyalahgunaan.</p>
-    <div class="concept"><div class="c-ic">${ic('lock',14)}</div><div><h5>Password Kuat</h5><p>Min. 8 karakter, campuran huruf, angka, simbol.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('shield',14)}</div><div><h5>Verifikasi 2 Langkah (2FA)</h5><p>Tambah kode dari HP selain password.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('lock',14)}</div><div><h5>Jangan Bagikan OTP</h5><p>OTP rahasia, tidak ada pihak sah yang minta.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('shield',14)}</div><div><h5>Hindari Phishing</h5><p>Waspada tautan/email palsu.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>Cadangkan Data</h5><p>Simpan salinan di cloud/flashdisk.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Apakah password "tanggalLahir123" aman? Mengapa?</p></div>`
+const MAT_KEAMANAN = {
+  heroImg:'password',
+  heroCaption:'Keamanan data — lindungi informasi pribadimu',
+  intro:{title:'Keamanan Data', text:'<b>Keamanan data</b> adalah upaya melindungi informasi pribadi dan penting agar tidak dicuri, dilihat, atau disalahgunakan oleh orang lain. Data seperti foto, password, rekening, dan dokumen pribadi sangat berharga — kebocoran bisa berujung penipuan atau akun dibajak.'},
+  sections:[
+    {img:'password', title:'Password Kuat', desc:'Min. 8 karakter, campuran huruf besar/kecil, angka, dan simbol. Contoh kuat: <b>BukuBiru88!</b>. Hindari nama, tanggal lahir, atau kata umum.'},
+    {img:'lock', title:'Verifikasi Dua Langkah (2FA)', desc:'Tambahkan kode dari HP selain password. Mencuri password saja tidak cukup untuk masuk — pencuri butuh HP-mu juga. Aktifkan di akun penting.'},
+    {img:'otp', title:'Jangan Bagikan OTP', desc:'Kode OTP adalah kunci rahasia satu kali. <b>Tidak pernah ada pihak sah yang memintanya</b> — termasuk bank, e-wallet, atau "polisi". Jika ada yang minta OTP, pasti penipuan.'},
+    {img:'phishing', title:'Hindari Phishing', desc:'Waspada tautan mencurigakan, email palsu, atau situs login palsu. Cek alamat situs dengan teliti. Jangan klik link dari pengirim tidak dikenal.'},
+    {img:'backup', title:'Cadangkan Data', desc:'Simpan salinan penting di cloud atau flashdisk secara berkala. Jika perangkat rusak/hilang/diserang ransomware, data tetap aman dan bisa dipulihkan.'}
+  ],
+  spark:'Apakah password "tanggalLahir123" aman? Mengapa? Apa yang akan kamu lakukan untuk membuat password lebih kuat?'
 };
 
-const MATERIAL_MEDIA = {
-  img:'fiber',
-  caption:'Fiber optik — media akses cepat',
-  body:`
-    <h4>${ic('cable',14)} Media Akses Jaringan</h4>
-    <p><b>Media akses</b> adalah jalur yang dipakai data untuk berpindah antarperangkat. Dua jenis: <b>kabel</b> & <b>nirkabel</b>.</p>
-    <h4 style="margin-top:14px">Kabel</h4>
-    <div class="concept"><div class="c-ic">${ic('cable',14)}</div><div><h5>Ethernet/Twisted Pair</h5><p>Umum di lab, kantor, rumah.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('cable',14)}</div><div><h5>Coaxial</h5><p>TV kabel & modem lama.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('zap',14)}</div><div><h5>Fiber Optik</h5><p>Cahaya, super cepat, jarak jauh.</p></div></div>
-    <h4 style="margin-top:14px">Nirkabel</h4>
-    <div class="concept"><div class="c-ic">${ic('wifi',14)}</div><div><h5>Wi-Fi</h5><p>Rumah, sekolah, kafe.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('phone',14)}</div><div><h5>Bluetooth</h5><p>Perangkat jarak dekat.</p></div></div>
-    <div class="concept"><div class="c-ic">${ic('phone',14)}</div><div><h5>Seluler 4G/5G</h5><p>HP, hotspot mobile.</p></div></div>
-    <div class="spark"><div class="q-ic">?</div><p><b>Pemantik:</b> Mengapa fiber optik lebih cepat dari kabel tembaga?</p></div>`
+const MAT_MEDIA = {
+  heroImg:'fiber',
+  heroCaption:'Fiber optik — media akses super cepat',
+  intro:{title:'Media Akses Jaringan', text:'<b>Media akses jaringan</b> adalah "jalur" yang dipakai data untuk berpindah dari satu perangkat ke perangkat lain. Ada dua jenis utama: <b>kabel</b> dan <b>nirkabel</b>. Pemilihan media tergantung kebutuhan: kecepatan, jarak, biaya, dan kemudahan.'},
+  sections:[
+    {img:'cable', title:'Ethernet / Twisted Pair', desc:'Kabel umum di lab, kantor, rumah. Punya konektor RJ45. Stabil, cepat (sampai 10 Gbps), murah. Cocok untuk koneksi tetap.'},
+    {img:'coaxial', title:'Coaxial', desc:'Kabel tembaga dengan isolasi tebal. Dulu populer untuk TV kabel dan modem lama. Sekarang banyak digantikan twisted pair dan fiber.'},
+    {img:'fiber', title:'Fiber Optik', desc:'Mengirim data sebagai pulsa cahaya lewat serat kaca. <b>Super cepat</b>, jarak jauh, tidak terganggu gelombang elektromagnetik. Dipakai untuk backbone internet.'},
+    {img:'wifi', title:'Wi-Fi', desc:'Nirkabel untuk rumah, sekolah, kafe. Praktis — perangkat bisa berpindah tanpa kabel. Jangkauan terbatas (sekitar 30-50 meter dari router).'},
+    {img:'phone', title:'Bluetooth', desc:'Nirkabel untuk perangkat jarak dekat (sampai 10 meter). Dipakai untuk headphone, mouse, transfer file antar HP. Hemat energi.'},
+    {img:'cellular', title:'Seluler 4G/5G', desc:'Internet mobile lewat menara seluler. HP dan hotspot mobile pakai ini. 5G sangat cepat, cocok untuk daerah tanpa Wi-Fi.'}
+  ],
+  spark:'Mengapa fiber optik bisa mengirim data lebih cepat daripada kabel tembaga? Apa kekurangan nirkabel dibanding kabel?'
+};
+
+/* Sim materials */
+const MAT_SIM_JARINGAN = {
+  heroImg:'switch',
+  heroCaption:'Switch jaringan dengan kabel Ethernet',
+  intro:{title:'Simulasi Perangkat Jaringan', text:'Pelajari bagaimana <b>laptop, router, switch, server, HP</b> saling terhubung dalam sebuah jaringan. Setiap perangkat punya peran — klik info di bawah untuk memahami fungsi dan hubungan antarperangkat.'},
+  sections:[
+    {img:'laptop', title:'Laptop', desc:'Perangkat akhir (end device) yang dipakai pengguna. Memiliki NIC untuk terhubung Wi-Fi atau kabel. Mengakses internet lewat router.'},
+    {img:'router', title:'Router', desc:'Penghubung jaringan lokal ke internet. Memberi alamat IP lokal ke tiap perangkat. Mengarahkan data ke tujuan yang benar.'},
+    {img:'switch', title:'Switch', desc:'Menghubungkan banyak perangkat dalam LAN. Pintar mengirim data hanya ke perangkat yang dituju berdasarkan MAC address.'},
+    {img:'server', title:'Server', desc:'Komputer khusus yang menyimpan situs web dan data. Melayani permintaan dari banyak pengguna. Menyala 24 jam.'},
+    {img:'phone', title:'HP Pintar', desc:'Perangkat mobile dengan NIC Wi-Fi dan seluler. Bisa terhubung lewat Wi-Fi rumah atau jaringan seluler provider.'}
+  ],
+  spark:'Urutkan alur data dari HP-mu sampai ke server situs yang kamu buka. Perangkat apa saja yang dilalui?'
+};
+
+const MAT_SIM_INTERNET = {
+  heroImg:'globe',
+  heroCaption:'Internet — perjalanan data global',
+  intro:{title:'Cara Kerja Internet', text:'Saat kamu mengetik alamat situs, data tidak langsung sampai ke tujuan. Ada <b>5 tahap</b> yang dilalui: browser → DNS → jaringan → server → kembali ke browser. Setiap tahap penting dan tidak bisa dilewati.'},
+  sections:[
+    {img:'laptop', title:'1. Browser', desc:'Pengguna mengetik alamat situs (misal google.com) di browser dan menekan Enter. Browser mulai membuat permintaan.'},
+    {img:'dns', title:'2. DNS Lookup', desc:'DNS mencari alamat IP dari "google.com". DNS mengembalikan alamat IP seperti 142.250.10.78 sehingga browser tahu ke mana mengirim permintaan.'},
+    {img:'wifi', title:'3. Jaringan', desc:'Permintaan dari browser dikirim lewat router, switch, kabel/nirkabel, lalu ke provider internet (ISP). Data dipecah menjadi paket oleh TCP/IP.'},
+    {img:'server', title:'4. Server', desc:'Server tujuan menerima paket, menyusun ulang, memproses permintaan, dan menyiapkan data (halaman HTML, gambar, video) untuk dikirim balik.'},
+    {img:'laptop', title:'5. Browser Tampil', desc:'Server mengirim data balik lewat jaringan ke browser. Browser menyusun dan menampilkan halaman situs yang kita lihat di layar.'}
+  ],
+  spark:'Bayangkan kamu buka youtube.com. Tahap mana yang paling lama? Mengapa kadang video lambat dimuat?'
+};
+
+const MAT_SIM_TOPOLOGI = {
+  heroImg:'topology',
+  heroCaption:'Diagram 4 jenis topologi jaringan',
+  intro:{title:'Topologi Jaringan', text:'<b>Topologi</b> adalah susunan/cara perangkat terhubung dalam jaringan. Pilih topologi mempengaruhi kecepatan, keandalan, biaya, dan kemudahan perawatan. Ada 5 topologi umum yang perlu kamu kenal.'},
+  sections:[
+    {img:'topology', title:'Bus', desc:'Semua perangkat terhubung ke satu kabel utama (backbone). Sederhana dan murah, tapi jika kabel utama putus, seluruh jaringan mati.'},
+    {img:'topology', title:'Star', desc:'Semua perangkat terhubung ke satu titik pusat (switch/hub). Mudah dikelola, tapi jika pusat mati, semua terhenti. Paling umum dipakai.'},
+    {img:'topology', title:'Ring', desc:'Perangkat terhubung membentuk lingkaran tertutup. Data mengalir satu arah dari satu perangkat ke perangkat berikutnya.'},
+    {img:'topology', title:'Mesh', desc:'Setiap perangkat terhubung langsung ke semua perangkat lain. Sangat andal — banyak jalur alternatif. Tapi mahal dan rumit.'},
+    {img:'topology', title:'Tree', desc:'Gabungan beberapa topologi star yang dihubungkan secara berjenjang seperti pohon. Cocok untuk jaringan besar berjenjang.'}
+  ],
+  spark:'Topologi mana yang paling cocok untuk lab komputer sekolah? Mengapa? Topologi mana untuk jaringan router internet?'
+};
+
+const MAT_SIM_OSI = {
+  heroImg:'osi',
+  heroCaption:'Model OSI — 7 lapisan komunikasi data',
+  intro:{title:'Model OSI (Open Systems Interconnection)', text:'<b>OSI</b> adalah model 7 lapis yang menjelaskan bagaimana data berpindah dari pengguna ke media fisik, dan sebaliknya. Model ini membantu kita memahami setiap tahap komunikasi jaringan secara terstruktur.'},
+  sections:[
+    {img:'osi', title:'Lapisan 7 — Application', desc:'Antarmuka dengan pengguna. Browser, email, dan aplikasi beroperasi di sini. Menyediakan layanan jaringan langsung ke program pengguna.'},
+    {img:'osi', title:'Lapisan 6 — Presentation', desc:'Mengubah, mengompresi, dan mengenkripsi data. Mengatur format seperti JPEG, MP4, atau enkripsi SSL/TLS untuk HTTPS.'},
+    {img:'osi', title:'Lapisan 5 — Session', desc:'Membuka, mengelola, dan menutup sesi komunikasi antara dua perangkat. Memastikan sesi tetap stabil selama dibutuhkan.'},
+    {img:'packet', title:'Lapisan 4 — Transport', desc:'Memastikan data sampai andal (TCP) atau cepat (UDP). Memecah data menjadi segmen dan menyusun ulang di tujuan.'},
+    {img:'ip_addr', title:'Lapisan 3 — Network', desc:'Menentukan jalur terbaik dan alamat tujuan (IP address). Paket data diarahkan dari jaringan sumber ke jaringan tujuan.'},
+    {img:'switch', title:'Lapisan 2 — Data Link', desc:'Mengirim data antarperangkat pada jaringan lokal yang sama. Mengatur akses ke media fisik dan mendeteksi error.'},
+    {img:'cable', title:'Lapisan 1 — Physical', desc:'Mengubah data menjadi sinyal listrik, cahaya, atau gelombang radio. Kabel Ethernet, fiber optik, dan sinyal Wi-Fi bekerja di sini.'}
+  ],
+  spark:'Saat kamu mengirim pesan WhatsApp, melalui lapisan OSI apa saja pesan itu berpindah dari HP-mu ke HP temanmu?'
 };
 
 /* ========================================================
-   GAME DEFINITIONS (one per material)
+   GAME DEFINITIONS
 ======================================================== */
-const GAME_INTRO = {
-  type:'dnd_sort',
-  title:'Game: Mana yang Termasuk Jaringan?',
-  instr:'Seret item ke kotak yang benar: <b>Termasuk Jaringan</b> atau <b>Bukan</b>.',
-  items:[
-    {t:'Wi-Fi rumah', cat:'ya'},
-    {t:'Hotspot HP', cat:'ya'},
-    {t:'Lab komputer sekolah', cat:'ya'},
-    {t:'Kulkas (tidak terhubung)', cat:'tidak'},
-    {t:'Lampu tidur', cat:'tidak'},
-    {t:'Kamera CCTV terhubung Wi-Fi', cat:'ya'}
-  ],
-  bins:[{id:'ya', name:'Termasuk Jaringan'},{id:'tidak', name:'Bukan Jaringan'}]
-};
-
-const GAME_HARDWARE = {
-  type:'match',
-  title:'Game: Cocokkan Perangkat & Fungsi',
-  instr:'Klik <b>perangkat</b> di kiri, lalu klik <b>fungsi</b> yang sesuai di kanan.',
-  pairs:[
-    {term:'Router', def:'Mengarahkan data antarjaringan'},
-    {term:'Switch', def:'Menghubungkan perangkat dalam LAN'},
-    {term:'Kabel Ethernet', def:'Media kabel penghubung'},
-    {term:'NIC', def:'Komponen penghubung perangkat'}
-  ]
-};
-
-const GAME_SOFTWARE = {
-  type:'dnd_sort',
-  title:'Game: Software Jaringan atau Bukan?',
-  instr:'Seret item ke kotak yang benar.',
-  items:[
-    {t:'Windows', cat:'ya'},
-    {t:'Chrome', cat:'ya'},
-    {t:'WhatsApp', cat:'ya'},
-    {t:'Google Drive', cat:'ya'},
-    {t:'Linux', cat:'ya'},
-    {t:'Monitor', cat:'tidak'},
-    {t:'Printer', cat:'tidak'},
-    {t:'Kabel UTP', cat:'tidak'}
-  ],
-  bins:[{id:'ya', name:'Software Jaringan'},{id:'tidak', name:'Bukan Software'}]
-};
-
-const GAME_INTERNET = {
-  type:'truefalse',
-  title:'Game: Benar atau Salah tentang Internet?',
-  instr:'Klik <b>Benar</b> atau <b>Salah</b> untuk setiap pernyataan.',
-  statements:[
-    {q:'Wi-Fi dan internet adalah hal yang sama.', a:false},
-    {q:'Internet adalah jaringan global yang menghubungkan miliaran perangkat.', a:true},
-    {q:'Wi-Fi bisa aktif tanpa koneksi internet.', a:true},
-    {q:'Internet dimiliki oleh satu perusahaan tertentu.', a:false},
-    {q:'Internet bisa dipakai untuk belajar online.', a:true}
-  ]
-};
-
-const GAME_PROTOCOL = {
-  type:'match',
-  title:'Game: Cocokkan Protokol & Fungsi',
-  instr:'Klik protokol di kiri, lalu klik fungsinya di kanan.',
-  pairs:[
-    {term:'HTTP', def:'Transfer halaman web'},
-    {term:'HTTPS', def:'HTTP yang terenkripsi'},
-    {term:'TCP', def:'Data sampai utuh'},
-    {term:'IP', def:'Alamat unik perangkat'},
-    {term:'DNS', def:'Penerjemah nama domain'}
-  ]
-};
-
-const GAME_TCPIP = {
-  type:'sequence',
-  title:'Game: Urutkan Alur Pengiriman Data',
-  instr:'Seret langkah ke urutan yang benar (atas ke bawah).',
-  steps:[
-    {t:'Data dipecah menjadi paket-paket kecil oleh TCP', correct:0},
-    {t:'IP memberi alamat tujuan pada tiap paket', correct:1},
-    {t:'Paket dikirim melalui jaringan ke tujuan', correct:2},
-    {t:'Paket tiba di perangkat tujuan', correct:3},
-    {t:'TCP menyusun ulang paket menjadi data utuh', correct:4}
-  ]
-};
-
-const GAME_DNSHTTPS = {
-  type:'match',
-  title:'Game: Cocokkan Istilah & Penjelasan',
-  instr:'Klik istilah di kiri, lalu klik penjelasannya di kanan.',
-  pairs:[
-    {term:'DNS', def:'Menerjemahkan nama domain ke IP'},
-    {term:'HTTPS', def:'Mengenkripsi data web'},
-    {term:'IP', def:'Alamat unik perangkat'},
-    {term:'TCP', def:'Memastikan data andal'},
-    {term:'Domain', def:'Nama situs seperti google.com'}
-  ]
-};
-
-const GAME_ETIKA = {
-  type:'dnd_sort',
-  title:'Game: Etika Baik atau Pelanggaran?',
-  instr:'Seret aksi ke kotak yang benar.',
-  items:[
-    {t:'Berkomentar sopan di grup', cat:'baik'},
-    {t:'Menghargai pendapat berbeda', cat:'baik'},
-    {t:'Menyebarkan hoaks', cat:'buruk'},
-    {t:'Cyberbullying teman', cat:'buruk'},
-    {t:'Membagikan OTP ke orang lain', cat:'buruk'},
-    {t:'Hormati privasi orang lain', cat:'baik'}
-  ],
-  bins:[{id:'baik', name:'Etika Baik'},{id:'buruk', name:'Pelanggaran Etika'}]
-};
-
-const GAME_KEAMANAN = {
-  type:'multipick',
-  title:'Game: Pilih Semua Password yang Kuat',
-  instr:'Pilih <b>semua</b> password yang termasuk kuat. Lalu klik "Periksa".',
-  options:[
-    {t:'password123', correct:false},
-    {t:'BukuBiru88!', correct:true},
-    {t:'12345678', correct:false},
-    {t:'Qw9$xY2#mP', correct:true},
-    {t:'tanggalLahir', correct:false},
-    {t:'H7$jK2pL!9', correct:true},
-    {t:'admin', correct:false},
-    {t:'S3cur3#Net', correct:true}
-  ]
-};
-
-const GAME_MEDIA = {
-  type:'dnd_sort',
-  title:'Game: Kabel atau Nirkabel?',
-  instr:'Seret media ke kotak yang benar.',
-  items:[
-    {t:'Ethernet (Twisted Pair)', cat:'kabel'},
-    {t:'Coaxial', cat:'kabel'},
-    {t:'Fiber Optik', cat:'kabel'},
-    {t:'Wi-Fi', cat:'nirkabel'},
-    {t:'Bluetooth', cat:'nirkabel'},
-    {t:'Seluler 4G/5G', cat:'nirkabel'}
-  ],
-  bins:[{id:'kabel', name:'Media Kabel'},{id:'nirkabel', name:'Media Nirkabel'}]
-};
-
-/* Sim game data */
-const GAME_SIM_JARINGAN = {
-  type:'dnd_sort',
-  title:'Game: Mana yang Perangkat Jaringan?',
-  instr:'Seret ke kotak <b>Perangkat Jaringan</b> atau <b>Bukan</b>.',
-  items:[
-    {t:'Router', cat:'ya'},
-    {t:'Switch', cat:'ya'},
-    {t:'Server', cat:'ya'},
-    {t:'Laptop', cat:'ya'},
-    {t:'HP', cat:'ya'},
-    {t:'Meja kayu', cat:'tidak'},
-    {t:'Buku tulis', cat:'tidak'},
-    {t:'Pulpen', cat:'tidak'}
-  ],
-  bins:[{id:'ya', name:'Perangkat Jaringan'},{id:'tidak', name:'Bukan Perangkat'}]
-};
-
-const GAME_SIM_INTERNET = {
-  type:'sequence',
-  title:'Game: Urutkan Cara Kerja Internet',
-  instr:'Urutkan tahap dari awal (atas) sampai akhir (bawah).',
-  steps:[
-    {t:'Browser membuat permintaan ke situs', correct:0},
-    {t:'DNS mencari alamat IP situs', correct:1},
-    {t:'Permintaan melewati router, switch, ISP', correct:2},
-    {t:'Server memproses dan mengirim data balik', correct:3},
-    {t:'Browser menampilkan halaman situs', correct:4}
-  ]
-};
-
-const GAME_SIM_TOPOLOGI = {
-  type:'match',
-  title:'Game: Cocokkan Topologi & Ciri',
-  instr:'Klik topologi di kiri, lalu klik cirinya di kanan.',
-  pairs:[
-    {term:'Bus', def:'Satu kabel utama'},
-    {term:'Star', def:'Pusat switch/hub'},
-    {term:'Ring', def:'Lingkaran tertutup'},
-    {term:'Mesh', def:'Semua terhubung semua'},
-    {term:'Tree', def:'Berjenjang seperti pohon'}
-  ]
-};
-
-const GAME_SIM_OSI = {
-  type:'sequence',
-  title:'Game: Urutkan 7 Lapisan OSI (Bawah ke Atas)',
-  instr:'Urutkan lapisan OSI dari lapisan 1 (paling bawah) ke lapisan 7 (paling atas).',
-  steps:[
-    {t:'Physical', correct:0},
-    {t:'Data Link', correct:1},
-    {t:'Network', correct:2},
-    {t:'Transport', correct:3},
-    {t:'Session', correct:4},
-    {t:'Presentation', correct:5},
-    {t:'Application', correct:6}
-  ]
-};
+const GAME_INTRO = {type:'dnd_sort', title:'Game: Termasuk Jaringan atau Bukan?', instr:'Seret item ke kotak yang benar: <b>Termasuk Jaringan</b> atau <b>Bukan</b>.', items:[{t:'Wi-Fi rumah',cat:'ya'},{t:'Hotspot HP',cat:'ya'},{t:'Lab komputer sekolah',cat:'ya'},{t:'Kulkas (tidak terhubung)',cat:'tidak'},{t:'Lampu tidur',cat:'tidak'},{t:'Kamera CCTV Wi-Fi',cat:'ya'}], bins:[{id:'ya',name:'Termasuk Jaringan'},{id:'tidak',name:'Bukan Jaringan'}]};
+const GAME_HARDWARE = {type:'match', title:'Game: Cocokkan Perangkat & Fungsi', instr:'Klik <b>perangkat</b> di kiri, lalu klik <b>fungsi</b> yang sesuai di kanan.', pairs:[{term:'Router',def:'Mengarahkan data antarjaringan'},{term:'Switch',def:'Hubungkan perangkat dalam LAN'},{term:'Kabel Ethernet',def:'Media kabel penghubung'},{term:'NIC',def:'Komponen penghubung perangkat'}]};
+const GAME_SOFTWARE = {type:'dnd_sort', title:'Game: Software Jaringan atau Bukan?', instr:'Seret item ke kotak yang benar.', items:[{t:'Windows',cat:'ya'},{t:'Chrome',cat:'ya'},{t:'WhatsApp',cat:'ya'},{t:'Google Drive',cat:'ya'},{t:'Linux',cat:'ya'},{t:'Monitor',cat:'tidak'},{t:'Printer',cat:'tidak'},{t:'Kabel UTP',cat:'tidak'}], bins:[{id:'ya',name:'Software Jaringan'},{id:'tidak',name:'Bukan Software'}]};
+const GAME_INTERNET = {type:'truefalse', title:'Game: Benar atau Salah tentang Internet?', instr:'Klik <b>Benar</b> atau <b>Salah</b> untuk setiap pernyataan.', statements:[{q:'Wi-Fi dan internet adalah hal yang sama.',a:false},{q:'Internet adalah jaringan global yang menghubungkan miliaran perangkat.',a:true},{q:'Wi-Fi bisa aktif tanpa koneksi internet.',a:true},{q:'Internet dimiliki oleh satu perusahaan tertentu.',a:false},{q:'Internet bisa dipakai untuk belajar online.',a:true}]};
+const GAME_PROTOCOL = {type:'match', title:'Game: Cocokkan Protokol & Fungsi', instr:'Klik protokol di kiri, lalu klik fungsinya di kanan.', pairs:[{term:'HTTP',def:'Transfer halaman web'},{term:'HTTPS',def:'HTTP yang terenkripsi'},{term:'TCP',def:'Data sampai utuh'},{term:'IP',def:'Alamat unik perangkat'},{term:'DNS',def:'Penerjemah nama domain'}]};
+const GAME_TCPIP = {type:'sequence', title:'Game: Urutkan Alur Pengiriman Data', instr:'Seret langkah ke urutan yang benar (atas ke bawah).', steps:[{t:'Data dipecah menjadi paket-paket oleh TCP',correct:0},{t:'IP memberi alamat tujuan pada tiap paket',correct:1},{t:'Paket dikirim melalui jaringan',correct:2},{t:'Paket tiba di perangkat tujuan',correct:3},{t:'TCP menyusun ulang jadi data utuh',correct:4}]};
+const GAME_DNSHTTPS = {type:'match', title:'Game: Cocokkan Istilah & Penjelasan', instr:'Klik istilah di kiri, lalu klik penjelasannya di kanan.', pairs:[{term:'DNS',def:'Penerjemah nama domain ke IP'},{term:'HTTPS',def:'Mengenkripsi data web'},{term:'IP',def:'Alamat unik perangkat'},{term:'TCP',def:'Memastikan data andal'},{term:'Domain',def:'Nama situs seperti google.com'}]};
+const GAME_ETIKA = {type:'dnd_sort', title:'Game: Etika Baik atau Pelanggaran?', instr:'Seret aksi ke kotak yang benar.', items:[{t:'Berkomentar sopan',cat:'baik'},{t:'Menghargai pendapat',cat:'baik'},{t:'Menyebarkan hoaks',cat:'buruk'},{t:'Cyberbullying teman',cat:'buruk'},{t:'Membagikan OTP',cat:'buruk'},{t:'Hormati privasi',cat:'baik'}], bins:[{id:'baik',name:'Etika Baik'},{id:'buruk',name:'Pelanggaran Etika'}]};
+const GAME_KEAMANAN = {type:'multipick', title:'Game: Pilih Semua Password yang Kuat', instr:'Pilih <b>semua</b> password yang kuat. Lalu klik "Periksa".', options:[{t:'password123',correct:false},{t:'BukuBiru88!',correct:true},{t:'12345678',correct:false},{t:'Qw9$xY2#mP',correct:true},{t:'tanggalLahir',correct:false},{t:'H7$jK2pL!9',correct:true},{t:'admin',correct:false},{t:'S3cur3#Net',correct:true}]};
+const GAME_MEDIA = {type:'dnd_sort', title:'Game: Kabel atau Nirkabel?', instr:'Seret media ke kotak yang benar.', items:[{t:'Ethernet',cat:'kabel'},{t:'Coaxial',cat:'kabel'},{t:'Fiber Optik',cat:'kabel'},{t:'Wi-Fi',cat:'nirkabel'},{t:'Bluetooth',cat:'nirkabel'},{t:'Seluler 4G/5G',cat:'nirkabel'}], bins:[{id:'kabel',name:'Media Kabel'},{id:'nirkabel',name:'Media Nirkabel'}]};
+const GAME_SIM_JARINGAN = {type:'dnd_sort', title:'Game: Perangkat Jaringan atau Bukan?', instr:'Seret ke kotak yang benar.', items:[{t:'Router',cat:'ya'},{t:'Switch',cat:'ya'},{t:'Server',cat:'ya'},{t:'Laptop',cat:'ya'},{t:'HP',cat:'ya'},{t:'Meja kayu',cat:'tidak'},{t:'Buku tulis',cat:'tidak'},{t:'Pulpen',cat:'tidak'}], bins:[{id:'ya',name:'Perangkat Jaringan'},{id:'tidak',name:'Bukan Perangkat'}]};
+const GAME_SIM_INTERNET = {type:'sequence', title:'Game: Urutkan Cara Kerja Internet', instr:'Urutkan tahap dari awal (atas) ke akhir (bawah).', steps:[{t:'Browser membuat permintaan ke situs',correct:0},{t:'DNS mencari alamat IP situs',correct:1},{t:'Permintaan melewati router, switch, ISP',correct:2},{t:'Server memproses dan mengirim data balik',correct:3},{t:'Browser menampilkan halaman situs',correct:4}]};
+const GAME_SIM_TOPOLOGI = {type:'match', title:'Game: Cocokkan Topologi & Ciri', instr:'Klik topologi di kiri, lalu klik cirinya di kanan.', pairs:[{term:'Bus',def:'Satu kabel utama'},{term:'Star',def:'Pusat switch/hub'},{term:'Ring',def:'Lingkaran tertutup'},{term:'Mesh',def:'Semua terhubung semua'},{term:'Tree',def:'Berjenjang seperti pohon'}]};
+const GAME_SIM_OSI = {type:'sequence', title:'Game: Urutkan 7 Lapisan OSI (Bawah ke Atas)', instr:'Urutkan lapisan OSI dari lapisan 1 (paling bawah) ke lapisan 7 (paling atas).', steps:[{t:'Physical',correct:0},{t:'Data Link',correct:1},{t:'Network',correct:2},{t:'Transport',correct:3},{t:'Session',correct:4},{t:'Presentation',correct:5},{t:'Application',correct:6}]};
 
 /* ========================================================
-   RENDER MATERIAL PAGE
+   RENDER MATERIAL PAGE — with hero img, timer, sections, game launcher
 ======================================================== */
 function renderMaterial(s, mat, game){
-  const visited = state.visited[s.id];
-  const gameDone = state.games[s.id]?.done;
-  const gameScore = state.games[s.id];
-  const imgUrl = IMAGES[mat.img] || '';
+  const materiId = s.id;
+  // Init timer if not exists
+  if(state.timers[materiId] === undefined){
+    state.timers[materiId] = READ_TIME;
+  }
+  const timerLeft = state.timers[materiId];
+  const unlocked = timerLeft <= 0;
+  const gameDone = state.games[materiId]?.done;
+  const gameScore = state.games[materiId];
+
   return `
   <div class="mat-page">
     <div class="mat-header">
@@ -1660,41 +1251,142 @@ function renderMaterial(s, mat, game){
         <div class="sub">${s.sub}</div>
       </div>
     </div>
-    <div class="split-img-text">
-      <div class="mat-image">
-        <img src="${imgUrl}" alt="${s.title}" onerror="this.style.display='none'">
-        <div class="img-caption">${mat.caption}</div>
-      </div>
-      <div class="mat-content">${mat.body}</div>
+
+    <div class="mat-hero-img">
+      <img src="${IMAGES[mat.heroImg]||''}" alt="${s.title}" onerror="this.style.display='none'">
+      <div class="img-caption">${mat.heroCaption}</div>
     </div>
-    ${renderGame(s.id, game, gameScore)}
+
+    <div class="reading-timer ${unlocked?'unlocked':''}" id="readingTimer">
+      <div class="timer-row">
+        <div class="timer-icon">${ic(unlocked?'check':'clock',22)}</div>
+        <div class="timer-info">
+          <div class="t-label">${unlocked?'Materi Sudah Dibaca':'Baca Materi Dulu'}</div>
+          <div class="t-status">${unlocked?'Game sudah terbuka! Klik tombol di bawah untuk mulai.':'Game terbuka dalam <b>'+formatTime(timerLeft)+'</b>. Baca materi dengan teliti.'}</div>
+        </div>
+        <div class="timer-bar-track"><div class="timer-bar-fill" id="timerBarFill" style="width:${(READ_TIME-timerLeft)/READ_TIME*100}%"></div></div>
+        <div class="timer-display" id="timerDisplay">${formatTime(timerLeft)}</div>
+      </div>
+    </div>
+
+    <div class="mat-content">
+      <h3><span class="ic">${ic('book',18)}</span>${mat.intro.title}</h3>
+      <p>${mat.intro.text}</p>
+
+      ${mat.sections.map((sec,i)=>`
+        <div class="item-card">
+          <div class="item-thumb"><img src="${IMAGES[sec.img]||''}" alt="${sec.title}" onerror="this.style.display='none'"></div>
+          <div class="item-body">
+            <h4>${sec.title}</h4>
+            <p>${sec.desc}</p>
+          </div>
+        </div>
+      `).join('')}
+
+      <div class="spark">
+        <div class="q-ic">?</div>
+        <p><b>Pertanyaan Pemantik:</b> ${mat.spark}</p>
+      </div>
+    </div>
+
+    <div class="game-launcher ${unlocked?'unlocked':''}">
+      <h3>🎮 Game Materi: ${s.title}</h3>
+      <p>${unlocked ? (gameDone ? `Skor: <b style="color:var(--gold-bright)">${gameScore.skor}/${gameScore.max}</b> — Kerjakan lagi jika mau!` : 'Game sudah terbuka! Uji pemahamanmu sekarang.') : 'Baca materi minimal 5 menit dulu, lalu game akan terbuka otomatis.'}</p>
+      <button class="btn-gold" onclick="openGameModal('${materiId}')" ${!unlocked?'disabled':''}>
+        ${ic('play',18)} ${gameDone?'Ulangi Game':'Mulai Game'}
+      </button>
+      ${!unlocked?'<div class="lock-msg">🔒 Game terkunci — baca materi dulu '+formatTime(timerLeft)+'</div>':''}
+    </div>
   </div>`;
 }
 
+function formatTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+
 /* ========================================================
-   RENDER GAME
+   TIMER LOGIC — counts down per material
 ======================================================== */
-function renderGame(materiId, game, savedScore){
-  const done = savedScore?.done;
-  const skor = savedScore?.skor || 0;
-  const max = savedScore?.max || gameMax(game);
-  const trophy = ic('trophy',18);
-  return `
-  <div class="game-zone">
-    <div class="game-head">
-      <h3><span class="trophy">${trophy}</span> ${game.title}</h3>
-      ${done ? `<div class="score-badge">${ic('check',14)} Skor: ${skor}/${max}</div>` : ''}
-    </div>
+function startTimer(materiId){
+  stopTimer();
+  state.activeMateri = materiId;
+  if(state.timers[materiId] === undefined){
+    state.timers[materiId] = READ_TIME;
+  }
+  if(state.timers[materiId] <= 0){
+    updateTimerUI(materiId, 0);
+    return;
+  }
+  timerInterval = setInterval(()=>{
+    if(state.activeMateri !== materiId){ stopTimer(); return; }
+    state.timers[materiId]--;
+    updateTimerUI(materiId, state.timers[materiId]);
+    if(state.timers[materiId] <= 0){
+      stopTimer();
+      showToast('Materi sudah dibaca! Game sekarang terbuka.');
+      // Re-render to unlock button
+      renderCurrentScreen();
+      saveState();
+    } else {
+      // Save every 10 seconds
+      if(state.timers[materiId] % 10 === 0) saveState();
+    }
+  }, 1000);
+}
+
+function stopTimer(){
+  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+}
+
+function updateTimerUI(materiId, sec){
+  const display = document.getElementById('timerDisplay');
+  const fill = document.getElementById('timerBarFill');
+  const timer = document.getElementById('readingTimer');
+  if(display) display.textContent = formatTime(sec);
+  if(fill) fill.style.width = ((READ_TIME-sec)/READ_TIME*100)+'%';
+  if(timer && sec <= 0){
+    timer.classList.add('unlocked');
+  }
+}
+
+/* ========================================================
+   GAME MODAL
+======================================================== */
+let currentGameMateri = null;
+function openGameModal(materiId){
+  currentGameMateri = materiId;
+  const game = getGameByMateri(materiId);
+  if(!game) return;
+  const slide = SLIDES.find(s=>s.id===materiId);
+  document.getElementById('gameModalTitle').textContent = (slide?.title || materiId) + ' — Game';
+  renderGameModalBody(materiId, game);
+  document.getElementById('gameOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  // attach events after render
+  setTimeout(()=>attachGameEvents(), 50);
+}
+
+function closeGameModal(){
+  document.getElementById('gameOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+  currentGameMateri = null;
+}
+
+function renderGameModalBody(materiId, game){
+  const done = state.games[materiId]?.done;
+  const skor = state.games[materiId]?.skor || 0;
+  const max = state.games[materiId]?.max || gameMax(game);
+  const body = document.getElementById('gameModalBody');
+  body.innerHTML = `
     <div class="game-instr">${game.instr}</div>
-    <div id="game-area-${materiId}" data-materi="${materiId}">${renderGameArea(materiId, game)}</div>
-    <div class="game-foot">
-      <div class="game-feedback" id="game-fb-${materiId}"></div>
-      <div>
-        ${done ? '' : `<button class="btn-gold" onclick="checkGame('${materiId}')">${ic('check',16)} Periksa Jawaban</button>`}
-        ${done ? `<button class="btn-3d" onclick="resetGame('${materiId}')">${ic('refresh',14)} Ulangi Game</button>` : ''}
-      </div>
-    </div>
-  </div>`;
+    ${done ? `<div class="game-feedback win show"><b>Game selesai!</b> Skor: ${skor}/${max}. Klik "Ulangi" untuk mencoba lagi.</div>` : ''}
+    <div id="game-area-modal">${renderGameArea(materiId, game)}</div>
+    <div class="game-feedback" id="game-fb-modal"></div>
+    <div class="game-modal-foot">
+      ${done ? `<button class="btn-3d" onclick="resetGameModal('${materiId}')">${ic('refresh',14)} Ulangi Game</button>` : `<button class="btn-gold" onclick="checkGameModal('${materiId}')">${ic('check',16)} Periksa Jawaban</button>`}
+      <button class="btn-3d" onclick="closeGameModal()">Tutup</button>
+    </div>`;
 }
 
 function gameMax(game){
@@ -1702,14 +1394,14 @@ function gameMax(game){
   if(game.type==='match') return game.pairs.length;
   if(game.type==='sequence') return game.steps.length;
   if(game.type==='truefalse') return game.statements.length;
-  if(game.type==='multipick') return game.options.filter(o=>o.correct).length + game.options.filter(o=>!o.correct).length;
+  if(game.type==='multipick') return game.options.length;
   return 0;
 }
 
 function renderGameArea(materiId, game){
   if(state.games[materiId]?.done){
-    return `<div style="text-align:center;padding:20px;color:var(--gold-bright);font-family:'Cinzel',serif">
-      ${ic('trophy',32)}<br><br>Game selesai! Skor: <b style="font-size:24px">${state.games[materiId].skor}/${state.games[materiId].max}</b>
+    return `<div style="text-align:center;padding:30px;color:var(--gold-bright);font-family:'Cinzel',serif">
+      ${ic('trophy',48)}<br><br><div style="font-size:28px;font-weight:800;margin-bottom:6px">${state.games[materiId].skor}/${state.games[materiId].max}</div><div style="font-size:14px;opacity:.8">Skor Game</div>
     </div>`;
   }
   if(game.type==='dnd_sort') return renderDndSort(materiId, game);
@@ -1722,23 +1414,21 @@ function renderGameArea(materiId, game){
 
 function shuffle(arr){
   const a=[...arr];
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
   return a;
 }
+
+function escapeAttr(s){return (s||'').replace(/"/g,'&quot;')}
 
 /* --- Drag & Sort --- */
 function renderDndSort(materiId, game){
   const items = shuffle(game.items);
-  const bins = game.bins;
   return `
-  <div class="dnd-pool" id="dnd-pool-${materiId}">
+  <div class="dnd-pool" id="dnd-pool-modal">
     ${items.map((it,i)=>`<div class="dnd-item" draggable="true" data-t="${escapeAttr(it.t)}" data-cat="${it.cat}" data-i="${i}">${it.t}</div>`).join('')}
   </div>
-  <div class="dnd-bins ${bins.length===2?'two':'four'}">
-    ${bins.map(b=>`<div class="dnd-bin" data-bin="${b.id}" data-materi="${materiId}">
+  <div class="dnd-bins two">
+    ${game.bins.map(b=>`<div class="dnd-bin" data-bin="${b.id}">
       <div class="bin-title">${b.name}</div>
       <div class="bin-items"></div>
     </div>`).join('')}
@@ -1746,19 +1436,14 @@ function renderDndSort(materiId, game){
 }
 
 function attachDnd(){
-  document.querySelectorAll('.dnd-item').forEach(item=>{
+  document.querySelectorAll('#gameModalBody .dnd-item').forEach(item=>{
     item.addEventListener('dragstart', e=>{
       item.classList.add('dragging');
-      e.dataTransfer.setData('text/plain', JSON.stringify({
-        t: item.dataset.t,
-        cat: item.dataset.cat,
-        i: item.dataset.i,
-        materi: findClosest(item,'[data-materi]')?.dataset.materi
-      }));
+      e.dataTransfer.setData('text/plain', JSON.stringify({t:item.dataset.t,cat:item.dataset.cat,i:item.dataset.i}));
     });
     item.addEventListener('dragend', ()=>item.classList.remove('dragging'));
   });
-  document.querySelectorAll('.dnd-bin').forEach(bin=>{
+  document.querySelectorAll('#gameModalBody .dnd-bin').forEach(bin=>{
     bin.addEventListener('dragover', e=>{e.preventDefault();bin.classList.add('over')});
     bin.addEventListener('dragleave', ()=>bin.classList.remove('over'));
     bin.addEventListener('drop', e=>{
@@ -1766,35 +1451,18 @@ function attachDnd(){
       bin.classList.remove('over');
       const data = JSON.parse(e.dataTransfer.getData('text/plain'));
       const items = bin.querySelector('.bin-items');
-      // Check if already placed
       if(items.querySelector(`[data-t="${data.t}"]`)) return;
-      // Move the item from pool to bin
-      const item = document.querySelector(`#dnd-pool-${data.materi} .dnd-item[data-t="${data.t}"]`);
-      if(item){
-        item.classList.add('placed');
-        const clone = item.cloneNode(true);
+      const poolItem = document.querySelector(`#dnd-pool-modal .dnd-item[data-t="${data.t}"]`);
+      if(poolItem){
+        poolItem.classList.add('placed');
+        const clone = poolItem.cloneNode(true);
         clone.classList.remove('placed','dragging');
-        clone.setAttribute('draggable','true');
-        clone.addEventListener('dragstart', e=>{
-          e.dataTransfer.setData('text/plain', JSON.stringify({
-            t: data.t, cat: data.cat, i: data.i, materi: data.materi, fromBin: true
-          }));
-        });
+        clone.setAttribute('draggable','false');
         items.appendChild(clone);
       }
     });
   });
 }
-
-function findClosest(el, sel){
-  while(el){
-    if(el.matches && el.matches(sel)) return el;
-    el = el.parentElement;
-  }
-  return null;
-}
-
-function escapeAttr(s){return (s||'').replace(/"/g,'&quot;')}
 
 /* --- Match game --- */
 function renderMatchGame(materiId, game){
@@ -1803,110 +1471,95 @@ function renderMatchGame(materiId, game){
   <div class="match-game">
     <div class="match-col left">
       <h4>Istilah</h4>
-      <div class="match-list" id="match-left-${materiId}">
-        ${game.pairs.map((p,i)=>`<div class="match-item" data-materi="${materiId}" data-side="term" data-i="${i}" data-val="${escapeAttr(p.term)}" onclick="selectMatch('${materiId}','term',${i})">${p.term}</div>`).join('')}
-      </div>
+      <div class="match-list">${game.pairs.map((p,i)=>`<div class="match-item" data-materi="${materiId}" data-side="term" data-i="${i}" onclick="selectMatch('${materiId}',${i},'${escapeAttr(p.term)}')">${p.term}</div>`).join('')}</div>
     </div>
     <div class="match-col right">
       <h4>Fungsi / Penjelasan</h4>
-      <div class="match-list" id="match-right-${materiId}">
-        ${defs.map((p,i)=>`<div class="match-item" data-materi="${materiId}" data-side="def" data-i="${i}" data-val="${escapeAttr(p.def)}" onclick="selectMatch('${materiId}','def',${i}, '${escapeAttr(p.def)}')">${p.def}</div>`).join('')}
-      </div>
+      <div class="match-list">${defs.map((p,i)=>`<div class="match-item" data-materi="${materiId}" data-side="def" data-i="${i}" data-val="${escapeAttr(p.def)}" onclick="selectMatchDef('${materiId}',${i},'${escapeAttr(p.def)}')">${p.def}</div>`).join('')}</div>
     </div>
-  </div>
-  <input type="hidden" id="match-state-${materiId}" value="">`;
+  </div>`;
 }
 
 const matchState = {};
-function selectMatch(materiId, side, idx, val){
+function selectMatch(materiId, termIdx, termVal){
   if(!matchState[materiId]) matchState[materiId] = {termIdx:null, defIdx:null, defVal:null};
+  matchState[materiId].termIdx = termIdx;
+  matchState[materiId].termVal = termVal;
+  document.querySelectorAll(`.match-item[data-materi="${materiId}"][data-side="term"]`).forEach(el=>{
+    el.classList.toggle('selected', parseInt(el.dataset.i)===termIdx);
+  });
+  tryMatch(materiId);
+}
+function selectMatchDef(materiId, defIdx, defVal){
+  if(!matchState[materiId]) matchState[materiId] = {termIdx:null, defIdx:null, defVal:null};
+  matchState[materiId].defIdx = defIdx;
+  matchState[materiId].defVal = defVal;
+  document.querySelectorAll(`.match-item[data-materi="${materiId}"][data-side="def"]`).forEach(el=>{
+    el.classList.toggle('selected', parseInt(el.dataset.i)===defIdx);
+  });
+  tryMatch(materiId);
+}
+function tryMatch(materiId){
   const m = matchState[materiId];
-  // get game pairs
+  if(m.termIdx === null || m.defIdx === null) return;
   const game = getGameByMateri(materiId);
   if(!game) return;
-  if(side==='term'){
-    m.termIdx = idx;
-  } else {
-    m.defIdx = idx;
-    m.defVal = val;
-  }
-  // Update UI selected
-  document.querySelectorAll(`.match-item[data-materi="${materiId}"][data-side="term"]`).forEach(el=>{
-    el.classList.toggle('selected', parseInt(el.dataset.i)===m.termIdx);
-  });
-  document.querySelectorAll(`.match-item[data-materi="${materiId}"][data-side="def"]`).forEach(el=>{
-    el.classList.toggle('selected', parseInt(el.dataset.i)===m.defIdx);
-  });
-  // If both selected, check match
-  if(m.termIdx !== null && m.defIdx !== null){
-    const term = game.pairs[m.termIdx].term;
-    const def = game.pairs[m.termIdx].def;
-    if(def === m.defVal){
-      // Match!
-      const tEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="term"][data-i="${m.termIdx}"]`);
-      const dEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="def"][data-i="${m.defIdx}"]`);
-      tEl.classList.add('matched');
-      dEl.classList.add('matched');
-      // Track matched
-      if(!state.games[materiId]) state.games[materiId] = {skor:0, max:gameMax(game), done:false, matched:[]};
-      if(!state.games[materiId].matched) state.games[materiId].matched = [];
-      if(state.games[materiId].matched.indexOf(m.termIdx)<0){
-        state.games[materiId].matched.push(m.termIdx);
-        state.games[materiId].skor = state.games[materiId].matched.length;
-      }
-      // Reset selection
-      m.termIdx = null; m.defIdx = null; m.defVal = null;
-      document.querySelectorAll(`.match-item[data-materi="${materiId}"].selected`).forEach(el=>el.classList.remove('selected'));
-      saveState();
-      showToast('Cocok! +' + 1);
-    } else {
-      // Wrong
-      const tEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="term"][data-i="${m.termIdx}"]`);
-      const dEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="def"][data-i="${m.defIdx}"]`);
-      tEl.classList.add('wrong-flash');
-      dEl.classList.add('wrong-flash');
-      setTimeout(()=>{
-        tEl.classList.remove('wrong-flash','selected');
-        dEl.classList.remove('wrong-flash','selected');
-      }, 500);
-      m.termIdx = null; m.defIdx = null; m.defVal = null;
+  const pair = game.pairs[m.termIdx];
+  if(pair.def === m.defVal){
+    // Correct match
+    const tEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="term"][data-i="${m.termIdx}"]`);
+    const dEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="def"][data-i="${m.defIdx}"]`);
+    tEl.classList.add('matched'); tEl.classList.remove('selected');
+    dEl.classList.add('matched'); dEl.classList.remove('selected');
+    if(!state.games[materiId]) state.games[materiId] = {skor:0, max:gameMax(game), done:false, matched:[]};
+    if(!state.games[materiId].matched) state.games[materiId].matched = [];
+    if(state.games[materiId].matched.indexOf(m.termIdx)<0){
+      state.games[materiId].matched.push(m.termIdx);
+      state.games[materiId].skor = state.games[materiId].matched.length;
     }
+    m.termIdx=null; m.defIdx=null; m.termVal=null; m.defVal=null;
+    saveState();
+    showToast('Cocok! +1');
+    // Check if all matched
+    if(state.games[materiId].matched.length === game.pairs.length){
+      setTimeout(()=>checkGameModal(materiId), 500);
+    }
+  } else {
+    // Wrong
+    const tEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="term"][data-i="${m.termIdx}"]`);
+    const dEl = document.querySelector(`.match-item[data-materi="${materiId}"][data-side="def"][data-i="${m.defIdx}"]`);
+    if(tEl) tEl.classList.add('wrong-flash');
+    if(dEl) dEl.classList.add('wrong-flash');
+    setTimeout(()=>{
+      if(tEl) tEl.classList.remove('wrong-flash','selected');
+      if(dEl) dEl.classList.remove('wrong-flash','selected');
+    }, 500);
+    m.termIdx=null; m.defIdx=null; m.termVal=null; m.defVal=null;
   }
 }
 
 function getGameByMateri(materiId){
-  const map = {
-    'intro':GAME_INTRO, 'hardware':GAME_HARDWARE, 'software':GAME_SOFTWARE,
-    'internet':GAME_INTERNET, 'protocol':GAME_PROTOCOL, 'tcpip':GAME_TCPIP,
-    'dns-https':GAME_DNSHTTPS, 'etika':GAME_ETIKA, 'keamanan':GAME_KEAMANAN,
-    'media':GAME_MEDIA, 'sim-jaringan':GAME_SIM_JARINGAN, 'sim-internet':GAME_SIM_INTERNET,
-    'sim-topologi':GAME_SIM_TOPOLOGI, 'sim-osi':GAME_SIM_OSI
-  };
+  const map = {'intro':GAME_INTRO,'hardware':GAME_HARDWARE,'software':GAME_SOFTWARE,'internet':GAME_INTERNET,'protocol':GAME_PROTOCOL,'tcpip':GAME_TCPIP,'dns-https':GAME_DNSHTTPS,'etika':GAME_ETIKA,'keamanan':GAME_KEAMANAN,'media':GAME_MEDIA,'sim-jaringan':GAME_SIM_JARINGAN,'sim-internet':GAME_SIM_INTERNET,'sim-topologi':GAME_SIM_TOPOLOGI,'sim-osi':GAME_SIM_OSI};
   return map[materiId];
 }
 
-/* --- Sequence game --- */
+/* --- Sequence --- */
 function renderSequence(materiId, game){
   const shuffled = shuffle(game.steps.map((s,i)=>({...s,origI:i})));
-  return `
-  <div class="seq-list" id="seq-list-${materiId}" data-materi="${materiId}">
-    ${shuffled.map((s,i)=>`<div class="seq-item" draggable="true" data-i="${s.origI}" data-materi="${materiId}">
-      <div class="seq-num">${i+1}</div>
-      <div>${s.t}</div>
+  return `<div class="seq-list" id="seq-list-modal" data-materi="${materiId}">
+    ${shuffled.map((s,i)=>`<div class="seq-item" draggable="true" data-i="${s.origI}">
+      <div class="seq-num">${i+1}</div><div>${s.t}</div>
     </div>`).join('')}
   </div>`;
 }
 
 function attachSequence(){
-  document.querySelectorAll('.seq-item').forEach(item=>{
-    item.addEventListener('dragstart', e=>{
-      item.classList.add('dragging');
-      e.dataTransfer.setData('text/plain', 'seq');
-    });
+  document.querySelectorAll('#gameModalBody .seq-item').forEach(item=>{
+    item.addEventListener('dragstart', e=>{item.classList.add('dragging');e.dataTransfer.setData('text/plain','seq')});
     item.addEventListener('dragend', ()=>item.classList.remove('dragging'));
   });
-  document.querySelectorAll('.seq-list').forEach(list=>{
-    const materi = list.dataset.materi;
+  const list = document.getElementById('seq-list-modal');
+  if(list){
     list.addEventListener('dragover', e=>{
       e.preventDefault();
       const dragging = list.querySelector('.dragging');
@@ -1914,14 +1567,10 @@ function attachSequence(){
       const after = getDragAfter(list, e.clientY);
       if(after==null) list.appendChild(dragging);
       else list.insertBefore(dragging, after);
-      // Renumber
-      list.querySelectorAll('.seq-item').forEach((it,i)=>{
-        it.querySelector('.seq-num').textContent = i+1;
-      });
+      list.querySelectorAll('.seq-item').forEach((it,i)=>{it.querySelector('.seq-num').textContent = i+1});
     });
-  });
+  }
 }
-
 function getDragAfter(list, y){
   const items = [...list.querySelectorAll('.seq-item:not(.dragging)')];
   return items.reduce((closest, child)=>{
@@ -1934,8 +1583,7 @@ function getDragAfter(list, y){
 
 /* --- True/False --- */
 function renderTrueFalse(materiId, game){
-  return `
-  <div class="tf-list">
+  return `<div class="tf-list">
     ${game.statements.map((s,i)=>`<div class="tf-item" data-materi="${materiId}" data-i="${i}">
       <div class="tf-q">${i+1}. ${s.q}</div>
       <div class="tf-btns">
@@ -1945,7 +1593,6 @@ function renderTrueFalse(materiId, game){
     </div>`).join('')}
   </div>`;
 }
-
 function answerTF(materiId, i, ans){
   const game = getGameByMateri(materiId);
   if(!game) return;
@@ -1956,14 +1603,11 @@ function answerTF(materiId, i, ans){
   const buttons = item.querySelectorAll('.tf-btn');
   buttons.forEach(b=>b.classList.add('answered'));
   const isCorrect = ans === correct;
-  if(ans === true){
-    buttons[0].classList.add(isCorrect?'correct':'wrong');
-  } else {
-    buttons[1].classList.add(isCorrect?'correct':'wrong');
-  }
+  if(ans === true) buttons[0].classList.add(isCorrect?'correct':'wrong');
+  else buttons[1].classList.add(isCorrect?'correct':'wrong');
   if(!state.games[materiId]) state.games[materiId] = {skor:0, max:gameMax(game), done:false, tfCorrect:0};
   if(isCorrect){
-    state.games[materiId].tfCorrect = (state.games[materiId].tfCorrect||0) + 1;
+    state.games[materiId].tfCorrect = (state.games[materiId].tfCorrect||0)+1;
     state.games[materiId].skor = state.games[materiId].tfCorrect;
   }
   saveState();
@@ -1971,31 +1615,27 @@ function answerTF(materiId, i, ans){
 
 /* --- Multi-Pick --- */
 function renderMultiPick(materiId, game){
-  return `
-  <div class="mp-list" id="mp-list-${materiId}" data-materi="${materiId}">
-    ${game.options.map((o,i)=>`<div class="mp-item" data-materi="${materiId}" data-i="${i}" data-correct="${o.correct}" onclick="toggleMP('${materiId}',${i})">
-      <div class="mp-ic">${ic('star',14)}</div>
-      <span>${o.t}</span>
+  return `<div class="mp-list" id="mp-list-modal" data-materi="${materiId}">
+    ${game.options.map((o,i)=>`<div class="mp-item" data-materi="${materiId}" data-i="${i}" data-correct="${o.correct}" onclick="toggleMP(${i})">
+      <div class="mp-ic">${ic('star',14)}</div><span>${o.t}</span>
     </div>`).join('')}
   </div>`;
 }
-
-function toggleMP(materiId, i){
-  const item = document.querySelector(`.mp-item[data-materi="${materiId}"][data-i="${i}"]`);
-  if(item.classList.contains('locked')) return;
+function toggleMP(i){
+  const item = document.querySelector(`.mp-item[data-i="${i}"]`);
+  if(!item || item.classList.contains('locked')) return;
   item.classList.toggle('selected');
 }
 
 /* ========================================================
-   CHECK GAME — runs when user clicks "Periksa Jawaban"
+   CHECK GAME (in modal)
 ======================================================== */
-function checkGame(materiId){
+function checkGameModal(materiId){
   const game = getGameByMateri(materiId);
   if(!game) return;
   let skor = 0, max = gameMax(game);
-
   if(game.type === 'dnd_sort'){
-    document.querySelectorAll(`.dnd-bin[data-materi="${materiId}"]`).forEach(bin=>{
+    document.querySelectorAll('#gameModalBody .dnd-bin').forEach(bin=>{
       const expected = bin.dataset.bin;
       bin.querySelectorAll('.dnd-item').forEach(it=>{
         if(it.dataset.cat === expected) skor++;
@@ -2004,75 +1644,54 @@ function checkGame(materiId){
   } else if(game.type === 'match'){
     skor = state.games[materiId]?.matched?.length || 0;
   } else if(game.type === 'sequence'){
-    const list = document.getElementById(`seq-list-${materiId}`);
+    const list = document.getElementById('seq-list-modal');
     if(list){
-      const items = list.querySelectorAll('.seq-item');
-      items.forEach((it,i)=>{
-        const origI = parseInt(it.dataset.i);
-        if(origI === i){
-          skor++;
-          it.classList.add('correct');
-        } else {
-          it.classList.add('wrong');
-        }
+      list.querySelectorAll('.seq-item').forEach((it,i)=>{
+        if(parseInt(it.dataset.i) === i){skor++; it.classList.add('correct')}
+        else it.classList.add('wrong');
       });
     }
   } else if(game.type === 'truefalse'){
     skor = state.games[materiId]?.tfCorrect || 0;
   } else if(game.type === 'multipick'){
-    document.querySelectorAll(`.mp-item[data-materi="${materiId}"]`).forEach(item=>{
+    document.querySelectorAll('#gameModalBody .mp-item').forEach(item=>{
       const correct = item.dataset.correct === 'true';
       const selected = item.classList.contains('selected');
       item.classList.add('locked');
       if((correct && selected) || (!correct && !selected)) skor++;
     });
   }
-
-  // Save score
   state.games[materiId] = {skor, max, done:true};
   saveState();
-
-  // Feedback
   const pct = Math.round(skor/max*100);
-  const fb = document.getElementById(`game-fb-${materiId}`);
+  const fb = document.getElementById('game-fb-modal');
   let cls, msg;
-  if(pct === 100){ cls='win'; msg = `<b>Sempurna!</b> Skor ${skor}/${max}. Kamu menguasai materi ini! 🏆`; }
-  else if(pct >= 60){ cls='partial'; msg = `<b>Bagus!</b> Skor ${skor}/${max}. Terus tingkatkan!`; }
-  else { cls='lose'; msg = `<b>Coba lagi.</b> Skor ${skor}/${max}. Pelajari lagi materinya ya.`; }
-  fb.className = 'game-feedback show ' + cls;
-  fb.innerHTML = msg;
-
-  // Re-render game area to show locked/completed state
+  if(pct === 100){cls='win'; msg=`<b>Sempurna!</b> Skor ${skor}/${max}. Kamu menguasai materi ini! 🏆`;}
+  else if(pct >= 60){cls='partial'; msg=`<b>Bagus!</b> Skor ${skor}/${max}. Terus tingkatkan!`;}
+  else {cls='lose'; msg=`<b>Coba lagi.</b> Skor ${skor}/${max}. Pelajari lagi materinya ya.`;}
+  if(fb){fb.className='game-feedback show '+cls; fb.innerHTML=msg;}
+  // Re-render modal body
   setTimeout(()=>{
-    const area = document.getElementById(`game-area-${materiId}`);
-    if(area) area.innerHTML = renderGameArea(materiId, game);
-    // Re-render whole screen to update button visibility
-    renderCurrentScreen();
-    updateProgress();
+    renderGameModalBody(materiId, game);
     attachGameEvents();
+    // Update menu card progress
+    updateProgress();
   }, 1500);
-
   // Send to server
   const slide = SLIDES.find(s=>s.id===materiId);
   postToServer({
-    action:'saveGame',
-    session_id: state.player?.session_id,
-    nama: state.player?.nama,
-    kelas: state.player?.kelas,
-    games:[{
-      materi_id: materiId,
-      materi: slide?.title || materiId,
-      jenis: game.type,
-      skor: skor,
-      max: max
-    }]
+    action:'saveGame', session_id:state.player?.session_id, nama:state.player?.nama, kelas:state.player?.kelas,
+    games:[{materi_id:materiId, materi:slide?.title||materiId, jenis:game.type, skor:skor, max:max}]
   });
 }
 
-function resetGame(materiId){
+function resetGameModal(materiId){
   delete state.games[materiId];
+  // Reset match state
+  delete matchState[materiId];
   saveState();
-  renderCurrentScreen();
+  const game = getGameByMateri(materiId);
+  renderGameModalBody(materiId, game);
   attachGameEvents();
   showToast('Game direset, coba lagi!');
 }
@@ -2080,147 +1699,6 @@ function resetGame(materiId){
 function attachGameEvents(){
   attachDnd();
   attachSequence();
-}
-
-/* ========================================================
-   SIM JARINGAN (interactive device picker)
-======================================================== */
-function renderSimJaringan(s){
-  return `
-  <div class="mat-page">
-    <div class="mat-header">
-      <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
-      <div class="titles">
-        <div class="eyebrow">SIMULASI ${s.num}</div>
-        <h2>${s.title}</h2>
-        <div class="sub">${s.sub}</div>
-      </div>
-    </div>
-    <div class="split-img-text">
-      <div class="mat-image"><img src="${IMAGES.switch}" alt="Switch jaringan"><div class="img-caption">Switch jaringan dengan kabel Ethernet</div></div>
-      <div class="mat-content">
-        <h4>${ic('router',14)} Simulasi Perangkat Jaringan</h4>
-        <p>Klik perangkat di bawah untuk mengetahui fungsinya. Pelajari bagaimana <b>laptop, router, switch, server, HP</b> saling terhubung.</p>
-        <div class="concept"><div class="c-ic">${ic('router',14)}</div><div><h5>Router</h5><p>Menghubungkan jaringan lokal ke internet.</p></div></div>
-        <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>Switch</h5><p>Menghubungkan perangkat dalam LAN.</p></div></div>
-        <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>Server</h5><p>Menyimpan & melayani situs/data.</p></div></div>
-        <div class="concept"><div class="c-ic">${ic('laptop',14)}</div><div><h5>Laptop/HP</h5><p>Perangkat pengguna akhir.</p></div></div>
-      </div>
-    </div>
-    ${renderGame(s.id, GAME_SIM_JARINGAN, state.games[s.id])}
-  </div>`;
-}
-
-/* ========================================================
-   SIM INTERNET (animated flow + sequence game)
-======================================================== */
-function renderSimInternet(s){
-  return `
-  <div class="mat-page">
-    <div class="mat-header">
-      <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
-      <div class="titles">
-        <div class="eyebrow">SIMULASI ${s.num}</div>
-        <h2>${s.title}</h2>
-        <div class="sub">${s.sub}</div>
-      </div>
-    </div>
-    <div class="split-img-text">
-      <div class="mat-image"><img src="${IMAGES.globe}" alt="Internet global"><div class="img-caption">Internet — jaringan global</div></div>
-      <div class="mat-content">
-        <h4>${ic('globe',14)} Cara Kerja Internet</h4>
-        <p>Saat kamu mengetik alamat situs, data tidak langsung sampai. Ada <b>5 tahap</b>:</p>
-        <div class="concept"><div class="c-ic">${ic('laptop',14)}</div><div><h5>1. Browser</h5><p>Pengguna ketik alamat situs & tekan Enter.</p></div></div>
-        <div class="concept"><div class="c-ic">${ic('book',14)}</div><div><h5>2. DNS Lookup</h5><p>DNS cari IP dari nama situs.</p></div></div>
-        <div class="concept"><div class="c-ic">${ic('wifi',14)}</div><div><h5>3. Jaringan</h5><p>Permintaan lewat router, switch, ISP.</p></div></div>
-        <div class="concept"><div class="c-ic">${ic('server',14)}</div><div><h5>4. Server</h5><p>Server proses & siapkan data.</p></div></div>
-        <div class="concept"><div class="c-ic">${ic('check',14)}</div><div><h5>5. Tampil</h5><p>Browser susun & tampilkan halaman.</p></div></div>
-      </div>
-    </div>
-    ${renderGame(s.id, GAME_SIM_INTERNET, state.games[s.id])}
-  </div>`;
-}
-
-/* ========================================================
-   SIM TOPOLOGI (selectable + match game)
-======================================================== */
-const TOPOLOGIES = {
-  bus:{name:'Bus', desc:'Satu kabel utama sebagai tulang punggung jaringan.'},
-  star:{name:'Star', desc:'Semua perangkat terhubung ke satu titik pusat (switch/hub).'},
-  ring:{name:'Ring', desc:'Perangkat membentuk lingkaran tertutup, data mengalir satu arah.'},
-  mesh:{name:'Mesh', desc:'Setiap perangkat terhubung langsung ke semua perangkat lain.'},
-  tree:{name:'Tree', desc:'Berjenjang seperti pohon, gabungan beberapa topologi star.'}
-};
-let activeTopo = 'star';
-function renderSimTopologi(s){
-  return `
-  <div class="mat-page">
-    <div class="mat-header">
-      <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
-      <div class="titles">
-        <div class="eyebrow">SIMULASI ${s.num}</div>
-        <h2>${s.title}</h2>
-        <div class="sub">${s.sub}</div>
-      </div>
-    </div>
-    <div class="split-img-text">
-      <div class="mat-image"><img src="${IMAGES.topology}" alt="Topologi jaringan"><div class="img-caption">Diagram 4 jenis topologi jaringan</div></div>
-      <div class="mat-content">
-        <h4>${ic('star',14)} 5 Topologi Jaringan</h4>
-        <p><b>Topologi</b> adalah susunan/cara perangkat terhubung dalam jaringan. Pilih topologi untuk lihat detailnya:</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
-          ${Object.keys(TOPOLOGIES).map(k=>`<button class="lkpd-tab ${k===activeTopo?'active':''}" onclick="selectTopo('${k}')">${TOPOLOGIES[k].name}</button>`).join('')}
-        </div>
-        <div class="concept" style="margin-top:10px"><div class="c-ic">${ic('star',14)}</div><div><h5 id="topoName">${TOPOLOGIES[activeTopo].name}</h5><p id="topoDesc">${TOPOLOGIES[activeTopo].desc}</p></div></div>
-      </div>
-    </div>
-    ${renderGame(s.id, GAME_SIM_TOPOLOGI, state.games[s.id])}
-  </div>`;
-}
-function selectTopo(k){
-  activeTopo = k;
-  const t = TOPOLOGIES[k];
-  const n = document.getElementById('topoName');
-  const d = document.getElementById('topoDesc');
-  if(n) n.textContent = t.name;
-  if(d) d.textContent = t.desc;
-  document.querySelectorAll('.lkpd-tab').forEach(b=>b.classList.remove('active'));
-  event?.target?.classList.add('active');
-}
-
-/* ========================================================
-   SIM OSI (7 layers + sequence game)
-======================================================== */
-const OSI_LAYERS = [
-  {n:7, name:'Application', desc:'Antarmuka pengguna — browser, email.'},
-  {n:6, name:'Presentation', desc:'Enkripsi & format data (SSL, JPEG).'},
-  {n:5, name:'Session', desc:'Mengelola sesi komunikasi.'},
-  {n:4, name:'Transport', desc:'TCP/UDP — andal/c cepat.'},
-  {n:3, name:'Network', desc:'IP address & routing.'},
-  {n:2, name:'Data Link', desc:'MAC address & frame.'},
-  {n:1, name:'Physical', desc:'Sinyal listrik/cahaya/gelombang.'}
-];
-function renderSimOsi(s){
-  return `
-  <div class="mat-page">
-    <div class="mat-header">
-      <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
-      <div class="titles">
-        <div class="eyebrow">SIMULASI ${s.num}</div>
-        <h2>${s.title}</h2>
-        <div class="sub">${s.sub}</div>
-      </div>
-    </div>
-    <div class="split-img-text">
-      <div class="mat-image"><img src="${IMAGES.osi}" alt="Model OSI"><div class="img-caption">7 Lapisan Model OSI</div></div>
-      <div class="mat-content">
-        <h4>${ic('layers',14)} Model OSI — 7 Lapisan</h4>
-        <p><b>OSI</b> adalah model 7 lapis yang menjelaskan tahapan komunikasi data dari pengguna sampai media fisik.</p>
-        ${OSI_LAYERS.map(l=>`<div class="concept" style="padding:8px"><div class="c-ic" style="width:24px;height:24px;font-size:12px">${l.n}</div><div><h5 style="font-size:13px">${l.name}</h5><p style="font-size:12px;margin:0">${l.desc}</p></div></div>`).join('')}
-      </div>
-    </div>
-    ${renderGame(s.id, GAME_SIM_OSI, state.games[s.id])}
-  </div>`;
 }
 
 /* ========================================================
@@ -2247,59 +1725,44 @@ function renderQuiz(){
     const total = QUIZ_QUESTIONS.length;
     const score = state.quiz.score || Math.round(correctFirst/total*100);
     state.quiz.score = score;
-    const pct = score;
-    const circ = 2*Math.PI*54;
-    const off = circ*(1-pct/100);
-    return `
-    <div class="quiz-wrap">
-      <div class="quiz-card result-card">
-        <div class="crown">${ic('crown',50)}</div>
-        <h3>Kuis Selesai!</h3>
-        <div class="score-big">${score}</div>
-        <p style="color:#3D2410;margin-bottom:10px">Benar percobaan pertama: <b>${correctFirst}/${total}</b></p>
-        <div class="modal-actions">
-          <button class="btn-gold" onclick="restartQuiz()">${ic('refresh',16)} Ulangi Kuis</button>
-          <button class="btn-3d" onclick="goTo('tantangan')">Lanjut Tantangan</button>
-        </div>
+    const circ = 2*Math.PI*54, off = circ*(1-score/100);
+    return `<div class="quiz-wrap"><div class="quiz-card result-card">
+      <div class="crown">${ic('crown',50)}</div>
+      <h3>Kuis Selesai!</h3>
+      <div class="score-big">${score}</div>
+      <p style="color:#3D2410;margin-bottom:10px">Benar percobaan pertama: <b>${correctFirst}/${total}</b></p>
+      <div class="modal-actions">
+        <button class="btn-gold" onclick="restartQuiz()">${ic('refresh',16)} Ulangi Kuis</button>
+        <button class="btn-3d" onclick="goTo('tantangan')">Lanjut Tantangan</button>
       </div>
-    </div>`;
+    </div></div>`;
   }
-  const q = state.quiz;
-  const i = q.current || 0;
+  const q = state.quiz, i = q.current||0;
   if(i >= QUIZ_QUESTIONS.length) return renderQuiz();
   const item = QUIZ_QUESTIONS[i];
   const isCorrect = q.answers[i] !== undefined;
   const lastAns = q.lastAns;
   const dots = QUIZ_QUESTIONS.map((_,idx)=>{
-    let cls = '';
+    let cls='';
     if(q.firstAttempt[idx] !== undefined) cls = q.firstAttempt[idx]===QUIZ_QUESTIONS[idx].a?'done':'wrong';
     if(idx===i && !q.done) cls = 'current';
     return `<div class="quiz-dot ${cls}"></div>`;
   }).join('');
-  return `
-  <div class="quiz-wrap">
+  return `<div class="quiz-wrap">
     <div class="mat-header" style="margin-bottom:14px">
       <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
       <div class="titles"><div class="eyebrow">EVALUASI</div><h2>Kuis Akhir</h2></div>
     </div>
-    <div class="quiz-progress">
-      <div class="quiz-dots">${dots}</div>
-      <div class="quiz-counter">Soal ${i+1}/${QUIZ_QUESTIONS.length}</div>
-    </div>
+    <div class="quiz-progress"><div class="quiz-dots">${dots}</div><div class="quiz-counter">Soal ${i+1}/${QUIZ_QUESTIONS.length}</div></div>
     <div class="quiz-card">
       <div class="quiz-q"><span class="num">${i+1}.</span>${item.q}</div>
       <div class="quiz-opts">
         ${item.opts.map((o,idx)=>{
           let cls='';
-          if(isCorrect){
-            cls = idx===item.a?'correct locked':'locked';
-          } else if(lastAns===idx){
-            cls = idx===item.a?'correct':'wrong locked';
-          } else if(q.firstAttempt[i]!==undefined){
-            cls = 'locked';
-          }
-          return `<button class="quiz-opt ${cls}" onclick="answerQuiz(${idx})">
-            <span class="letter">${String.fromCharCode(65+idx)}</span><span>${o}</span></button>`;
+          if(isCorrect){cls = idx===item.a?'correct locked':'locked'}
+          else if(lastAns===idx){cls = idx===item.a?'correct':'wrong locked'}
+          else if(q.firstAttempt[i]!==undefined){cls='locked'}
+          return `<button class="quiz-opt ${cls}" onclick="answerQuiz(${idx})"><span class="letter">${String.fromCharCode(65+idx)}</span><span>${o}</span></button>`;
         }).join('')}
       </div>
       <div class="quiz-fb ${isCorrect?'ok show':(lastAns!==null?'no show':'')}" id="quizFb">
@@ -2315,21 +1778,18 @@ function renderQuiz(){
 }
 
 function answerQuiz(idx){
-  const q = state.quiz;
-  const i = q.current||0;
+  const q = state.quiz, i = q.current||0;
   if(i>=QUIZ_QUESTIONS.length) return;
   const correctIdx = QUIZ_QUESTIONS[i].a;
   if(q.answers[i] !== undefined) return;
   if(q.firstAttempt[i] === undefined) q.firstAttempt[i] = idx;
   q.lastAns = idx;
   if(idx === correctIdx) q.answers[i] = idx;
-  renderCurrentScreen();
-  saveState();
+  renderCurrentScreen(); saveState();
 }
 
 function nextQuiz(){
-  const q = state.quiz;
-  const i = q.current||0;
+  const q = state.quiz, i = q.current||0;
   if(q.answers[i] === undefined) return;
   q.lastAns = null;
   q.current = i + 1;
@@ -2337,36 +1797,24 @@ function nextQuiz(){
     const correctFirst = Object.keys(q.firstAttempt).filter(k=>q.firstAttempt[k]===QUIZ_QUESTIONS[k].a).length;
     q.score = Math.round(correctFirst/QUIZ_QUESTIONS.length*100);
     q.done = true;
-    // Send to server
     const answers = QUIZ_QUESTIONS.map((item, idx) => ({
-      qnum: idx+1,
-      q: item.q,
+      qnum: idx+1, q: item.q,
       ans: item.opts[q.firstAttempt[idx] !== undefined ? q.firstAttempt[idx] : 0],
       correct_answer: item.opts[item.a],
-      correct_first: q.firstAttempt[idx] === item.a,
-      why: item.why
+      correct_first: q.firstAttempt[idx] === item.a, why: item.why
     }));
-    postToServer({
-      action:'saveQuiz',
-      session_id: state.player?.session_id,
-      nama: state.player?.nama,
-      kelas: state.player?.kelas,
-      answers: answers
-    });
+    postToServer({action:'saveQuiz', session_id:state.player?.session_id, nama:state.player?.nama, kelas:state.player?.kelas, answers});
   }
-  renderCurrentScreen();
-  saveState();
-  updateProgress();
+  renderCurrentScreen(); saveState(); updateProgress();
 }
 
 function restartQuiz(){
   state.quiz = {current:0, answers:{}, firstAttempt:{}, score:0, done:false};
-  renderCurrentScreen();
-  saveState();
+  renderCurrentScreen(); saveState();
 }
 
 /* ========================================================
-   TANTANGAN (final matching game)
+   TANTANGAN
 ======================================================== */
 const CHALLENGE_PAIRS = [
   {term:'Router', def:'Mengarahkan data antarjaringan'},
@@ -2380,62 +1828,42 @@ const CHALLENGE_PAIRS = [
 ];
 
 function renderChallenge(){
-  if(!state.matchData){
-    state.matchData = shuffle(CHALLENGE_PAIRS);
-  }
-  const m = state.match;
-  const matched = m.matched;
-  const done = matched.length === CHALLENGE_PAIRS.length;
-  return `
-  <div class="quiz-wrap">
+  if(!state.matchData) state.matchData = shuffle(CHALLENGE_PAIRS);
+  const m = state.match, matched = m.matched, done = matched.length === CHALLENGE_PAIRS.length;
+  return `<div class="quiz-wrap">
     <div class="mat-header" style="margin-bottom:14px">
       <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
       <div class="titles"><div class="eyebrow">TANTANGAN</div><h2>Tantangan Akhir</h2></div>
     </div>
-    ${done ? `
-      <div class="quiz-card result-card">
-        <div class="crown">${ic('trophy',50)}</div>
-        <h3>Tantangan Selesai!</h3>
-        <p>Semua istilah berhasil dicocokkan!</p>
-        <button class="btn-gold" onclick="resetChallenge()">${ic('refresh',16)} Ulangi</button>
-        <button class="btn-3d" onclick="goTo('refleksi')">Lanjut Refleksi</button>
-      </div>
-    ` : `
+    ${done ? `<div class="quiz-card result-card">
+      <div class="crown">${ic('trophy',50)}</div>
+      <h3>Tantangan Selesai!</h3>
+      <p>Semua istilah berhasil dicocokkan!</p>
+      <button class="btn-gold" onclick="resetChallenge()">${ic('refresh',16)} Ulangi</button>
+      <button class="btn-3d" onclick="goTo('refleksi')">Lanjut Refleksi</button>
+    </div>` : `
       <div class="panel-wood" style="padding:20px;margin-bottom:14px;text-align:center">
         <h3 style="color:var(--gold-bright);margin-bottom:6px">⚔️ Cocokkan Istilah & Fungsi</h3>
-        <p style="color:var(--parchment);font-size:13px">Klik istilah di kiri, lalu klik fungsinya di kanan. Pasangan benar: <b style="color:var(--gold-bright)">${matched.length}/${CHALLENGE_PAIRS.length}</b></p>
+        <p style="color:var(--parchment);font-size:14px">Klik istilah di kiri, lalu klik fungsinya di kanan. Pasangan benar: <b style="color:var(--gold-bright)">${matched.length}/${CHALLENGE_PAIRS.length}</b></p>
       </div>
-      <div class="match-game" id="challenge-game">
-        <div class="match-col left">
-          <h4>Istilah</h4>
-          <div class="match-list">
-            ${CHALLENGE_PAIRS.map((p,i)=>`<div class="match-item ${matched.includes(i)?'matched':''} ${m.termIdx===i?'selected':''}" data-challenge="term" data-i="${i}" onclick="selectChallenge('term',${i})">${p.term}</div>`).join('')}
-          </div>
-        </div>
-        <div class="match-col right">
-          <h4>Fungsi</h4>
-          <div class="match-list">
-            ${state.matchData.map((p,i)=>{
-              const origIdx = CHALLENGE_PAIRS.findIndex(x=>x.def===p.def);
-              return `<div class="match-item ${matched.includes(origIdx)?'matched':''} ${m.defIdx===i?'selected':''}" data-challenge="def" data-i="${i}" onclick="selectChallenge('def',${i})">${p.def}</div>`;
-            }).join('')}
-          </div>
-        </div>
-      </div>
-    `}
+      <div class="match-game">
+        <div class="match-col left"><h4>Istilah</h4><div class="match-list">
+          ${CHALLENGE_PAIRS.map((p,i)=>`<div class="match-item ${matched.includes(i)?'matched':''} ${m.termIdx===i?'selected':''}" data-challenge="term" data-i="${i}" onclick="selectChallenge('term',${i})">${p.term}</div>`).join('')}
+        </div></div>
+        <div class="match-col right"><h4>Fungsi</h4><div class="match-list">
+          ${state.matchData.map((p,i)=>{
+            const origIdx = CHALLENGE_PAIRS.findIndex(x=>x.def===p.def);
+            return `<div class="match-item ${matched.includes(origIdx)?'matched':''} ${m.defIdx===i?'selected':''}" data-challenge="def" data-i="${i}" onclick="selectChallenge('def',${i})">${p.def}</div>`;
+          }).join('')}
+        </div></div>
+      </div>`}
   </div>`;
 }
 
 function selectChallenge(side, i){
   const m = state.match;
-  if(side==='term'){
-    if(m.matched.includes(i)) return;
-    m.termIdx = i;
-  } else {
-    const origIdx = CHALLENGE_PAIRS.findIndex(x=>x.def===state.matchData[i].def);
-    if(m.matched.includes(origIdx)) return;
-    m.defIdx = i;
-  }
+  if(side==='term'){ if(m.matched.includes(i)) return; m.termIdx = i; }
+  else { const origIdx = CHALLENGE_PAIRS.findIndex(x=>x.def===state.matchData[i].def); if(m.matched.includes(origIdx)) return; m.defIdx = i; }
   if(m.termIdx !== null && m.defIdx !== null){
     const term = CHALLENGE_PAIRS[m.termIdx];
     const def = state.matchData[m.defIdx];
@@ -2443,39 +1871,25 @@ function selectChallenge(side, i){
       m.matched.push(m.termIdx);
       m.termIdx = null; m.defIdx = null;
       showToast('Cocok! +1');
-      // Send progress to server
       if(m.matched.length === CHALLENGE_PAIRS.length){
-        postToServer({
-          action:'saveGame',
-          session_id: state.player?.session_id,
-          nama: state.player?.nama,
-          kelas: state.player?.kelas,
-          games:[{materi_id:'tantangan', materi:'Tantangan Akhir', jenis:'match', skor:8, max:8}]
-        });
+        postToServer({action:'saveGame', session_id:state.player?.session_id, nama:state.player?.nama, kelas:state.player?.kelas, games:[{materi_id:'tantangan', materi:'Tantangan Akhir', jenis:'match', skor:8, max:8}]});
       }
     } else {
-      // flash wrong
       const tEl = document.querySelector(`.match-item[data-challenge="term"][data-i="${m.termIdx}"]`);
       const dEl = document.querySelector(`.match-item[data-challenge="def"][data-i="${m.defIdx}"]`);
       if(tEl) tEl.classList.add('wrong-flash');
       if(dEl) dEl.classList.add('wrong-flash');
-      setTimeout(()=>{
-        if(tEl){tEl.classList.remove('wrong-flash','selected')}
-        if(dEl){dEl.classList.remove('wrong-flash','selected')}
-      },500);
+      setTimeout(()=>{if(tEl)tEl.classList.remove('wrong-flash','selected');if(dEl)dEl.classList.remove('wrong-flash','selected')},500);
       m.termIdx = null; m.defIdx = null;
     }
   }
-  renderCurrentScreen();
-  saveState();
-  updateProgress();
+  renderCurrentScreen(); saveState(); updateProgress();
 }
 
 function resetChallenge(){
   state.match = {matched:[], termIdx:null, defIdx:null, done:false};
   state.matchData = shuffle(CHALLENGE_PAIRS);
-  renderCurrentScreen();
-  saveState();
+  renderCurrentScreen(); saveState();
 }
 
 /* ========================================================
@@ -2489,19 +1903,16 @@ const REFLECT_Q = [
 ];
 
 function renderReflect(){
-  return `
-  <div class="reflect-card">
+  return `<div class="reflect-card">
     <div class="mat-header" style="margin-bottom:14px">
       <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
       <div class="titles"><div class="eyebrow">REFLEKSI</div><h2>Refleksi Belajar</h2></div>
     </div>
     <p style="color:#3D2410;margin-bottom:14px">Jawab dengan jujur. Jawaban dikirim ke guru.</p>
-    ${REFLECT_Q.map((q,i)=>`
-      <div style="margin-bottom:14px">
-        <div class="reflect-q">${i+1}. ${q}</div>
-        <textarea class="reflect-ta" id="reflect-${i}" oninput="saveReflect(${i},this.value)" placeholder="Tulis jawabanmu...">${state.reflect.answers[i]||''}</textarea>
-      </div>
-    `).join('')}
+    ${REFLECT_Q.map((q,i)=>`<div style="margin-bottom:14px">
+      <div class="reflect-q">${i+1}. ${q}</div>
+      <textarea class="reflect-ta" id="reflect-${i}" oninput="saveReflect(${i},this.value)" placeholder="Tulis jawabanmu...">${state.reflect.answers[i]||''}</textarea>
+    </div>`).join('')}
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn-gold" onclick="submitReflect()">${ic('check',16)} Kirim Refleksi</button>
       <button class="btn-3d" onclick="goTo('lkpd')">Lanjut LKPD</button>
@@ -2509,20 +1920,10 @@ function renderReflect(){
   </div>`;
 }
 
-function saveReflect(i, val){
-  state.reflect.answers[i] = val;
-  saveState();
-}
-
+function saveReflect(i, val){ state.reflect.answers[i] = val; saveState(); }
 function submitReflect(){
   const answers = REFLECT_Q.map((q,i)=>({qnum:i+1, q:q, ans:state.reflect.answers[i]||''}));
-  postToServer({
-    action:'saveReflect',
-    session_id: state.player?.session_id,
-    nama: state.player?.nama,
-    kelas: state.player?.kelas,
-    answers: answers
-  });
+  postToServer({action:'saveReflect', session_id:state.player?.session_id, nama:state.player?.nama, kelas:state.player?.kelas, answers});
   showToast('Refleksi terkirim ke guru');
   setTimeout(()=>goTo('lkpd'), 1200);
 }
@@ -2542,22 +1943,16 @@ const LKPD_Q = [
   'Jelaskan apa itu model OSI (Open Systems Interconnection) dan jelaskan fungsinya dalam jaringan komputer.',
   'Jelaskan apa itu TCP/IP (Transmission Control Protocol/Internet Protocol) dan jelaskan fungsinya dalam jaringan komputer.'
 ];
-const LKPD_GROUPS = [
-  {g:1, q:[0,1]},{g:2, q:[2]},{g:3, q:[3]},{g:4, q:[4]},
-  {g:5, q:[5]},{g:6, q:[6]},{g:7, q:[7]},{g:8, q:[8,9]}
-];
+const LKPD_GROUPS = [{g:1,q:[0,1]},{g:2,q:[2]},{g:3,q:[3]},{g:4,q:[4]},{g:5,q:[5]},{g:6,q:[6]},{g:7,q:[7]},{g:8,q:[8,9]}];
 let activeLkpd = 1;
 
 function renderLkpd(){
-  return `
-  <div class="mat-page">
+  return `<div class="mat-page">
     <div class="mat-header" style="margin-bottom:14px">
       <button class="back-btn" onclick="goToMenu()">${ic('back',24)}</button>
       <div class="titles"><div class="eyebrow">LEMBAR KERJA</div><h2>LKPD Kelompok</h2><div class="sub">8 kelompok · 10 soal uraian</div></div>
     </div>
-    <div class="lkpd-tabs">
-      ${LKPD_GROUPS.map(g=>`<button class="lkpd-tab ${g.g===activeLkpd?'active':''}" onclick="selectLkpd(${g.g})">Kelompok ${g.g}</button>`).join('')}
-    </div>
+    <div class="lkpd-tabs">${LKPD_GROUPS.map(g=>`<button class="lkpd-tab ${g.g===activeLkpd?'active':''}" onclick="selectLkpd(${g.g})">Kelompok ${g.g}</button>`).join('')}</div>
     <div class="lkpd-panel" id="lkpd-panel">${renderLkpdGroup(activeLkpd)}</div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
       <button class="btn-gold" onclick="submitLkpd()">${ic('check',16)} Kirim Jawaban LKPD</button>
@@ -2568,44 +1963,26 @@ function renderLkpd(){
 
 function renderLkpdGroup(g){
   const grp = LKPD_GROUPS.find(x=>x.g===g);
-  return `<div style="font-family:'Cinzel',serif;color:#5C1A0E;font-size:13px;font-weight:700;margin-bottom:10px">KELOMPOK ${g} — Soal ${grp.q.map(i=>i+1).join(', ')}</div>` +
-    grp.q.map(qi=>`
-      <div class="lkpd-q">
-        <div class="qtext"><span class="qn">${qi+1}</span><span>${LKPD_Q[qi]}</span></div>
-        <textarea class="lkpd-ta" id="lkpd-${qi}" oninput="saveLkpd(${qi},this.value)" placeholder="Tulis jawaban kelompokmu...">${state.lkpd.answers[qi]||''}</textarea>
-      </div>`).join('');
+  return `<div style="font-family:'Cinzel',serif;color:#5C1A0E;font-size:14px;font-weight:700;margin-bottom:10px">KELOMPOK ${g} — Soal ${grp.q.map(i=>i+1).join(', ')}</div>` +
+    grp.q.map(qi=>`<div class="lkpd-q">
+      <div class="qtext"><span class="qn">${qi+1}</span><span>${LKPD_Q[qi]}</span></div>
+      <textarea class="lkpd-ta" id="lkpd-${qi}" oninput="saveLkpd(${qi},this.value)" placeholder="Tulis jawaban kelompokmu...">${state.lkpd.answers[qi]||''}</textarea>
+    </div>`).join('');
 }
 
 function selectLkpd(g){
   activeLkpd = g;
+  document.querySelectorAll('.lkpd-tab').forEach((t,idx)=>t.classList.toggle('active', LKPD_GROUPS[idx].g===g));
   const panel = document.getElementById('lkpd-panel');
   if(panel) panel.innerHTML = renderLkpdGroup(g);
 }
 
-function saveLkpd(i, val){
-  state.lkpd.answers[i] = val;
-  saveState();
-}
+function saveLkpd(i, val){ state.lkpd.answers[i] = val; saveState(); }
 
 function submitLkpd(){
   const answers = [];
-  LKPD_GROUPS.forEach(grp=>{
-    grp.q.forEach(qi=>{
-      answers.push({
-        kelompok: grp.g,
-        qnum: qi+1,
-        q: LKPD_Q[qi],
-        ans: state.lkpd.answers[qi] || ''
-      });
-    });
-  });
-  postToServer({
-    action:'saveLkpd',
-    session_id: state.player?.session_id,
-    nama: state.player?.nama,
-    kelas: state.player?.kelas,
-    answers: answers
-  });
+  LKPD_GROUPS.forEach(grp=>grp.q.forEach(qi=>answers.push({kelompok:grp.g, qnum:qi+1, q:LKPD_Q[qi], ans:state.lkpd.answers[qi]||''})));
+  postToServer({action:'saveLkpd', session_id:state.player?.session_id, nama:state.player?.nama, kelas:state.player?.kelas, answers});
   showToast('LKPD terkirim ke guru');
   setTimeout(()=>goTo('final'), 1200);
 }
@@ -2615,37 +1992,25 @@ function submitLkpd(){
 ======================================================== */
 function renderFinal(){
   const gamesDone = Object.values(state.games).filter(g=>g.done).length;
-  const totalGames = 13;
   const quizScore = state.quiz.done ? state.quiz.score : 0;
   const matchDone = state.match.matched.length;
   const lkpdDone = Object.keys(state.lkpd.answers).filter(k=>state.lkpd.answers[k] && state.lkpd.answers[k].trim().length>0).length;
-
-  // Send finish session
-  postToServer({
-    action:'finishSession',
-    session_id: state.player?.session_id
-  });
-
-  return `
-  <div class="quiz-wrap">
-    <div class="quiz-card result-card">
-      <div class="crown">${ic('crown',50)}</div>
-      <h3>Petualangan Selesai!</h3>
-      <p style="color:#3D2410">Kamu telah menjelajahi materi <b>Jaringan Komputer dan Internet</b>.<br>Semua hasil telah dikirim ke guru.</p>
-      <div class="stats-grid">
-        <div class="stat-cell"><b>${gamesDone}/${totalGames}</b><span>Game Selesai</span></div>
-        <div class="stat-cell"><b>${quizScore}</b><span>Skor Kuis</span></div>
-        <div class="stat-cell"><b>${matchDone}/8</b><span>Tantangan</span></div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-cell"><b>${lkpdDone}/10</b><span>LKPD Diisi</span></div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-gold" onclick="goToMenu()">${ic('home',16)} Kembali ke Markas</button>
-        <button class="btn-3d" onclick="location.reload()">Keluar</button>
-      </div>
+  postToServer({action:'finishSession', session_id:state.player?.session_id});
+  return `<div class="quiz-wrap"><div class="quiz-card result-card">
+    <div class="crown">${ic('crown',50)}</div>
+    <h3>Petualangan Selesai!</h3>
+    <p style="color:#3D2410">Kamu telah menjelajahi materi <b>Jaringan Komputer dan Internet</b>.<br>Semua hasil telah dikirim ke guru.</p>
+    <div class="stats-grid">
+      <div class="stat-cell"><b>${gamesDone}/14</b><span>Game Selesai</span></div>
+      <div class="stat-cell"><b>${quizScore}</b><span>Skor Kuis</span></div>
+      <div class="stat-cell"><b>${matchDone}/8</b><span>Tantangan</span></div>
     </div>
-  </div>`;
+    <div class="stats-grid"><div class="stat-cell"><b>${lkpdDone}/10</b><span>LKPD Diisi</span></div></div>
+    <div class="modal-actions">
+      <button class="btn-gold" onclick="goToMenu()">${ic('home',16)} Kembali ke Markas</button>
+      <button class="btn-3d" onclick="location.reload()">Keluar</button>
+    </div>
+  </div></div>`;
 }
 
 /* ========================================================
@@ -2658,26 +2023,24 @@ function goTo(idOrIdx){
   const screens = document.querySelectorAll('.screen');
   screens.forEach((s,i)=>{
     s.classList.toggle('active', i===idx);
-    if(i===idx){
-      s.innerHTML = renderScreen(SLIDES[i]);
-    } else {
-      s.innerHTML = '';
-    }
+    s.innerHTML = i===idx ? renderScreen(SLIDES[i]) : '';
   });
   state.current = idx;
   state.visited[SLIDES[idx].id] = true;
   updateNav();
   updateProgress();
-  attachGameEvents();
   saveState();
-  // Scroll top
+  // Start timer if material page
+  stopTimer();
+  const slide = SLIDES[idx];
+  if(slide && slide.type === 'material'){
+    if(state.timers[slide.id] === undefined) state.timers[slide.id] = READ_TIME;
+    if(state.timers[slide.id] > 0) startTimer(slide.id);
+  }
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function goToMenu(){
-  goTo('menu');
-}
-
+function goToMenu(){ stopTimer(); goTo('menu'); }
 function go(delta){
   let idx = state.current + delta;
   if(idx<0) idx=0;
@@ -2690,7 +2053,13 @@ function renderCurrentScreen(){
   if(!active) return;
   const idx = parseInt(active.dataset.index);
   active.innerHTML = renderScreen(SLIDES[idx]);
-  attachGameEvents();
+  // Restart timer if material
+  const slide = SLIDES[idx];
+  if(slide && slide.type === 'material' && state.timers[slide.id] > 0){
+    startTimer(slide.id);
+  } else {
+    stopTimer();
+  }
 }
 
 function updateNav(){
@@ -2701,10 +2070,9 @@ function updateNav(){
 }
 
 function updateProgress(){
-  const total = SLIDES.length - 1; // exclude menu
+  const total = SLIDES.length - 1;
   const visited = Object.keys(state.visited).filter(k=>state.visited[k] && k!=='menu').length;
-  const pct = Math.round(visited/total*100);
-  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressFill').style.width = Math.round(visited/total*100)+'%';
   document.getElementById('progressLabel').textContent = visited+'/'+total;
 }
 
@@ -2712,16 +2080,10 @@ function updateProgress(){
    UTILS
 ======================================================== */
 function toggleFullscreen(){
-  if(!document.fullscreenElement){
-    document.documentElement.requestFullscreen?.();
-  } else {
-    document.exitFullscreen?.();
-  }
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
 }
-
-function closeModal(id){
-  document.getElementById(id).classList.remove('show');
-}
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 
 let toastTimer = null;
 function showToast(msg){
@@ -2735,14 +2097,9 @@ function showToast(msg){
 function saveState(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      visited: state.visited,
-      games: state.games,
-      quiz: state.quiz,
-      match: state.match,
-      lkpd: state.lkpd,
-      reflect: state.reflect,
-      matchData: state.matchData,
-      current: state.current
+      visited:state.visited, games:state.games, quiz:state.quiz, match:state.match,
+      lkpd:state.lkpd, reflect:state.reflect, matchData:state.matchData,
+      current:state.current, timers:state.timers
     }));
   }catch(e){}
 }
@@ -2760,6 +2117,7 @@ function loadState(){
       state.reflect = d.reflect || {answers:{}};
       state.matchData = d.matchData || null;
       state.current = d.current || 0;
+      state.timers = d.timers || {};
       state.quiz.lastAns = null;
     }
   }catch(e){}
@@ -2768,29 +2126,23 @@ function loadState(){
 function loadPlayer(){
   try{
     const raw = localStorage.getItem(PLAYER_KEY);
-    if(raw){
-      state.player = JSON.parse(raw);
-      return true;
-    }
+    if(raw){ state.player = JSON.parse(raw); return true; }
   }catch(e){}
   return false;
 }
 
-/* Keyboard nav */
 document.addEventListener('keydown', e=>{
   if(!document.getElementById('app-main').classList.contains('shown')) return;
-  const tag = (e.target.tagName||'').toLowerCase();
-  if(tag==='textarea'||tag==='input'){
-    if(e.key==='Escape') e.target.blur();
-    return;
+  // Close game modal on Escape
+  if(e.key === 'Escape' && document.getElementById('gameOverlay').classList.contains('show')){
+    closeGameModal(); e.preventDefault(); return;
   }
+  const tag = (e.target.tagName||'').toLowerCase();
+  if(tag==='textarea'||tag==='input'){ if(e.key==='Escape') e.target.blur(); return; }
   if(e.key==='ArrowRight'||e.key==='PageDown'){go(1);e.preventDefault()}
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){go(-1);e.preventDefault()}
-  else if(e.key==='Home'){goTo(0);e.preventDefault()}
-  else if(e.key==='End'){goTo(SLIDES.length-1);e.preventDefault()}
 });
 
-/* Init */
 loadState();
 if(loadPlayer()){
   document.getElementById('screen-login').style.display='none';
