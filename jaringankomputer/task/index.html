@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembagian Tugas Praktikum Jaringan Komputer</title>
+    <title>Cek Tugas Praktikum Jaringan Komputer</title>
     <style>
         :root {
             --primary: #4F46E5;
@@ -12,10 +12,6 @@
             --card-bg: #1E293B;
             --text-main: #F8FAFC;
             --text-muted: #94A3B8;
-            --accent-a: #06B6D4;
-            --accent-b: #10B981;
-            --accent-c: #F59E0B;
-            --accent-d: #EC4899;
         }
 
         * {
@@ -33,13 +29,13 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding: 20px;
             background: var(--card-bg);
             border-radius: 16px;
@@ -48,14 +44,14 @@
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: #EEF2FF;
             margin-bottom: 8px;
         }
 
         p.subtitle {
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         /* Form Cari Absen */
@@ -64,7 +60,7 @@
             padding: 24px;
             border-radius: 16px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -79,7 +75,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            max-width: 400px;
+            max-width: 380px;
             margin: 0 auto;
         }
 
@@ -115,80 +111,92 @@
             background: var(--primary-hover);
         }
 
-        /* Result Popup / Highlight */
-        .result-card {
+        /* Task Card Result */
+        .task-card {
             display: none;
-            background: #312E81;
-            border: 2px solid #6366F1;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 15px;
-            animation: fadeIn 0.3s ease-in-out;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 6px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            animation: fadeIn 0.4s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Grid Tipe Topik */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 14px;
-            padding: 20px;
-            border-top: 5px solid #ccc;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .card-a { border-color: var(--accent-a); }
-        .card-b { border-color: var(--accent-b); }
-        .card-c { border-color: var(--accent-c); }
-        .card-d { border-color: var(--accent-d); }
-
-        .card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 6px;
+        .task-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-        }
-
-        .absen-range {
-            font-size: 0.85rem;
-            color: var(--text-muted);
             margin-bottom: 15px;
-            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .card ul {
-            list-style: none;
-            padding-left: 0;
+        .task-header h2 {
+            font-size: 1.4rem;
+            color: #EEF2FF;
         }
 
-        .card li {
+        .absen-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 0.9rem;
-            margin-bottom: 10px;
-            line-height: 1.4;
-            color: #CBD5E1;
+            font-weight: bold;
         }
 
-        .card li strong {
-            color: #fff;
+        .task-body p.intro {
+            font-size: 1rem;
+            color: #CBD5E1;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .task-checklist {
+            background: #0F172A;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            margin-bottom: 15px;
+        }
+
+        .task-checklist h4 {
+            color: #38BDF8;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .task-checklist ul {
+            list-style-type: none;
+        }
+
+        .task-checklist li {
+            font-size: 0.95rem;
+            color: #F8FAFC;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .task-checklist li::before {
+            content: "📌";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .task-checklist li span.detail {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 2px;
         }
 
         /* Section Alur Praktikum */
@@ -200,7 +208,7 @@
         }
 
         .workflow h2 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-bottom: 16px;
             text-align: center;
             color: #EEF2FF;
@@ -233,7 +241,7 @@
         }
 
         .step-box h4 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin-bottom: 6px;
         }
 
@@ -247,95 +255,55 @@
 
 <div class="container">
     <header>
-        <h1>🖥️ Pembagian Tugas Mini Poster Canva</h1>
-        <p class="subtitle">Materi: Jaringan Komputer & Internet (Praktikum Lab)</p>
+        <h1>🖥️ Praktikum Jaringan Komputer & Internet</h1>
+        <p class="subtitle">Tugas Mandiri: Pembuatan Infografis Digital (Canva)</p>
     </header>
 
-    <!-- Fitur Cari Nomor Absen -->
+    <!-- Form Cari Nomor Absen -->
     <div class="search-box">
-        <label for="absenInput">Ketik Nomor Absenmu (1 - 32):</label>
+        <label for="absenInput">Masukkan Nomor Absenmu (1 - 32):</label>
         <div class="input-group">
-            <input type="number" id="absenInput" min="1" max="32" placeholder="Contoh: 15">
-            <button onclick="cekAbsen()">Cek Tugas</button>
-        </div>
-
-        <div id="resultCard" class="result-card">
-            <h3 id="resultTitle">Tugas Kamu: Tipe X</h3>
-            <p id="resultDesc">Detail instruksi materi...</p>
+            <input type="number" id="absenInput" min="1" max="32" placeholder="Ketik angka contoh: 12">
+            <button onclick="cekAbsen()">Cek Tugas Saya</button>
         </div>
     </div>
 
-    <!-- Grid Tipe Tugas -->
-    <div class="grid-container">
-        <!-- Tipe A -->
-        <div class="card card-a">
-            <h3>Tipe A <span class="badge" style="background: var(--accent-a);">Konsep Dasar</span></h3>
-            <div class="absen-range">Nomor Absen: 1 – 8</div>
-            <ul>
-                <li><strong>Pengertian Internet & Jaringan:</strong> Jaringan adalah kumpulan komputer yang saling terhubung untuk berbagi data. Internet adalah jaringan global yang menghubungkan komputer di seluruh dunia.</li>
-                <li><strong>Cara Kerja Singkat:</strong> Data dikirim dari komputer pengirim (client) melalui media transmisi/router hingga sampai ke komputer penerima (server).</li>
-                <li><strong>3 Manfaat Utama:</strong> Akses informasi cepat, media komunikasi (email/chat), dan sarana belajar/hiburan online.</li>
-            </ul>
+    <!-- Area Hasil Tugas (Muncul Setelah Ketik Absen) -->
+    <div id="taskCard" class="task-card">
+        <div class="task-header">
+            <h2 id="taskTitle">Topik Tugas</h2>
+            <span id="absenBadge" class="absen-badge">Absen -</span>
         </div>
-
-        <!-- Tipe B -->
-        <div class="card card-b">
-            <h3>Tipe B <span class="badge" style="background: var(--accent-b);">Perangkat Jaringan</span></h3>
-            <div class="absen-range">Nomor Absen: 9 – 16</div>
-            <ul>
-                <li><strong>Hardware Jaringan:</strong> Komponen fisik yang menghubungkan antar perangkat.
-                    <br><em>Contoh & Fungsi:</em>
-                    <br>• <strong>Router:</strong> Mengarahkan & menghubungkan jaringan ke internet.
-                    <br>• <strong>Switch/Hub:</strong> Menghubungkan banyak PC dalam satu LAN via kabel.
-                    <br>• <strong>Kabel LAN (UTP):</strong> Media fisik pengirim sinyal data.</li>
-                <li><strong>Software Jaringan:</strong> Program/aplikasi yang mengelola komunikasi data.
-                    <br><em>Contoh & Fungsi:</em>
-                    <br>• <strong>Web Browser (Chrome/Firefox):</strong> Aplikasi untuk membuka web.
-                    <br>• <strong>Sistem Operasi Jaringan (Linux/Windows Server):</strong> Pengelola pusat akses & lalu lintas jaringan.</li>
-            </ul>
-        </div>
-
-        <!-- Tipe C -->
-        <div class="card card-c">
-            <h3>Tipe C <span class="badge" style="background: var(--accent-c);">Protokol Inti</span></h3>
-            <div class="absen-range">Nomor Absen: 17 – 24</div>
-            <ul>
-                <li><strong>IP Address:</strong> Alamat identitas unik berupa angka pada setiap perangkat komputer dalam jaringan (ibarat nomor rumah).</li>
-                <li><strong>TCP (Transmission Control Protocol):</strong> Aturan pengiriman paket data agar terurut, utuh, dan tidak rusak saat sampai di tujuan.</li>
-                <li><strong>DNS (Domain Name System):</strong> Sistem penerjemah nama domain web (seperti `google.com`) menjadi alamat IP angka yang dipahami komputer.</li>
-            </ul>
-        </div>
-
-        <!-- Tipe D -->
-        <div class="card card-d">
-            <h3>Tipe D <span class="badge" style="background: var(--accent-d);">Web & Keamanan</span></h3>
-            <div class="absen-range">Nomor Absen: 25 – 32</div>
-            <ul>
-                <li><strong>HTTP vs HTTPS:</strong> HTTP mengirim data teks biasa (belum aman). HTTPS menggunakan enkripsi aman (ditandai ikon gembok di browser).</li>
-                <li><strong>Etika Digital:</strong> Menggunakan bahasa yang sopan, tidak menyebarkan hoaks, dan menghargai hak cipta karya orang lain di jaringan.</li>
-                <li><strong>Keamanan Data:</strong> Gunakan password yang kuat, jangan sembarangan klik link asing, dan lindungi data pribadi dari orang lain.</li>
-            </ul>
+        <div class="task-body">
+            <p class="intro" id="taskIntro">Berikut adalah materi wajib yang harus kamu buat di Canva.</p>
+            
+            <div class="task-checklist">
+                <h4>Isi Wajib Poster Canva Kamu:</h4>
+                <ul id="taskPoin">
+                    <!-- Poin-poin tugas diisi otomatis via javascript -->
+                </ul>
+            </div>
         </div>
     </div>
 
-    <!-- Alur Praktikum -->
+    <!-- Alur Kegiatan di Lab -->
     <div class="workflow">
-        <h2>⏱️ Alur Kegiatan di Lab Komputer</h2>
+        <h2>⏱️ 3 Langkah Kegiatan Hari Ini</h2>
         <div class="steps">
             <div class="step-box">
                 <div class="step-num">1</div>
-                <h4>Buat Poster (35 Menit)</h4>
-                <p>Buka Canva / PowerPoint. Buat 1 halaman poster sesuai materi nomor absenmu. Simpan dalam format JPG/PNG.</p>
+                <h4>Buat Poster Canva (35 Menit)</h4>
+                <p>Buka Canva di browser. Buat 1 halaman poster sesuai poin tugasmu di atas. Simpan dalam format Gambar (PNG/JPG).</p>
             </div>
             <div class="step-box">
                 <div class="step-num">2</div>
-                <h4>Peer Teaching (15 Menit)</h4>
-                <p>Putar kursi, berpasangan dengan teman di sebelah yang beda materi. Jelaskan isi postermu selama 2 menit secara bergantian.</p>
+                <h4>Saling Menjelaskan (15 Menit)</h4>
+                <p>Putar kursimu ke teman sebelah yang beda tugas. Jelaskan isi postermu selama 2 menit secara bergantian.</p>
             </div>
             <div class="step-box">
                 <div class="step-num">3</div>
-                <h4>Kumpulkan Tugas (10 Menit)</h4>
-                <p>Upload file poster yang sudah diberi nama format: <code>Nama_Absen_Tipe.png</code> ke folder guru / Google Drive.</p>
+                <h4>Kumpulkan File (10 Menit)</h4>
+                <p>Upload hasil poster ke folder lab / Google Drive dengan nama: <code>Nama_Absen.png</code></p>
             </div>
         </div>
     </div>
@@ -344,41 +312,101 @@
 <script>
     function cekAbsen() {
         const input = document.getElementById('absenInput').value;
-        const resultCard = document.getElementById('resultCard');
-        const resultTitle = document.getElementById('resultTitle');
-        const resultDesc = document.getElementById('resultDesc');
+        const taskCard = document.getElementById('taskCard');
+        const taskTitle = document.getElementById('taskTitle');
+        const absenBadge = document.getElementById('absenBadge');
+        const taskIntro = document.getElementById('taskIntro');
+        const taskPoin = document.getElementById('taskPoin');
 
         const absen = parseInt(input);
 
         if (isNaN(absen) || absen < 1 || absen > 32) {
-            alert('Masukkan nomor absen antara 1 sampai 32!');
-            resultCard.style.display = 'none';
+            alert('Silakan masukkan nomor absen yang benar (angka 1 sampai 32)!');
+            taskCard.style.display = 'none';
             return;
         }
 
-        resultCard.style.display = 'block';
+        taskCard.style.display = 'block';
+        absenBadge.innerText = `Absen ${absen}`;
 
         if (absen >= 1 && absen <= 8) {
-            resultTitle.innerText = `Absen ${absen} ➔ TIPE A (Konsep Dasar Internet)`;
-            resultDesc.innerText = 'Tugas Canva: Jelaskan Pengertian Jaringan/Internet, Cara Kerja Singkat, dan 3 Manfaat Utama Internet.';
-            resultCard.style.borderColor = '#06B6D4';
-            resultCard.style.background = 'rgba(6, 182, 212, 0.2)';
+            taskTitle.innerText = "🌐 Topik 1: Konsep Dasar Internet";
+            taskTitle.style.color = "#38BDF8";
+            taskCard.style.borderColor = "#38BDF8";
+            taskIntro.innerText = "Tugasmu adalah menjelaskan bagaimana internet bekerja dan manfaatnya dalam kehidupan sehari-hari.";
+            taskPoin.innerHTML = `
+                <li><strong>Pengertian Jaringan & Internet</strong>
+                    <span class="detail">Jelaskan singkat: Jaringan adalah komputer yang saling terhubung. Internet adalah jaringan raksasa seluruh dunia.</span>
+                </li>
+                <li><strong>Cara Kerja Internet Singkat</strong>
+                    <span class="detail">Gambarkan/tulis: Data dikirim dari komputer pengirim (Client) ➔ lewat Router ➔ sampai ke komputer tujuan (Server).</span>
+                </li>
+                <li><strong>3 Manfaat Utama Internet</strong>
+                    <span class="detail">Sebutkan 3 contoh manfaat nyata (misal: mencari informasi cepat, berkomunikasi, dan belajar online).</span>
+                </li>
+                <li><strong>Gambar Pendukung:</strong> Tambahkan minimal 2 gambar/ikon di Canva (misal: ikon Globe/Bumi dan ikon Komputer).</li>
+            `;
         } else if (absen >= 9 && absen <= 16) {
-            resultTitle.innerText = `Absen ${absen} ➔ TIPE B (Hardware & Software Jaringan)`;
-            resultDesc.innerText = 'Tugas Canva: Buat Pengertian & Contoh Hardware (Router, Switch, Kabel LAN) serta Software (Browser, OS Jaringan) lengkap dengan fungsinya.';
-            resultCard.style.borderColor = '#10B981';
-            resultCard.style.background = 'rgba(16, 185, 129, 0.2)';
+            taskTitle.innerText = "🔌 Topik 2: Perangkat Hardware & Software Jaringan";
+            taskTitle.style.color = "#4ADE80";
+            taskCard.style.borderColor = "#4ADE80";
+            taskIntro.innerText = "Tugasmu adalah menjelaskan peralatan fisik (Hardware) dan program (Software) yang membuat komputer bisa terhubung.";
+            taskPoin.innerHTML = `
+                <li><strong>Perangkat Keras (Hardware) Jaringan</strong>
+                    <span class="detail">Tulis pengertian: Alat fisik yang menghubungkan antar komputer.</span>
+                    <span class="detail">Tulis 3 Contoh & Fungsinya: 
+                        <br>• <b>Router:</b> Mengarahkan & menghubungkan jaringan ke internet.
+                        <br>• <b>Switch:</b> Menghubungkan banyak PC dalam satu ruangan.
+                        <br>• <b>Kabel LAN:</b> Kabel penyalur sinyal data.
+                    </span>
+                </li>
+                <li><strong>Perangkat Lunak (Software) Jaringan</strong>
+                    <span class="detail">Tulis pengertian: Program aplikasi yang mengurus komunikasi data.</span>
+                    <span class="detail">Tulis 2 Contoh & Fungsinya: 
+                        <br>• <b>Web Browser (Chrome/Firefox):</b> Aplikasi untuk membuka web.
+                        <br>• <b>Sistem Operasi Jaringan:</b> Pengatur lalu lintas data di komputer server.
+                    </span>
+                </li>
+                <li><strong>Gambar Pendukung:</strong> Cari dan tempelkan gambar Router, Kabel LAN, dan Logo Chrome di Canva.</li>
+            `;
         } else if (absen >= 17 && absen <= 24) {
-            resultTitle.innerText = `Absen ${absen} ➔ TIPE C (Protokol Inti: IP, TCP, DNS)`;
-            resultDesc.innerText = 'Tugas Canva: Jelaskan fungsi IP Address (alamat PC), TCP (pengatur paket data), dan DNS (penerjemah nama web).';
-            resultCard.style.borderColor = '#F59E0B';
-            resultCard.style.background = 'rgba(245, 158, 11, 0.2)';
+            taskTitle.innerText = "📡 Topik 3: Aturan Inti Jaringan (IP, TCP, & DNS)";
+            taskTitle.style.color = "#FBBF24";
+            taskCard.style.borderColor = "#FBBF24";
+            taskIntro.innerText = "Tugasmu adalah menjelaskan aturan dasar (protokol) agar data bisa sampai ke tujuan dengan benar.";
+            taskPoin.innerHTML = `
+                <li><strong>IP Address (Alamat IP)</strong>
+                    <span class="detail">Jelaskan fungsinya: Kode angka unik sebagai identitas alamat setiap komputer (ibarat nomor rumah).</span>
+                </li>
+                <li><strong>TCP (Transmission Control Protocol)</strong>
+                    <span class="detail">Jelaskan fungsinya: Aturan yang memecah data jadi paket-paket kecil dan menjamin data sampai tanpa ada yang rusak.</span>
+                </li>
+                <li><strong>DNS (Domain Name System)</strong>
+                    <span class="detail">Jelaskan fungsinya: Penerjemah nama website (seperti google.com) menjadi alamat angka IP Address yang dimengerti komputer.</span>
+                </li>
+                <li><strong>Gambar Pendukung:</strong> Masukkan gambar/ikon Alamat/Peta, Paket Pengiriman, dan Ikon Server di Canva.</li>
+            `;
         } else if (absen >= 25 && absen <= 32) {
-            resultTitle.innerText = `Absen ${absen} ➔ TIPE D (HTTP/HTTPS, Etika & Keamanan)`;
-            resultDesc.innerText = 'Tugas Canva: Jelaskan beda HTTP & HTTPS (gembok aman), Etika berkomunikasi di internet, dan cara menjaga keamanan data pribadi.';
-            resultCard.style.borderColor = '#EC4899';
-            resultCard.style.background = 'rgba(236, 72, 153, 0.2)';
+            taskTitle.innerText = "🔒 Topik 4: Web Aman (HTTP/HTTPS) & Etika Digital";
+            taskTitle.style.color = "#F472B6";
+            taskCard.style.borderColor = "#F472B6";
+            taskIntro.innerText = "Tugasmu adalah menjelaskan perbedaan keamanan web serta etika aman saat berada di internet.";
+            taskPoin.innerHTML = `
+                <li><strong>Perbedaan HTTP vs HTTPS</strong>
+                    <span class="detail">Tulis bedanya: HTTP = data belum diacak (kurang aman). HTTPS = data diacak/dienkripsi (aman, ada simbol gembok).</span>
+                </li>
+                <li><strong>Etika Berkomunikasi di Internet</strong>
+                    <span class="detail">Tulis 2 etika penting (misal: gunakan bahasa sopan dan tidak menyebarkan berita bohong/hoaks).</span>
+                </li>
+                <li><strong>Cara Menjaga Keamanan Data Pribadi</strong>
+                    <span class="detail">Tulis 2 cara penting (misal: buat kata sandi yang kuat dan jangan sembarangan mengklik link asing/mencurigakan).</span>
+                </li>
+                <li><strong>Gambar Pendukung:</strong> Tambahkan ikon Gembok Hijau (HTTPS), ikon Password, dan ikon Etika/Chat di Canva.</li>
+            `;
         }
+
+        // Scroll halus ke kartu hasil
+        taskCard.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
 
