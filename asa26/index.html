@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ASAS Tracker 2026 — SMP N 1 Moga</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="hero-tag">SMP NEGERI 1 MOGA • TA 2026/2027</p>
+      <h1>ASAS Tracker <span class="muted">/ Sekretaris</span></h1>
+      <p class="hero-sub">
+        Dashboard progres penyelenggaraan <strong>Asesmen Sumatif Akhir Semester</strong>.
+        56 berkas, 6 fase, 22 Oktober 2026 → 15 Desember 2026.
+      </p>
+      <p class="hero-user">
+        <span class="badge-user">Sekretaris: Eriza Irma Ganarsih, S.Pd.</span>
+      </p>
+    </div>
+    <div class="hero-config">
+      <label for="api-endpoint">Endpoint Apps Script Web App</label>
+      <input id="api-endpoint" type="url" placeholder="https://script.google.com/macros/s/AKfycbyI3EbsNOKw9efbGvVLXAFEbPWk5UCJaH8SInGqUlRWFnBB_HW5s6g7vYSOa1RkP0IOow/exec" />
+      <p class="hint">Kosongkan untuk mode demo (data lokal). Setting endpoint setelah deploy Apps Script.</p>
+      <div class="hero-buttons">
+        <button id="btn-refresh">↻ Refresh</button>
+        <button id="btn-config" class="ghost">Setup</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- KPI cards -->
+  <section class="kpi-grid" aria-label="Statistik utama">
+    <div class="kpi kpi-total">
+      <div class="kpi-value" id="kpi-total">56</div>
+      <div class="kpi-label">Total Berkas</div>
+    </div>
+    <div class="kpi kpi-done">
+      <div class="kpi-value" id="kpi-done">0</div>
+      <div class="kpi-label">Selesai <small>(Final/Dicetak/Diserahkan)</small></div>
+    </div>
+    <div class="kpi kpi-draft">
+      <div class="kpi-value" id="kpi-draft">0</div>
+      <div class="kpi-label">Draft</div>
+    </div>
+    <div class="kpi kpi-todo">
+      <div class="kpi-value" id="kpi-todo">56</div>
+      <div class="kpi-label">Belum Mulai</div>
+    </div>
+    <div class="kpi kpi-progress">
+      <div class="kpi-value" id="kpi-progress">0%</div>
+      <div class="kpi-label">Progress</div>
+    </div>
+  </section>
+
+  <!-- Per-fase progress bars -->
+  <section class="fase-grid" aria-label="Progress per fase">
+    <h2 class="section-title">Progress per Fase</h2>
+    <div id="fase-list" class="fase-rows"></div>
+  </section>
+
+  <!-- Filter & search -->
+  <section class="toolbar" aria-label="Filter berkas">
+    <div class="toolbar-left">
+      <input id="search" type="search" placeholder="🔍 Cari berkas… (nama / PIC / folder)" />
+    </div>
+    <div class="toolbar-right">
+      <select id="filter-fase">
+        <option value="">Semua Fase</option>
+        <option value="1">Fase 1 — Pembentukan Panitia</option>
+        <option value="2">Fase 2 — Panduan & Rambu-rambu</option>
+        <option value="3">Fase 3 — Data Peserta & Pembagian Ruang</option>
+        <option value="4">Fase 4 — Template Pelaksanaan</option>
+        <option value="5">Fase 5 — Cover & Penggandaan</option>
+        <option value="7">Fase 7 — SPJ & Pelaporan</option>
+      </select>
+      <select id="filter-status">
+        <option value="">Semua Status</option>
+        <option value="Belum">Belum</option>
+        <option value="Draft">Draft</option>
+        <option value="Final">Final</option>
+        <option value="Dicetak">Dicetak</option>
+        <option value="Diserahkan">Diserahkan</option>
+      </select>
+      <span id="count-info" class="count-info">0 dari 56 berkas</span>
+    </div>
+  </section>
+
+  <!-- Berkas table -->
+  <section class="table-wrap">
+    <table class="berkas-table" id="berkas-table">
+      <thead>
+        <tr>
+          <th class="col-no">No</th>
+          <th class="col-fase">Fase</th>
+          <th class="col-sub">Sub-Fase</th>
+          <th class="col-nama">Nama Berkas 2026</th>
+          <th class="col-folder">Folder</th>
+          <th class="col-fmt">Fmt</th>
+          <th class="col-pic">PIC</th>
+          <th class="col-deadline">Deadline</th>
+          <th class="col-status">Status</th>
+          <th class="col-link">Link</th>
+        </tr>
+      </thead>
+      <tbody id="berkas-body"></tbody>
+    </table>
+  </section>
+
+  <!-- Timeline section -->
+  <section class="timeline-section">
+    <h2 class="section-title">Timeline ASAS 2026</h2>
+    <ol class="timeline" id="timeline-list"></ol>
+  </section>
+
+  <footer class="footer">
+    <p>
+      ASAS Tracker 2026 • Dibangun untuk Eriza Irma Ganarsih, S.Pd. (Sekretaris Panitia ASAS SMP N 1 Moga).
+    </p>
+    <p class="footer-meta">
+      Frontend: GitHub Pages (HTML statis) • Backend: Google Apps Script + Google Sheet • <a href="README.md" target="_blank">Panduan setup</a>
+    </p>
+  </footer>
+
+</main>
+
+<!-- Detail modal -->
+<div id="detail-modal" class="modal hidden" aria-hidden="true">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close">×</button>
+    <h3 id="modal-title"></h3>
+    <div id="modal-body" class="modal-body"></div>
+    <div class="modal-actions">
+      <label for="modal-status">Ubah status:</label>
+      <select id="modal-status">
+        <option value="Belum">Belum</option>
+        <option value="Draft">Draft</option>
+        <option value="Final">Final</option>
+        <option value="Dicetak">Dicetak</option>
+        <option value="Diserahkan">Diserahkan</option>
+      </select>
+      <button id="modal-save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
