@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Kartu Asas - SMP Negeri 1 Moga</title>
+<!--
+  Aplikasi Kartu Asas (Kartu Peserta Asesmen Sumatif Akhir Semester)
+  SMP Negeri 1 Moga - Tahun Ajaran 2025/2026
+
+  CARA PAKAI:
+  1. Deploy Kode.gs sebagai Google Apps Script Web App
+  2. Ganti EXEC_URL di bawah dengan URL exec dari deployment
+  3. Pastikan SPREADSHEET_ID di Kode.gs sudah benar
+  4. File ini bisa di-host di GitHub Pages atau dibuka langsung di browser
+
+  File ini bisa juga berjalan STANDALONE (tanpa Apps Script) - data default
+  sudah include 50 siswa contoh. Untuk koneksi ke spreadsheet, isi EXEC_URL.
+-->
+<style>
+  /* ====================================================
+     RESET & BASE
+     ==================================================== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Segoe UI', 'Arial', 'Helvetica', sans-serif;
+    background: #f0f2f5;
+    color: #1a1a1a;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  input, select { font-family: inherit; font-size: 14px; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #b0b0b0; border-radius: 5px; }
+  ::-webkit-scrollbar-track { background: #f0f0f0; }
+
+  /* ====================================================
+     HEADER
+     ==================================================== */
+  .app-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    color: white;
+    padding: 14px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .app-header h1 { font-size: 18px; font-weight: 600; margin-bottom: 2px; }
+  .app-header .subtitle { font-size: 12px; opacity: 0.85; }
+  .app-header .status-pill {
+    display: inline-block; margin-left: 8px;
+    padding: 2px 10px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+    background: rgba(255,255,255,0.2);
+  }
+  .status-pill.connected { background: #10b981; }
+  .status-pill.disconnected { background: #ef4444; }
+
+  /* ====================================================
+     LAYOUT
+     ==================================================== */
+  .app-container {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1700px;
+    margin: 0 auto;
+    min-height: calc(100vh - 60px);
+  }
+  .sidebar {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    padding: 16px;
+    height: calc(100vh - 92px);
+    overflow-y: auto;
+    position: sticky;
+    top: 76px;
+  }
+  .main-content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    padding: 20px;
+    min-height: calc(100vh - 92px);
+  }
+
+  /* ====================================================
+     SIDEBAR - Controls
+     ==================================================== */
+  .section-title {
+    font-size: 13px; font-weight: 700; color: #1e3a8a;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 10px; padding-bottom: 6px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  .section-title:not(:first-child) { margin-top: 18px; }
+
+  .form-group { margin-bottom: 10px; }
+  .form-group label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: #4b5563; margin-bottom: 4px;
+  }
+  .form-control {
+    width: 100%; padding: 7px 10px;
+    border: 1px solid #d1d5db; border-radius: 5px;
+    background: white; transition: border 0.15s;
+  }
+  .form-control:focus { outline: none; border-color: #1e40af; box-shadow: 0 0 0 3px rgba(30,64,175,0.1); }
+
+  .btn {
+    padding: 8px 14px; border: none; border-radius: 5px;
+    font-size: 13px; font-weight: 600; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: #1e40af; color: white; }
+  .btn-primary:hover { background: #1e3a8a; }
+  .btn-success { background: #059669; color: white; }
+  .btn-success:hover { background: #047857; }
+  .btn-warning { background: #d97706; color: white; }
+  .btn-warning:hover { background: #b45309; }
+  .btn-secondary { background: #6b7280; color: white; }
+  .btn-secondary:hover { background: #4b5563; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-block { width: 100%; justify-content: center; }
+  .btn-row { display: flex; gap: 6px; margin-top: 6px; }
+  .btn-row > .btn { flex: 1; }
+
+  /* ====================================================
+     STUDENT LIST
+     ==================================================== */
+  .student-list {
+    max-height: 350px; overflow-y: auto;
+    border: 1px solid #e5e7eb; border-radius: 5px;
+    margin-top: 6px;
+  }
+  .student-item {
+    padding: 8px 12px; border-bottom: 1px solid #f3f4f6;
+    cursor: pointer; transition: background 0.1s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .student-item:hover { background: #eff6ff; }
+  .student-item.active { background: #dbeafe; border-left: 3px solid #1e40af; }
+  .student-item:last-child { border-bottom: none; }
+  .student-item .no {
+    background: #1e40af; color: white;
+    width: 26px; height: 26px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .student-item .info { flex: 1; min-width: 0; }
+  .student-item .info .nama {
+    font-size: 12px; font-weight: 600; color: #111827;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .student-item .info .meta {
+    font-size: 11px; color: #6b7280; margin-top: 1px;
+  }
+
+  /* ====================================================
+     TOOLBAR
+     ==================================================== */
+  .preview-toolbar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb; flex-wrap: wrap;
+  }
+  .preview-toolbar .label {
+    font-size: 13px; font-weight: 600; color: #374151;
+    margin-right: 6px;
+  }
+  .preview-toolbar .spacer { flex: 1; }
+  .preview-toolbar select {
+    padding: 6px 10px; border: 1px solid #d1d5db;
+    border-radius: 5px; font-size: 13px; min-width: 140px;
+  }
+  .preview-toolbar input[type="number"] {
+    width: 70px; padding: 6px 8px;
+    border: 1px solid #d1d5db; border-radius: 5px;
+  }
+
+  /* ====================================================
+     CARD PREVIEW (matches Excel format)
+     ==================================================== */
+  .cards-wrap {
+    background: #e5e7eb; padding: 20px;
+    border-radius: 6px; overflow-x: auto;
+  }
+  .card-page {
+    width: 297mm; /* A4 landscape width */
+    min-height: 200mm;
+    background: white;
+    margin: 0 auto 20px;
+    padding: 12mm 10mm;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+    page-break-after: always;
+  }
+  .card-page:last-child { page-break-after: auto; }
+
+  .card {
+    border: 2px solid #1a1a1a;
+    padding: 5mm;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Times New Roman', 'Liberation Serif', serif;
+    color: #000;
+  }
+  .card .kelas-badge {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* Kartu Peserta (left) */
+  .card-peserta {
+    position: relative;
+    min-height: 175mm;
+  }
+  .card-peserta .kelas-badge {
+    top: 4mm; right: 5mm;
+  }
+  .card-peserta .title {
+    text-align: center; font-size: 13px; font-weight: 700;
+    margin-bottom: 2px; line-height: 1.3;
+  }
+  .card-peserta .school {
+    text-align: center; font-size: 14px; font-weight: 700;
+    margin-top: 4px; text-transform: uppercase;
+  }
+  .card-peserta .year {
+    text-align: center; font-size: 12px; font-weight: 600;
+    margin-top: 2px; margin-bottom: 14px;
+  }
+  .card-peserta .field-list {
+    margin-top: 8px; padding: 0 4mm;
+  }
+  .card-peserta .field {
+    display: flex; align-items: baseline;
+    font-size: 12px; margin-bottom: 5px;
+  }
+  .card-peserta .field .label {
+    width: 30mm; flex-shrink: 0; font-weight: 600;
+  }
+  .card-peserta .field .colon {
+    width: 4mm; flex-shrink: 0;
+  }
+  .card-peserta .field .value {
+    flex: 1; font-weight: 400;
+    border-bottom: 1px dotted #999;
+    padding-bottom: 1px; min-height: 14px;
+  }
+  .card-peserta .field.nomor {
+    margin-top: 14px;
+    border: 1px solid #000;
+    padding: 4px 8px;
+    display: inline-flex;
+    background: #f9f9f9;
+  }
+  .card-peserta .field.nomor .label,
+  .card-peserta .field.nomor .colon,
+  .card-peserta .field.nomor .value {
+    width: auto;
+    border: none;
+  }
+  .card-peserta .field.nomor .value {
+    font-weight: 700; min-width: 30px;
+  }
+  .signature-block {
+    margin-top: auto; padding-top: 20px;
+    text-align: center; font-size: 12px;
+  }
+  .signature-block .place {
+    margin-bottom: 16px;
+  }
+  .signature-block .role {
+    margin-bottom: 60px;
+  }
+  .signature-block .name {
+    font-weight: 700; text-decoration: underline;
+    margin-bottom: 2px;
+  }
+  .signature-block .nip {
+    font-size: 11px;
+  }
+  .photo-placeholder {
+    width: 25mm; height: 32mm;
+    border: 1px dashed #999;
+    position: absolute;
+    top: 30mm; right: 5mm;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: #999;
+    text-align: center;
+  }
+
+  /* Kartu Jadwal (right) */
+  .card-jadwal {
+    position: relative;
+    min-height: 175mm;
+  }
+  .card-jadwal .kelas-badge {
+    top: 4mm; right: 5mm;
+  }
+  .card-jadwal .title {
+    text-align: center; font-size: 13px; font-weight: 700;
+    margin-bottom: 2px; line-height: 1.3;
+  }
+  .card-jadwal .school {
+    text-align: center; font-size: 14px; font-weight: 700;
+    margin-top: 4px; text-transform: uppercase;
+  }
+  .card-jadwal .year {
+    text-align: center; font-size: 12px; font-weight: 600;
+    margin-top: 2px; margin-bottom: 10px;
+  }
+  .card-jadwal .nomor-box {
+    display: inline-block;
+    border: 1px solid #000;
+    padding: 4px 10px;
+    margin: 4px 0 10px;
+    font-size: 12px;
+    background: #f9f9f9;
+  }
+  .jadwal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 6px;
+  }
+  .jadwal-table th, .jadwal-table td {
+    border: 1px solid #000;
+    padding: 5px 6px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .jadwal-table th {
+    background: #e5e7eb;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .jadwal-table .col-no { width: 8mm; }
+  .jadwal-table .col-hari { width: 32mm; }
+  .jadwal-table .col-waktu { width: 28mm; }
+  .jadwal-table .col-mapel { width: auto; }
+  .jadwal-table .row-session {
+    border-top: 1px dashed #888;
+  }
+  .jadwal-table .empty-cell {
+    background: #fafafa;
+    color: #aaa;
+  }
+  .jadwal-table .hari {
+    font-weight: 600;
+  }
+  .jadwal-table .tanggal {
+    font-size: 10px;
+    color: #444;
+  }
+
+  /* ====================================================
+     PRINT STYLES
+     ==================================================== */
+  @media print {
+    @page { size: A4 landscape; margin: 8mm; }
+    body { background: white; }
+    .app-header, .sidebar, .preview-toolbar, .no-print { display: none !important; }
+    .app-container { display: block; padding: 0; gap: 0; }
+    .main-content { padding: 0; box-shadow: none; min-height: auto; }
+    .cards-wrap { background: white; padding: 0; }
+    .card-page {
+      width: auto; min-height: auto;
+      margin: 0; padding: 0;
+      box-shadow: none;
+      page-break-after: always;
+    }
+    .card { border-color: #000; }
+  }
+
+  /* ====================================================
+     LOADING & EMPTY STATE
+     ==================================================== */
+  .loading {
+    text-align: center; padding: 60px 20px;
+    color: #6b7280;
+  }
+  .loading .spinner {
+    display: inline-block; width: 32px; height: 32px;
+    border: 3px solid #e5e7eb; border-top-color: #1e40af;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty-state {
+    text-align: center; padding: 40px 20px;
+    color: #6b7280; font-size: 13px;
+  }
+
+  /* ====================================================
+     MODAL (settings editor)
+     ==================================================== */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 200;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: white; border-radius: 8px;
+    width: 90%; max-width: 700px;
+    max-height: 85vh; overflow-y: auto;
+    padding: 20px;
+  }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .modal-header h3 { font-size: 16px; color: #1e3a8a; }
+  .modal-close {
+    background: none; border: none; font-size: 22px;
+    color: #6b7280; cursor: pointer; line-height: 1;
+  }
+  .modal-tabs {
+    display: flex; gap: 4px; margin-bottom: 14px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .modal-tab {
+    padding: 8px 14px; font-size: 13px; font-weight: 600;
+    border: none; background: none; color: #6b7280;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+  }
+  .modal-tab.active { color: #1e40af; border-bottom-color: #1e40af; }
+  .modal-body { display: none; }
+  .modal-body.active { display: block; }
+  .form-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  /* ====================================================
+     BADGES & ALERTS
+     ==================================================== */
+  .badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 10px; font-size: 11px; font-weight: 600;
+  }
+  .badge-info { background: #dbeafe; color: #1e40af; }
+  .badge-success { background: #d1fae5; color: #065f46; }
+  .alert {
+    padding: 10px 14px; border-radius: 5px;
+    font-size: 13px; margin-bottom: 12px;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .alert-info { background: #dbeafe; color: #1e3a8a; }
+  .alert-warning { background: #fef3c7; color: #92400e; }
+  .alert-error { background: #fee2e2; color: #991b1b; }
+
+  /* ====================================================
+     STAT BOX
+     ==================================================== */
+  .stat-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px; margin-bottom: 12px;
+  }
+  .stat-box {
+    background: #f9fafb; border: 1px solid #e5e7eb;
+    border-radius: 5px; padding: 8px 10px;
+    text-align: center;
+  }
+  .stat-box .num { font-size: 18px; font-weight: 700; color: #1e40af; }
+  .stat-box .lbl { font-size: 11px; color: #6b7280; text-transform: uppercase; }
+
+  /* ====================================================
+     RESPONSIVE
+     ==================================================== */
+  @media (max-width: 900px) {
+    .app-container { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; }
+    .card-page { width: 100%; min-width: 280mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>Aplikasi Kartu Asas
+    <span class="status-pill disconnected" id="statusPill">Mode Offline</span>
+  </h1>
+  <div class="subtitle">Kartu Peserta Asesmen Sumatif Akhir Semester &middot; SMP Negeri 1 Moga &middot; TA 2025/2026</div>
+</div>
+
+<div class="app-container">
+
+  <!-- ====================================================
+       SIDEBAR
+       ==================================================== -->
+  <aside class="sidebar no-print">
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="num" id="statTotal">0</div>
+        <div class="lbl">Siswa</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="statKelas">9</div>
+        <div class="lbl">Kelas</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="statRuang">18</div>
+        <div class="lbl">Ruang</div>
+      </div>
+    </div>
+
+    <div class="section-title">Pencarian Siswa</div>
+    <div class="form-group">
+      <input type="text" id="searchInput" class="form-control" placeholder="Cari nama / No. Peserta / NIS...">
+    </div>
+    <div class="form-group">
+      <label>Filter Kelas</label>
+      <select id="filterKelas" class="form-control">
+        <option value="">-- Semua Kelas --</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Filter Ruang</label>
+      <select id="filterRuang" class="form-control">
+        <option value="">-- Semua Ruang --</option>
+      </select>
+    </div>
+
+    <div class="section-title">Daftar Siswa</div>
+    <div class="student-list" id="studentList">
+      <div class="empty-state">Memuat data...</div>
+    </div>
+
+    <div class="section-title">Aksi Cetak</div>
+    <button class="btn btn-primary btn-block" onclick="printSelected()">
+      🖨️ Cetak Kartu Terpilih
+    </button>
+    <div class="btn-row">
+      <button class="btn btn-success btn-sm" onclick="printFiltered()">
+        📄 Cetak Hasil Filter
+      </button>
+      <button class="btn btn-warning btn-sm" onclick="printAll()">
+        📚 Cetak Semua
+      </button>
+    </div>
+
+    <div class="section-title">Pengaturan</div>
+    <button class="btn btn-secondary btn-block" onclick="openSettings()">
+      ⚙️ Edit Pengaturan & Jadwal
+    </button>
+    <button class="btn btn-secondary btn-block" onclick="reloadData()" style="margin-top:6px;">
+      🔄 Muat Ulang Data
+    </button>
+
+    <div class="section-title">Bantuan</div>
+    <div style="font-size:11px;color:#6b7280;line-height:1.5;">
+      <p><strong>Alur:</strong></p>
+      <ol style="padding-left:18px;">
+        <li>Pilih siswa dari daftar</li>
+        <li>Preview kartu tampil di kanan</li>
+        <li>Atur nomor kartu jika perlu</li>
+        <li>Klik "Cetak" untuk print/PDF</li>
+      </ol>
+      <p style="margin-top:6px;">Pastikan kertas A4 Landscape saat print.</p>
+    </div>
+
+  </aside>
+
+  <!-- ====================================================
+       MAIN CONTENT
+       ==================================================== -->
+  <main class="main-content">
+
+    <div class="preview-toolbar no-print">
+      <span class="label">Nomor Kartu:</span>
+      <input type="number" id="nomorKartuInput" value="300" min="1" onchange="updateNomorKartu()">
+      <span style="margin: 0 12px; color:#d1d5db;">|</span>
+      <span class="label">Siswa:</span>
+      <select id="selectedSiswaSelect" onchange="selectSiswaByDropdown()" style="min-width: 280px;"></select>
+      <span class="spacer"></span>
+      <span class="label">Zoom:</span>
+      <select id="zoomSelect" onchange="changeZoom()">
+        <option value="0.5">50%</option>
+        <option value="0.75">75%</option>
+        <option value="1" selected>100%</option>
+        <option value="1.25">125%</option>
+      </select>
+    </div>
+
+    <div id="alertBox"></div>
+
+    <div class="cards-wrap" id="cardsWrap">
+      <div class="loading">
+        <div class="spinner"></div>
+        <div>Memuat data siswa...</div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- ====================================================
+     MODAL PENGATURAN
+     ==================================================== -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>⚙️ Pengaturan Kartu Asas</h3>
+      <button class="modal-close" onclick="closeSettings()">&times;</button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab('tab-sekolah')">Sekolah</button>
+      <button class="modal-tab" onclick="switchTab('tab-kepala')">Kepala Sekolah</button>
+      <button class="modal-tab" onclick="switchTab('tab-jadwal')">Jadwal</button>
+      <button class="modal-tab" onclick="switchTab('tab-koneksi')">Koneksi</button>
+    </div>
+
+    <!-- Tab Sekolah -->
+    <div class="modal-body active" id="tab-sekolah">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Nama Sekolah</label>
+          <input type="text" id="set-namaSekolah" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Tahun Ajaran</label>
+          <input type="text" id="set-tahunAjaran" class="form-control" placeholder="2025/2026">
+        </div>
+        <div class="form-group">
+          <label>Semester</label>
+          <input type="text" id="set-semester" class="form-control" placeholder="2 (Genap)">
+        </div>
+        <div class="form-group">
+          <label>Kelas / Tingkat</label>
+          <input type="text" id="set-kelas" class="form-control" placeholder="IX">
+        </div>
+        <div class="form-group">
+          <label>Nomor Kartu Awal</label>
+          <input type="number" id="set-nomorAwal" class="form-control" value="300">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Kepala Sekolah -->
+    <div class="modal-body" id="tab-kepala">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Nama Kepala Sekolah</label>
+          <input type="text" id="set-namaKepala" class="form-control">
+        </div>
+        <div class="form-group full">
+          <label>NIP</label>
+          <input type="text" id="set-nipKepala" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Tempat TTD</label>
+          <input type="text" id="set-tempatTTD" class="form-control" placeholder="Moga">
+        </div>
+        <div class="form-group">
+          <label>Tanggal TTD</label>
+          <input type="text" id="set-tanggalTTD" class="form-control" placeholder="24 November 2025">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Jadwal -->
+    <div class="modal-body" id="tab-jadwal">
+      <p style="font-size:12px;color:#6b7280;margin-bottom:10px;">
+        Setiap hari memiliki 2 sesi (pagi &amp; siang). Jika hanya 1 sesi, biarkan Sesi 2 kosong.
+      </p>
+      <div id="jadwalEditor"></div>
+    </div>
+
+    <!-- Tab Koneksi -->
+    <div class="modal-body" id="tab-koneksi">
+      <div class="alert alert-success">
+        ✅ <strong>Koneksi aktif!</strong> Aplikasi sudah terhubung ke Google Spreadsheet.
+      </div>
+
+      <p style="font-size:13px;margin-bottom:14px;">
+        Aplikasi ini sudah dikonfigurasi untuk terhubung ke:
+      </p>
+
+      <div class="form-group">
+        <label>EXEC URL (Google Apps Script Web App)</label>
+        <input type="text" id="set-execUrl" class="form-control" readonly>
+      </div>
+      <div class="form-group">
+        <label>Spreadsheet ID</label>
+        <input type="text" id="set-spreadsheetId" class="form-control" value="19rAxCVWJKvFrtq43qxDjE1Of7fjCnxHgf5jxqV0YJX8" readonly>
+      </div>
+
+      <div class="btn-row" style="margin-top: 14px;">
+        <button class="btn btn-primary" onclick="testConnection()">🔌 Tes Koneksi</button>
+        <button class="btn btn-success" onclick="saveConnection()">💾 Muat Ulang Data</button>
+      </div>
+
+      <div style="margin-top:16px;padding:12px;background:#f9fafb;border-radius:5px;font-size:12px;color:#4b5563;">
+        <strong>Status koneksi:</strong>
+        <ul style="padding-left:18px;margin-top:6px;">
+          <li>File <code>index.html</code> ini di-host di GitHub Pages</li>
+          <li>File <code>Kode.gs</code> di-deploy sebagai Web App di Apps Script</li>
+          <li>Database siswa & pengaturan di Google Spreadsheet</li>
+          <li>Setiap perubahan di spreadsheet cukup klik "Muat Ulang Data"</li>
+        </ul>
+        <p style="margin-top:8px;">
+          <strong>Cara mengubah URL:</strong> Edit baris <code>DEFAULT_EXEC_URL</code> di file index.html
+          lalu push ulang ke GitHub.
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid #e5e7eb;display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn btn-secondary" onclick="closeSettings()">Batal</button>
+      <button class="btn btn-primary" onclick="applySettings()">Terapkan &amp; Tutup</button>
+      <button class="btn btn-success" onclick="applyAndSaveSettings()">Simpan ke Spreadsheet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   KONFIGURASI - URL WEB APP GOOGLE APPS SCRIPT
+   ========================================================== */
+
+// URL Google Apps Script Web App (exec) - sudah diisi default
+// Jika ingin mengubah, gunakan tombol Pengaturan > Koneksi di aplikasi
+const DEFAULT_EXEC_URL = 'https://script.google.com/macros/s/AKfycbwKKMSHSOS7_cHQu_mTXzcLAhUMkVKlIgF-AfU7GWOqxvhE3-flAUIaSfVFjtW_3CJTAg/exec';
+let EXEC_URL = localStorage.getItem('kartuAsas_execUrl') || DEFAULT_EXEC_URL;
+
+// ==========================================================
+// DATA DEFAULT (Mode Offline) - 50 siswa contoh dari SMPN 1 Moga
+// ==========================================================
+
+const ROMAN_TO_ID = {
+  'I':'(satu)','II':'(dua)','III':'tiga)','IV':'(empat)','V':'(lima)','VI':'(enam)',
+  'VII':'(tujuh)','VIII':'(delapan)','IX':'(sembilan)','X':'(sepuluh)','XI':'(sebelas)',
+  'XII':'(dua belas)','XIII':'(tiga belas)','XIV':'(empat belas)','XV':'(lima belas)',
+  'XVI':'(enam belas)','XVII':'(tujuh belas)','XVIII':'(delapan belas)','XIX':'(sembilan belas)',
+  'XX':'(dua puluh)','XXI':'(dua puluh satu)','XXII':'(dua puluh dua)','XXIII':'(dua puluh tiga)'
+};
+
+const DEFAULT_SISWA = [
+  {no:1, noPeserta:'9001', nama:'ACHMAD RISKI STIYO', nis:'11727', kelas:'IX A', ruang:'I'},
+  {no:2, noPeserta:'9002', nama:'ADELIA ARIFIN', nis:'11749', kelas:'IX A', ruang:'I'},
+  {no:3, noPeserta:'9003', nama:'AGATHA AUFA NAJWADITERA', nis:'11742', kelas:'IX A', ruang:'I'},
+  {no:4, noPeserta:'9004', nama:'AHMAD BASAUDAN', nis:'11738', kelas:'IX A', ruang:'I'},
+  {no:5, noPeserta:'9005', nama:'AILEEN AIDA TSABITA', nis:'11717', kelas:'IX A', ruang:'I'},
+  {no:6, noPeserta:'9006', nama:'AKIRA OKTAVIA PRATIWI', nis:'11757', kelas:'IX A', ruang:'I'},
+  {no:7, noPeserta:'9007', nama:'AYUDIA PUTRI MAULA', nis:'11747', kelas:'IX A', ruang:'I'},
+  {no:8, noPeserta:'9008', nama:'BINTANG NARARYA PRAMATA RAHAGI', nis:'11769', kelas:'IX A', ruang:'I'},
+  {no:9, noPeserta:'9009', nama:'DAFFA SETIYAWAN', nis:'11773', kelas:'IX A', ruang:'I'},
+  {no:10, noPeserta:'9010', nama:'ERINA TSANY HILYATUL AULA', nis:'11782', kelas:'IX A', ruang:'I'},
+  {no:11, noPeserta:'9011', nama:'FAUZI AZIZ', nis:'11798', kelas:'IX A', ruang:'I'},
+  {no:12, noPeserta:'9012', nama:'FRANADA BARRON IRZIQY EXRIS', nis:'11786', kelas:'IX A', ruang:'I'},
+  {no:13, noPeserta:'9013', nama:'IKHTIARA AQSHA ALMADINA', nis:'11811', kelas:'IX A', ruang:'I'},
+  {no:14, noPeserta:'9014', nama:'JAW MATU YELAWU', nis:'11816', kelas:'IX A', ruang:'I'},
+  {no:15, noPeserta:'9015', nama:'KAILA LITUHAYU FARADISA', nis:'11826', kelas:'IX A', ruang:'I'},
+  {no:16, noPeserta:'9016', nama:'LAILA NADIA SYAFRINA', nis:'11830', kelas:'IX A', ruang:'I'},
+  {no:17, noPeserta:'9017', nama:'KHOIRUNIA SALSABILA', nis:'11883', kelas:'IX A', ruang:'II'},
+  {no:18, noPeserta:'9018', nama:'MARETA SANIYA', nis:'11884', kelas:'IX A', ruang:'II'},
+  {no:19, noPeserta:'9019', nama:'MEYLINDA LOVIA AZAHRA', nis:'11890', kelas:'IX A', ruang:'II'},
+  {no:20, noPeserta:'9020', nama:'MIRZA ALIYANA', nis:'11859', kelas:'IX A', ruang:'II'},
+  {no:21, noPeserta:'9021', nama:'MUHAMMAD DANY REZKIA', nis:'11900', kelas:'IX A', ruang:'II'},
+  {no:22, noPeserta:'9022', nama:'MUHAMMAD NAFIS NAJAT', nis:'11904', kelas:'IX A', ruang:'II'},
+  {no:23, noPeserta:'9023', nama:'NAJMU NURUR ROKHIM', nis:'11916', kelas:'IX A', ruang:'II'},
+  {no:24, noPeserta:'9024', nama:'NAJWA AQILAH KHAIRINA', nis:'11917', kelas:'IX A', ruang:'II'},
+  {no:25, noPeserta:'9025', nama:'NASYAUL IKFA SYAKIRA', nis:'11923', kelas:'IX A', ruang:'II'},
+  {no:26, noPeserta:'9026', nama:'NUR ALIYATUN KHASANAH', nis:'11936', kelas:'IX A', ruang:'II'},
+  {no:27, noPeserta:'9027', nama:'QURRATU RAHMATUL ILAHI', nis:'11947', kelas:'IX A', ruang:'II'},
+  {no:28, noPeserta:'9028', nama:'RESKY ARDI KURNIAWAN', nis:'11972', kelas:'IX A', ruang:'II'},
+  {no:29, noPeserta:'9029', nama:'TUBAGUS MAULANA DZULKHY', nis:'11974', kelas:'IX A', ruang:'II'},
+  {no:30, noPeserta:'9030', nama:'TYAS ASHYFA', nis:'11987', kelas:'IX A', ruang:'II'},
+  {no:31, noPeserta:'9031', nama:'WILDIANA ZUHDA', nis:'11993', kelas:'IX A', ruang:'II'},
+  {no:32, noPeserta:'9032', nama:'YUSUF MAULANA AZZA', nis:'12003', kelas:'IX A', ruang:'II'},
+  {no:33, noPeserta:'9033', nama:'ABDI MAULANA', nis:'11748', kelas:'IX B', ruang:'III'},
+  {no:34, noPeserta:'9034', nama:'AENUN OLIVIA', nis:'11754', kelas:'IX B', ruang:'III'},
+  {no:35, noPeserta:'9035', nama:'AULIA PUTRI ISNAINI', nis:'11765', kelas:'IX B', ruang:'III'},
+  {no:36, noPeserta:'9036', nama:'AZZIDAN NAJMUDDIN NIZAR', nis:'11753', kelas:'IX B', ruang:'III'},
+  {no:37, noPeserta:'9037', nama:'FAISAL FANANI', nis:'11794', kelas:'IX B', ruang:'III'},
+  {no:38, noPeserta:'9038', nama:'FANI YUNIARTI', nis:'11795', kelas:'IX B', ruang:'III'},
+  {no:39, noPeserta:'9039', nama:'FAZA LUTVIAN', nis:'11784', kelas:'IX B', ruang:'III'},
+  {no:40, noPeserta:'9040', nama:'FILZA SHELIA ANGGRAENI', nis:'12297', kelas:'IX B', ruang:'III'},
+  {no:41, noPeserta:'9041', nama:'FINA MAZIDATUR RAHMA', nis:'11790', kelas:'IX B', ruang:'III'},
+  {no:42, noPeserta:'9042', nama:'HANIF ALIYUDIN', nis:'11805', kelas:'IX B', ruang:'III'},
+  {no:43, noPeserta:'9043', nama:'INDANA ZULFA', nis:'11813', kelas:'IX B', ruang:'III'},
+  {no:44, noPeserta:'9044', nama:'IRZA RIFKI HIDAYAT', nis:'11809', kelas:'IX B', ruang:'III'},
+  {no:45, noPeserta:'9045', nama:'JUANG MIKTAM ESTRALO', nis:'11817', kelas:'IX B', ruang:'III'},
+  {no:46, noPeserta:'9046', nama:'KHUSNUL MAULIDA', nis:'11820', kelas:'IX B', ruang:'III'},
+  {no:47, noPeserta:'9047', nama:'LEVINA AISYA PUTRI', nis:'11834', kelas:'IX B', ruang:'III'},
+  {no:48, noPeserta:'9048', nama:'MUHAMAD DIMAS MAULANA YAHYA', nis:'11893', kelas:'IX B', ruang:'III'},
+  {no:49, noPeserta:'9049', nama:'MUHAMAD IQBAL', nis:'11849', kelas:'IX B', ruang:'IV'},
+  {no:50, noPeserta:'9050', nama:'MUHAMAD RIDO IRWANSAH', nis:'11888', kelas:'IX B', ruang:'IV'}
+];
+
+// Tambahkan ketRuang otomatis
+DEFAULT_SISWA.forEach(s => { s.ketRuang = ROMAN_TO_ID[s.ruang] || ''; });
+
+const DEFAULT_PENGATURAN = {
+  sekolah: { nama:'SMP NEGERI 1 MOGA', tahunAjaran:'2025/2026', semester:'2 (Genap)', kelas:'IX' },
+  kepalaSekolah: { nama:'Didin Muamalah, S.Pd., M.Pd.', nip:'19820205 200701 2007', tempatTTD:'Moga', tanggalTTD:'24 November 2025' },
+  nomorKartu: { awal:300, prefixKelas:'IX' },
+  jadwal: {
+    senin:  { hari:'Senin',  tanggal:'20 April 2026', sesi1:{waktu:'07.30 - 09.30', mapel:'1. PABP'},          sesi2:{waktu:'10.00 - 12.00', mapel:'2. Bahasa Indonesia'} },
+    selasa: { hari:'Selasa', tanggal:'21 April 2026', sesi1:{waktu:'07.30 - 09.30', mapel:'1. Matematika'},     sesi2:{waktu:'10.00 - 11.30', mapel:'2. Informatika'} },
+    rabu:   { hari:'Rabu',   tanggal:'22 April 2026', sesi1:{waktu:'07.30 - 09.30', mapel:'1. Bahasa Inggris'}, sesi2:{waktu:'10.00 - 11.30', mapel:'2. PJOK'} },
+    kamis:  { hari:'Kamis',  tanggal:'23 April 2026', sesi1:{waktu:'07.30 - 09.30', mapel:'1. IPA'},             sesi2:{waktu:'10.00 - 11.30', mapel:'2. Prakarya / Seni Budaya'} },
+    jumat:  { hari:'Jumat',  tanggal:'24 April 2026', sesi1:{waktu:'07.30 - 09.00', mapel:'1. IPS'},             sesi2:{waktu:'', mapel:''} },
+    sabtu:  { hari:'Sabtu',  tanggal:'25 April 2026', sesi1:{waktu:'07.30 - 09.00', mapel:'1. Pend. Pancasila'}, sesi2:{waktu:'09.30 - 11.00', mapel:'2. Bahasa Jawa'} }
+  }
+};
+
+// ==========================================================
+// STATE APLIKASI
+// ==========================================================
+
+let state = {
+  siswa: DEFAULT_SISWA.slice(),
+  pengaturan: JSON.parse(JSON.stringify(DEFAULT_PENGATURAN)),
+  bantu: ROMAN_TO_ID,
+  selectedNo: null,
+  nomorKartu: 300,
+  filteredSiswa: [],
+  connected: false
+};
+
+// ==========================================================
+// INISIALISASI
+// ==========================================================
+
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('set-execUrl').value = EXEC_URL;
+  await loadAllData();
+  renderFilters();
+  renderStudentList();
+  renderStats();
+  buildJadwalEditor();
+
+  // Auto-select first student
+  if (state.siswa.length > 0) {
+    selectSiswa(state.siswa[0].noPeserta);
+  }
+});
+
+async function loadAllData() {
+  if (!EXEC_URL) {
+    state.connected = false;
+    updateStatusPill();
+    showAlert('info', '💡 Mode Offline aktif. ' + state.siswa.length + ' siswa contoh dimuat. Untuk koneksi spreadsheet, buka Pengaturan > Koneksi.');
+    return;
+  }
+
+  try {
+    state.connected = false;
+    updateStatusPill();
+    showAlert('info', '🔌 Menghubungkan ke Google Spreadsheet...');
+
+    // Apps Script Web App mengembalikan JSON setelah redirect 302.
+    // fetch() otomatis follow redirect, jadi kita langsung terima JSON.
+    const url = EXEC_URL + (EXEC_URL.includes('?') ? '&' : '?') + 'action=getAll';
+    const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); }
+    catch (e) {
+      // Apps Script kadang membungkus response dalam HTML; coba ekstrak JSON
+      const m = text.match(/\{[\s\S]*\}/);
+      if (m) data = JSON.parse(m[0]);
+      else throw new Error('Response bukan JSON: ' + text.substring(0, 100));
+    }
+
+    // Cek error dari server
+    if (data.error) throw new Error(data.error);
+
+    // Sukses konek (walaupun data siswa mungkin kosong)
+    state.connected = true;
+    updateStatusPill();
+
+    if (data.siswa && data.siswa.length > 0) {
+      state.siswa = data.siswa;
+      state.pengaturan = data.pengaturan || state.pengaturan;
+      state.bantu = data.bantu || state.bantu;
+      showAlert('success', '✅ Terhubung! ' + state.siswa.length + ' siswa dimuat dari spreadsheet.');
+    } else {
+      // Tetap pakai pengaturan dari spreadsheet, siswa pakai default offline
+      if (data.pengaturan) state.pengaturan = data.pengaturan;
+      if (data.bantu) state.bantu = data.bantu;
+      showAlert('warning', '⚠️ Terhubung, tapi sheet "Data Siswa" kosong. Menggunakan ' + state.siswa.length + ' siswa contoh. Isi data siswa di spreadsheet lalu klik "Muat Ulang Data".');
+    }
+  } catch (err) {
+    state.connected = false;
+    updateStatusPill();
+    showAlert('error', '❌ Gagal terhubung: ' + err.message + '. Menggunakan data offline.');
+    console.error('Connection error:', err);
+  }
+}
+
+function updateStatusPill() {
+  const pill = document.getElementById('statusPill');
+  if (state.connected) {
+    pill.textContent = 'Online';
+    pill.className = 'status-pill connected';
+  } else {
+    pill.textContent = EXEC_URL ? 'Memuat...' : 'Mode Offline';
+    pill.className = 'status-pill disconnected';
+  }
+}
+
+function showAlert(type, msg) {
+  const box = document.getElementById('alertBox');
+  box.innerHTML = '<div class="alert alert-' + type + '">' + msg + '</div>';
+  if (type === 'success') {
+    setTimeout(() => { box.innerHTML = ''; }, 5000);
+  }
+}
+
+// ==========================================================
+// RENDER FILTERS
+// ==========================================================
+
+function renderFilters() {
+  const kelasSet = [...new Set(state.siswa.map(s => s.kelas))].sort();
+  const ruangSet = [...new Set(state.siswa.map(s => s.ruang))].sort((a,b) => {
+    return romanToInt(a) - romanToInt(b);
+  });
+
+  const kelasSel = document.getElementById('filterKelas');
+  kelasSel.innerHTML = '<option value="">-- Semua Kelas --</option>' +
+    kelasSet.map(k => '<option value="' + k + '">' + k + '</option>').join('');
+
+  const ruangSel = document.getElementById('filterRuang');
+  ruangSel.innerHTML = '<option value="">-- Semua Ruang --</option>' +
+    ruangSet.map(r => '<option value="' + r + '">Ruang ' + r + ' ' + (ROMAN_TO_ID[r]||'') + '</option>').join('');
+
+  // Siswa dropdown in toolbar
+  const siswaSel = document.getElementById('selectedSiswaSelect');
+  siswaSel.innerHTML = state.siswa.map(s =>
+    '<option value="' + s.noPeserta + '">' + s.nama + ' (' + s.kelas + ' / ' + s.ruang + ')</option>'
+  ).join('');
+}
+
+function romanToInt(r) {
+  const map = {'I':1,'II':2,'III':3,'IV':4,'V':5,'VI':6,'VII':7,'VIII':8,'IX':9,'X':10,
+    'XI':11,'XII':12,'XIII':13,'XIV':14,'XV':15,'XVI':16,'XVII':17,'XVIII':18,'XIX':19,'XX':20,
+    'XXI':21,'XXII':22,'XXIII':23};
+  return map[r] || 0;
+}
+
+// ==========================================================
+// RENDER STUDENT LIST
+// ==========================================================
+
+function getFilteredSiswa() {
+  const search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  const kelas = document.getElementById('filterKelas').value;
+  const ruang = document.getElementById('filterRuang').value;
+
+  return state.siswa.filter(s => {
+    if (kelas && s.kelas !== kelas) return false;
+    if (ruang && s.ruang !== ruang) return false;
+    if (search) {
+      const hay = (s.nama + ' ' + s.noPeserta + ' ' + s.nis + ' ' + s.kelas).toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+}
+
+function renderStudentList() {
+  state.filteredSiswa = getFilteredSiswa();
+  const list = document.getElementById('studentList');
+
+  if (state.filteredSiswa.length === 0) {
+    list.innerHTML = '<div class="empty-state">Tidak ada siswa yang cocok.</div>';
+    return;
+  }
+
+  list.innerHTML = state.filteredSiswa.map(s => `
+    <div class="student-item ${state.selectedNo === s.noPeserta ? 'active' : ''}"
+         onclick="selectSiswa('${s.noPeserta}')">
+      <div class="no">${s.no}</div>
+      <div class="info">
+        <div class="nama">${escapeHtml(s.nama)}</div>
+        <div class="meta">No.Peserta: ${s.noPeserta} &middot; ${s.kelas} &middot; Ruang ${s.ruang}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[m]));
+}
+
+// ==========================================================
+// RENDER STATS
+// ==========================================================
+
+function renderStats() {
+  document.getElementById('statTotal').textContent = state.siswa.length;
+  document.getElementById('statKelas').textContent = new Set(state.siswa.map(s => s.kelas)).size;
+  document.getElementById('statRuang').textContent = new Set(state.siswa.map(s => s.ruang)).size;
+}
+
+// ==========================================================
+// SELECT SISWA
+// ==========================================================
+
+function selectSiswa(noPeserta) {
+  state.selectedNo = noPeserta;
+  document.getElementById('selectedSiswaSelect').value = noPeserta;
+  renderStudentList();
+  renderCards();
+}
+
+function selectSiswaByDropdown() {
+  const v = document.getElementById('selectedSiswaSelect').value;
+  if (v) selectSiswa(v);
+}
+
+// ==========================================================
+// RENDER CARDS (matches Excel format)
+// ==========================================================
+
+function renderCards() {
+  const wrap = document.getElementById('cardsWrap');
+  if (!state.selectedNo) {
+    wrap.innerHTML = '<div class="empty-state">Pilih siswa dari daftar untuk melihat kartu.</div>';
+    return;
+  }
+
+  const s = state.siswa.find(x => x.noPeserta === state.selectedNo);
+  if (!s) {
+    wrap.innerHTML = '<div class="empty-state">Siswa tidak ditemukan.</div>';
+    return;
+  }
+
+  const p = state.pengaturan;
+  const nomor = state.nomorKartu;
+  const ruangDisplay = s.ruang + ' ' + (s.ketRuang || ROMAN_TO_ID[s.ruang] || '');
+
+  wrap.innerHTML = `
+    <div class="card-page" id="cardPage">
+      ${renderCardPeserta(s, p, nomor, ruangDisplay)}
+      ${renderCardJadwal(s, p, nomor)}
+    </div>
+  `;
+}
+
+function renderCardPeserta(s, p, nomor, ruangDisplay) {
+  return `
+    <div class="card card-peserta">
+      <div class="kelas-badge">${p.sekolah.kelas || 'IX'}</div>
+      <div class="title">KARTU PESERTA ASESMEN SUMATIF AKHIR SEMESTER</div>
+      <div class="school">${escapeHtml(p.sekolah.nama)}</div>
+      <div class="year">TAHUN AJARAN ${escapeHtml(p.sekolah.tahunAjaran)}</div>
+
+      <div class="field-list">
+        <div class="field nomor">
+          <span class="label">Nomor</span>
+          <span class="colon">:</span>
+          <span class="value">${nomor}</span>
+        </div>
+        <div class="field">
+          <span class="label">No. Peserta</span>
+          <span class="colon">:</span>
+          <span class="value">${escapeHtml(s.noPeserta)}</span>
+        </div>
+        <div class="field">
+          <span class="label">Nama Peserta</span>
+          <span class="colon">:</span>
+          <span class="value">${escapeHtml(s.nama)}</span>
+        </div>
+        <div class="field">
+          <span class="label">NIS</span>
+          <span class="colon">:</span>
+          <span class="value">${escapeHtml(s.nis)}</span>
+        </div>
+        <div class="field">
+          <span class="label">Kelas</span>
+          <span class="colon">:</span>
+          <span class="value">${escapeHtml(s.kelas)}</span>
+        </div>
+        <div class="field">
+          <span class="label">Ruang</span>
+          <span class="colon">:</span>
+          <span class="value">${escapeHtml(ruangDisplay)}</span>
+        </div>
+      </div>
+
+      <div class="signature-block">
+        <div class="place">${escapeHtml(p.kepalaSekolah.tempatTTD)}, ${escapeHtml(p.kepalaSekolah.tanggalTTD)}</div>
+        <div class="role">Kepala Sekolah,</div>
+        <div class="name">${escapeHtml(p.kepalaSekolah.nama)}</div>
+        <div class="nip">NIP ${escapeHtml(p.kepalaSekolah.nip)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCardJadwal(s, p, nomor) {
+  const j = p.jadwal;
+  const days = ['senin','selasa','rabu','kamis','jumat','sabtu'];
+
+  let rows = '';
+  days.forEach((key, idx) => {
+    const d = j[key];
+    if (!d) return;
+
+    // Sesi 1
+    rows += `
+      <tr>
+        ${idx === 0 ? '<td class="col-no" rowspan="' + (getRowSpan(d)) + '">' + (idx+1) + '</td>' : ''}
+        <td class="col-hari">
+          <div class="hari">${escapeHtml(d.hari)}</div>
+          <div class="tanggal">${escapeHtml(d.tanggal)}</div>
+        </td>
+        <td class="col-waktu">${escapeHtml(d.sesi1.waktu || '-')}</td>
+        <td class="col-mapel">${escapeHtml(d.sesi1.mapel || '-')}</td>
+      </tr>
+    `;
+    // Sesi 2 (if exists)
+    if (d.sesi2.waktu || d.sesi2.mapel) {
+      rows += `
+        <tr class="row-session">
+          <td class="col-waktu">${escapeHtml(d.sesi2.waktu || '-')}</td>
+          <td class="col-mapel">${escapeHtml(d.sesi2.mapel || '-')}</td>
+        </tr>
+      `;
+    }
+  });
+
+  return `
+    <div class="card card-jadwal">
+      <div class="kelas-badge">${p.sekolah.kelas || 'IX'}</div>
+      <div class="title">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
+      <div class="school">${escapeHtml(p.sekolah.nama)}</div>
+      <div class="year">TAHUN AJARAN ${escapeHtml(p.sekolah.tahunAjaran)}</div>
+
+      <div style="text-align:left;">
+        <div class="nomor-box">
+          <strong>Nomor</strong> : ${nomor}
+        </div>
+      </div>
+
+      <table class="jadwal-table">
+        <thead>
+          <tr>
+            <th class="col-no">NO</th>
+            <th class="col-hari">HARI, TGL</th>
+            <th class="col-waktu">WAKTU</th>
+            <th class="col-mapel">MATA PELAJARAN</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function getRowSpan(d) {
+  return (d.sesi2.waktu || d.sesi2.mapel) ? 2 : 1;
+}
+
+// ==========================================================
+// PRINT FUNCTIONS
+// ==========================================================
+
+function printSelected() {
+  if (!state.selectedNo) {
+    showAlert('warning', '⚠️ Pilih siswa dulu sebelum mencetak.');
+    return;
+  }
+  renderCardsForPrint([state.selectedNo]);
+  setTimeout(() => window.print(), 200);
+}
+
+function printFiltered() {
+  const list = getFilteredSiswa();
+  if (list.length === 0) {
+    showAlert('warning', '⚠️ Tidak ada siswa pada filter ini.');
+    return;
+  }
+  if (list.length > 50) {
+    if (!confirm('Akan mencetak ' + list.length + ' kartu (banyak halaman). Lanjutkan?')) return;
+  }
+  const nos = list.map(s => s.noPeserta);
+  renderCardsForPrint(nos);
+  setTimeout(() => window.print(), 300);
+}
+
+function printAll() {
+  if (state.siswa.length === 0) {
+    showAlert('warning', '⚠️ Tidak ada data siswa.');
+    return;
+  }
+  if (state.siswa.length > 50) {
+    if (!confirm('Akan mencetak ' + state.siswa.length + ' kartu (banyak halaman). Lanjutkan?')) return;
+  }
+  const nos = state.siswa.map(s => s.noPeserta);
+  renderCardsForPrint(nos);
+  setTimeout(() => window.print(), 300);
+}
+
+function renderCardsForPrint(noPesertaList) {
+  const wrap = document.getElementById('cardsWrap');
+  const p = state.pengaturan;
+  let html = '';
+  let nomor = state.nomorKartu;
+
+  noPesertaList.forEach((np, idx) => {
+    const s = state.siswa.find(x => x.noPeserta === np);
+    if (!s) return;
+    const ruangDisplay = s.ruang + ' ' + (s.ketRuang || ROMAN_TO_ID[s.ruang] || '');
+    html += `
+      <div class="card-page">
+        ${renderCardPeserta(s, p, nomor, ruangDisplay)}
+        ${renderCardJadwal(s, p, nomor)}
+      </div>
+    `;
+    nomor++;
+  });
+
+  wrap.innerHTML = html;
+}
+
+// ==========================================================
+// NOMOR KARTU
+// ==========================================================
+
+function updateNomorKartu() {
+  state.nomorKartu = parseInt(document.getElementById('nomorKartuInput').value) || 300;
+  renderCards();
+}
+
+// ==========================================================
+// ZOOM
+// ==========================================================
+
+function changeZoom() {
+  const z = document.getElementById('zoomSelect').value;
+  const wrap = document.getElementById('cardsWrap');
+  wrap.style.zoom = z;
+}
+
+// ==========================================================
+// SETTINGS MODAL
+// ==========================================================
+
+function openSettings() {
+  // Populate fields
+  document.getElementById('set-namaSekolah').value = state.pengaturan.sekolah.nama;
+  document.getElementById('set-tahunAjaran').value = state.pengaturan.sekolah.tahunAjaran;
+  document.getElementById('set-semester').value = state.pengaturan.sekolah.semester;
+  document.getElementById('set-kelas').value = state.pengaturan.sekolah.kelas;
+  document.getElementById('set-nomorAwal').value = state.pengaturan.nomorKartu.awal;
+  document.getElementById('set-namaKepala').value = state.pengaturan.kepalaSekolah.nama;
+  document.getElementById('set-nipKepala').value = state.pengaturan.kepalaSekolah.nip;
+  document.getElementById('set-tempatTTD').value = state.pengaturan.kepalaSekolah.tempatTTD;
+  document.getElementById('set-tanggalTTD').value = state.pengaturan.kepalaSekolah.tanggalTTD;
+  document.getElementById('set-execUrl').value = EXEC_URL;
+
+  buildJadwalEditor();
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('active');
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-body').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+function buildJadwalEditor() {
+  const container = document.getElementById('jadwalEditor');
+  const days = ['senin','selasa','rabu','kamis','jumat','sabtu'];
+  const dayLabels = {senin:'Senin',selasa:'Selasa',rabu:'Rabu',kamis:'Kamis',jumat:'Jumat',sabtu:'Sabtu'};
+
+  container.innerHTML = days.map((key, i) => {
+    const d = state.pengaturan.jadwal[key];
+    return `
+      <div style="border:1px solid #e5e7eb;border-radius:5px;padding:10px;margin-bottom:8px;">
+        <div style="font-weight:700;color:#1e3a8a;margin-bottom:6px;">Hari ${i+1}: ${dayLabels[key]}</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Tanggal</label>
+            <input type="text" class="form-control" id="jadwal-${key}-tanggal" value="${escapeHtml(d.tanggal)}">
+          </div>
+          <div class="form-group">
+            <label>Sesi 1 - Waktu</label>
+            <input type="text" class="form-control" id="jadwal-${key}-s1w" value="${escapeHtml(d.sesi1.waktu)}">
+          </div>
+          <div class="form-group">
+            <label>Sesi 1 - Mata Pelajaran</label>
+            <input type="text" class="form-control" id="jadwal-${key}-s1m" value="${escapeHtml(d.sesi1.mapel)}">
+          </div>
+          <div class="form-group">
+            <label>Sesi 2 - Waktu</label>
+            <input type="text" class="form-control" id="jadwal-${key}-s2w" value="${escapeHtml(d.sesi2.waktu)}">
+          </div>
+          <div class="form-group">
+            <label>Sesi 2 - Mata Pelajaran</label>
+            <input type="text" class="form-control" id="jadwal-${key}-s2m" value="${escapeHtml(d.sesi2.mapel)}">
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function applySettings() {
+  // Read from form
+  state.pengaturan.sekolah.nama = document.getElementById('set-namaSekolah').value;
+  state.pengaturan.sekolah.tahunAjaran = document.getElementById('set-tahunAjaran').value;
+  state.pengaturan.sekolah.semester = document.getElementById('set-semester').value;
+  state.pengaturan.sekolah.kelas = document.getElementById('set-kelas').value;
+  state.pengaturan.nomorKartu.awal = parseInt(document.getElementById('set-nomorAwal').value) || 300;
+  state.pengaturan.kepalaSekolah.nama = document.getElementById('set-namaKepala').value;
+  state.pengaturan.kepalaSekolah.nip = document.getElementById('set-nipKepala').value;
+  state.pengaturan.kepalaSekolah.tempatTTD = document.getElementById('set-tempatTTD').value;
+  state.pengaturan.kepalaSekolah.tanggalTTD = document.getElementById('set-tanggalTTD').value;
+  state.nomorKartu = state.pengaturan.nomorKartu.awal;
+  document.getElementById('nomorKartuInput').value = state.nomorKartu;
+
+  // Read jadwal
+  ['senin','selasa','rabu','kamis','jumat','sabtu'].forEach(key => {
+    state.pengaturan.jadwal[key].tanggal = document.getElementById('jadwal-'+key+'-tanggal').value;
+    state.pengaturan.jadwal[key].sesi1.waktu = document.getElementById('jadwal-'+key+'-s1w').value;
+    state.pengaturan.jadwal[key].sesi1.mapel = document.getElementById('jadwal-'+key+'-s1m').value;
+    state.pengaturan.jadwal[key].sesi2.waktu = document.getElementById('jadwal-'+key+'-s2w').value;
+    state.pengaturan.jadwal[key].sesi2.mapel = document.getElementById('jadwal-'+key+'-s2m').value;
+  });
+
+  closeSettings();
+  renderCards();
+  showAlert('success', '✅ Pengaturan diterapkan.');
+}
+
+async function applyAndSaveSettings() {
+  applySettings();
+
+  if (!EXEC_URL || !state.connected) {
+    showAlert('warning', '⚠️ Pengaturan diterapkan lokal. Untuk menyimpan ke spreadsheet, hubungkan dulu di tab Koneksi.');
+    return;
+  }
+
+  try {
+    const res = await fetch(EXEC_URL + '?action=simpanPengaturan', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(state.pengaturan)
+    });
+    if (res.ok) {
+      showAlert('success', '✅ Pengaturan disimpan ke spreadsheet.');
+    } else {
+      showAlert('error', '❌ Gagal menyimpan ke spreadsheet.');
+    }
+  } catch (err) {
+    showAlert('error', '❌ Error: ' + err.message);
+  }
+}
+
+async function testConnection() {
+  // URL sekarang hardcoded di DEFAULT_EXEC_URL (untuk GitHub Pages)
+  closeSettings();
+  showAlert('info', '🔌 Menguji koneksi ke Google Spreadsheet...');
+  await loadAllData();
+  renderFilters();
+  renderStudentList();
+  renderStats();
+  if (state.siswa.length > 0) {
+    selectSiswa(state.siswa[0].noPeserta);
+  }
+}
+
+function saveConnection() {
+  // Tombol ini sekarang berfungsi sebagai "Muat Ulang Data"
+  closeSettings();
+  showAlert('info', '🔄 Memuat ulang data dari spreadsheet...');
+  loadAllData().then(() => {
+    renderFilters();
+    renderStudentList();
+    renderStats();
+    if (state.siswa.length > 0) {
+      selectSiswa(state.siswa[0].noPeserta);
+    }
+  });
+}
+
+// ==========================================================
+// RELOAD
+// ==========================================================
+
+async function reloadData() {
+  showAlert('info', '🔄 Memuat ulang data...');
+  await loadAllData();
+  renderFilters();
+  renderStudentList();
+  renderStats();
+  if (state.siswa.length > 0 && !state.siswa.find(s => s.noPeserta === state.selectedNo)) {
+    selectSiswa(state.siswa[0].noPeserta);
+  } else {
+    renderCards();
+  }
+}
+
+// ==========================================================
+// EVENT LISTENERS
+// ==========================================================
+
+document.getElementById('searchInput').addEventListener('input', renderStudentList);
+document.getElementById('filterKelas').addEventListener('change', renderStudentList);
+document.getElementById('filterRuang').addEventListener('change', renderStudentList);
+
+// Close modal on overlay click
+document.getElementById('settingsModal').addEventListener('click', (e) => {
+  if (e.target.id === 'settingsModal') closeSettings();
+});
+
+</script>
+
+</body>
+</html>
