@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don't Look Down — Briefing & Cara Bermain</title>
+<style>
+:root {
+  --bg:#070f1e; --panel:#0f1a2e; --panel2:#091222; --line:#23354e;
+  --text:#f1f5f9; --muted:#94a3b8; --blue:#38bdf8; --purple:#a855f7;
+  --red:#f87171; --gold:#fbbf24; --green:#34d399; --cyan:#22d3ee; --orange:#fb923c;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:20px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);
+background:radial-gradient(ellipse at top,#1e293b 0%,var(--bg) 65%);line-height:1.65}
+.container{max-width:980px;margin:auto}
+.hero{text-align:center;padding:24px 12px 18px}
+.eyebrow{display:inline-block;padding:5px 12px;border:1px solid #385170;border-radius:999px;color:#bae6fd;font-size:.78rem;letter-spacing:1.5px;font-weight:800}
+h1{font-size:clamp(1.6rem,5vw,2.7rem);line-height:1.2;color:var(--blue);margin:15px 0 8px;letter-spacing:.5px}
+.subtitle{color:var(--muted);margin:0}
+.progress-wrap{max-width:680px;margin:24px auto 0}
+.progress-label{display:flex;justify-content:space-between;gap:10px;color:#bae6fd;font-size:.85rem;margin-bottom:8px}
+.progress-track{height:8px;background:#1e293b;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:25%;background:linear-gradient(90deg,var(--blue),var(--orange));border-radius:99px;transition:width .3s}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
+.step{border:1px solid var(--line);background:#0f172a;color:#64748b;border-radius:12px;padding:10px 6px;text-align:center;font-size:.8rem}
+.step span{display:block;font-size:1.15rem;font-weight:900}
+.step.active{border-color:var(--blue);background:#1e293b;color:#fff}
+.step.done{border-color:var(--green);color:#a7f3d0}
+.layer{display:none;background:rgba(15,26,46,.96);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,32px);box-shadow:0 18px 55px #0007;animation:appear .25s ease}
+.layer.active{display:block}
+@keyframes appear{from{opacity:.35;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.layer-kicker{color:var(--blue);font-size:.8rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}
+h2{font-size:clamp(1.3rem,3.5vw,1.9rem);line-height:1.3;margin:5px 0 18px}
+h3{margin:0 0 10px;font-size:1.05rem}
+.story{background:var(--panel2);border-left:5px solid var(--orange);border-radius:10px;padding:18px;color:#cbd5e1}
+.story p:first-child{margin-top:0}.story p:last-child{margin-bottom:0}
+.highlight{color:var(--gold);font-weight:800}
+.read-check{display:flex;align-items:flex-start;gap:12px;margin-top:20px;padding:15px;background:#091222;border:1px solid #1e293b;border-radius:12px}
+.read-check input{width:22px;height:22px;flex:0 0 auto;margin-top:3px;accent-color:var(--green)}
+.read-check label{cursor:pointer}
+.notice{font-size:.9rem;color:var(--muted);margin:12px 0 0}
+.roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.role{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.role .emoji{font-size:1.7rem}
+.role p{margin:7px 0;color:var(--muted);font-size:.94rem}
+.climber{border-top:4px solid var(--blue)}.scholar{border-top:4px solid var(--gold)}
+.strategist{border-top:4px solid var(--purple)}.scout{border-top:4px solid var(--green)}
+.role-name{font-weight:900;font-size:1.05rem}
+.climber .role-name{color:var(--blue)}.scholar .role-name{color:var(--gold)}
+.strategist .role-name{color:#c084fc}.scout .role-name{color:var(--green)}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rule{padding:16px;border-radius:12px;background:var(--panel2);border:1px solid var(--line)}
+.end-box{background:#1e293b;border:1px dashed var(--orange);border-radius:12px;padding:18px;margin-top:16px}
+.win{color:#86efac;font-weight:900}.lose{color:#fca5a5;font-weight:900}
+.center-box{max-width:540px;margin:22px auto 0;padding:24px;text-align:center;border-radius:16px;background:linear-gradient(145deg,#0f2b48,#091426);border:2px solid var(--blue)}
+.code-display{padding:14px;background:#03071288;border:1px dashed #ffffff44;border-radius:10px;font-weight:800;margin:18px 0;font-size:.95rem}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:0;border-radius:10px;padding:13px 20px;font-weight:900;font-size:1rem;cursor:pointer;text-decoration:none;color:white;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.btn-primary{background:linear-gradient(90deg,#0284c7,#ea580c)}
+.btn-secondary{background:#334155;color:#f1f5f9}
+.btn-join{background:linear-gradient(90deg,#0ea5e9,#6366f1);width:100%;padding:15px;font-size:1.1rem}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.nav .btn{min-width:130px}
+.nav .btn[hidden]{display:none}
+.footer{text-align:center;color:#64748b;font-size:.8rem;padding:22px 0}
+@media(max-width:640px){
+ body{padding:12px}.hero{padding-top:15px}.steps{gap:5px}.step{font-size:.68rem;padding:8px 3px}.step span{font-size:1rem}
+ .roles,.rules{grid-template-columns:1fr}.layer{border-radius:14px}.nav .btn{min-width:0;flex:1;padding:12px 10px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="hero">
+    <div class="eyebrow">BRIEFING GIMKIT • DON'T LOOK DOWN</div>
+    <h1>🧗 PANJAT MENARA & CAPAI PUNCAK 🧗</h1>
+    <p class="subtitle">Panduan Misi Parkour & Ekspedisi Ketinggian</p>
+    <div class="progress-wrap">
+      <div class="progress-label"><span id="progressText">Tahap 1 dari 4</span><span id="progressPercent">25%</span></div>
+      <div class="progress-track" role="progressbar" aria-label="Kemajuan briefing" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="steps" aria-label="Tahapan briefing">
+      <div class="step active" data-step="0"><span>01</span>Cara Kerja</div>
+      <div class="step" data-step="1"><span>02</span>Strategi Main</div>
+      <div class="step" data-step="2"><span>03</span>Aturan Main</div>
+      <div class="step" data-step="3"><span>04</span>Masuk Arena</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="layer active" id="layer1" aria-labelledby="title1">
+      <div class="layer-kicker">Tahap 1 • Konsep Dasar Don't Look Down</div>
+      <h2 id="title1">🧗 Gimana Cara Kerja Mode Don't Look Down?</h2>
+      <div class="story">
+        <p>Dalam mode <b>Don't Look Down</b>, misi utamamu adalah <b>memanjat menara platforming setinggi mungkin</b> dan berusaha mencapai puncak sebelum waktu habis!</p>
+        <p>Untuk melompat dan melakukan parkour, kamu butuh <span class="highlight">Energi (Energy)</span>. Jawab pertanyaan kuis dengan benar untuk mendapatkan Energi & Uang, lalu gunakan di Shop untuk membeli <span class="highlight">Power-up Lompatan, Kecepatan, dan Checkpoint</span>!</p>
+        <p>Hati-hati! Jika melompat tanpa perhitungan atau kehabisan energi di udara, kamu bisa <b>terjatuh kembali ke bawah</b>. Jangan pernah menengok ke bawah!</p>
+      </div>
+      <div class="read-check">
+        <input type="checkbox" id="readStory">
+        <label for="readStory"><b>Saya sudah memahami konsep dasar Don't Look Down.</b><br><span class="notice">Centang kotak ini untuk mengonfirmasi pemahamanmu sebelum lanjut ke Tahap 2.</span></label>
+      </div>
+    </section>
+
+    <section class="layer" id="layer2" aria-labelledby="title2">
+      <div class="layer-kicker">Tahap 2 • Tips & Strategi Sukses</div>
+      <h2 id="title2">💡 Gaya Bermain & Strategi Pendakian</h2>
+      <p>Kombinasikan jawaban kuis yang akurat dengan kemampuan parkour untuk menaklukkan puncak:</p>
+      <div class="roles">
+        <article class="role climber"><div class="emoji">🚀</div><div class="role-name">Speed Climber (Fokus Parkour)</div><p><b>Tugas:</b> Terus memanjat dan melewati rintangan platform dengan cepat.</p><p><b>Cara:</b> Gunakan Energi hasil kuis untuk melompati pijakan sulit dan buka rintangan baru di atas.</p></article>
+        <article class="role scholar"><div class="emoji">📚</div><div class="role-name">Energy Banker (Fokus Kuis)</div><p><b>Tugas:</b> Menjawab kuis sebanyak mungkin untuk mengumpulkan cadangan energi besar.</p><p><b>Cara:</b> Isi penuh bar energimu terlebih dahulu agar tidak terhenti di tengah jalur pemanjatan yang sulit.</p></article>
+        <article class="role strategist"><div class="emoji">🚩</div><div class="role-name">Checkpoint Saver (Penyelamat Pos)</div><p><b>Tugas:</b> Mengamankan posisi agar tidak merosot jauh saat jatuh.</p><p><b>Cara:</b> Selalu utamakan membeli Checkpoint/Flag setiap kali menemukan pos baru di ketinggian tertentu.</p></article>
+        <article class="role scout"><div class="emoji">⚡</div><div class="role-name">Upgrader (Peningkat Kemampuan)</div><p><b>Tugas:</b> Beli Power-up tinggi lompatan (High Jump) dan Kecepatan.</p><p><b>Cara:</b> Upgrade kemampuan fisik caramu agar bisa melewati celah platform yang lebar dengan mudah.</p></article>
+      </div>
+      <p class="notice">Tips Penting: Beli Checkpoint secepat mungkin di setiap zona baru agar kamu tidak perlu mengulang dari dasar jika terjatuh!</p>
+    </section>
+
+    <section class="layer" id="layer3" aria-labelledby="title3">
+      <div class="layer-kicker">Tahap 3 • Aturan Kemenangan</div>
+      <h2 id="title3">🏆 Bagaimana Cara Menentukan Pemenang?</h2>
+      <p>Permainan berjalan dengan batas waktu yang ditentukan oleh Guru. Rekor ketinggianmu akan tercatat secara otomatis.</p>
+      <div class="rules">
+        <div class="rule"><h3 class="win">✅ KONDISI MENANG</h3><p>Pemain atau tim yang berhasil <b>mencapai Puncak Tertinggi (Peak)</b> pertama kali, atau berada di <b>posisi paling tinggi</b> saat waktu berakhir!</p></div>
+        <div class="rule"><h3 class="lose">❌ PENGHAMBAT</h3><p>Terlalu terburu-buru melompat tanpa membeli Checkpoint dapat membuatmu terjatuh ke area bawah dan kehilangan posisi ketinggianmu.</p></div>
+      </div>
+      <div class="end-box"><b>🎯 Kunci Kemenangan:</b> Jawab Kuis ➔ Beli Energi & Checkpoint ➔ Kuasai Timing Melompat ➔ Capai Puncak!</div>
+    </section>
+
+    <section class="layer" id="layer4" aria-labelledby="title4">
+      <div class="layer-kicker">Tahap 4 • Masuk ke Pertandingan</div>
+      <h2 id="title4">🖥️ Bergabung ke Arena Pemanjatan</h2>
+      <p>Persiapkan dirimu untuk memanjat! Klik tombol di bawah ini untuk menuju halaman resmi Gimkit.</p>
+      <div class="center-box">
+        <h3>ARENA UTAMA DON'T LOOK DOWN</h3>
+        <p>Gunakan Kode PIN yang diberikan oleh Guru di depan kelas.</p>
+        <div class="code-display">🔑 Tanyakan PIN Game ke Guru</div>
+        <a href="https://gimkit.com/join" target="_blank" rel="noopener noreferrer" class="btn btn-join">MASUK KE GIMKIT ↗</a>
+      </div>
+      <p class="notice" style="text-align:center;margin-top:16px;">Masukkan PIN Game & nama lengkap/panggilan yang dikenali di kelas.</p>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Navigasi tahapan">
+    <button type="button" class="btn btn-secondary" id="prevBtn" hidden>← Kembali</button>
+    <span style="flex:1"></span>
+    <button type="button" class="btn btn-primary" id="nextBtn">Saya Sudah Membaca →</button>
+  </nav>
+  <footer class="footer">Fokus ke atas dan terus melompat! Semangat, Pendaki Cyber! 🧗✨</footer>
+</div>
+
+<script>
+(() => {
+  const layers = [...document.querySelectorAll('.layer')];
+  const steps = [...document.querySelectorAll('.step')];
+  const readStory = document.getElementById('readStory');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const progressPercent = document.getElementById('progressPercent');
+  const progressBar = document.getElementById('progressBar');
+  let current = 0;
+
+  function renderLayer(index) {
+    current = Math.max(0, Math.min(index, layers.length - 1));
+    layers.forEach((layer, i) => {
+      layer.classList.toggle('active', i === current);
+      layer.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+    });
+    steps.forEach((step, i) => {
+      step.classList.toggle('active', i === current);
+      step.classList.toggle('done', i < current);
+    });
+    const percent = Math.round(((current + 1) / layers.length) * 100);
+    progressFill.style.width = percent + '%';
+    progressText.textContent = `Tahap ${current + 1} dari ${layers.length}`;
+    progressPercent.textContent = percent + '%';
+    progressBar.setAttribute('aria-valuenow', current + 1);
+    prevBtn.hidden = current === 0;
+    nextBtn.hidden = current === layers.length - 1;
+    nextBtn.textContent = current === 0 ? 'Saya Sudah Membaca →' :
+      current === 1 ? 'Saya Paham Strategi →' : 'Saya Paham Aturan →';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  readStory.addEventListener('change', () => {
+    nextBtn.disabled = !readStory.checked;
+    nextBtn.style.opacity = readStory.checked ? '1' : '.55';
+  });
+  nextBtn.disabled = true;
+  nextBtn.style.opacity = '.55';
+
+  nextBtn.addEventListener('click', () => {
+    if (current === 0 && !readStory.checked) {
+      readStory.focus();
+      return;
+    }
+    renderLayer(current + 1);
+  });
+  prevBtn.addEventListener('click', () => renderLayer(current - 1));
+  renderLayer(0);
+})();
+</script>
+</body>
+</html>
