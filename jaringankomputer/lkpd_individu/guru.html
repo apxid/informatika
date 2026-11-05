@@ -644,7 +644,7 @@
     // Ambil kelas unik dari data penugasan
     const kelasSet = new Set();
     allPenugasan.forEach(k => {
-      const kls = String(p['Kelas'] || '').trim();
+      const kls = String(k['Kelas'] || '').trim();
       if (kls) kelasSet.add(kls);
     });
     const kelasList = Array.from(kelasSet).sort();
@@ -664,10 +664,10 @@
     let filtered = allPenugasan.filter(k => {
       const matchSearch = !search ||
         String(k['Nama'] || '').toLowerCase().indexOf(search) >= 0 ||
-        String(p['No Absen'] || '').toLowerCase().indexOf(search) >= 0 ||
-        String(p['Tugas'] || '').toLowerCase().indexOf(search) >= 0;
-      const matchStatus = !statusFilter || String(p['Status'] || '') === statusFilter;
-      const matchKelas = !kelasFilter || String(p['Kelas'] || '') === kelasFilter;
+        String(k['No Absen'] || '').toLowerCase().indexOf(search) >= 0 ||
+        String(k['Tugas'] || '').toLowerCase().indexOf(search) >= 0;
+      const matchStatus = !statusFilter || String(k['Status'] || '') === statusFilter;
+      const matchKelas = !kelasFilter || String(k['Kelas'] || '') === kelasFilter;
       return matchSearch && matchStatus && matchKelas;
     });
 
@@ -867,8 +867,8 @@
 
   /* ============ STATS ============ */
   function updateStats() {
-    document.getElementById('statAcak').textContent = allPenugasan.length;
-    const selesai = allPenugasan.filter(k => String(p['Status']) === 'Selesai').length;
+    document.getElementById('statAcak').textContent = allPenugasan.filter(k => String(k['Tugas'] || '').trim().length > 0).length;
+    const selesai = allPenugasan.filter(k => String(k['Status']) === 'Selesai').length;
     const belum = allPenugasan.length - selesai;
     document.getElementById('statSelesai').textContent = selesai;
     document.getElementById('statBelum').textContent = belum;
@@ -892,10 +892,10 @@
     const filtered = allPenugasan.filter(k => {
       const matchSearch = !search ||
         String(k['Nama'] || '').toLowerCase().indexOf(search) >= 0 ||
-        String(p['No Absen'] || '').toLowerCase().indexOf(search) >= 0 ||
-        String(p['Tugas'] || '').toLowerCase().indexOf(search) >= 0;
-      const matchStatus = !statusFilter || String(p['Status'] || '') === statusFilter;
-      const matchKelas = !kelasFilter || String(p['Kelas'] || '') === kelasFilter;
+        String(k['No Absen'] || '').toLowerCase().indexOf(search) >= 0 ||
+        String(k['Tugas'] || '').toLowerCase().indexOf(search) >= 0;
+      const matchStatus = !statusFilter || String(k['Status'] || '') === statusFilter;
+      const matchKelas = !kelasFilter || String(k['Kelas'] || '') === kelasFilter;
       return matchSearch && matchStatus && matchKelas;
     });
     // Sort by kelas lalu nama siswa
@@ -915,7 +915,7 @@
     const pageWidth = doc.internal.pageSize.getWidth();
     const now = new Date();
     const dateStr = now.toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' });
-    const selesai = filtered.filter(k => String(p['Status']) === 'Selesai').length;
+    const selesai = filtered.filter(k => String(k['Status']) === 'Selesai').length;
     const belum = filtered.length - selesai;
 
     // === HEADER ===
