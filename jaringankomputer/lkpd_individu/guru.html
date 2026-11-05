@@ -702,7 +702,7 @@
         <tr data-rownum="${p.rowNum}">
           <td>${i + 1}</td>
           <td style="font-size: 12px; color: var(--muted);">${escapeHtml(p['TimestampStr'] || '')}</td>
-          <td><strong>${escapeHtml(k['Nama'] || '')}</strong></td>
+          <td><strong>${escapeHtml(p['Nama'] || '')}</strong></td>
           <td><strong style="color: var(--primary);">${escapeHtml(p['Kelas'] || '')}</strong></td>
           <td class="anggota-cell">${escapeHtml(p['No Absen'] || '')}</td>
           <td>${tugasHtml}</td>
@@ -743,7 +743,7 @@
       const res = await callAPI('updateStatus', { rowNum, status }, 'POST');
       if (!res.success) throw new Error(res.message || 'Gagal');
       const k = allPenugasan.find(x => x.rowNum === rowNum);
-      if (k) p['Status'] = status;
+      if (k) k['Status'] = status;
       updateStats();
       showAlert('success', '✅ Status siswa diupdate: ' + status);
     } catch (err) {
@@ -756,7 +756,7 @@
       const res = await callAPI('updateNilai', { rowNum, nilai }, 'POST');
       if (!res.success) throw new Error(res.message || 'Gagal');
       const k = allPenugasan.find(x => x.rowNum === rowNum);
-      if (k) p['Nilai'] = nilai;
+      if (k) k['Nilai'] = nilai;
       showAlert('success', '✅ Nilai ' + (nilai || '(kosong)') + ' tersimpan.');
     } catch (err) {
       showAlert('error', '❌ Gagal update nilai: ' + err.message);
@@ -768,7 +768,7 @@
       const res = await callAPI('saveSubmission', { rowNum, tanggalPresentasi: tgl }, 'POST');
       if (!res.success) throw new Error(res.message || 'Gagal');
       const k = allPenugasan.find(x => x.rowNum === rowNum);
-      if (k) p['TanggalPresentasiStr'] = tgl;
+      if (k) k['TanggalPresentasiStr'] = tgl;
       showAlert('success', '✅ Tanggal presentasi tersimpan.');
     } catch (err) {
       showAlert('error', '❌ Gagal update tanggal: ' + err.message);
@@ -947,7 +947,7 @@
     const body = filtered.map((p, i) => [
       i + 1,
       String(p['TimestampStr'] || ''),
-      String(k['Nama'] || ''),
+      String(p['Nama'] || ''),
       String(p['Kelas'] || ''),
       String(p['No Absen'] || ''),
       String(p['Tugas'] || ''),
