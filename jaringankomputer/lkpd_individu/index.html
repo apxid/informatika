@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LKPD Jaringan Komputer & Internet — Kelas IX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #1e3a8a; --primary-2: #3b82f6; --primary-3: #60a5fa;
+      --accent: #f59e0b; --accent-2: #ef4444;
+      --success: #16a34a; --warn: #f59e0b;
+      --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 10px 25px -5px rgba(15,23,42,.15), 0 8px 10px -6px rgba(15,23,42,.08);
+      --shadow-lg: 0 25px 50px -12px rgba(15,23,42,.35);
+      --radius: 18px; --radius-sm: 10px;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 40%, #fef3c7 100%);
+      min-height: 100vh; line-height: 1.55; -webkit-font-smoothing: antialiased;
+    }
+    .layer { display: none; min-height: 100vh; width: 100%; padding: 24px; animation: fadeIn .5s ease; }
+    .layer.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .container { max-width: 980px; margin: 0 auto; }
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-lg); overflow: hidden; margin-bottom: 24px; }
+    .card-header { background: linear-gradient(135deg, var(--primary), var(--primary-2) 60%, var(--primary-3)); color: #fff; padding: 22px 28px; }
+    .card-header .badge { display: inline-block; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
+    .card-header h1, .card-header h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; line-height: 1.15; letter-spacing: -.02em; }
+    .card-header h1 { font-size: clamp(24px, 4vw, 34px); }
+    .card-header h2 { font-size: clamp(20px, 3.5vw, 28px); }
+    .card-header .sub { opacity: .92; font-weight: 600; margin-top: 4px; font-size: 15px; }
+    .card-body { padding: 24px 28px; }
+
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .meta-item { background: var(--bg); border-radius: var(--radius-sm); padding: 12px; text-align: center; border: 1px solid var(--border); }
+    .meta-item .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+    .meta-item .value { font-size: 16px; font-weight: 800; color: var(--primary); margin-top: 2px; }
+
+    .btn { border: none; cursor: pointer; font-family: inherit; font-weight: 700; border-radius: 10px; padding: 12px 18px; font-size: 14px; transition: transform .15s ease, box-shadow .15s ease, background .15s ease; display: inline-flex; align-items: center; gap: 8px; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff; box-shadow: 0 10px 22px -8px rgba(30,58,138,.5); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -10px rgba(30,58,138,.55); }
+    .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+    .btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: #e2e8f0; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field label { font-size: 13px; font-weight: 700; color: var(--text); }
+    .form-field label .req { color: var(--accent-2); }
+    .form-field input[type="text"], .form-field input[type="date"], .form-field input[type="url"], .form-field input[type="number"], .form-field select, .form-field textarea { border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: 14px; background: #fff; transition: border-color .15s, box-shadow .15s; color: var(--text); }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--primary-2); box-shadow: 0 0 0 3px rgba(59,130,246,.18); }
+    .form-field .hint { font-size: 12px; color: var(--muted); }
+
+    .step-indicator { display: flex; gap: 8px; margin-bottom: 20px; align-items: center; }
+    .step-indicator .step { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); font-weight: 700; }
+    .step-indicator .step .num { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 13px; }
+    .step-indicator .step.active .num { background: var(--primary); }
+    .step-indicator .step.done .num { background: var(--success); }
+    .step-indicator .arrow { color: var(--border); font-weight: 900; }
+
+    .alert { display: none; padding: 12px 16px; border-radius: 10px; font-weight: 700; font-size: 14px; margin-bottom: 16px; align-items: center; gap: 8px; }
+    .alert.show { display: flex; }
+    .alert.success { background: #dcfce7; color: #166534; border-left: 4px solid var(--success); }
+    .alert.error { background: #fee2e2; color: #991b1b; border-left: 4px solid var(--accent-2); }
+    .alert.info { background: #dbeafe; color: #1e40af; border-left: 4px solid var(--primary-2); }
+    .alert.loading { background: #fef3c7; color: #92400e; border-left: 4px solid var(--accent); }
+
+    .acak-card { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%); border-radius: var(--radius); margin-bottom: 20px; border: 2px dashed var(--accent); }
+    .acak-card h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent-2); margin-bottom: 8px; }
+    .acak-card p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+    .btn-acak { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; border: none; padding: 18px 36px; border-radius: 16px; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 14px 30px -10px rgba(239,68,68,.55); transition: transform .2s, box-shadow .2s; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: .02em; display: inline-flex; align-items: center; gap: 12px; }
+    .btn-acak:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 18px 36px -10px rgba(239,68,68,.65); }
+    .btn-acak:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .task-card { margin-bottom: 20px; }
+    .task-card .td-header { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; padding: 22px 26px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .task-card .td-header .info h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .9; margin-bottom: 4px; }
+    .task-card .td-header .info .task-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 900; line-height: 1.1; }
+    .task-card .td-header .icon { width: 56px; height: 56px; background: rgba(255,255,255,.25); border-radius: 16px; display: grid; place-items: center; font-size: 28px; }
+    .task-card .td-body { padding: 22px 26px; }
+    .task-card .td-intro { font-size: 14px; margin-bottom: 18px; background: #fef3c7; border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 8px; }
+    .task-card .td-intro strong { color: var(--accent-2); }
+    .task-card .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .task-card .req-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; transition: transform .15s; }
+    .task-card .req-item:hover { transform: translateY(-2px); }
+    .task-card .req-item .ri-num { width: 30px; height: 30px; background: var(--primary); color: #fff; border-radius: 8px; display: grid; place-items: center; font-weight: 900; margin-bottom: 8px; font-size: 14px; }
+    .task-card .req-item h4 { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+    .task-card .req-item p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+    .siswa-info { background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 18px; border-left: 4px solid var(--primary-2); }
+    .siswa-info .row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+    .siswa-info .row div { flex: 1; min-width: 140px; }
+    .siswa-info .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+    .siswa-info .value { font-weight: 800; color: var(--primary); }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.75); backdrop-filter: blur(8px); display: none; place-items: center; z-index: 1000; padding: 20px; }
+    .modal-overlay.show { display: grid; animation: fadeIn .3s ease; }
+    .modal-card { background: var(--card); border-radius: 24px; padding: 36px 28px; max-width: 420px; width: 100%; text-align: center; box-shadow: var(--shadow-lg); }
+    .spinner-wrap { width: 160px; height: 160px; margin: 0 auto 18px; position: relative; }
+    .spinner-wrap .ring { position: absolute; inset: 0; border-radius: 50%; border: 8px solid var(--border); border-top-color: var(--primary); animation: spin 1s linear infinite; }
+    .spinner-wrap.spinning .ring { animation-duration: .35s; }
+    .spinner-wrap .icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 52px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .modal-card h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .modal-card .spin-text { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .modal-card .result-task { display: none; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 16px; margin-top: 8px; animation: pop .4s ease; }
+    @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .modal-card .result-task.show { display: block; }
+    .modal-card .btn-continue { display: none; margin-top: 16px; background: var(--primary); color: #fff; padding: 12px 24px; border: none; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; width: 100%; }
+    .modal-card .btn-continue.show { display: block; }
+    .modal-card .btn-continue:hover { background: #1e40af; }
+
+    .save-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.6); backdrop-filter: blur(4px); display: none; place-items: center; z-index: 1100; }
+    .save-overlay.show { display: grid; }
+    .save-overlay .loader { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+
+    .radio-group { display: flex; gap: 8px; }
+    .radio-group label { flex: 1; display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); padding: 10px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all .15s; background: #fff; }
+    .radio-group input[type="radio"] { accent-color: var(--primary); }
+    .radio-group label:has(input:checked) { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+
+    .tips { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-top: 14px; color: #155e75; }
+    .tips strong { color: #0e7490; }
+
+    /* MODE TOGGLE */
+    .mode-toggle { display: flex; gap: 4px; background: #e2e8f0; padding: 4px; border-radius: 12px; margin-bottom: 18px; }
+    .mode-toggle button { flex: 1; padding: 11px 14px; border: none; background: transparent; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 14px; color: var(--muted); border-radius: 8px; transition: all .15s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .mode-toggle button.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px -4px rgba(30,58,138,.4); }
+    .mode-toggle button:hover:not(.active) { background: rgba(255,255,255,.5); }
+    .mode-panel { display: none; animation: fadeIn .3s ease; }
+    .mode-panel.active { display: block; }
+
+    /* LANJUT SESI */
+    .lanjut-info { background: linear-gradient(135deg, #ecfeff 0%, #dbeafe 100%); border-left: 4px solid #06b6d4; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; font-size: 13px; color: #155e75; }
+    .lanjut-info strong { color: #0e7490; }
+    .lanjut-info ol { margin: 8px 0 0 18px; line-height: 1.7; }
+    .lanjut-result { display: none; background: #f0fdf4; border: 1.5px solid #16a34a; border-radius: 12px; padding: 14px 18px; margin-top: 14px; }
+    .lanjut-result.show { display: block; animation: pop .3s ease; }
+    .lanjut-result.error { background: #fef2f2; border-color: var(--accent-2); }
+    .lanjut-result .lr-title { font-weight: 800; color: var(--primary); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .lanjut-result.error .lr-title { color: var(--accent-2); }
+    .lanjut-result .lr-detail { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .lanjut-result .lr-detail strong { color: var(--text); }
+
+    /* MATERI CONTENT (rich) */
+    .mat-hero-img { width: 100%; height: 240px; border-radius: 14px; overflow: hidden; background: linear-gradient(135deg,#dbeafe,#e0e7ff); border: 2px solid var(--border); margin-bottom: 18px; position: relative; }
+    .mat-hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mat-hero-img .img-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, transparent, rgba(15,23,42,.85)); color: #fff; padding: 18px 16px 10px; font-size: 13px; font-weight: 600; text-align: center; }
+
+    .mat-content { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 18px; }
+    .mat-content > h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+    .mat-content > h3 .ic { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff; display: grid; place-items: center; flex-shrink: 0; }
+    .mat-content > p { font-size: 14.5px; color: var(--text); line-height: 1.7; margin-bottom: 14px; }
+    .mat-content > p b { color: var(--primary); }
+
+    .item-card { display: grid; grid-template-columns: 130px 1fr; gap: 14px; background: #f8fafc; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; transition: transform .15s; }
+    .item-card:hover { transform: translateY(-2px); border-color: var(--primary-2); }
+    .item-thumb { width: 130px; height: 130px; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg,#dbeafe,#e0e7ff); border: 2px solid var(--border); flex-shrink: 0; }
+    .item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .item-body h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .item-body p { font-size: 13.5px; color: var(--text); line-height: 1.6; margin: 0; }
+    .item-body p b { color: var(--primary); }
+    .item-analogy { margin-top: 8px; padding: 10px 12px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid var(--accent); border-radius: 8px; font-size: 13px; color: #78350f; line-height: 1.55; }
+    .item-analogy b { color: var(--accent-2); font-weight: 800; }
+    @media (max-width: 560px) { .item-card { grid-template-columns: 1fr; text-align: center; } .item-thumb { width: 100%; height: 160px; margin: 0 auto; } }
+
+    .spark { background: linear-gradient(135deg, #fef3c7, #fde68a); border-left: 4px solid var(--accent); border-radius: 10px; padding: 14px 16px; margin-top: 16px; display: flex; gap: 12px; align-items: flex-start; }
+    .spark .q-ic { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 900; flex-shrink: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .spark p { font-size: 14px; color: #78350f; margin: 0; font-weight: 600; line-height: 1.55; }
+    .spark p b { color: var(--accent-2); }
+
+    /* GAME */
+    .game-zone { background: linear-gradient(135deg, #1e3a8a, #3b82f6); border-radius: 14px; padding: 20px; margin-bottom: 18px; color: #fff; }
+    .game-zone h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; color: #fff; margin-bottom: 6px; }
+    .game-zone .g-instr { font-size: 13px; opacity: .9; margin-bottom: 14px; }
+    .game-zone .g-instr b { color: #fde68a; }
+    .game-feedback { padding: 12px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; display: none; margin-top: 12px; }
+    .game-feedback.show { display: block; animation: pop .3s ease; }
+    .game-feedback.win { background: #16a34a; color: #fff; }
+    .game-feedback.partial { background: var(--accent); color: #fff; }
+    .game-feedback.lose { background: var(--accent-2); color: #fff; }
+
+    .dnd-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; justify-content: center; min-height: 50px; padding: 10px; background: rgba(0,0,0,.2); border: 2px dashed rgba(255,255,255,.3); border-radius: 10px; }
+    .dnd-item { padding: 9px 14px; background: #fff; border: 2px solid var(--primary-2); border-radius: 10px; font-weight: 700; font-size: 13px; color: var(--text); cursor: grab; user-select: none; box-shadow: 0 3px 6px rgba(0,0,0,.2); }
+    .dnd-item:hover { transform: translateY(-2px); }
+    .dnd-item.dragging { opacity: .4; }
+    .dnd-item.placed { display: none; }
+    .dnd-bins { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 640px) { .dnd-bins { grid-template-columns: 1fr; } }
+    .dnd-bin { min-height: 100px; padding: 10px; background: rgba(0,0,0,.2); border: 2px dashed rgba(255,255,255,.35); border-radius: 12px; }
+    .dnd-bin.over { border-color: #fde68a; background: rgba(253,230,138,.15); }
+    .dnd-bin .bin-title { font-weight: 800; font-size: 13px; color: #fde68a; text-align: center; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,.2); margin-bottom: 6px; }
+    .dnd-bin .bin-items { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+    .dnd-bin .bin-items .dnd-item { font-size: 12px; padding: 6px 10px; background: linear-gradient(135deg, #fde68a, #f59e0b); border-color: var(--accent); color: var(--text); }
+
+    .match-game { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .match-game { grid-template-columns: 1fr; } }
+    .match-col h4 { font-size: 13px; color: #fde68a; margin-bottom: 8px; text-align: center; }
+    .match-list { display: flex; flex-direction: column; gap: 7px; }
+    .match-item { padding: 11px 14px; background: #fff; border: 2px solid var(--primary-2); border-radius: 10px; font-weight: 700; font-size: 13.5px; color: var(--text); cursor: pointer; text-align: center; transition: all .12s; }
+    .match-item:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .match-item.selected { background: linear-gradient(135deg, #fde68a, #f59e0b); border-color: var(--accent); }
+    .match-item.matched { background: #16a34a; border-color: #15803d; color: #fff; cursor: default; }
+    .match-item.matched::after { content: " ✓"; }
+    .match-item.wrong-flash { animation: wrongFlash .5s ease; }
+    @keyframes wrongFlash { 0%,100% { border-color: var(--accent-2); } 50% { background: #fecaca; border-color: #ff0000; } }
+
+    .seq-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .seq-item { padding: 12px 14px; background: #fff; border: 2px solid var(--primary-2); border-radius: 10px; font-weight: 600; font-size: 13.5px; color: var(--text); cursor: grab; user-select: none; display: flex; align-items: center; gap: 12px; }
+    .seq-item .seq-num { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 13px; flex-shrink: 0; }
+    .seq-item.dragging { opacity: .4; }
+    .seq-item.correct { background: #16a34a; border-color: #15803d; color: #fff; }
+    .seq-item.correct .seq-num { background: #15803d; }
+    .seq-item.wrong { background: #fecaca; border-color: var(--accent-2); color: #991b1b; }
+    .seq-item.wrong .seq-num { background: var(--accent-2); }
+
+    .tf-list { display: flex; flex-direction: column; gap: 10px; }
+    .tf-item { background: rgba(0,0,0,.15); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; padding: 12px; }
+    .tf-item .tf-q { font-size: 14px; margin-bottom: 8px; font-weight: 500; }
+    .tf-item .tf-btns { display: flex; gap: 8px; }
+    .tf-btn { flex: 1; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; transition: all .12s; }
+    .tf-btn.benar { background: #16a34a; color: #fff; }
+    .tf-btn.salah { background: var(--accent-2); color: #fff; }
+    .tf-btn.answered { opacity: .5; cursor: not-allowed; }
+    .tf-btn.answered.correct { opacity: 1; box-shadow: 0 0 12px rgba(253,230,138,.6); }
+    .tf-btn.answered.wrong { opacity: .7; border: 2px solid #ff0000; }
+
+    .mp-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .mp-item { padding: 12px 14px; background: #fff; border: 2px solid var(--primary-2); border-radius: 10px; font-weight: 700; font-size: 14px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all .12s; }
+    .mp-item:hover { border-color: var(--accent); }
+    .mp-item.selected { background: linear-gradient(135deg, #fde68a, #f59e0b); border-color: var(--accent); }
+    .mp-item.locked.correct { background: #16a34a; border-color: #15803d; color: #fff; }
+    .mp-item.locked.wrong { background: #fecaca; border-color: var(--accent-2); color: #991b1b; }
+
+    .game-score-badge { display: inline-block; padding: 6px 14px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 999px; font-size: 13px; font-weight: 800; color: #fde68a; margin-bottom: 12px; }
+
+    @media (max-width: 640px) {
+      .card-header { padding: 18px; }
+      .card-body { padding: 18px; }
+      .task-card .td-header { padding: 16px; }
+      .task-card .td-body { padding: 16px; }
+      .mat-hero-img { height: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ LAYER 1 - LOGIN SISWA ============ -->
+  <section id="layer1" class="layer active">
+    <div class="container">
+
+      <div class="step-indicator">
+        <div class="step active" id="step1Indicator">
+          <span class="num">1</span> Daftar Siswa
+        </div>
+        <span class="arrow">→</span>
+        <div class="step" id="step2Indicator">
+          <span class="num">2</span> Acak & Kerjakan Tugas
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">LKPD • Informatika</span>
+          <h1>JARINGAN KOMPUTER &amp; INTERNET</h1>
+          <p class="sub">Penugasan Mandiri • Kelas IX SMP Negeri 1 Moga</p>
+        </div>
+        <div class="card-body">
+
+          <div class="meta-grid">
+            <div class="meta-item"><div class="label">Mata Pelajaran</div><div class="value">Informatika</div></div>
+            <div class="meta-item"><div class="label">Kelas</div><div class="value">IX</div></div>
+            <div class="meta-item"><div class="label">Jumlah Materi</div><div class="value">13</div></div>
+            <div class="meta-item"><div class="label">Tipe</div><div class="value">Mandiri</div></div>
+          </div>
+
+          <p style="color: var(--muted); font-size: 14px; margin-bottom: 18px;">
+            Lengkapi data diri di bawah ini. Setiap siswa akan mendapat <strong style="color: var(--text)">satu materi secara acak</strong>
+            untuk dikerjakan mandiri di Layer 2. Kerjakan materi, mainkan game, lalu kumpulkan link Google Docs.
+          </p>
+
+          <div class="alert" id="alertLayer1"></div>
+
+          <div class="mode-toggle">
+            <button type="button" class="active" id="modeBaruBtn" onclick="switchMode('baru')">📝 Mulai Sesi Baru</button>
+            <button type="button" id="modeLanjutBtn" onclick="switchMode('lanjut')">🔄 Lanjut Sesi Sebelumnya</button>
+          </div>
+
+          <div class="mode-panel active" id="panelBaru">
+            <form id="loginForm" onsubmit="event.preventDefault(); goToLayer2New();">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Nama Lengkap <span class="req">*</span></label>
+                  <input type="text" id="nama" placeholder="Tulis namamu" required>
+                  <span class="hint">Gunakan nama sesuai absen.</span>
+                </div>
+                <div class="form-field">
+                  <label>No. Absen <span class="req">*</span></label>
+                  <input type="text" id="absen" placeholder="Contoh: 05" required>
+                </div>
+                <div class="form-field">
+                  <label>Kelas <span class="req">*</span></label>
+                  <input type="text" id="kelas" placeholder="Contoh: IX-A" required>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;">
+                <button type="submit" class="btn btn-primary"><span>→</span> Lanjut ke Penugasan</button>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('loginForm').reset()">↻ Reset Form</button>
+              </div>
+            </form>
+            <div class="tips">
+              <strong>Petunjuk:</strong> Pastikan data diri benar — nama, absen, kelas. Setelah "Acak Tugas" ditekan, materi tidak bisa diganti tanpa bantuan guru. Siswa hanya boleh mengerjakan tugas sendiri, tidak boleh menyuruh orang lain.
+            </div>
+          </div>
+
+          <div class="mode-panel" id="panelLanjut">
+            <div class="lanjut-info">
+              <strong>🔒 Cara Lanjut Sesi Sebelumnya:</strong>
+              <ol>
+                <li>Masukkan <strong>nama lengkap</strong> sesuai saat pendaftaran sebelumnya.</li>
+                <li>Masukkan <strong>kelas</strong> yang sama.</li>
+                <li>Klik <strong>"Cari & Lanjutkan"</strong> — sistem akan cari data tugasmu.</li>
+                <li>Jika ditemukan, tugas & form pengumpulan langsung muncul di Layer 2.</li>
+              </ol>
+            </div>
+            <form id="lanjutForm" onsubmit="event.preventDefault(); findStudentSubmit();">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Nama Lengkap <span class="req">*</span></label>
+                  <input type="text" id="namaLanjut" placeholder="Nama saat pendaftaran" required autocomplete="off">
+                </div>
+                <div class="form-field">
+                  <label>Kelas <span class="req">*</span></label>
+                  <input type="text" id="kelasLanjut" placeholder="Contoh: IX-A" required autocomplete="off">
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;">
+                <button type="submit" class="btn btn-primary" id="btnFindSiswa"><span>🔍</span> Cari & Lanjutkan</button>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('lanjutForm').reset(); document.getElementById('lanjutResult').classList.remove('show','error');">↻ Reset</button>
+              </div>
+            </form>
+            <div class="lanjut-result" id="lanjutResult">
+              <div class="lr-title" id="lrTitle"></div>
+              <div class="lr-detail" id="lrDetail"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LAYER 2 - ACAK + KERJAKAN ============ -->
+  <section id="layer2" class="layer">
+    <div class="container">
+      <div class="step-indicator">
+        <div class="step done"><span class="num">✓</span> Daftar Siswa</div>
+        <span class="arrow">→</span>
+        <div class="step active"><span class="num">2</span> Acak & Kerjakan Tugas</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge">Penugasan Acak Mandiri</span>
+          <h2 id="layer2Title">Penugasan Materi Siswa</h2>
+          <p class="sub" id="layer2Sub">Klik tombol di bawah untuk mengundi materi</p>
+        </div>
+        <div class="card-body">
+          <div class="siswa-info" id="siswaInfoBox">
+            <div class="row">
+              <div><div class="label">Nama</div><div class="value" id="infoNama">—</div></div>
+              <div><div class="label">No. Absen</div><div class="value" id="infoAbsen">—</div></div>
+              <div><div class="label">Kelas</div><div class="value" id="infoKelas">—</div></div>
+            </div>
+          </div>
+
+          <div class="alert" id="alertLayer2"></div>
+
+          <div class="acak-card" id="acakCard">
+            <h3>🎲 Acak Tugas Materi</h3>
+            <p>Klik tombol di bawah. Sistem akan memilih <strong>satu materi</strong> secara acak untuk kamu kerjakan mandiri.</p>
+            <button class="btn-acak" id="btnAcak" onclick="startAcak()"><span style="font-size:24px;">🎲</span> Acak Tugas Sekarang</button>
+          </div>
+
+          <div id="taskDisplay" style="display:none;"></div>
+          <div id="materiContent" style="display:none;"></div>
+          <div id="gameSection" style="display:none;"></div>
+          <div id="submissionForm" style="display:none;"></div>
+
+          <div style="display:flex; gap:12px; margin-top:22px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-ghost" onclick="goToLayer1()">← Kembali ke Layer 1</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL SPIN -->
+  <div class="modal-overlay" id="spinModal">
+    <div class="modal-card">
+      <div class="spinner-wrap" id="spinnerWrap">
+        <div class="ring"></div>
+        <div class="icon" id="spinIcon">🎲</div>
+      </div>
+      <h3 id="spinTitle">Mengundi Materi...</h3>
+      <p class="spin-text" id="spinText">Sedang memilih materi secara acak</p>
+      <div class="result-task" id="resultTask"></div>
+      <button class="btn-continue" id="btnContinue" onclick="confirmAcak()">Lihat Tugas →</button>
+    </div>
+  </div>
+
+  <div class="save-overlay" id="saveOverlay"><div class="loader"></div></div>
+
+  <script>
+    /* ============ KONFIGURASI ============ */
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxeYpeFEPPa0VzjP0cEpjiORrHjR9CO0KnIZg978lxCC8krkOXW63BZvsTq-m5xHd01xw/exec';
+
+    /* ============ STATE ============ */
+    let currentSiswa = null;
+    let currentTask = null;
+    let currentRowNum = null;
+    let pendingTask = null;
+    let gameScore = null;
+
+    /* ============ API CALL ============ */
+    async function callAPI(action, params, method) {
+      method = method || 'GET';
+      let url = SCRIPT_URL;
+      let opts = { method: method, redirect: 'follow' };
+      if (method === 'GET') {
+        const qs = new URLSearchParams(Object.assign({ action: action }, params || {})).toString();
+        url += (SCRIPT_URL.indexOf('?') >= 0 ? '&' : '?') + qs;
+      } else {
+        opts.headers = { 'Content-Type': 'text/plain;charset=utf-8' };
+        opts.body = JSON.stringify(Object.assign({ action: action }, params || {}));
+      }
+      const res = await fetch(url, opts);
+      if (!res.ok) throw new Error('HTTP ' + res.status + ': ' + res.statusText);
+      return await res.json();
+    }
+
+    /* ============ ALERT ============ */
+    function showAlert(boxId, type, msg) {
+      const box = document.getElementById(boxId);
+      box.className = 'alert ' + type + ' show';
+      box.textContent = msg;
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (type === 'success') setTimeout(() => box.classList.remove('show'), 5000);
+    }
+
+    /* ============ MODE TOGGLE ============ */
+    function switchMode(mode) {
+      document.getElementById('modeBaruBtn').classList.toggle('active', mode === 'baru');
+      document.getElementById('modeLanjutBtn').classList.toggle('active', mode === 'lanjut');
+      document.getElementById('panelBaru').classList.toggle('active', mode === 'baru');
+      document.getElementById('panelLanjut').classList.toggle('active', mode === 'lanjut');
+      document.getElementById('alertLayer1').classList.remove('show');
+      const r = document.getElementById('lanjutResult');
+      if (r) r.classList.remove('show', 'error');
+    }
+
+    /* ============ LANJUT SESI - FIND STUDENT ============ */
+    async function findStudentSubmit() {
+      const nama = document.getElementById('namaLanjut').value.trim();
+      const kelas = document.getElementById('kelasLanjut').value.trim();
+      const btn = document.getElementById('btnFindSiswa');
+      if (!nama || !kelas) { showAlert('alertLayer1', 'error', '⚠️ Isi nama dan kelas dulu.'); return; }
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Mencari...';
+      const result = document.getElementById('lanjutResult');
+      result.classList.remove('show', 'error');
+      try {
+        const res = await callAPI('findStudent', { nama: nama, kelas: kelas });
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔍</span> Cari & Lanjutkan';
+        if (!res.success) { showLanjutResult(true, '❌ Error', res.message || 'Gagal mencari.'); return; }
+        if (!res.found) { showLanjutResult(true, '🔍 Tidak Ditemukan', res.message); return; }
+        const s = res.siswa;
+        if (res.hasTask) {
+          showLanjutResult(false, '✅ Siswa Ditemukan',
+            'Nama: <strong>' + escapeHtml(s.nama) + '</strong> • Kelas: <strong>' + escapeHtml(s.kelas) + '</strong><br>' +
+            'Tugas: <strong>' + escapeHtml(s.topic.title) + '</strong><br>' +
+            '<em style="color: var(--success);">Mengarahkan ke Layer 2...</em>');
+          setTimeout(() => goToLayer2WithExisting(s), 1500);
+        } else {
+          showLanjutResult(false, '🔄 Siswa Ditemukan (Tugas Dibuka Ulang)',
+            'Nama: <strong>' + escapeHtml(s.nama) + '</strong> • Kelas: <strong>' + escapeHtml(s.kelas) + '</strong><br>' +
+            '<em style="color: var(--warn);">' + res.message + '</em><br>' +
+            '<em style="color: var(--success);">Mengarahkan ke Layer 2 untuk acak tugas...</em>');
+          setTimeout(() => goToLayer2WithExisting(s), 1800);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔍</span> Cari & Lanjutkan';
+        showLanjutResult(true, '❌ Error Jaringan', err.message);
+      }
+    }
+
+    function showLanjutResult(isError, title, detail) {
+      const r = document.getElementById('lanjutResult');
+      r.classList.remove('error');
+      if (isError) r.classList.add('error');
+      document.getElementById('lrTitle').textContent = title;
+      document.getElementById('lrDetail').innerHTML = detail;
+      r.classList.add('show');
+      r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    /* ============ GO TO LAYER 2 - NEW ============ */
+    async function goToLayer2New() {
+      const nama = document.getElementById('nama').value.trim();
+      const absen = document.getElementById('absen').value.trim();
+      const kelas = document.getElementById('kelas').value.trim();
+      if (!nama || !absen || !kelas) { showAlert('alertLayer1', 'error', '⚠️ Lengkapi semua data diri.'); return; }
+
+      currentSiswa = { nama, absen, kelas };
+      currentTask = null; currentRowNum = null; pendingTask = null; gameScore = null;
+
+      document.getElementById('infoNama').textContent = nama;
+      document.getElementById('infoAbsen').textContent = absen;
+      document.getElementById('infoKelas').textContent = kelas;
+      document.getElementById('acakCard').style.display = '';
+      document.getElementById('taskDisplay').style.display = 'none';
+      document.getElementById('taskDisplay').innerHTML = '';
+      document.getElementById('materiContent').style.display = 'none';
+      document.getElementById('materiContent').innerHTML = '';
+      document.getElementById('gameSection').style.display = 'none';
+      document.getElementById('gameSection').innerHTML = '';
+      document.getElementById('submissionForm').style.display = 'none';
+      document.getElementById('submissionForm').innerHTML = '';
+
+      // Save login to server (fire and forget)
+      callAPI('loginStudent', { nama, absen, kelas }, 'POST').then(res => {
+        if (res.success && res.rowNum) currentRowNum = res.rowNum;
+      }).catch(() => {});
+
+      document.getElementById('layer1').classList.remove('active');
+      document.getElementById('layer2').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function goToLayer2WithExisting(s) {
+      currentSiswa = { nama: s.nama, absen: s.absen, kelas: s.kelas };
+      currentRowNum = s.rowNum;
+      document.getElementById('infoNama').textContent = s.nama;
+      document.getElementById('infoAbsen').textContent = s.absen;
+      document.getElementById('infoKelas').textContent = s.kelas;
+      if (s.topic) {
+        // Look up full topic from TOPICS for components
+        const fullTopic = TOPICS.find(t => t.id === s.topic.id) || s.topic;
+        currentTask = fullTopic;
+        pendingTask = null;
+        document.getElementById('acakCard').style.display = 'none';
+        renderTaskCard(fullTopic);
+        renderMateriContent(fullTopic.id);
+        renderGameSection(fullTopic.id);
+        renderSubmissionForm(fullTopic, { linkGDocs: s.linkGDocs, tanggalPresentasi: s.tanggalPresentasi, status: s.status, skorGame: s.skorGame });
+        document.getElementById('taskDisplay').style.display = 'block';
+        document.getElementById('materiContent').style.display = 'block';
+        document.getElementById('gameSection').style.display = 'block';
+        document.getElementById('submissionForm').style.display = 'block';
+        showAlert('alertLayer2', 'info', 'ℹ️ Anda melanjutkan tugas sebelumnya. Update link jika ada perubahan, lalu Simpan.');
+      } else {
+        currentTask = null; pendingTask = null;
+        document.getElementById('acakCard').style.display = '';
+        document.getElementById('taskDisplay').style.display = 'none';
+        document.getElementById('materiContent').style.display = 'none';
+        document.getElementById('gameSection').style.display = 'none';
+        document.getElementById('submissionForm').style.display = 'none';
+        showAlert('alertLayer2', 'info', 'ℹ️ Tugas dibuka ulang guru. Klik "Acak Tugas" untuk mengundi materi baru.');
+      }
+      document.getElementById('layer1').classList.remove('active');
+      document.getElementById('layer2').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function goToLayer1() {
+      document.getElementById('layer2').classList.remove('active');
+      document.getElementById('layer1').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    /* ============ ACAK TUGAS ============ */
+    async function startAcak() {
+      if (!currentSiswa) { showAlert('alertLayer2', 'error', '⚠️ Data siswa belum lengkap.'); return; }
+      const btn = document.getElementById('btnAcak');
+      btn.disabled = true;
+      const modal = document.getElementById('spinModal');
+      const wrap = document.getElementById('spinnerWrap');
+      const icon = document.getElementById('spinIcon');
+      const title = document.getElementById('spinTitle');
+      const text = document.getElementById('spinText');
+      const result = document.getElementById('resultTask');
+      const cont = document.getElementById('btnContinue');
+      wrap.classList.add('spinning');
+      icon.textContent = '🎲';
+      title.textContent = 'Mengundi Materi...';
+      text.textContent = 'Sedang memilih materi secara acak';
+      result.classList.remove('show');
+      cont.classList.remove('show');
+      modal.classList.add('show');
+      try {
+        const res = await callAPI('claimRandomTopic', currentSiswa, 'POST');
+        if (!res.success) throw new Error(res.message || 'Gagal mengundi');
+        await new Promise(r => setTimeout(r, 2000));
+        wrap.classList.remove('spinning');
+        icon.textContent = res.topic.icon;
+        title.textContent = 'Materi Tugasmu';
+        text.textContent = res.isExisting ? 'Tugas sebelumnya:' : 'Hasil undian:';
+        result.textContent = res.topic.title;
+        result.classList.add('show');
+        cont.classList.add('show');
+        pendingTask = res.topic;
+        currentRowNum = res.rowNum;
+        showAlert('alertLayer2', res.isExisting ? 'info' : 'success', (res.isExisting ? 'ℹ️ ' : '✅ ') + res.message);
+      } catch (err) {
+        wrap.classList.remove('spinning');
+        icon.textContent = '⚠️';
+        title.textContent = 'Gagal Mengundi';
+        text.textContent = err.message;
+        result.classList.remove('show');
+        cont.classList.remove('show');
+        btn.disabled = false;
+      }
+    }
+
+    function confirmAcak() {
+      if (!pendingTask) return;
+      // Look up full topic from TOPICS (has components) using id from API
+      const fullTopic = TOPICS.find(t => t.id === pendingTask.id) || pendingTask;
+      currentTask = fullTopic;
+      document.getElementById('spinModal').classList.remove('show');
+      document.getElementById('acakCard').style.display = 'none';
+      renderTaskCard(currentTask);
+      renderMateriContent(currentTask.id);
+      renderGameSection(currentTask.id);
+      renderSubmissionForm(currentTask);
+      document.getElementById('taskDisplay').style.display = 'block';
+      document.getElementById('materiContent').style.display = 'block';
+      document.getElementById('gameSection').style.display = 'block';
+      document.getElementById('submissionForm').style.display = 'block';
+      window.scrollTo({ top: document.getElementById('taskDisplay').offsetTop - 20, behavior: 'smooth' });
+    }
+
+    /* ============ TASK CARD ============ */
+    function renderTaskCard(task) {
+      const reqs = task.components.map((c, i) => `
+        <div class="req-item">
+          <div class="ri-num">${i + 1}</div>
+          <h4>${escapeHtml(c.title)}</h4>
+          <p>${escapeHtml(c.desc)}</p>
+        </div>`).join('');
+      document.getElementById('taskDisplay').innerHTML = `
+        <div class="task-card">
+          <div class="td-header">
+            <div class="info">
+              <h3>Tugas Mandiri • Materi Terpilih</h3>
+              <div class="task-title">${escapeHtml(task.title)}</div>
+            </div>
+            <div class="icon">${task.icon}</div>
+          </div>
+          <div class="td-body">
+            <p class="td-intro"><strong>Petunjuk:</strong> ${escapeHtml(task.intro)} Kerjakan 7 komponen di bawah, baca materi lengkap, mainkan game, lalu kumpulkan link Google Docs di form paling bawah.</p>
+            <div class="req-grid">${reqs}</div>
+          </div>
+        </div>`;
+    }
+
+    /* ============ MATERI CONTENT (rich) ============ */
+    function renderMateriContent(taskId) {
+      const mat = MATERIALS[taskId];
+      if (!mat) { document.getElementById('materiContent').innerHTML = ''; return; }
+      const sectionsHtml = mat.sections.map(sec => `
+        <div class="item-card">
+          <div class="item-thumb"><img src="${IMAGES[sec.img] || ''}" alt="${escapeHtml(sec.title)}" onerror="this.style.display='none'"></div>
+          <div class="item-body">
+            <h4>${escapeHtml(sec.title)}</h4>
+            <p>${sec.desc}</p>
+            ${sec.analogy ? `<div class="item-analogy"><b>💡 Analogi:</b> ${sec.analogy}</div>` : ''}
+          </div>
+        </div>`).join('');
+      document.getElementById('materiContent').innerHTML = `
+        <div class="mat-content">
+          <div class="mat-hero-img">
+            <img src="${IMAGES[mat.heroImg] || ''}" alt="${escapeHtml(mat.heroCaption)}" onerror="this.style.display='none'">
+            <div class="img-caption">${escapeHtml(mat.heroCaption)}</div>
+          </div>
+          <h3><span class="ic">📖</span>${escapeHtml(mat.intro.title)}</h3>
+          <p>${mat.intro.text}</p>
+          ${sectionsHtml}
+          <div class="spark"><div class="q-ic">?</div><p><b>Pertanyaan Pemantik:</b> ${escapeHtml(mat.spark)}</p></div>
+        </div>`;
+    }
+
+    /* ============ GAME SECTION ============ */
+    function renderGameSection(taskId) {
+      const game = GAMES[taskId];
+      if (!game) { document.getElementById('gameSection').innerHTML = ''; return; }
+      let gameHtml = '';
+      if (game.type === 'dnd_sort') gameHtml = renderDndSort(game);
+      else if (game.type === 'match') gameHtml = renderMatchGame(game);
+      else if (game.type === 'sequence') gameHtml = renderSequence(game);
+      else if (game.type === 'truefalse') gameHtml = renderTrueFalse(game);
+      else if (game.type === 'multipick') gameHtml = renderMultiPick(game);
+      document.getElementById('gameSection').innerHTML = `
+        <div class="game-zone">
+          <h3>🎮 Game: ${escapeHtml(game.title)}</h3>
+          <div class="g-instr">${game.instr}</div>
+          <div class="game-score-badge" id="gameScoreBadge">Skor: — / ${gameMax(game)}</div>
+          <div id="gameArea">${gameHtml}</div>
+          <div class="game-feedback" id="gameFb"></div>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-accent" onclick="checkGame('${taskId}')">✓ Periksa Jawaban</button>
+            <button class="btn btn-ghost" style="background:rgba(255,255,255,.15); color:#fff; border-color:rgba(255,255,255,.3);" onclick="resetGame('${taskId}')">↻ Ulangi</button>
+          </div>
+        </div>`;
+      attachGameEvents();
+    }
+
+    /* ============ SUBMISSION FORM ============ */
+    function renderSubmissionForm(task, existing) {
+      const ex = existing || {};
+      const linkVal = ex.linkGDocs ? ' value="' + escapeHtml(ex.linkGDocs) + '"' : '';
+      const tglVal = ex.tanggalPresentasi ? ' value="' + escapeHtml(ex.tanggalPresentasi) + '"' : '';
+      const statusSelesai = ex.status === 'Selesai' ? 'checked' : '';
+      const statusBelum = (ex.status === 'Belum' || !ex.status) ? 'checked' : '';
+      const skorDisplay = ex.skorGame !== undefined && ex.skorGame !== null && ex.skorGame !== '' ? ex.skorGame : (gameScore ? gameScore.skor + '/' + gameScore.max : '— belum main —');
+      document.getElementById('submissionForm').innerHTML = `
+        <div class="card">
+          <div class="card-header" style="background: linear-gradient(135deg, #16a34a, #4ade80);">
+            <h2 style="font-size: 18px;">📝 Kumpulkan Hasil Pengerjaan</h2>
+            <p class="sub" style="font-size: 13px;">Tempel link Google Docs & jadwalkan presentasi</p>
+          </div>
+          <div class="card-body">
+            <div class="siswa-info" style="margin-bottom: 18px;">
+              <div class="row">
+                <div><div class="label">Skor Game</div><div class="value" id="skorGameDisplay">${skorDisplay}</div></div>
+                <div><div class="label">Materi</div><div class="value">${escapeHtml(task.title)}</div></div>
+              </div>
+            </div>
+            <form id="submitForm" onsubmit="event.preventDefault(); saveSubmission();">
+              <div class="form-grid">
+                <div class="form-field" style="grid-column: 1 / -1;">
+                  <label>Link Google Docs <span class="req">*</span></label>
+                  <input type="url" id="linkDocs" placeholder="https://docs.google.com/document/d/XXXXX/edit" required${linkVal}>
+                  <span class="hint">Set akses "Anyone with link can comment/view". Link baru akan ganti link lama.</span>
+                </div>
+                <div class="form-field">
+                  <label>Tanggal Presentasi <span class="req">*</span></label>
+                  <input type="date" id="tglPres" required${tglVal}>
+                </div>
+                <div class="form-field">
+                  <label>Status Pengerjaan <span class="req">*</span></label>
+                  <div class="radio-group">
+                    <label><input type="radio" name="status" value="Selesai" ${statusSelesai} required> ✅ Selesai</label>
+                    <label><input type="radio" name="status" value="Belum" ${statusBelum} required> ⏳ Belum</label>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; gap:12px; margin-top:22px; flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary"><span>💾</span> Simpan ke Spreadsheet</button>
+                <a class="btn btn-accent" href="https://docs.new" target="_blank" rel="noopener"><span>+</span> Buat Google Docs Baru</a>
+              </div>
+            </form>
+            <div class="tips">
+              <strong>Cara Buat Google Docs:</strong>
+              <ol style="margin:8px 0 0 18px; line-height:1.7;">
+                <li>Klik "Buat Google Docs Baru" di atas.</li>
+                <li>Bagi link ke "Anyone with the link → Commenter/Viewer".</li>
+                <li>Salin link, tempel di kolom Link Google Docs.</li>
+                <li>Pilih tanggal presentasi & status.</li>
+                <li>Klik "Simpan ke Spreadsheet".</li>
+              </ol>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* ============ SAVE SUBMISSION ============ */
+    async function saveSubmission() {
+      const link = document.getElementById('linkDocs').value.trim();
+      const tgl = document.getElementById('tglPres').value;
+      const statusEl = document.querySelector('input[name="status"]:checked');
+      if (!statusEl) { showAlert('alertLayer2', 'error', '⚠️ Pilih status dulu.'); return; }
+      const data = {
+        rowNum: currentRowNum,
+        linkGoogleDocs: link,
+        tanggalPresentasi: tgl,
+        status: statusEl.value,
+        skorGame: gameScore ? gameScore.skor : (document.getElementById('skorGameDisplay')?.textContent || ''),
+        verifyNama: currentSiswa ? currentSiswa.nama : '',
+        verifyKelas: currentSiswa ? currentSiswa.kelas : ''
+      };
+      document.getElementById('saveOverlay').classList.add('show');
+      try {
+        const res = await callAPI('saveSubmission', data, 'POST');
+        document.getElementById('saveOverlay').classList.remove('show');
+        if (!res.success) { showAlert('alertLayer2', 'error', '❌ ' + res.message); return; }
+        showAlert('alertLayer2', 'success', '✅ ' + res.message + ' Tugas: ' + (currentTask ? currentTask.title : '') + '.');
+      } catch (err) {
+        document.getElementById('saveOverlay').classList.remove('show');
+        showAlert('alertLayer2', 'error', '❌ ' + err.message);
+      }
+    }
+
+    /* ============ GAMES ============ */
+    function gameMax(game) {
+      if (game.type === 'dnd_sort') return game.items.length;
+      if (game.type === 'match') return game.pairs.length;
+      if (game.type === 'sequence') return game.steps.length;
+      if (game.type === 'truefalse') return game.statements.length;
+      if (game.type === 'multipick') return game.options.length;
+      return 0;
+    }
+
+    function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+    function escapeAttr(s){return (s||'').replace(/"/g,'&quot;');}
+
+    function renderDndSort(game) {
+      const items = shuffle(game.items);
+      return `<div class="dnd-pool" id="dndPool">${items.map((it,i)=>`<div class="dnd-item" draggable="true" data-t="${escapeAttr(it.t)}" data-cat="${it.cat}">${escapeHtml(it.t)}</div>`).join('')}</div>
+      <div class="dnd-bins">${game.bins.map(b=>`<div class="dnd-bin" data-bin="${b.id}"><div class="bin-title">${escapeHtml(b.name)}</div><div class="bin-items"></div></div>`).join('')}</div>`;
+    }
+    function renderMatchGame(game) {
+      const defs = shuffle(game.pairs);
+      return `<div class="match-game">
+        <div class="match-col"><h4>Istilah</h4><div class="match-list">${game.pairs.map((p,i)=>`<div class="match-item" data-side="term" data-i="${i}" onclick="selectMatch(${i},'${escapeAttr(p.term)}')">${escapeHtml(p.term)}</div>`).join('')}</div></div>
+        <div class="match-col"><h4>Fungsi</h4><div class="match-list">${defs.map((p,i)=>`<div class="match-item" data-side="def" data-i="${i}" data-val="${escapeAttr(p.def)}" onclick="selectMatchDef(${i},'${escapeAttr(p.def)}')">${escapeHtml(p.def)}</div>`).join('')}</div></div>
+      </div>`;
+    }
+    function renderSequence(game) {
+      const sh = shuffle(game.steps.map((s,i)=>({...s,origI:i})));
+      return `<div class="seq-list" id="seqList">${sh.map((s,i)=>`<div class="seq-item" draggable="true" data-i="${s.origI}"><div class="seq-num">${i+1}</div><div>${escapeHtml(s.t)}</div></div>`).join('')}</div>`;
+    }
+    function renderTrueFalse(game) {
+      return `<div class="tf-list">${game.statements.map((s,i)=>`<div class="tf-item" data-i="${i}"><div class="tf-q">${i+1}. ${escapeHtml(s.q)}</div><div class="tf-btns"><button class="tf-btn benar" onclick="answerTF(${i},true)">Benar</button><button class="tf-btn salah" onclick="answerTF(${i},false)">Salah</button></div></div>`).join('')}</div>`;
+    }
+    function renderMultiPick(game) {
+      return `<div class="mp-list" id="mpList">${game.options.map((o,i)=>`<div class="mp-item" data-i="${i}" data-correct="${o.correct}" onclick="toggleMP(${i})"><span>${escapeHtml(o.t)}</span></div>`).join('')}</div>`;
+    }
+
+    function attachGameEvents() {
+      document.querySelectorAll('.dnd-item').forEach(item => {
+        item.addEventListener('dragstart', e => { item.classList.add('dragging'); e.dataTransfer.setData('text/plain', JSON.stringify({t:item.dataset.t,cat:item.dataset.cat})); });
+        item.addEventListener('dragend', () => item.classList.remove('dragging'));
+      });
+      document.querySelectorAll('.dnd-bin').forEach(bin => {
+        bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('over'); });
+        bin.addEventListener('dragleave', () => bin.classList.remove('over'));
+        bin.addEventListener('drop', e => {
+          e.preventDefault(); bin.classList.remove('over');
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          const items = bin.querySelector('.bin-items');
+          if (items.querySelector(`[data-t="${data.t}"]`)) return;
+          const poolItem = document.querySelector(`#dndPool .dnd-item[data-t="${data.t}"]`);
+          if (poolItem) { poolItem.classList.add('placed'); const clone = poolItem.cloneNode(true); clone.classList.remove('placed','dragging'); clone.setAttribute('draggable','false'); items.appendChild(clone); }
+        });
+      });
+      const seqList = document.getElementById('seqList');
+      if (seqList) {
+        seqList.querySelectorAll('.seq-item').forEach(item => {
+          item.addEventListener('dragstart', e => { item.classList.add('dragging'); e.dataTransfer.setData('text/plain','seq'); });
+          item.addEventListener('dragend', () => item.classList.remove('dragging'));
+        });
+        seqList.addEventListener('dragover', e => {
+          e.preventDefault();
+          const dragging = seqList.querySelector('.dragging');
+          if (!dragging) return;
+          const after = getDragAfter(seqList, e.clientY);
+          if (after == null) seqList.appendChild(dragging);
+          else seqList.insertBefore(dragging, after);
+          seqList.querySelectorAll('.seq-item').forEach((it, i) => { it.querySelector('.seq-num').textContent = i + 1; });
+        });
+      }
+    }
+    function getDragAfter(list, y) {
+      const items = [...list.querySelectorAll('.seq-item:not(.dragging)')];
+      return items.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) return { offset, element: child };
+        return closest;
+      }, { offset: -Infinity }).element;
+    }
+
+    const matchState = {};
+    function selectMatch(termIdx, termVal) {
+      const taskId = currentTask?.id;
+      if (!taskId) return;
+      if (!matchState[taskId]) matchState[taskId] = { termIdx: null, defIdx: null, defVal: null, matched: [] };
+      matchState[taskId].termIdx = termIdx;
+      document.querySelectorAll('.match-item[data-side="term"]').forEach(el => el.classList.toggle('selected', parseInt(el.dataset.i) === termIdx));
+      tryMatch();
+    }
+    function selectMatchDef(defIdx, defVal) {
+      const taskId = currentTask?.id;
+      if (!taskId) return;
+      if (!matchState[taskId]) matchState[taskId] = { termIdx: null, defIdx: null, defVal: null, matched: [] };
+      matchState[taskId].defIdx = defIdx;
+      matchState[taskId].defVal = defVal;
+      document.querySelectorAll('.match-item[data-side="def"]').forEach(el => el.classList.toggle('selected', parseInt(el.dataset.i) === defIdx));
+      tryMatch();
+    }
+    function tryMatch() {
+      const taskId = currentTask?.id;
+      const m = matchState[taskId];
+      if (!m || m.termIdx === null || m.defIdx === null) return;
+      const game = GAMES[taskId];
+      const pair = game.pairs[m.termIdx];
+      if (pair.def === m.defVal) {
+        const tEl = document.querySelector(`.match-item[data-side="term"][data-i="${m.termIdx}"]`);
+        const dEl = document.querySelector(`.match-item[data-side="def"][data-i="${m.defIdx}"]`);
+        tEl.classList.add('matched'); tEl.classList.remove('selected');
+        dEl.classList.add('matched'); dEl.classList.remove('selected');
+        m.matched.push(m.termIdx);
+        m.termIdx = null; m.defIdx = null; m.defVal = null;
+        if (m.matched.length === game.pairs.length) setTimeout(() => checkGame(taskId), 500);
+      } else {
+        const tEl = document.querySelector(`.match-item[data-side="term"][data-i="${m.termIdx}"]`);
+        const dEl = document.querySelector(`.match-item[data-side="def"][data-i="${m.defIdx}"]`);
+        if (tEl) tEl.classList.add('wrong-flash');
+        if (dEl) dEl.classList.add('wrong-flash');
+        setTimeout(() => { if (tEl) tEl.classList.remove('wrong-flash', 'selected'); if (dEl) dEl.classList.remove('wrong-flash', 'selected'); }, 500);
+        m.termIdx = null; m.defIdx = null; m.defVal = null;
+      }
+    }
+    function answerTF(i, ans) {
+      const taskId = currentTask?.id;
+      const game = GAMES[taskId];
+      const correct = game.statements[i].a;
+      const item = document.querySelector(`.tf-item[data-i="${i}"]`);
+      if (item.classList.contains('answered')) return;
+      item.classList.add('answered');
+      const btns = item.querySelectorAll('.tf-btn');
+      btns.forEach(b => b.classList.add('answered'));
+      const isCorrect = ans === correct;
+      if (ans === true) btns[0].classList.add(isCorrect ? 'correct' : 'wrong');
+      else btns[1].classList.add(isCorrect ? 'correct' : 'wrong');
+    }
+    function toggleMP(i) {
+      const item = document.querySelector(`.mp-item[data-i="${i}"]`);
+      if (!item || item.classList.contains('locked')) return;
+      item.classList.toggle('selected');
+    }
+
+    function checkGame(taskId) {
+      const game = GAMES[taskId];
+      if (!game) return;
+      let skor = 0, max = gameMax(game);
+      if (game.type === 'dnd_sort') {
+        document.querySelectorAll('.dnd-bin').forEach(bin => {
+          const expected = bin.dataset.bin;
+          bin.querySelectorAll('.dnd-item').forEach(it => { if (it.dataset.cat === expected) skor++; });
+        });
+      } else if (game.type === 'match') {
+        skor = matchState[taskId]?.matched?.length || 0;
+      } else if (game.type === 'sequence') {
+        const list = document.getElementById('seqList');
+        if (list) list.querySelectorAll('.seq-item').forEach((it, i) => { if (parseInt(it.dataset.i) === i) { skor++; it.classList.add('correct'); } else it.classList.add('wrong'); });
+      } else if (game.type === 'truefalse') {
+        document.querySelectorAll('.tf-item.answered').forEach(item => { const i = parseInt(item.dataset.i); if (game.statements[i].a === true && item.querySelector('.tf-btn.benar.correct')) skor++; else if (game.statements[i].a === false && item.querySelector('.tf-btn.salah.correct')) skor++; });
+      } else if (game.type === 'multipick') {
+        document.querySelectorAll('.mp-item').forEach(item => { const correct = item.dataset.correct === 'true'; const selected = item.classList.contains('selected'); item.classList.add('locked'); if ((correct && selected) || (!correct && !selected)) skor++; });
+      }
+      gameScore = { skor, max };
+      const pct = Math.round(skor / max * 100);
+      const badge = document.getElementById('gameScoreBadge');
+      if (badge) badge.textContent = 'Skor: ' + skor + ' / ' + max;
+      const fb = document.getElementById('gameFb');
+      if (fb) {
+        let cls, msg;
+        if (pct === 100) { cls = 'win'; msg = 'Sempurna! Skor ' + skor + '/' + max + '. 🏆'; }
+        else if (pct >= 60) { cls = 'partial'; msg = 'Bagus! Skor ' + skor + '/' + max + '. Terus tingkatkan!'; }
+        else { cls = 'lose'; msg = 'Coba lagi. Skor ' + skor + '/' + max + '. Pelajari lagi materinya.'; }
+        fb.className = 'game-feedback show ' + cls;
+        fb.textContent = msg;
+      }
+      const skorDisplay = document.getElementById('skorGameDisplay');
+      if (skorDisplay) skorDisplay.textContent = skor + '/' + max;
+      // Send score to server
+      if (currentRowNum) {
+        callAPI('saveGameScore', { rowNum: currentRowNum, materiId: taskId, skor: skor, max: max }, 'POST').catch(() => {});
+      }
+    }
+    function resetGame(taskId) {
+      delete matchState[taskId];
+      gameScore = null;
+      renderGameSection(taskId);
+    }
+
+    /* ============ UTIL ============ */
+    function escapeHtml(s) {
+      if (s === undefined || s === null) return '';
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    /* ============ DATA: IMAGES ============ */
+    const IMAGES = {
+      router:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/5ef2b7b7b98b.jpg',
+      switch:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ba3c50eec4b8.jpg',
+      cable:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/bff1fe6a7c80.jpg',
+      server:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/47cb23ef95c7.jpg',
+      laptop:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/380e90b58ec6.jpg',
+      phone:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/336476967f04.jpg',
+      fiber:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/6a5e43321a1b.jpg',
+      wifi:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/c66e05bbf776.jpg',
+      coaxial:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/022152b70938.jpg',
+      cellular:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/80057f4ec1ba.jpg',
+      nic:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/92ce764a3a62.png',
+      network:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/5f73d03da562.jpg',
+      os:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ae582b35adcd.png',
+      chrome:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/c7caac16c795.png',
+      whatsapp:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/3e9d576083fd.jpg',
+      gdrive:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f31b8ec16847.jpg',
+      internet:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/57285f3672b8.jpg',
+      globe:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/57285f3672b8.jpg',
+      http:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/ab98ded3d993.jpg',
+      packet:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f41d01648255.jpg',
+      ip_addr:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/24c578e4af56.png',
+      tcpip:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f6f072db80aa.png',
+      dns:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/db14c0ead665.png',
+      domain:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/8a9f5363307f.png',
+      https:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f35326909a26.png',
+      ssl_lock:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/4aed519ea266.jpg',
+      etiquette:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/1da031846bf5.jpg',
+      chat_social:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/0a7c3af924ae.jpg',
+      password:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/026f27efc60b.jpg',
+      otp:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/68ada791eb64.png',
+      phishing:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/bafd2c85847c.jpg',
+      backup:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/e51850ba8561.jpg',
+      osi:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/875da3b03982.png',
+      topology:'https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/f0d3482ed4e3.png'
+    };
+
+    /* ============ DATA: 13 TOPICS (tasks) ============ */
+    const TOPICS = [
+      {id:'intro', title:'Jaringan Komputer', icon:'🌐', intro:'Pelajari pengertian, tujuan, dan contoh jaringan komputer dalam kehidupan sehari-hari.',
+        components:[
+          {title:'Baca Pengertian', desc:'Pahami definisi jaringan komputer dan tujuannya.'},
+          {title:'Pelajari Analogi', desc:'Pahami analogi grup WhatsApp keluarga untuk jaringan.'},
+          {title:'Identifikasi Contoh', desc:'Sebutkan 3 contoh jaringan di rumah & sekolah.'},
+          {title:'Mainkan Game', desc:'Drag & drop: termasuk jaringan atau bukan.'},
+          {title:'Buat Ringkasan', desc:'Tulis ringkasan materi di Google Docs.'},
+          {title:'Refleksi', desc:'Tulis manfaat jaringan bagimu sehari-hari.'},
+          {title:'Presentasi', desc:'Siapkan ringkasan untuk presentasi di kelas.'}
+        ]},
+      {id:'hardware', title:'Hardware Jaringan', icon:'🔧', intro:'Pelajari router, switch, kabel Ethernet, dan NIC beserta fungsinya.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 4 perangkat keras jaringan utama.'},
+          {title:'Pelajari Analogi', desc:'Router=pos kurir, switch=resepsionis, NIC=kartu pelajar.'},
+          {title:'Identifikasi di Rumah', desc:'Sebutkan hardware jaringan di rumahmu.'},
+          {title:'Mainkan Game', desc:'Matching: cocokkan perangkat dengan fungsinya.'},
+          {title:'Buat Ringkasan', desc:'Tulis fungsi tiap perangkat di Google Docs.'},
+          {title:'Refleksi', desc:'Hardware mana yang paling penting? Mengapa?'},
+          {title:'Presentasi', desc:'Siapkan penjelasan tiap perangkat.'}
+        ]},
+      {id:'software', title:'Software Jaringan', icon:'💻', intro:'Pelajari sistem operasi, browser, aplikasi komunikasi, dan berbagi file.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 4 jenis software jaringan.'},
+          {title:'Pelajari Analogi', desc:'OS=manajer gedung, browser=penerjemah, WA=kurir pesan.'},
+          {title:'Identifikasi Penggunaan', desc:'Sebutkan software jaringan yang kamu pakai tiap hari.'},
+          {title:'Mainkan Game', desc:'Drag & drop: software jaringan atau bukan.'},
+          {title:'Buat Ringkasan', desc:'Tulis fungsi tiap jenis software.'},
+          {title:'Refleksi', desc:'Software mana yang paling sering kamu pakai?'},
+          {title:'Presentasi', desc:'Siapkan penjelasan tiap software.'}
+        ]},
+      {id:'internet', title:'Internet', icon:'🌍', intro:'Pahami internet sebagai jaringan global dan bedakan dengan Wi-Fi.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami definisi internet sebagai jaringan global.'},
+          {title:'Pelajari Analogi', desc:'Wi-Fi=gerbang rumah, internet=jalan raya dunia.'},
+          {title:'Bedakan Wi-Fi vs Internet', desc:'Jelaskan perbedaan keduanya.'},
+          {title:'Mainkan Game', desc:'True/False: pernyataan tentang internet.'},
+          {title:'Buat Ringkasan', desc:'Tulis manfaat internet bagimu.'},
+          {title:'Refleksi', desc:'Bayangkan satu hari tanpa internet, apa yang terjadi?'},
+          {title:'Presentasi', desc:'Siapkan penjelasan Wi-Fi vs Internet.'}
+        ]},
+      {id:'protocol', title:'Protokol Jaringan', icon:'📋', intro:'Pelajari HTTP, HTTPS, TCP, IP, DNS sebagai aturan komunikasi jaringan.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 5 protokol umum di internet.'},
+          {title:'Pelajari Analogi', desc:'HTTP=surat tanpa amplop, HTTPS=surat di amplop.'},
+          {title:'Hafalkan Fungsi', desc:'Hafalkan fungsi HTTP, HTTPS, TCP, IP, DNS.'},
+          {title:'Mainkan Game', desc:'Matching: cocokkan protokol dengan fungsi.'},
+          {title:'Buat Ringkasan', desc:'Tulis analogi tiap protokol di Google Docs.'},
+          {title:'Refleksi', desc:'Protokol mana yang paling penting untuk keamanan?'},
+          {title:'Presentasi', desc:'Siapkan analogi tiap protokol.'}
+        ]},
+      {id:'tcpip', title:'TCP/IP', icon:'📦', intro:'Pelajari cara TCP dan IP bekerja sama mengirim data secara andal.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami fungsi TCP dan IP.'},
+          {title:'Pelajari Analogi', desc:'TCP=kurir JNE, IP=alamat rumah di paket.'},
+          {title:'Pahami Cara Kerja', desc:'Urutkan alur pengiriman data.'},
+          {title:'Mainkan Game', desc:'Sequence: urutkan alur pengiriman data.'},
+          {title:'Buat Ringkasan', desc:'Tulis kenapa data dipecah jadi paket.'},
+          {title:'Refleksi', desc:'Mengapa data tidak dikirim utuh sekaligus?'},
+          {title:'Presentasi', desc:'Siapkan analogi TCP/IP.'}
+        ]},
+      {id:'dns-https', title:'DNS & HTTPS', icon:'🔒', intro:'Pelajari DNS sebagai penerjemah nama dan HTTPS sebagai pelindung web.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami fungsi DNS dan HTTPS.'},
+          {title:'Pelajari Analogi', desc:'DNS=buku kontak, HTTPS=amplop tertutup.'},
+          {title:'Bedakan HTTP vs HTTPS', desc:'Jelaskan perbedaan dan kapan pakai HTTPS.'},
+          {title:'Mainkan Game', desc:'Matching: cocokkan istilah dengan penjelasan.'},
+          {title:'Buat Ringkasan', desc:'Tulis mengapa HTTPS penting untuk situs bank.'},
+          {title:'Refleksi', desc:'Bagaimana cek situs aman di browser?'},
+          {title:'Presentasi', desc:'Siapkan analogi DNS & HTTPS.'}
+        ]},
+      {id:'etika', title:'Etika Digital', icon:'💬', intro:'Pelajari tata krama berkomunikasi yang baik di dunia maya.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 5 prinsip etika digital.'},
+          {title:'Pelajari Analogi', desc:'Etika digital = tata krama kelas, hoaks = gosip kelas.'},
+          {title:'Identifikasi Pelanggaran', desc:'Sebutkan contoh cyberbullying yang kamu tahu.'},
+          {title:'Mainkan Game', desc:'Drag & drop: etika baik atau pelanggaran.'},
+          {title:'Buat Ringkasan', desc:'Tulis 5 prinsip etika digital di Google Docs.'},
+          {title:'Refleksi', desc:'Pernah jadi korban atau saksi cyberbullying?'},
+          {title:'Presentasi', desc:'Siapkan tips etika digital untuk teman.'}
+        ]},
+      {id:'keamanan', title:'Keamanan Data', icon:'🛡️', intro:'Pelajari cara melindungi data pribadi: password kuat, 2FA, anti-phishing.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 5 tips keamanan data.'},
+          {title:'Pelajari Analogi', desc:'Password=gembok, 2FA=satpam+kartu, OTP=kode rahasia.'},
+          {title:'Buat Password Kuat', desc:'Buat contoh password kuat & jelaskan mengapa.'},
+          {title:'Mainkan Game', desc:'Multi-pick: pilih semua password yang kuat.'},
+          {title:'Buat Ringkasan', desc:'Tulis 5 tips keamanan di Google Docs.'},
+          {title:'Refleksi', desc:'Password-mu saat ini aman? Bagaimana memperbaikinya?'},
+          {title:'Presentasi', desc:'Siapkan tips keamanan data untuk teman.'}
+        ]},
+      {id:'media', title:'Media Akses Jaringan', icon:'📡', intro:'Pelajari media kabel (Ethernet, coaxial, fiber) dan nirkabel (Wi-Fi, Bluetooth, seluler).',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 6 media akses jaringan.'},
+          {title:'Pelajari Analogi', desc:'Kabel=jalan aspal, fiber=jalan tol LED, Wi-Fi=jembatan layang.'},
+          {title:'Bedakan Kabel vs Nirkabel', desc:'Jelaskan kelebihan & kekurangan masing-masing.'},
+          {title:'Mainkan Game', desc:'Drag & drop: kabel atau nirkabel.'},
+          {title:'Buat Ringkasan', desc:'Tulis analogi tiap media di Google Docs.'},
+          {title:'Refleksi', desc:'Media mana yang paling cocok untuk rumahmu?'},
+          {title:'Presentasi', desc:'Siapkan perbandingan 6 media akses.'}
+        ]},
+      {id:'sim-jaringan', title:'Simulasi Jaringan', icon:'🖥️', intro:'Pelajari hubungan antar perangkat: laptop, router, switch, server, HP.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami peran tiap perangkat dalam jaringan.'},
+          {title:'Pelajari Analogi', desc:'Router=pos satpam, server=perpustakaan kota.'},
+          {title:'Urutkan Alur Data', desc:'Urutkan alur data dari HP ke server.'},
+          {title:'Mainkan Game', desc:'Drag & drop: perangkat jaringan atau bukan.'},
+          {title:'Buat Ringkasan', desc:'Tulis fungsi tiap perangkat di Google Docs.'},
+          {title:'Refleksi', desc:'Perangkat mana yang paling penting? Mengapa?'},
+          {title:'Presentasi', desc:'Siapkan diagram hubungan perangkat.'}
+        ]},
+      {id:'sim-internet', title:'Cara Kerja Internet', icon:'⚡', intro:'Pelajari 5 tahap perjalanan data dari browser ke server dan kembali.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 5 tahap cara kerja internet.'},
+          {title:'Pelajari Analogi', desc:'Cara kerja internet = memesan GoFood.'},
+          {title:'Urutkan Tahap', desc:'Urutkan 5 tahap dengan benar.'},
+          {title:'Mainkan Game', desc:'Sequence: urutkan 5 tahap cara kerja internet.'},
+          {title:'Buat Ringkasan', desc:'Tulis analogi GoFood untuk tiap tahap.'},
+          {title:'Refleksi', desc:'Tahap mana yang paling sering lambat? Mengapa?'},
+          {title:'Presentasi', desc:'Siapkan analogi GoFood untuk presentasi.'}
+        ]},
+      {id:'sim-osi', title:'Model OSI', icon:'🏗️', intro:'Pelajari 7 lapisan OSI dari Application sampai Physical.',
+        components:[
+          {title:'Baca Materi', desc:'Pahami 7 lapisan OSI.'},
+          {title:'Pelajari Analogi', desc:'OSI = urutan kirim paket dari rumah ke sekolah.'},
+          {title:'Hafalkan Urutan', desc:'Hafalkan urutan 7 lapisan dari bawah ke atas.'},
+          {title:'Mainkan Game', desc:'Sequence: urutkan 7 lapisan OSI.'},
+          {title:'Buat Ringkasan', desc:'Tulis analogi tiap lapisan di Google Docs.'},
+          {title:'Refleksi', desc:'Lapisan mana yang berhubungan langsung dengan browser?'},
+          {title:'Presentasi', desc:'Siapkan analogi pengiriman paket untuk OSI.'}
+        ]}
+    ];
+
+    /* ============ DATA: MATERIALS (rich content) ============ */
+    const MATERIALS = {
+      intro:{
+        heroImg:'network', heroCaption:'Ilustrasi koneksi perangkat dalam jaringan',
+        intro:{title:'Apa itu Jaringan Komputer?', text:'<b>Jaringan komputer</b> adalah dua atau lebih perangkat yang saling terhubung (kabel/nirkabel) untuk <b>berbagi data, informasi, dan sumber daya</b> seperti printer atau koneksi internet. Jika ada tali penghubung, anak-anak di rumah berbeda bisa saling berbicara — itulah inti jaringan komputer.'},
+        sections:[
+          {img:'wifi', title:'Wi-Fi Rumah', desc:'Jaringan Wi-Fi di rumah menghubungkan HP, laptop, TV ke satu router untuk akses internet bersama.', analogy:'Seperti <b>grup WhatsApp keluarga</b> — semua anggota tergabung, saling kirim pesan & file lewat satu router (admin grup).'},
+          {img:'phone', title:'Hotspot HP', desc:'HP kamu bisa jadi "router mini" — berbagi internet ke perangkat lain lewat hotspot.', analogy:'Seperti <b>berbagi pulsa internet</b> ke teman — HP-mu jadi router kecil yang kasih akses internet ke teman.'},
+          {img:'server', title:'Lab Komputer', desc:'Puluhan komputer di lab terhubung ke switch, bisa berbagi printer & materi.', analogy:'Seperti <b>ruang OSIS</b> — semua murid bisa masuk, pakai lemari arsip & printer bersama.'}
+        ],
+        spark:'Saat kamu buka TikTok, lewat apa data video sampai ke HP-mu?'
+      },
+      hardware:{
+        heroImg:'router', heroCaption:'Router Wi-Fi dengan antena',
+        intro:{title:'Perangkat Keras Jaringan', text:'<b>Hardware jaringan</b> adalah perangkat fisik yang membuat koneksi terjadi. Setiap perangkat punya tugas khusus — ada yang jadi pos kurir, resepsionis, jalan aspal, atau kartu masuk.'},
+        sections:[
+          {img:'router', title:'Router', desc:'Mengarahkan data dari jaringan rumah ke internet. Memberi alamat IP lokal ke tiap perangkat.', analogy:'Seperti <b>pos kurir/kantor pos</b> — terima paket dari rumah, arahkan ke jalan raya (internet).'},
+          {img:'switch', title:'Switch', desc:'Menghubungkan perangkat dalam LAN. Pintar: kirim data hanya ke tujuan benar.', analogy:'Seperti <b>resepsionis sekolah</b> — tamu cari Bu Guru A, antar ke ruang A saja.'},
+          {img:'cable', title:'Kabel Ethernet', desc:'Media kabel umum dengan konektor RJ45. Stabil, cepat.', analogy:'Seperti <b>jalan aspal tetap</b> — stabil, cepat, tidak macet.'},
+          {img:'nic', title:'NIC', desc:'Kartu/komponen agar perangkat bisa terhubung ke jaringan.', analogy:'Seperti <b>kartu pelajar</b> — tanpa kartu, tidak bisa masuk gerbang sekolah.'}
+        ],
+        spark:'Di rumahmu, perangkat mana yang jadi "pos kurir" (router)?'
+      },
+      software:{
+        heroImg:'laptop', heroCaption:'Laptop menjalankan software jaringan',
+        intro:{title:'Perangkat Lunak Jaringan', text:'<b>Software jaringan</b> adalah program yang menjalankan komunikasi data. Jika hardware seperti jalan, software seperti aturan lalu lintas dan kendaraan yang melaluinya.'},
+        sections:[
+          {img:'os', title:'Sistem Operasi', desc:'Windows, Linux, Android — mengatur perangkat agar bisa terhubung jaringan.', analogy:'Seperti <b>manajer gedung sekolah</b> — atur semua di dalam: guru, murid, listrik.'},
+          {img:'chrome', title:'Browser', desc:'Chrome, Firefox — menampilkan halaman web. Menerjemahkan HTML jadi tampilan.', analogy:'Seperti <b>penerjemah bahasa</b> — situs web ditulis kode, browser terjemahkan jadi halaman cantik.'},
+          {img:'whatsapp', title:'Aplikasi Komunikasi', desc:'WhatsApp, Zoom — kirim pesan, suara, video antarperangkat.', analogy:'Seperti <b>kurir pesan antar</b> — kamu kasih pesan, kurir antar ke teman dalam detik.'},
+          {img:'gdrive', title:'Berbagi File', desc:'Google Drive, Dropbox — file dipakai bersama, akses dari mana saja.', analogy:'Seperti <b>lemari arsip kelas</b> — semua murid bisa ambil & simpan file. Bedanya, di "awan" (cloud).'}
+        ],
+        spark:'Kenapa HP Android & laptop Windows bisa terhubung jaringan yang sama walau OS beda?'
+      },
+      internet:{
+        heroImg:'internet', heroCaption:'Internet — jaringan global',
+        intro:{title:'Apa itu Internet?', text:'<b>Internet</b> adalah <b>jaringan global</b> yang menghubungkan miliaran perangkat di seluruh dunia. Internet bukan milik satu orang — seperti jalan raya dunia, milik bersama.'},
+        sections:[
+          {img:'wifi', title:'Wi-Fi (Bukan Internet!)', desc:'Wi-Fi menghubungkan perangkat ke jaringan lokal. Wi-Fi BUKAN internet.', analogy:'Wi-Fi = <b>gerbang rumahmu</b>, internet = <b>jalan raya di luar</b>. Gerbang terbuka tak arti kalau jalan macet.'},
+          {img:'globe', title:'Internet = Jaringan Global', desc:'Jaringan raksasa menghubungkan server di seluruh dunia.', analogy:'Seperti <b>jalan raya dunia</b> — semua orang bisa lewat, dari mana saja ke mana saja.'},
+          {img:'phone', title:'Manfaat Internet', desc:'Belajar, komunikasi, informasi, berbagi data, hiburan.', analogy:'Internet = <b>perpustakaan + taman + toko + bioskop</b> sekaligus, semua dari HP.'}
+        ],
+        spark:'Sebutkan 3 hal yang kamu lakukan tiap hari dengan internet!'
+      },
+      protocol:{
+        heroImg:'globe', heroCaption:'Protokol — bahasa perantara internet',
+        intro:{title:'Apa itu Protokol?', text:'<b>Protokol</b> adalah <b>aturan kesepakatan</b> bagaimana perangkat berkomunikasi. Analogi: dua orang beda negara butuh bahasa yang sama untuk ngerti.'},
+        sections:[
+          {img:'http', title:'HTTP', desc:'Aturan kirim/terima halaman web. Data dikirim "terbuka".', analogy:'HTTP = <b>surat tanpa amplop</b> — siapa saja bisa baca isinya di jalan.'},
+          {img:'ssl_lock', title:'HTTPS', desc:'HTTP aman, data dienkripsi. Gembok di address bar.', analogy:'HTTPS = <b>surat di amplop tertutup</b> — hanya pengirim & penerima yang baca.'},
+          {img:'packet', title:'TCP', desc:'Pastikan data sampai utuh. Kalau paket hilang, minta kirim ulang.', analogy:'TCP = <b>kurir JNE bertanggung jawab</b> — catat tiap paket, cek yang hilang.'},
+          {img:'ip_addr', title:'IP', desc:'Alamat unik tiap perangkat. Seperti alamat rumah.', analogy:'IP = <b>alamat rumah</b> — tanpa alamat, kurir bingung kirim ke mana.'},
+          {img:'dns', title:'DNS', desc:'Terjemahkan nama situs (google.com) jadi IP angka.', analogy:'DNS = <b>buku kontak di HP</b> — kamu hafal nama, DNS cari nomornya.'}
+        ],
+        spark:'Saat lihat gembok di address bar, protokol apa yang dipakai? Beda HTTP vs HTTPS?'
+      },
+      tcpip:{
+        heroImg:'tcpip', heroCaption:'TCP/IP — pondasi internet',
+        intro:{title:'TCP/IP — Pondasi Internet', text:'<b>TCP/IP</b> = dua protokol bekerja sama jadi tulang punggung internet. IP tentukan alamat tujuan, TCP pastikan paket sampai utuh.'},
+        sections:[
+          {img:'packet', title:'TCP — Andal', desc:'Pecah data jadi paket kecil, susun ulang di tujuan. Paket hilang? Kirim ulang.', analogy:'TCP = <b>kurir JNE</b> — kirim 10 potong puzzle, cek semua sampai, kalau hilang minta kirim ulang.'},
+          {img:'ip_addr', title:'IP — Alamat', desc:'Alamat unik tiap perangkat. Arahkan paket ke alamat benar.', analogy:'IP = <b>alamat rumah di paket</b> — tanpa alamat, kurir bingung.'},
+          {img:'server', title:'Cara Kerja', desc:'Kirim foto: TCP pecah jadi paket, IP tulis alamat, kirim lewat internet, TCP susun ulang.', analogy:'Seperti <b>kirim buku 100 halaman</b> — TCP pecah jadi 100 amplop, IP tulis alamat, sampai tujuan TCP susun jadi buku utuh.'}
+        ],
+        spark:'Mengapa data dipecah jadi paket kecil, bukan dikirim utuh?'
+      },
+      'dns-https':{
+        heroImg:'dns', heroCaption:'DNS — penerjemah nama domain',
+        intro:{title:'DNS & HTTPS', text:'<b>DNS</b> menerjemahkan nama situs jadi IP. <b>HTTPS</b> mengenkripsi data. Tanpa DNS, harus hafal angka IP. Tanpa HTTPS, data bisa dibaca pencuri.'},
+        sections:[
+          {img:'domain', title:'DNS — Penerjemah', desc:'Terjemahkan google.com jadi IP 142.250.10.78.', analogy:'DNS = <b>buku kontak HP</b> — kamu hafal nama, DNS cari nomornya.'},
+          {img:'ssl_lock', title:'HTTPS — Pelindung', desc:'HTTP aman, data dienkripsi. Gembok di browser.', analogy:'HTTPS = <b>amplop tertutup</b>. HTTP = <b>kartu pos terbuka</b> — semua bisa baca.'},
+          {img:'http', title:'HTTP vs HTTPS', desc:'HTTP=data terbuka, HTTPS=data terenkripsi.', analogy:'<b>HTTP = ngomong di pasar</b>. <b>HTTPS = bisikan ke telinga</b>.'},
+          {img:'ip_addr', title:'IP Address', desc:'Alamat unik tiap perangkat. IPv4 & IPv6.', analogy:'IP = <b>nomor telepon rumah</b> — unik, tak boleh sama.'}
+        ],
+        spark:'Saat buka situs bank, mengapa harus cek gembok & "https"?'
+      },
+      etika:{
+        heroImg:'chat_social', heroCaption:'Etika digital — sopan di dunia maya',
+        intro:{title:'Etika Digital', text:'<b>Etika digital</b> = tata krama di dunia maya. Di balik layar, kita tetap berhadapan dengan manusia nyata — kata-kata bisa membahagiakan atau melukai.'},
+        sections:[
+          {img:'chat_social', title:'Sopan Berkomunikasi', desc:'Bahasa baik & menghargai, seperti bertemu langsung.', analogy:'Chat guru tidak pakai "lo/gw" kan? Sopan di internet = sopan di kelas.'},
+          {img:'chat_social', title:'Hargai Pendapat', desc:'Dengarkan walau beda pendapat.', analogy:'Di diskusi kelas, teman beda pendapat tidak langsung marah kan?'},
+          {img:'etiquette', title:'Anti Hoaks', desc:'Cek kebenaran berita sebelum share.', analogy:'Hoaks = <b>gosip kelas yang menyebar</b> — bisa rusak reputasi.'},
+          {img:'etiquette', title:'Hindari Cyberbullying', desc:'Jangan ejek/ancam orang lain lewat internet.', analogy:'Mengejek di grup WA = <b>mempermalukan teman di upacara</b> — sakitnya sama.'},
+          {img:'lock', title:'Hormati Privasi', desc:'Jangan sebar foto/data tanpa izin.', analogy:'Privasi = <b>buku harian</b> — tidak boleh dibaca tanpa izin.'}
+        ],
+        spark:'Pernah lihat komentar jelek di medsos? Bagaimana perasaanmu kalau itu ke kamu?'
+      },
+      keamanan:{
+        heroImg:'password', heroCaption:'Keamanan data — lindungi info pribadi',
+        intro:{title:'Keamanan Data', text:'<b>Keamanan data</b> = upaya melindungi info pribadi dari pencurian & penyalahgunaan. Foto, password, rekening sangat berharga — kebocoran bisa berujung penipuan.'},
+        sections:[
+          {img:'password', title:'Password Kuat', desc:'Min 8 karakter, campuran huruf, angka, simbol.', analogy:'Password = <b>gembok rumah</b>. "12345" = gembok mainan, mudah dibongkar.'},
+          {img:'lock', title:'2FA', desc:'Tambah kode dari HP selain password.', analogy:'2FA = <b>satpam + kartu pelajar</b> — dua lapis cek = dua lapis aman.'},
+          {img:'otp', title:'Jangan Bagi OTP', desc:'OTP rahasia, tak ada pihak sah yang minta.', analogy:'OTP = <b>kode rahasia guru satu kali</b>. Guru tak minta balik!'},
+          {img:'phishing', title:'Anti Phishing', desc:'Waspada link/email palsu. Cek alamat situs.', analogy:'Phishing = <b>orang pura-pura kurir JNE</b>, minta data. Cek dulu!'},
+          {img:'backup', title:'Cadangkan Data', desc:'Simpan salinan di cloud/flashdisk.', analogy:'Backup = <b>fotokopi PR di laci lain</b>. Kalau asli hilang, masih ada.'}
+        ],
+        spark:'Apakah password "tanggalLahir123" aman? Mengapa?'
+      },
+      media:{
+        heroImg:'fiber', heroCaption:'Fiber optik — media super cepat',
+        intro:{title:'Media Akses Jaringan', text:'<b>Media akses</b> = jalur data berpindah antarperangkat. Dua jenis: <b>kabel</b> & <b>nirkabel</b>. Pilih tergantung kebutuhan: kecepatan, jarak, biaya.'},
+        sections:[
+          {img:'cable', title:'Ethernet', desc:'Kabel umum dengan RJ45. Stabil, cepat.', analogy:'Seperti <b>jalan aspal tetap</b> — stabil, cepat, selalu ada.'},
+          {img:'coaxial', title:'Coaxial', desc:'Kabel tembaga tebal. Dulu untuk TV kabel.', analogy:'Seperti <b>jalan setapak lama</b> — masih bisa, tapi pelan.'},
+          {img:'fiber', title:'Fiber Optik', desc:'Pulsa cahaya lewat serat kaca. Super cepat.', analogy:'Seperti <b>jalan tol LED cahaya</b> — super cepat, sejauh apa pun.'},
+          {img:'wifi', title:'Wi-Fi', desc:'Nirkabel untuk rumah/sekolah. Praktis.', analogy:'Wi-Fi = <b>jembatan layang</b> — praktis, tapi terbatas jangkauan.'},
+          {img:'phone', title:'Bluetooth', desc:'Nirkabel jarak dekat (10m). Headphone, mouse.', analogy:'Bluetooth = <b>gang sempit antar tetangga</b> — cuma deket.'},
+          {img:'cellular', title:'Seluler 4G/5G', desc:'Internet mobile lewat menara BTS.', analogy:'Seluler = <b>angkutan umum di mana-mana</b>. 4G=bus kota, 5G=kereta cepat.'}
+        ],
+        spark:'Mengapa fiber optik lebih cepat dari kabel tembaga?'
+      },
+      'sim-jaringan':{
+        heroImg:'switch', heroCaption:'Switch jaringan',
+        intro:{title:'Simulasi Perangkat Jaringan', text:'Pelajari hubungan <b>laptop, router, switch, server, HP</b>. Setiap perangkat punya peran — seperti pos satpam sekolah.'},
+        sections:[
+          {img:'laptop', title:'Laptop', desc:'Perangkat akhir pengguna. Akses internet lewat router.', analogy:'Laptop = <b>siswa di kelas</b> — minta info ke perpustakaan (server) lewat pos satpam (router).'},
+          {img:'router', title:'Router', desc:'Penghubung jaringan lokal ke internet.', analogy:'Router = <b>pos satpam sekolah</b> — semua keluar masuk lewat sini.'},
+          {img:'switch', title:'Switch', desc:'Hubungkan perangkat LAN. Antar data ke tujuan benar.', analogy:'Switch = <b>resepsionis kantor</b> — antar tamu ke ruang benar.'},
+          {img:'server', title:'Server', desc:'Simpan situs web & data. Melayani banyak pengguna.', analogy:'Server = <b>perpustakaan kota</b> — buka 24 jam, layani banyak orang.'},
+          {img:'phone', title:'HP', desc:'Perangkat mobile, Wi-Fi & seluler.', analogy:'HP = <b>siswa bawa tas mana-mana</b> — internet lewat Wi-Fi atau "angkot" (seluler).'}
+        ],
+        spark:'Urutkan alur data dari HP-mu sampai ke server situs yang kamu buka!'
+      },
+      'sim-internet':{
+        heroImg:'globe', heroCaption:'Cara kerja internet',
+        intro:{title:'Cara Kerja Internet', text:'Saat ketik alamat situs, data lewat <b>5 tahap</b>: browser → DNS → jaringan → server → kembali ke browser. Mirip pesan GoFood.'},
+        sections:[
+          {img:'laptop', title:'1. Browser', desc:'Ketik alamat situs, tekan Enter.', analogy:'Seperti <b>buka aplikasi GoFood & pilih restoran</b>.'},
+          {img:'dns', title:'2. DNS Lookup', desc:'DNS cari IP dari nama situs.', analogy:'Seperti <b>aplikasi cari alamat restoran</b> — ketemu "Jl. Mawar No.5".'},
+          {img:'wifi', title:'3. Jaringan', desc:'Permintaan lewat router, switch, ISP.', analogy:'Seperti <b>driver GoFood lewat jalan raya</b> ke restoran.'},
+          {img:'server', title:'4. Server', desc:'Server proses & siapkan data.', analogy:'Seperti <b>restoran masak makanan</b> — terima pesanan, masak, kemas.'},
+          {img:'laptop', title:'5. Tampil', desc:'Browser tampilkan halaman situs.', analogy:'Seperti <b>driver antar makanan ke rumahmu, kamu makan</b>.'}
+        ],
+        spark:'Bayangkan buka youtube.com. Tahap mana yang paling lama?'
+      },
+      'sim-osi':{
+        heroImg:'osi', heroCaption:'Model OSI — 7 lapisan',
+        intro:{title:'Model OSI', text:'<b>OSI</b> = model 7 lapis komunikasi data. Seperti urutan kirim paket dari rumah ke sekolah: nulis → amplop → titip kurir → pecah → alamat → pos satpam → jalan aspal.'},
+        sections:[
+          {img:'osi', title:'7. Application', desc:'Antarmuka pengguna. Browser, WhatsApp.', analogy:'Seperti <b>kamu nulis surat</b> — kamu mulai komunikasi.'},
+          {img:'osi', title:'6. Presentation', desc:'Enkripsi & format data.', analogy:'Seperti <b>masukin surat ke amplop & tulis kode rahasia</b>.'},
+          {img:'osi', title:'5. Session', desc:'Buka/kelola sesi komunikasi.', analogy:'Seperti <b>titip surat ke kurir & bilang "tunggu balasan"</b>.'},
+          {img:'packet', title:'4. Transport', desc:'Pecah data jadi segmen (TCP).', analogy:'Seperti <b>kurir pecah surat jadi 5 amplop kecil</b>.'},
+          {img:'ip_addr', title:'3. Network', desc:'Alamat tujuan & rute (IP).', analogy:'Seperti <b>kurir tulis alamat & pilih jalan tercepat</b>.'},
+          {img:'switch', title:'2. Data Link', desc:'Kirim antarperangkat lokal.', analogy:'Seperti <b>pos satpam kompleks</b> — antar ke rumah benar.'},
+          {img:'cable', title:'1. Physical', desc:'Sinyal listrik/cahaya/gelombang.', analogy:'Seperti <b>jalan aspal yang dilewati kurir</b>.'}
+        ],
+        spark:'Saat kirim pesan WhatsApp, lewat lapisan OSI apa saja?'
+      }
+    };
+
+    /* ============ DATA: GAMES ============ */
+    const GAMES = {
+      intro:{type:'dnd_sort', title:'Termasuk Jaringan atau Bukan?', instr:'Seret item ke kotak benar.', items:[{t:'Wi-Fi rumah',cat:'ya'},{t:'Hotspot HP',cat:'ya'},{t:'Lab komputer',cat:'ya'},{t:'Kulkas (tidak terhubung)',cat:'tidak'},{t:'Lampu tidur',cat:'tidak'},{t:'CCTV Wi-Fi',cat:'ya'}], bins:[{id:'ya',name:'Termasuk Jaringan'},{id:'tidak',name:'Bukan Jaringan'}]},
+      hardware:{type:'match', title:'Cocokkan Perangkat & Fungsi', instr:'Klik perangkat, lalu klik fungsi.', pairs:[{term:'Router',def:'Mengarahkan data antarjaringan'},{term:'Switch',def:'Hubungkan perangkat LAN'},{term:'Kabel Ethernet',def:'Media kabel penghubung'},{term:'NIC',def:'Komponen penghubung perangkat'}]},
+      software:{type:'dnd_sort', title:'Software Jaringan atau Bukan?', instr:'Seret ke kotak benar.', items:[{t:'Windows',cat:'ya'},{t:'Chrome',cat:'ya'},{t:'WhatsApp',cat:'ya'},{t:'Google Drive',cat:'ya'},{t:'Monitor',cat:'tidak'},{t:'Printer',cat:'tidak'},{t:'Kabel UTP',cat:'tidak'}], bins:[{id:'ya',name:'Software Jaringan'},{id:'tidak',name:'Bukan Software'}]},
+      internet:{type:'truefalse', title:'Benar atau Salah tentang Internet?', instr:'Klik Benar/Salah.', statements:[{q:'Wi-Fi dan internet adalah hal yang sama.',a:false},{q:'Internet menghubungkan miliaran perangkat.',a:true},{q:'Wi-Fi bisa aktif tanpa internet.',a:true},{q:'Internet dimiliki satu perusahaan.',a:false},{q:'Internet bisa untuk belajar online.',a:true}]},
+      protocol:{type:'match', title:'Cocokkan Protokol & Fungsi', instr:'Klik protokol, lalu fungsi.', pairs:[{term:'HTTP',def:'Transfer halaman web'},{term:'HTTPS',def:'HTTP terenkripsi'},{term:'TCP',def:'Data sampai utuh'},{term:'IP',def:'Alamat unik perangkat'},{term:'DNS',def:'Penerjemah nama domain'}]},
+      tcpip:{type:'sequence', title:'Urutkan Alur Pengiriman Data', instr:'Seret ke urutan benar.', steps:[{t:'Data dipecah jadi paket oleh TCP',correct:0},{t:'IP beri alamat tujuan tiap paket',correct:1},{t:'Paket dikirim lewat jaringan',correct:2},{t:'Paket tiba di tujuan',correct:3},{t:'TCP susun ulang jadi data utuh',correct:4}]},
+      'dns-https':{type:'match', title:'Cocokkan Istilah & Penjelasan', instr:'Klik istilah, lalu penjelasan.', pairs:[{term:'DNS',def:'Penerjemah nama domain ke IP'},{term:'HTTPS',def:'Mengenkripsi data web'},{term:'IP',def:'Alamat unik perangkat'},{term:'TCP',def:'Pastikan data andal'},{term:'Domain',def:'Nama situs seperti google.com'}]},
+      etika:{type:'dnd_sort', title:'Etika Baik atau Pelanggaran?', instr:'Seret ke kotak benar.', items:[{t:'Berkomentar sopan',cat:'baik'},{t:'Hargai pendapat',cat:'baik'},{t:'Sebar hoaks',cat:'buruk'},{t:'Cyberbullying',cat:'buruk'},{t:'Bagi OTP',cat:'buruk'},{t:'Hormati privasi',cat:'baik'}], bins:[{id:'baik',name:'Etika Baik'},{id:'buruk',name:'Pelanggaran'}]},
+      keamanan:{type:'multipick', title:'Pilih Password yang Kuat', instr:'Pilih semua password kuat.', options:[{t:'password123',correct:false},{t:'BukuBiru88!',correct:true},{t:'12345678',correct:false},{t:'Qw9$xY2#mP',correct:true},{t:'tanggalLahir',correct:false},{t:'H7$jK2pL!9',correct:true},{t:'admin',correct:false},{t:'S3cur3#Net',correct:true}]},
+      media:{type:'dnd_sort', title:'Kabel atau Nirkabel?', instr:'Seret ke kotak benar.', items:[{t:'Ethernet',cat:'kabel'},{t:'Coaxial',cat:'kabel'},{t:'Fiber Optik',cat:'kabel'},{t:'Wi-Fi',cat:'nirkabel'},{t:'Bluetooth',cat:'nirkabel'},{t:'Seluler 4G/5G',cat:'nirkabel'}], bins:[{id:'kabel',name:'Media Kabel'},{id:'nirkabel',name:'Media Nirkabel'}]},
+      'sim-jaringan':{type:'dnd_sort', title:'Perangkat Jaringan atau Bukan?', instr:'Seret ke kotak benar.', items:[{t:'Router',cat:'ya'},{t:'Switch',cat:'ya'},{t:'Server',cat:'ya'},{t:'Laptop',cat:'ya'},{t:'Meja kayu',cat:'tidak'},{t:'Buku tulis',cat:'tidak'}], bins:[{id:'ya',name:'Perangkat Jaringan'},{id:'tidak',name:'Bukan'}]},
+      'sim-internet':{type:'sequence', title:'Urutkan Cara Kerja Internet', instr:'Urutkan dari awal ke akhir.', steps:[{t:'Browser buat permintaan ke situs',correct:0},{t:'DNS cari IP situs',correct:1},{t:'Permintaan lewat router, ISP',correct:2},{t:'Server proses & kirim data balik',correct:3},{t:'Browser tampilkan halaman',correct:4}]},
+      'sim-osi':{type:'sequence', title:'Urutkan 7 Lapisan OSI', instr:'Urutkan dari bawah ke atas.', steps:[{t:'Physical',correct:0},{t:'Data Link',correct:1},{t:'Network',correct:2},{t:'Transport',correct:3},{t:'Session',correct:4},{t:'Presentation',correct:5},{t:'Application',correct:6}]}
+    };
+  </script>
+</body>
+</html>
