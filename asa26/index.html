@@ -707,6 +707,84 @@ td.action-col{
   margin-bottom:12px;
 }
 
+/* ====== UPLOAD TABS (File / URL) ====== */
+.upload-tabs{
+  display:flex;
+  gap:4px;
+  margin-bottom:14px;
+  background: rgba(0,0,0,.3);
+  padding:4px;
+  border-radius:8px;
+  border:1px solid var(--gold-soft);
+}
+.tab-btn{
+  flex:1;
+  padding:10px 12px;
+  font-family:'Cinzel',serif;
+  font-weight:600;
+  font-size:11px;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  background: transparent;
+  color: var(--cream-soft);
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  transition: all .15s;
+}
+.tab-btn:hover{ color: var(--cream); }
+.tab-btn.active{
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  color: var(--text-dark);
+  box-shadow: 0 2px 4px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.3);
+}
+
+.url-input{
+  width:100%;
+  padding:12px 14px;
+  font-family:'Roboto', sans-serif;
+  font-size:13px;
+  color:var(--text-dark);
+  background: var(--cream);
+  border:2px solid var(--gold-soft);
+  border-radius:8px;
+  outline:none;
+  letter-spacing:normal;
+  text-align:left;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.2);
+}
+.url-input:focus{ border-color: var(--gold-bright); }
+.url-hint{
+  font-size:11px;
+  color: var(--cream-soft);
+  line-height:1.5;
+  margin-top:8px;
+  padding:8px 10px;
+  background: rgba(0,0,0,.2);
+  border-left:2px solid var(--gold-soft);
+  border-radius:4px;
+}
+
+/* ====== FOLDER CHIP PERCENTAGE ====== */
+.chip-pct{
+  display:inline-block;
+  padding:2px 8px;
+  font-size:11px;
+  font-weight:700;
+  border-radius:10px;
+  background: rgba(244,200,66,.2);
+  color: var(--gold-bright);
+  font-family:'Roboto',sans-serif;
+  min-width:38px;
+  text-align:center;
+  margin-left:4px;
+}
+.folder-chip.active .chip-pct{ background: rgba(0,0,0,.3); color:var(--text-dark); }
+.folder-chip.full .chip-pct{ background: rgba(107,168,63,.35); color: #c8f0a0; }
+.folder-chip.full.active .chip-pct{ background: rgba(0,0,0,.3); color:var(--text-dark); }
+.folder-chip.empty .chip-pct{ background: rgba(192,57,43,.25); color: #ffb0a0; }
+.folder-chip.empty.active .chip-pct{ background: rgba(0,0,0,.3); color:var(--text-dark); }
+
 /* Toast */
 .toast{
   position:fixed;
@@ -902,26 +980,43 @@ td.action-col{
 <div id="uploadModal" class="modal-overlay">
   <div class="modal-card">
     <div class="modal-header">
-      <span>&#8682; UPLOAD BERKAS</span>
+      <span>&#8682; TAMBAH / UBAH BERKAS</span>
       <button class="modal-close" onclick="closeModal('uploadModal')">&times;</button>
     </div>
     <div class="modal-body">
       <div class="modal-info" id="uploadBerkasInfo"></div>
-      <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileInput').click()">
-        <div class="emoji">&#128229;</div>
-        <div class="hint">Klik atau seret file ke sini</div>
-        <div class="sub">Format: PDF, DOCX, XLSX, JPG, PNG, dll.</div>
-        <input type="file" id="fileInput" hidden />
+
+      <div class="upload-tabs">
+        <button type="button" class="tab-btn active" data-tab="file">&#128193; UPLOAD FILE</button>
+        <button type="button" class="tab-btn" data-tab="url">&#128279; SIMPAN URL</button>
       </div>
-      <div class="file-name" id="fileName">
-        <span>&#128196;</span>
-        <span id="fileNameText"></span>
+
+      <div id="fileTab">
+        <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileInput').click()">
+          <div class="emoji">&#128229;</div>
+          <div class="hint">Klik atau seret file ke sini</div>
+          <div class="sub">Format: PDF, DOCX, XLSX, JPG, PNG, dll. Maks 25MB.</div>
+          <input type="file" id="fileInput" hidden />
+        </div>
+        <div class="file-name" id="fileName">
+          <span>&#128196;</span>
+          <span id="fileNameText"></span>
+        </div>
       </div>
+
+      <div id="urlTab" class="hidden">
+        <input type="url" id="urlInput" class="url-input" placeholder="https://drive.google.com/file/d/..." />
+        <div class="url-hint">
+          Tempel URL dokumen (mis. link Google Drive yang sudah di-share <strong>"Anyone with link"</strong>).
+          Pastikan link bisa dibuka tanpa login Google.
+        </div>
+      </div>
+
       <div id="uploadAlert" class="alert"></div>
     </div>
     <div class="modal-footer">
       <button class="coc-btn btn-wood btn-sm" onclick="closeModal('uploadModal')">BATAL</button>
-      <button class="coc-btn btn-green btn-sm" id="uploadSubmit" onclick="submitUpload()">UPLOAD</button>
+      <button class="coc-btn btn-green btn-sm" id="uploadSubmit" onclick="submitUpload()">SIMPAN</button>
     </div>
   </div>
 </div>
@@ -987,11 +1082,13 @@ td.action-col{
 /* =========================================================
    KONFIGURASI - GANTI GAS_URL DENGAN WEB APP URL ANDA
    ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby3g6-Ic4Or7or-itPbMQkjxzyFKFPxDazo3Wkq7baE_wqG6XsXaLfE5ZQ6x2Kwu1SS/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyRuDY3dmbO3HYW4mxxCOVSGMjDYo981A19ojf6n0IUfha8-HoacwWbRtf1UO_9Iv6-sA/exec';
 
 /* =========================================================
    STATE
    ========================================================= */
+const SESSION_KEY = 'asas2026_session_v1';
+
 const state = {
   role: null,
   canEdit: false,
@@ -1000,9 +1097,32 @@ const state = {
   folders: [],
   currentFolder: 'ALL',
   search: '',
-  pendingUpload: { row: null, nama: null, file: null },
+  pendingUpload: { row: null, nama: null, file: null, mode: 'file' },
   pendingDelete: { row: null, nama: null }
 };
+
+/* =========================================================
+   SESSION PERSISTENCE (localStorage)
+   ========================================================= */
+function saveSession(){
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      role: state.role,
+      canEdit: state.canEdit,
+      pin: state.pin
+    }));
+  } catch(e){ console.warn('Tidak bisa simpan sesi:', e); }
+}
+function clearSession(){
+  try { localStorage.removeItem(SESSION_KEY); } catch(e){}
+}
+function loadSession(){
+  try {
+    const s = localStorage.getItem(SESSION_KEY);
+    if (!s) return null;
+    return JSON.parse(s);
+  } catch(e){ return null; }
+}
 
 /* =========================================================
    UTIL
@@ -1078,6 +1198,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       state.role = r.role;
       state.canEdit = r.canEdit;
       state.pin = pin;
+      saveSession();
       hideLoading();
       enterDashboard();
     } else {
@@ -1091,11 +1212,13 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 });
 
 function logout(){
+  clearSession();
   state.role = null; state.canEdit = false; state.pin = '';
   state.berkas = []; state.currentFolder = 'ALL';
   document.getElementById('pinInput').value = '';
   document.getElementById('dashboardLayer').classList.remove('active');
   document.getElementById('loginLayer').classList.add('active');
+  setTimeout(() => document.getElementById('pinInput').focus(), 100);
 }
 
 function enterDashboard(){
@@ -1134,7 +1257,7 @@ async function loadBerkas(){
 }
 
 /* =========================================================
-   RENDER FOLDER NAV
+   RENDER FOLDER NAV (dengan persentase per folder)
    ========================================================= */
 function renderFolderNav(){
   const nav = document.getElementById('folderNav');
@@ -1144,15 +1267,38 @@ function renderFolderNav(){
     counts[b.folder].total++;
     if (b.status === 'SUDAH') counts[b.folder].sudah++;
   });
-  let html = '<button class="folder-chip ' + (state.currentFolder === 'ALL' ? 'active' : '') + '" onclick="selectFolder(\'ALL\')">'
-    + '&#127968; SEMUA <span class="chip-count">' + state.berkas.length + '</span></button>';
+  const totalAll   = state.berkas.length;
+  const sudahAll   = state.berkas.filter(b => b.status === 'SUDAH').length;
+  const pctAll     = totalAll === 0 ? 0 : Math.round((sudahAll / totalAll) * 100);
+
+  function chipClass(pct, isActive){
+    let c = '';
+    if (pct === 100) c = 'full';
+    else if (pct === 0) c = 'empty';
+    return 'folder-chip' + (isActive ? ' active' : '') + (c ? ' ' + c : '');
+  }
+
+  let html = '<button class="' + chipClass(pctAll, state.currentFolder === 'ALL') + '" data-folder="ALL">'
+    + '&#127968; SEMUA <span class="chip-pct">' + pctAll + '%</span>'
+    + '<span class="chip-count">' + sudahAll + '/' + totalAll + '</span></button>';
+
   state.folders.forEach(f => {
     const c = counts[f] || { total: 0, sudah: 0 };
-    html += '<button class="folder-chip ' + (state.currentFolder === f ? 'active' : '') + '" onclick="selectFolder(' + JSON.stringify(f) + ')">'
-      + '&#128193; ' + escHtml(f) + ' <span class="chip-count">' + c.sudah + '/' + c.total + '</span></button>';
+    const pct = c.total === 0 ? 0 : Math.round((c.sudah / c.total) * 100);
+    html += '<button class="' + chipClass(pct, state.currentFolder === f) + '" data-folder="' + escHtml(f) + '">'
+      + '&#128193; ' + escHtml(f)
+      + ' <span class="chip-pct">' + pct + '%</span>'
+      + '<span class="chip-count">' + c.sudah + '/' + c.total + '</span></button>';
   });
   nav.innerHTML = html;
 }
+
+// Event delegation untuk klik folder chip
+document.getElementById('folderNav').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-folder]');
+  if (!btn) return;
+  selectFolder(btn.dataset.folder);
+});
 
 function selectFolder(f){
   state.currentFolder = f;
@@ -1215,13 +1361,14 @@ function renderTable(){
     let actionCell = '<span style="color:var(--cream-soft); opacity:.5; font-size:11px;">Lihat saja</span>';
     if (state.canEdit){
       // Untuk baris BELUM: tombol UPLOAD (green, prominent) supaya jelas bisa langsung isi
-      // Untuk baris SUDAH: tombol GANTI (gold, smaller) + HAPUS (red)
+      // Untuk baris SUDAH: tombol GANTI (wood) + HAPUS (red)
+      // Pakai data-row + event delegation agar tidak ada bug escaping quote di nama berkas
       let uploadBtn, delBtn;
       if (sudah){
-        uploadBtn = '<button class="coc-btn btn-wood btn-sm" title="Ganti file" onclick="openUploadModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#8635; GANTI</button>';
-        delBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" title="Hapus" onclick="openDeleteModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#10005;</button>';
+        uploadBtn = '<button class="coc-btn btn-wood btn-sm" data-action="upload" data-row="' + b.row + '" title="Ganti file / URL">&#8635; GANTI</button>';
+        delBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" data-action="delete" data-row="' + b.row + '" title="Hapus">&#10005;</button>';
       } else {
-        uploadBtn = '<button class="coc-btn btn-green btn-sm" title="Upload berkas" onclick="openUploadModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#8682; UPLOAD</button>';
+        uploadBtn = '<button class="coc-btn btn-green btn-sm" data-action="upload" data-row="' + b.row + '" title="Upload berkas / simpan URL">&#8682; UPLOAD</button>';
         delBtn = '';
       }
       actionCell = uploadBtn + delBtn;
@@ -1239,18 +1386,60 @@ function renderTable(){
 document.getElementById('searchBox').addEventListener('input', renderTable);
 
 /* =========================================================
-   MODAL: UPLOAD
+   EVENT DELEGATION untuk tombol di tabel (upload/delete)
+   - Pakai event delegation supaya tidak ada bug escaping quote
+   - Tombol pakai data-action + data-row, nama berkas dicari dari state
+   ========================================================= */
+document.getElementById('berkasBody').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const row = parseInt(btn.dataset.row, 10);
+  const berkas = state.berkas.find(b => b.row === row);
+  if (!berkas){
+    toast('Data berkas tidak ditemukan. Muat ulang halaman.', 'error');
+    return;
+  }
+  const action = btn.dataset.action;
+  if (action === 'upload'){
+    openUploadModal(row, berkas.nama);
+  } else if (action === 'delete'){
+    openDeleteModal(row, berkas.nama);
+  }
+});
+
+/* =========================================================
+   MODAL: UPLOAD (file atau URL)
    ========================================================= */
 function openUploadModal(row, nama){
-  state.pendingUpload = { row: row, nama: nama, file: null };
+  state.pendingUpload = { row: row, nama: nama, file: null, mode: 'file' };
+  const berkas = state.berkas.find(b => b.row === row);
   document.getElementById('uploadBerkasInfo').innerHTML =
     '<strong style="color:var(--gold-bright);">Berkas:</strong> ' + escHtml(nama) + '<br/>'
-    + '<strong style="color:var(--gold-bright);">Folder:</strong> ' + escHtml(state.berkas.find(b => b.row === row)?.folder || '-');
+    + '<strong style="color:var(--gold-bright);">Folder:</strong> ' + escHtml(berkas?.folder || '-')
+    + (berkas && berkas.url ? '<br/><strong style="color:var(--gold-bright);">URL saat ini:</strong> ' + escHtml(berkas.url) : '');
+  // Reset kedua tab
   document.getElementById('fileName').classList.remove('show');
   document.getElementById('fileInput').value = '';
+  document.getElementById('urlInput').value = berkas && berkas.url ? berkas.url : '';
+  // Default ke tab file
+  switchUploadTab('file');
   hideAlert(document.getElementById('uploadAlert'));
   document.getElementById('uploadModal').classList.add('show');
 }
+
+function switchUploadTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  document.getElementById('fileTab').classList.toggle('hidden', tab !== 'file');
+  document.getElementById('urlTab').classList.toggle('hidden', tab !== 'url');
+  state.pendingUpload.mode = tab;
+  hideAlert(document.getElementById('uploadAlert'));
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchUploadTab(btn.dataset.tab));
+});
 
 document.getElementById('fileInput').addEventListener('change', (e) => {
   const f = e.target.files[0];
@@ -1281,8 +1470,46 @@ function setPendingFile(f){
 }
 
 async function submitUpload(){
+  const mode = state.pendingUpload.mode || 'file';
+  if (mode === 'url'){
+    // ===== MODE URL =====
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url){
+      showAlert(document.getElementById('uploadAlert'), 'error', 'URL wajib diisi.');
+      return;
+    }
+    if (!/^https?:\/\//i.test(url)){
+      showAlert(document.getElementById('uploadAlert'), 'error', 'URL harus diawali http:// atau https://');
+      return;
+    }
+    showLoading('MENYIMPAN URL...');
+    try {
+      const r = await apiPost({
+        action: 'saveUrl',
+        id: state.pendingUpload.row,
+        url: url,
+        role: state.role,
+        pin: state.pin
+      });
+      if (r.ok){
+        hideLoading();
+        closeModal('uploadModal');
+        toast('URL berhasil disimpan.', 'success');
+        await loadBerkas();
+      } else {
+        hideLoading();
+        showAlert(document.getElementById('uploadAlert'), 'error', r.error || 'Gagal simpan URL.');
+      }
+    } catch(err){
+      hideLoading();
+      showAlert(document.getElementById('uploadAlert'), 'error', err.message);
+    }
+    return;
+  }
+
+  // ===== MODE FILE =====
   if (!state.pendingUpload.file){
-    showAlert(document.getElementById('uploadAlert'), 'error', 'Belum ada file dipilih.');
+    showAlert(document.getElementById('uploadAlert'), 'error', 'Belum ada file dipilih. Pilih tab "SIMPAN URL" bila ingin menempel link saja.');
     return;
   }
   const f = state.pendingUpload.file;
@@ -1416,10 +1643,32 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* =========================================================
-   INIT
+   INIT - auto-restore sesi dari localStorage
    ========================================================= */
-// focus PIN input on load
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
+  const saved = loadSession();
+  if (saved && saved.pin){
+    // Verifikasi PIN masih valid di backend (jaga-jaga PIN diganti admin)
+    try {
+      const r = await apiGet('login', { pin: saved.pin });
+      if (r.ok){
+        state.role = r.role;
+        state.canEdit = r.canEdit;
+        state.pin = saved.pin;
+        saveSession(); // refresh
+        enterDashboard();
+        return;
+      } else {
+        // PIN tidak valid lagi (mungkin sudah diganti) -> clear session
+        clearSession();
+      }
+    } catch(e){
+      // Gagal konek ke server saat verify -> tetap di login page
+      console.warn('Gagal verifikasi sesi tersimpan:', e);
+      clearSession();
+    }
+  }
+  // Tidak ada sesi valid -> fokus ke PIN input
   document.getElementById('pinInput').focus();
 });
 </script>
