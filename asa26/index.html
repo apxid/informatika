@@ -528,7 +528,7 @@ td.ts-col .uploader{
 }
 td.action-col{
   text-align:center;
-  width:120px;
+  width:160px;
   white-space:nowrap;
 }
 
@@ -755,8 +755,9 @@ td.action-col{
   .berkas-table tbody td{ padding:8px 6px; }
   .status-badge{ font-size:10px; padding:4px 8px; }
   .coc-btn{ font-size:12px; padding:10px 14px; }
-  .btn-sm{ padding:6px 10px; font-size:11px; }
-  /* Card view for very small screens */
+  .btn-sm{ padding:7px 10px; font-size:11px; }
+  .btn-icon{ padding:7px 8px; min-width:30px; }
+  td.action-col{ width:auto; }
   td.ts-col{ font-size:10px; }
 }
 
@@ -1213,10 +1214,16 @@ function renderTable(){
       : '<div style="color:var(--cream-soft); opacity:.6;">-</div>';
     let actionCell = '<span style="color:var(--cream-soft); opacity:.5; font-size:11px;">Lihat saja</span>';
     if (state.canEdit){
-      const uploadBtn = '<button class="coc-btn btn-gold btn-sm btn-icon" title="Upload" onclick="openUploadModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#8682;</button>';
-      const delBtn = sudah
-        ? ' <button class="coc-btn btn-red btn-sm btn-icon" title="Hapus" onclick="openDeleteModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#10005;</button>'
-        : '';
+      // Untuk baris BELUM: tombol UPLOAD (green, prominent) supaya jelas bisa langsung isi
+      // Untuk baris SUDAH: tombol GANTI (gold, smaller) + HAPUS (red)
+      let uploadBtn, delBtn;
+      if (sudah){
+        uploadBtn = '<button class="coc-btn btn-wood btn-sm" title="Ganti file" onclick="openUploadModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#8635; GANTI</button>';
+        delBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" title="Hapus" onclick="openDeleteModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#10005;</button>';
+      } else {
+        uploadBtn = '<button class="coc-btn btn-green btn-sm" title="Upload berkas" onclick="openUploadModal(' + b.row + ', ' + JSON.stringify(b.nama) + ')">&#8682; UPLOAD</button>';
+        delBtn = '';
+      }
       actionCell = uploadBtn + delBtn;
     }
     return '<tr>'
