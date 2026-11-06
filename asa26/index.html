@@ -528,7 +528,7 @@ td.ts-col .uploader{
 }
 td.action-col{
   text-align:center;
-  width:160px;
+  width:240px;
   white-space:nowrap;
 }
 
@@ -1102,26 +1102,86 @@ td.action-col{
 </div>
 
 <!-- ============================================================
-     MODAL HAPUS
+     MODAL HAPUS / RESET STATUS (kembalikan ke BELUM)
 ============================================================ -->
 <div id="deleteModal" class="modal-overlay">
   <div class="modal-card">
     <div class="modal-header">
-      <span>&#9888; KONFIRMASI HAPUS</span>
+      <span>&#8634; RESET STATUS BERKAS</span>
       <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
     </div>
     <div class="modal-body">
       <div class="modal-info" id="deleteBerkasInfo"></div>
       <p style="color:var(--cream); font-size:14px; line-height:1.6;">
-        Apakah Anda yakin ingin <strong style="color:var(--red-bright);">menghapus</strong> isian berkas ini?
+        Apakah Anda yakin ingin <strong style="color:var(--gold-bright);">mereset</strong> isian berkas ini?
         Status akan kembali menjadi <span class="status-badge status-belum" style="font-size:10px;">BELUM</span>
         dan link file akan dihapus dari daftar.<br/><br/>
-        <em style="font-size:12px; color:var(--cream-soft);">Catatan: file di Google Drive tidak ikut dihapus, agar bisa dipulihkan manual bila perlu.</em>
+        <em style="font-size:12px; color:var(--cream-soft);">Catatan: file di Google Drive tidak ikut dihapus, agar bisa dipulihkan manual bila perlu. Untuk menghapus baris dari daftar (kasus duplikat), gunakan tombol &#128465; (Hapus Baris).</em>
       </p>
     </div>
     <div class="modal-footer">
       <button class="coc-btn btn-wood btn-sm" onclick="closeModal('deleteModal')">BATAL</button>
-      <button class="coc-btn btn-red btn-sm" id="deleteSubmit" onclick="confirmDelete()">YA, HAPUS</button>
+      <button class="coc-btn btn-red btn-sm" id="deleteSubmit" onclick="confirmDelete()">YA, RESET</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL HAPUS BARIS (hapus permanen dari daftar, utk duplikat)
+============================================================ -->
+<div id="deleteRowModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:460px;">
+    <div class="modal-header" style="background: linear-gradient(180deg, #c0392b, #8b1a1a); color:var(--cream); border-bottom-color:#5a0e0e;">
+      <span>&#128465; HAPUS BARIS BERKAS</span>
+      <button class="modal-close" onclick="closeModal('deleteRowModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info" id="deleteRowBerkasInfo" style="border-left-color:var(--red-bright);"></div>
+      <div style="padding:14px; background:rgba(192,57,43,.15); border:2px solid var(--red-bright); border-radius:8px; margin-bottom:14px;">
+        <div style="font-family:'Cinzel',serif; font-weight:700; color:var(--red-bright); font-size:13px; letter-spacing:1px; margin-bottom:8px; text-transform:uppercase;">
+          &#9888; PERINGATAN
+        </div>
+        <p style="color:var(--cream); font-size:13px; line-height:1.6; margin:0;">
+          Anda akan <strong>menghapus permanen</strong> baris ini dari daftar berkas.
+          Tindakan ini <strong>tidak dapat dibatalkan</strong>.
+        </p>
+      </div>
+      <p style="color:var(--cream); font-size:13px; line-height:1.6;">
+        Pastikan baris yang dihapus benar-benar <strong>duplikat</strong> atau tidak diperlukan.
+        File di Google Drive (jika sudah pernah diupload) <em>tidak</em> ikut terhapus.
+      </p>
+      <div id="deleteRowAlert" class="alert"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="coc-btn btn-wood btn-sm" onclick="closeModal('deleteRowModal')">BATAL</button>
+      <button class="coc-btn btn-red btn-sm" id="deleteRowSubmit" onclick="confirmDeleteRow()">YA, HAPUS BARIS</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL RENAME BERKAS
+============================================================ -->
+<div id="renameModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span>&#9998; RENAME BERKAS</span>
+      <button class="modal-close" onclick="closeModal('renameModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info" id="renameBerkasInfo"></div>
+      <div id="renameAlert" class="alert"></div>
+      <div class="form-group">
+        <label class="form-label" for="renameInput">NAMA BERKAS BARU</label>
+        <input type="text" id="renameInput" class="form-input" style="letter-spacing:normal; text-align:left;" placeholder="Nama berkas..." />
+      </div>
+      <p style="font-size:11px; color:var(--cream-soft); line-height:1.5;">
+        Nama berkas akan diperbarui di daftar. Status &amp; link file yang sudah diupload tidak berubah.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="coc-btn btn-wood btn-sm" onclick="closeModal('renameModal')">BATAL</button>
+      <button class="coc-btn btn-green btn-sm" onclick="submitRename()">SIMPAN</button>
     </div>
   </div>
 </div>
@@ -1178,7 +1238,9 @@ const state = {
   currentFolder: 'ALL',
   search: '',
   pendingUpload: { row: null, nama: null, file: null, mode: 'file' },
-  pendingDelete: { row: null, nama: null }
+  pendingDelete: { row: null, nama: null },
+  pendingDeleteRow: { row: null, nama: null },
+  pendingRename: { row: null, namaLama: null }
 };
 
 /* =========================================================
@@ -1440,17 +1502,19 @@ function renderTable(){
       : '<div style="color:var(--cream-soft); opacity:.6;">-</div>';
     let actionCell = '<span style="color:var(--cream-soft); opacity:.5; font-size:11px;">Lihat saja</span>';
     if (state.canEdit){
-      // Tombol pakai onclick inline dengan row number (numeric, aman dari escaping bug)
-      // Nama berkas dicari dari state.berkas saat handler dipanggil
-      let uploadBtn, delBtn;
+      // Tombol primary: UPLOAD (BELUM) atau GANTI (SUDAH)
+      let primaryBtn, delBtn;
       if (sudah){
-        uploadBtn = '<button class="coc-btn btn-wood btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Ganti file / URL">&#8635; GANTI</button>';
-        delBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" onclick="handleDeleteClick(' + b.row + ')" title="Hapus">&#10005;</button>';
+        primaryBtn = '<button class="coc-btn btn-wood btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Ganti file / URL">&#8635; GANTI</button>';
+        delBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" onclick="handleDeleteClick(' + b.row + ')" title="Reset status ke BELUM">&#8634;</button>';
       } else {
-        uploadBtn = '<button class="coc-btn btn-green btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Upload berkas / simpan URL">&#8682; UPLOAD</button>';
+        primaryBtn = '<button class="coc-btn btn-green btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Upload berkas / simpan URL">&#8682; UPLOAD</button>';
         delBtn = '';
       }
-      actionCell = uploadBtn + delBtn;
+      // Tombol menu opsional: Rename + Hapus Baris (utk Sekretaris/Ketua)
+      const renameBtn = '<button class="coc-btn btn-gold btn-sm btn-icon" onclick="handleRenameClick(' + b.row + ')" title="Rename berkas">&#9998;</button>';
+      const delRowBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" onclick="handleDeleteRowClick(' + b.row + ')" title="Hapus baris (permanen)">&#128465;</button>';
+      actionCell = primaryBtn + delBtn + ' ' + renameBtn + delRowBtn;
     }
     return '<tr>'
       + '<td class="no-col">' + b.no + '</td>'
@@ -1485,6 +1549,24 @@ function handleDeleteClick(row){
     return;
   }
   openDeleteModal(row, berkas.nama);
+}
+
+function handleRenameClick(row){
+  const berkas = state.berkas.find(b => b.row === row);
+  if (!berkas){
+    toast('Data berkas tidak ditemukan (row=' + row + '). Muat ulang halaman.', 'error');
+    return;
+  }
+  openRenameModal(row, berkas.nama);
+}
+
+function handleDeleteRowClick(row){
+  const berkas = state.berkas.find(b => b.row === row);
+  if (!berkas){
+    toast('Data berkas tidak ditemukan (row=' + row + '). Muat ulang halaman.', 'error');
+    return;
+  }
+  openDeleteRowModal(row, berkas.nama);
 }
 
 /* =========================================================
@@ -1642,7 +1724,7 @@ function openDeleteModal(row, nama){
 }
 
 async function confirmDelete(){
-  showLoading('MENGHAPUS ISIAN...');
+  showLoading('MERESET STATUS...');
   try {
     const r = await apiPost({
       action: 'delete',
@@ -1653,17 +1735,112 @@ async function confirmDelete(){
     if (r.ok){
       hideLoading();
       closeModal('deleteModal');
-      toast(r.message || 'Isian dihapus.', 'success');
+      toast(r.message || 'Status direset ke BELUM.', 'success');
       await loadBerkas();
     } else {
       hideLoading();
-      toast(r.error || 'Gagal hapus.', 'error');
+      toast(r.error || 'Gagal reset.', 'error');
     }
   } catch(err){
     hideLoading();
     toast(err.message, 'error');
   }
 }
+
+/* =========================================================
+   MODAL: HAPUS BARIS (hapus permanen)
+   ========================================================= */
+function openDeleteRowModal(row, nama){
+  state.pendingDeleteRow = { row: row, nama: nama };
+  document.getElementById('deleteRowBerkasInfo').innerHTML =
+    '<strong style="color:var(--red-bright);">Berkas yang akan dihapus:</strong> ' + escHtml(nama);
+  hideAlert(document.getElementById('deleteRowAlert'));
+  document.getElementById('deleteRowModal').classList.add('show');
+}
+
+async function confirmDeleteRow(){
+  showLoading('MENGHAPUS BARIS...');
+  try {
+    const r = await apiPost({
+      action: 'deleteRow',
+      id: state.pendingDeleteRow.row,
+      role: state.role,
+      pin: state.pin
+    });
+    if (r.ok){
+      hideLoading();
+      closeModal('deleteRowModal');
+      toast(r.message || 'Baris dihapus.', 'success');
+      await loadBerkas();
+    } else {
+      hideLoading();
+      showAlert(document.getElementById('deleteRowAlert'), 'error', r.error || 'Gagal hapus baris.');
+    }
+  } catch(err){
+    hideLoading();
+    showAlert(document.getElementById('deleteRowAlert'), 'error', err.message);
+  }
+}
+
+/* =========================================================
+   MODAL: RENAME
+   ========================================================= */
+function openRenameModal(row, nama){
+  state.pendingRename = { row: row, namaLama: nama };
+  document.getElementById('renameBerkasInfo').innerHTML =
+    '<strong style="color:var(--gold-bright);">Nama lama:</strong> ' + escHtml(nama);
+  document.getElementById('renameInput').value = nama;
+  hideAlert(document.getElementById('renameAlert'));
+  document.getElementById('renameModal').classList.add('show');
+  // Fokus ke input
+  setTimeout(() => {
+    const inp = document.getElementById('renameInput');
+    inp.focus();
+    inp.select();
+  }, 200);
+}
+
+async function submitRename(){
+  const namaBaru = document.getElementById('renameInput').value.trim();
+  if (!namaBaru){
+    showAlert(document.getElementById('renameAlert'), 'error', 'Nama berkas wajib diisi.');
+    return;
+  }
+  if (namaBaru === state.pendingRename.namaLama){
+    showAlert(document.getElementById('renameAlert'), 'error', 'Nama baru sama dengan nama lama. Tidak ada perubahan.');
+    return;
+  }
+  showLoading('MENYIMPAN NAMA BARU...');
+  try {
+    const r = await apiPost({
+      action: 'rename',
+      id: state.pendingRename.row,
+      nama: namaBaru,
+      role: state.role,
+      pin: state.pin
+    });
+    if (r.ok){
+      hideLoading();
+      closeModal('renameModal');
+      toast(r.message || 'Nama berkas diperbarui.', 'success');
+      await loadBerkas();
+    } else {
+      hideLoading();
+      showAlert(document.getElementById('renameAlert'), 'error', r.error || 'Gagal rename.');
+    }
+  } catch(err){
+    hideLoading();
+    showAlert(document.getElementById('renameAlert'), 'error', err.message);
+  }
+}
+
+// Enter key untuk submit rename
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('renameModal').classList.contains('show')){
+    e.preventDefault();
+    submitRename();
+  }
+});
 
 /* =========================================================
    MODAL: ADD
