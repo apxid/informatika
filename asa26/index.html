@@ -115,6 +115,33 @@ td.nama-col .nama-plain{color:var(--cream);}
 td.ts-col{font-size:12px;color:var(--cream-soft);font-family:'Roboto',monospace;white-space:nowrap;text-align:center;}
 td.ts-col .uploader{display:block;font-size:10px;color:var(--gold-soft);letter-spacing:1px;margin-top:2px;text-transform:uppercase;}
 td.action-col{text-align:center;width:240px;white-space:nowrap;}
+
+/* Action group - layout rapi: primary button + group icon buttons */
+.action-group{display:flex;flex-direction:column;gap:6px;align-items:center;}
+.action-primary{display:flex;justify-content:center;}
+.action-icons{display:flex;gap:4px;justify-content:center;align-items:center;}
+.act-btn{
+  width:32px;height:32px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:6px;
+  border:1.5px solid;
+  background:rgba(0,0,0,.35);
+  cursor:pointer;
+  font-size:14px;
+  line-height:1;
+  transition:all .15s;
+  padding:0;
+}
+.act-btn:hover{transform:translateY(-1px);filter:brightness(1.15);}
+.act-btn:active{transform:translateY(0);}
+.act-btn svg{width:16px;height:16px;fill:currentColor;}
+.act-btn.reset{color:var(--gold-bright);border-color:var(--gold-soft);}
+.act-btn.reset:hover{background:rgba(244,200,66,.18);border-color:var(--gold-bright);}
+.act-btn.rename{color:var(--gold-bright);border-color:var(--gold-soft);}
+.act-btn.rename:hover{background:rgba(244,200,66,.18);border-color:var(--gold-bright);}
+.act-btn.delete{color:var(--red-bright);border-color:rgba(192,57,43,.5);}
+.act-btn.delete:hover{background:rgba(192,57,43,.20);border-color:var(--red-bright);}
+.act-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
 .status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;border-radius:14px;border:2px solid;white-space:nowrap;}
 .status-sudah{background:linear-gradient(180deg,var(--green-bright),var(--green));color:var(--cream);border-color:#2c4a1a;box-shadow:0 2px 4px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.3);}
 .status-belum{background:linear-gradient(180deg,var(--red-bright),var(--red));color:var(--cream);border-color:#5a0e0e;box-shadow:0 2px 4px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.2);}
@@ -704,12 +731,23 @@ function renderTable(){
     }
     let actionCell = '<span style="color:var(--cream-soft);opacity:.5;font-size:11px;">Lihat saja</span>';
     if (state.canEdit){
-      let primaryBtn, delBtn;
-      if (sudah){ primaryBtn = '<button class="coc-btn btn-wood btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Ganti file / URL">&#8635; GANTI</button>'; delBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" onclick="handleDeleteClick(' + b.row + ')" title="Reset status ke BELUM">&#8634;</button>'; }
-      else { primaryBtn = '<button class="coc-btn btn-green btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Upload berkas / simpan URL">&#8682; UPLOAD</button>'; delBtn = ''; }
-      const renameBtn = '<button class="coc-btn btn-gold btn-sm btn-icon" onclick="handleRenameClick(' + b.row + ')" title="Rename berkas">&#9998;</button>';
-      const delRowBtn = ' <button class="coc-btn btn-red btn-sm btn-icon" onclick="handleDeleteRowClick(' + b.row + ')" title="Hapus baris (permanen)">&#128465;</button>';
-      actionCell = primaryBtn + delBtn + ' ' + renameBtn + delRowBtn;
+      // Primary button: UPLOAD (BELUM) atau GANTI (SUDAH)
+      let primaryBtn;
+      if (sudah){
+        primaryBtn = '<button class="coc-btn btn-wood btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Ganti file / URL">&#8635; GANTI</button>';
+      } else {
+        primaryBtn = '<button class="coc-btn btn-green btn-sm" onclick="handleUploadClick(' + b.row + ')" title="Upload berkas / simpan URL">&#8682; UPLOAD</button>';
+      }
+      // Icon buttons (seragam 32x32) - pakai SVG supaya jelas & rapi
+      const resetBtn = sudah
+        ? '<button class="act-btn reset" onclick="handleDeleteClick(' + b.row + ')" title="Reset status ke BELUM" aria-label="Reset status"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 7l5 5V8c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg></button>'
+        : '';
+      const renameBtn = '<button class="act-btn rename" onclick="handleRenameClick(' + b.row + ')" title="Rename berkas" aria-label="Rename"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>';
+      const delRowBtn = '<button class="act-btn delete" onclick="handleDeleteRowClick(' + b.row + ')" title="Hapus baris (permanen)" aria-label="Hapus baris"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>';
+      actionCell = '<div class="action-group">'
+        + '<div class="action-primary">' + primaryBtn + '</div>'
+        + '<div class="action-icons">' + resetBtn + renameBtn + delRowBtn + '</div>'
+        + '</div>';
     }
     return '<tr><td class="no-col">' + b.no + '</td><td class="nama-col">' + namaCell + '</td><td class="center">' + statusBadge + '</td><td class="center">' + cetakCell + '</td><td class="ts-col">' + tsCell + '</td><td class="action-col" ' + (state.canEdit ? '' : 'style="display:none"') + '>' + actionCell + '</td></tr>';
   }).join('');
