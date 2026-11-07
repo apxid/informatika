@@ -187,15 +187,16 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
 .timeline-list::-webkit-scrollbar-track{background:rgba(0,0,0,.3);border-radius:3px;}
 .timeline-list::-webkit-scrollbar-thumb{background:var(--gold-soft);border-radius:3px;}
 
-/* Item timeline - background sesuai status (versi menyala) */
+/* Item timeline - background sesuai status (versi menyala & jelas) */
 .tl-item{display:flex;gap:12px;padding:12px 14px;margin-bottom:10px;border:1px solid rgba(212,160,23,.3);border-radius:10px;transition:all .2s;position:relative;border-left-width:5px;}
-.tl-item.status-belum{background:rgba(192,57,43,.22);border-color:rgba(192,57,43,.6);border-left-color:var(--red-bright);box-shadow:0 0 8px rgba(192,57,43,.15);}
-.tl-item.status-proses{background:rgba(244,200,66,.20);border-color:rgba(244,200,66,.6);border-left-color:var(--gold-bright);box-shadow:0 0 10px rgba(244,200,66,.20);}
-.tl-item.status-selesai{background:rgba(107,168,63,.18);border-color:rgba(107,168,63,.6);border-left-color:var(--green-bright);box-shadow:0 0 8px rgba(107,168,63,.15);}
-.tl-item.status-selesai .tl-kegiatan{text-decoration:line-through;color:var(--cream-soft);opacity:.85;}
+.tl-item.status-belum{background:rgba(192,57,43,.38);border-color:rgba(192,57,43,.85);border-left-color:var(--red-bright);box-shadow:0 0 12px rgba(192,57,43,.25), inset 0 0 12px rgba(192,57,43,.15);}
+.tl-item.status-proses{background:rgba(244,200,66,.32);border-color:rgba(244,200,66,.85);border-left-color:var(--gold-bright);box-shadow:0 0 12px rgba(244,200,66,.30), inset 0 0 12px rgba(244,200,66,.18);}
+.tl-item.status-selesai{background:rgba(107,168,63,.35);border-color:rgba(107,168,63,.85);border-left-color:var(--green-bright);box-shadow:0 0 12px rgba(107,168,63,.25), inset 0 0 12px rgba(107,168,63,.15);}
+/* Teks kegiatan tetap normal (tidak dicoret) supaya mudah dibaca */
+.tl-item.status-selesai .tl-kegiatan{color:var(--cream);}
 /* Status proses - kedip lembut untuk highlight */
 .tl-item.status-proses{animation:tlPulse 2s ease-in-out infinite;}
-@keyframes tlPulse{0%,100%{box-shadow:0 0 10px rgba(244,200,66,.20);}50%{box-shadow:0 0 16px rgba(244,200,66,.45);}}
+@keyframes tlPulse{0%,100%{box-shadow:0 0 12px rgba(244,200,66,.30), inset 0 0 12px rgba(244,200,66,.18);}50%{box-shadow:0 0 20px rgba(244,200,66,.55), inset 0 0 12px rgba(244,200,66,.25);}}
 
 /* Tombol 3 status (BELUM/PROSES/SELESAI) - hanya Sekretaris */
 .tl-status-toggles{flex:0 0 auto;display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
