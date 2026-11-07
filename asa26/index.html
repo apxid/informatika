@@ -187,16 +187,35 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
 .timeline-list::-webkit-scrollbar-track{background:rgba(0,0,0,.3);border-radius:3px;}
 .timeline-list::-webkit-scrollbar-thumb{background:var(--gold-soft);border-radius:3px;}
 
-/* Item timeline - background sesuai status (versi menyala & jelas) */
+/* Tombol Edit (pencil) di pojok kanan atas item timeline - hanya Sekretaris */
+.tl-edit-btn{
+  position:absolute; top:8px; right:8px;
+  width:28px; height:28px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border-radius:6px;
+  border:1.5px solid var(--gold-soft);
+  background:rgba(0,0,0,.45);
+  color:var(--gold-bright);
+  cursor:pointer;
+  font-size:12px; line-height:1;
+  transition:all .15s;
+  padding:0;
+  z-index:2;
+}
+.tl-edit-btn:hover{transform:scale(1.1);background:rgba(244,200,66,.25);border-color:var(--gold-bright);}
+.tl-edit-btn:active{transform:scale(.92);}
+.tl-edit-btn svg{width:14px;height:14px;fill:currentColor;}
+
+/* Item timeline - background sesuai status (versi sangat pekat) */
 .tl-item{display:flex;gap:12px;padding:12px 14px;margin-bottom:10px;border:1px solid rgba(212,160,23,.3);border-radius:10px;transition:all .2s;position:relative;border-left-width:5px;}
-.tl-item.status-belum{background:rgba(192,57,43,.38);border-color:rgba(192,57,43,.85);border-left-color:var(--red-bright);box-shadow:0 0 12px rgba(192,57,43,.25), inset 0 0 12px rgba(192,57,43,.15);}
-.tl-item.status-proses{background:rgba(244,200,66,.32);border-color:rgba(244,200,66,.85);border-left-color:var(--gold-bright);box-shadow:0 0 12px rgba(244,200,66,.30), inset 0 0 12px rgba(244,200,66,.18);}
-.tl-item.status-selesai{background:rgba(107,168,63,.35);border-color:rgba(107,168,63,.85);border-left-color:var(--green-bright);box-shadow:0 0 12px rgba(107,168,63,.25), inset 0 0 12px rgba(107,168,63,.15);}
+.tl-item.status-belum{background:rgba(192,57,43,.62);border-color:rgba(192,57,43,1);border-left-color:var(--red-bright);box-shadow:0 0 16px rgba(192,57,43,.45), inset 0 0 18px rgba(192,57,43,.30);}
+.tl-item.status-proses{background:rgba(244,200,66,.55);border-color:rgba(244,200,66,1);border-left-color:var(--gold-bright);box-shadow:0 0 16px rgba(244,200,66,.50), inset 0 0 18px rgba(244,200,66,.30);}
+.tl-item.status-selesai{background:rgba(107,168,63,.58);border-color:rgba(107,168,63,1);border-left-color:var(--green-bright);box-shadow:0 0 16px rgba(107,168,63,.45), inset 0 0 18px rgba(107,168,63,.30);}
 /* Teks kegiatan tetap normal (tidak dicoret) supaya mudah dibaca */
 .tl-item.status-selesai .tl-kegiatan{color:var(--cream);}
 /* Status proses - kedip lembut untuk highlight */
 .tl-item.status-proses{animation:tlPulse 2s ease-in-out infinite;}
-@keyframes tlPulse{0%,100%{box-shadow:0 0 12px rgba(244,200,66,.30), inset 0 0 12px rgba(244,200,66,.18);}50%{box-shadow:0 0 20px rgba(244,200,66,.55), inset 0 0 12px rgba(244,200,66,.25);}}
+@keyframes tlPulse{0%,100%{box-shadow:0 0 16px rgba(244,200,66,.50), inset 0 0 18px rgba(244,200,66,.30);}50%{box-shadow:0 0 26px rgba(244,200,66,.85), inset 0 0 18px rgba(244,200,66,.45);}}
 
 /* Tombol 3 status (BELUM/PROSES/SELESAI) - hanya Sekretaris */
 .tl-status-toggles{flex:0 0 auto;display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
@@ -576,6 +595,53 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
 </div>
 
 <!-- ============================================================
+     MODAL EDIT TIMELINE (Sekretaris only)
+============================================================ -->
+<div id="editTimelineModal" class="modal-overlay">
+  <div class="modal-card" style="max-width:520px;">
+    <div class="modal-header"><span>&#9998; EDIT KEGIATAN AGENDA</span><button class="modal-close" onclick="closeModal('editTimelineModal')">&times;</button></div>
+    <div class="modal-body">
+      <div id="editTimelineAlert" class="alert"></div>
+      <div class="form-group">
+        <label class="form-label" for="editTlKegiatan">NAMA KEGIATAN</label>
+        <input type="text" id="editTlKegiatan" class="form-input" style="letter-spacing:normal;text-align:left;" placeholder="Contoh: Rapat pleno penyusunan rencana ASAS 2026" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editTlTenggat">TENGGAT (TANGGAL / RENTANG)</label>
+        <input type="text" id="editTlTenggat" class="form-input" style="letter-spacing:normal;text-align:left;" placeholder="Contoh: 2026-11-07  atau  2026-11-12 s/d 2026-11-15" />
+        <div style="font-size:11px;color:var(--cream-soft);margin-top:6px;line-height:1.5;">
+          Format tanggal: <code>YYYY-MM-DD</code> (mis. <code>2026-11-07</code>).<br/>
+          Untuk rentang: <code>2026-11-12 s/d 2026-11-15</code> (atau <code>sd</code>, <code>sampai</code>).
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editTlStatus">STATUS</label>
+        <select id="editTlStatus" class="form-input" style="letter-spacing:normal;text-align:left;padding:12px;">
+          <option value="BELUM">BELUM</option>
+          <option value="PROSES">PROSES</option>
+          <option value="SELESAI">SELESAI</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editTlHighlight">HIGHLIGHT (PRIORITAS)</label>
+        <select id="editTlHighlight" class="form-input" style="letter-spacing:normal;text-align:left;padding:12px;">
+          <option value="TIDAK">TIDAK</option>
+          <option value="YA">YA</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editTlCatatan">CATATAN</label>
+        <input type="text" id="editTlCatatan" class="form-input" style="letter-spacing:normal;text-align:left;" placeholder="Catatan tambahan (opsional)" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="coc-btn btn-wood btn-sm" onclick="closeModal('editTimelineModal')">BATAL</button>
+      <button class="coc-btn btn-green btn-sm" onclick="submitEditTimeline()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
      MODAL TAMBAH BERKAS
 ============================================================ -->
 <div id="addModal" class="modal-overlay">
@@ -619,6 +685,7 @@ const state = {
   pendingDelete: { row: null, nama: null },
   pendingDeleteRow: { row: null, nama: null },
   pendingRename: { row: null, namaLama: null },
+  pendingEditTimeline: { row: null, original: null },
   timelineShownThisSession: false
 };
 
@@ -698,10 +765,19 @@ function logout(){
 function enterDashboard(showTimelineAfter){
   document.getElementById('loginLayer').classList.remove('active');
   document.getElementById('dashboardLayer').classList.add('active');
-  document.getElementById('roleBadge').innerHTML =
-    '&#128100; ' + escHtml(state.role)
-    + (state.canEdit ? ' &middot; EDIT' : ' &middot; LIHAT')
-    + (state.nama && state.nama !== state.role ? '<span class="role-nama">' + escHtml(state.nama) + '</span>' : '');
+  // Badge role:
+  // - SEKRETARIS/KETUA: "ROLE · NAMA_ORANG" (mis. "SEKRETARIS · BAYU")
+  // - TAMU: hanya "TAMU" (tanpa suffix)
+  let badgeHTML = '&#128100; ' + escHtml(state.role);
+  if (state.role === 'SEKRETARIS' || state.role === 'KETUA'){
+    // Tampilkan nama orang setelah role
+    const namaOrang = (state.nama && state.nama !== state.role) ? state.nama : '';
+    if (namaOrang){
+      badgeHTML += '<span class="role-nama">' + escHtml(namaOrang) + '</span>';
+    }
+  }
+  // Untuk TAMU: badge tetap hanya "TAMU" tanpa tambahan
+  document.getElementById('roleBadge').innerHTML = badgeHTML;
   document.getElementById('addBtn').classList.toggle('hidden', !state.canEdit);
   document.getElementById('actionHeader').classList.toggle('hidden', !state.canEdit);
   document.getElementById('timelineReadonlyNotice').classList.toggle('hidden', state.role === 'SEKRETARIS');
@@ -787,7 +863,8 @@ function renderTable(){
     const sudah = b.status === 'SUDAH';
     const namaCell = sudah && b.url ? '<a href="' + escHtml(b.url) + '" target="_blank" rel="noopener">' + escHtml(b.nama) + '</a>' : '<span class="nama-plain">' + escHtml(b.nama) + '</span>';
     const statusBadge = sudah ? '<span class="status-badge status-sudah">&#10003; SUDAH</span>' : '<span class="status-badge status-belum">&#10007; BELUM</span>';
-    const tsCell = sudah ? '<div>' + escHtml(b.timestamp || '-') + '</div>' + (b.uploader ? '<span class="uploader">oleh ' + escHtml(b.uploader) + '</span>' : '') : '<div style="color:var(--cream-soft);opacity:.6;">-</div>';
+    const tsFormatted = sudah ? formatTimestampIndo(b.timestamp) : '';
+    const tsCell = sudah ? '<div>' + escHtml(tsFormatted || '-') + '</div>' + (b.uploader ? '<span class="uploader">oleh ' + escHtml(b.uploader) + '</span>' : '') : '<div style="color:var(--cream-soft);opacity:.6;">-</div>';
     // Kolom CETAK: hanya Sekretaris yang bisa toggle, role lain lihat badge saja
     const cetakSudah = (b.cetak === 'SUDAH');
     let cetakCell;
@@ -1060,6 +1137,40 @@ function formatTanggalID(s){
   return d.getDate() + ' ' + BULAN_ID[d.getMonth()] + ' ' + d.getFullYear();
 }
 
+/* Format timestamp ke Indonesia + WIB.
+   Handle 3 kasus:
+   1. Sudah format Indonesia ("7 November 2026, 14.30 WIB") -> tampil apa adanya
+   2. Date string English ("Thu Oct 22 2026 14:00:00 GMT+0700") -> parse & format ulang
+   3. ISO format ("2026-11-07T14:00:00") -> parse & format
+*/
+function formatTimestampIndo(s){
+  if (!s) return '';
+  const str = String(s).trim();
+  // Cek apakah sudah format Indonesia (mengandung nama bulan Indonesia)
+  const isAlreadyID = /[Jj]anuari|[Ff]ebruari|[Mm]aret|[Aa]pril|[Mm]ei|[Jj]uni|[Jj]uli|[Aa]gustus|[Ss]eptember|[Oo]ktober|[Nn]ovember|[Dd]esember/.test(str);
+  if (isAlreadyID) return str;
+  // Cek apakah mengandung "WIB" atau "GMT" atau format English
+  // Coba parse sebagai Date
+  let d = null;
+  // Coba ISO dulu
+  const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+  if (isoMatch){
+    d = new Date(parseInt(isoMatch[1]), parseInt(isoMatch[2])-1, parseInt(isoMatch[3]),
+                  parseInt(isoMatch[4]), parseInt(isoMatch[5]));
+  } else {
+    // Coba parse Date string English (mis. "Thu Oct 22 2026 14:00:00 GMT+0700")
+    const parsed = new Date(str);
+    if (!isNaN(parsed.getTime())) d = parsed;
+  }
+  if (!d) return str; // fallback
+  // Konversi ke WIB (GMT+7) untuk display
+  const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
+  const wib = new Date(utcMs + 7 * 3600000);
+  const pad = n => (n < 10 ? '0' : '') + n;
+  return wib.getDate() + ' ' + BULAN_ID[wib.getMonth()] + ' ' + wib.getFullYear() +
+    ', ' + pad(wib.getHours()) + '.' + pad(wib.getMinutes()) + ' WIB';
+}
+
 function formatTanggalRangeID(s){
   // Support rentang: "2026-11-12 s/d 2026-11-15" atau "2026-11-12 - 2026-11-15"
   if (!s) return '';
@@ -1183,7 +1294,13 @@ function renderTimeline(){
       }
     }
 
+    // Tombol Edit (pencil) - hanya untuk Sekretaris, di pojok kanan atas item
+    const editBtn = canEditTimeline
+      ? '<button class="tl-edit-btn" onclick="openEditTimelineModal(' + t.row + ')" title="Edit kegiatan (Sekretaris)" aria-label="Edit kegiatan"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>'
+      : '';
+
     return '<div class="' + itemCls + '">'
+      + editBtn
       + '<div class="tl-content">'
         + '<div class="tl-kegiatan">' + escHtml(t.kegiatan) + '</div>'
         + '<div class="tl-meta">' + tenggat + (t.catatan ? ' <span style="opacity:.7;">&middot; ' + escHtml(t.catatan) + '</span>' : '') + '</div>'
@@ -1230,6 +1347,81 @@ async function cycleTimelineStatus(row){
 async function toggleTimelineHighlight(row){
   // Fitur highlight star sudah dihapus, diganti 3 tombol status
   toast('Gunakan tombol BELUM/PROSES/SELESAI untuk mengubah status.', 'info');
+}
+
+/* =========================================================
+   MODAL EDIT TIMELINE (Sekretaris - edit semua field)
+   ========================================================= */
+function openEditTimelineModal(row){
+  if (state.role !== 'SEKRETARIS'){
+    toast('Hanya Sekretaris yang boleh edit kegiatan agenda.', 'error');
+    return;
+  }
+  const t = state.timeline.find(x => x.row === row);
+  if (!t){ toast('Kegiatan tidak ditemukan.', 'error'); return; }
+  state.pendingEditTimeline = { row: row, original: { ...t } };
+  // Isi form dengan data saat ini
+  document.getElementById('editTlKegiatan').value = t.kegiatan || '';
+  document.getElementById('editTlTenggat').value = t.tenggat || '';
+  document.getElementById('editTlStatus').value = t.status || 'BELUM';
+  document.getElementById('editTlHighlight').value = t.highlight || 'TIDAK';
+  document.getElementById('editTlCatatan').value = t.catatan || '';
+  hideAlert(document.getElementById('editTimelineAlert'));
+  document.getElementById('editTimelineModal').classList.add('show');
+  setTimeout(() => document.getElementById('editTlKegiatan').focus(), 200);
+}
+
+async function submitEditTimeline(){
+  if (state.role !== 'SEKRETARIS'){
+    toast('Hanya Sekretaris yang boleh edit kegiatan agenda.', 'error');
+    return;
+  }
+  const p = state.pendingEditTimeline;
+  if (!p){ toast('Tidak ada kegiatan yang dipilih.', 'error'); return; }
+  const kegiatan = document.getElementById('editTlKegiatan').value.trim();
+  const tenggat = document.getElementById('editTlTenggat').value.trim();
+  const status = document.getElementById('editTlStatus').value;
+  const highlight = document.getElementById('editTlHighlight').value;
+  const catatan = document.getElementById('editTlCatatan').value.trim();
+  if (!kegiatan){
+    showAlert(document.getElementById('editTimelineAlert'), 'error', 'Nama kegiatan wajib diisi.');
+    return;
+  }
+  showLoading('MENYIMPAN KEGIATAN...');
+  try {
+    const r = await apiPost({
+      action: 'updateTimelineFull',
+      id: p.row,
+      kegiatan: kegiatan,
+      tenggat: tenggat,
+      status: status,
+      highlight: highlight,
+      catatan: catatan,
+      role: state.role,
+      pin: state.pin
+    });
+    if (r.ok){
+      hideLoading();
+      closeModal('editTimelineModal');
+      // Update state lokal
+      const t = state.timeline.find(x => x.row === p.row);
+      if (t){
+        t.kegiatan = kegiatan;
+        t.tenggat = tenggat;
+        t.status = status;
+        t.highlight = highlight;
+        t.catatan = catatan;
+      }
+      renderTimeline();
+      toast(r.message, 'success');
+    } else {
+      hideLoading();
+      showAlert(document.getElementById('editTimelineAlert'), 'error', r.error || 'Gagal update kegiatan.');
+    }
+  } catch(err){
+    hideLoading();
+    showAlert(document.getElementById('editTimelineAlert'), 'error', err.message);
+  }
 }
 
 /* =========================================================
