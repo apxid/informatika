@@ -1119,22 +1119,46 @@ async function loadTimeline(){
      * "7 November 2026"       -> diterima apa adanya
    ========================================================= */
 const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 
 function parseTanggalWIB(s){
   // Parse "YYYY-MM-DD" sebagai tanggal lokal WIB (bukan UTC)
   if (!s) return null;
   const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (!m) return null;
-  // Buat Date di tengah hari lokal (hindari offset timezone)
   return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]), 12, 0, 0);
 }
 
+/* Parse berbagai format tanggal ke Date object (lokal, jam 12 siang)
+   - "2026-11-07" (YYYY-MM-DD)
+   - "Thu Oct 22 2026 00:00:00 GMT+0700" (Date.toString English)
+   - Date object
+*/
+function parseTanggalAny(s){
+  if (!s) return null;
+  if (Object.prototype.toString.call(s) === '[object Date]') return s;
+  const str = String(s).trim();
+  // YYYY-MM-DD
+  const m1 = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m1) return new Date(parseInt(m1[1]), parseInt(m1[2])-1, parseInt(m1[3]), 12, 0, 0);
+  // English Date string (mis. "Thu Oct 22 2026 00:00:00 GMT+0700")
+  if (/[A-Z][a-z]{2} \d{1,2} \d{4}/.test(str)){
+    const d = new Date(str);
+    if (!isNaN(d.getTime())){
+      const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
+      const wib = new Date(utcMs + 7 * 3600000);
+      return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate(), 12, 0, 0);
+    }
+  }
+  return null;
+}
+
 function formatTanggalID(s){
-  // "2026-11-07" -> "7 November 2026"
+  // "2026-11-07" -> "Kamis, 7 November 2026"
   if (!s) return '';
-  const d = parseTanggalWIB(s);
-  if (!d) return String(s); // fallback: tampilkan apa adanya
-  return d.getDate() + ' ' + BULAN_ID[d.getMonth()] + ' ' + d.getFullYear();
+  const d = parseTanggalAny(s);
+  if (!d) return String(s);
+  return HARI_ID[d.getDay()] + ', ' + d.getDate() + ' ' + BULAN_ID[d.getMonth()] + ' ' + d.getFullYear();
 }
 
 /* Format timestamp ke Indonesia + WIB.
@@ -1187,8 +1211,8 @@ function formatTanggalRangeID(s){
     }
   }
   if (parts){
-    const dA = parseTanggalWIB(parts[0]);
-    const dB = parseTanggalWIB(parts[1]);
+    const dA = parseTanggalAny(parts[0]);
+    const dB = parseTanggalAny(parts[1]);
     if (dA && dB){
       // Jika bulan & tahun sama: "12 - 15 November 2026"
       if (dA.getMonth() === dB.getMonth() && dA.getFullYear() === dB.getFullYear()){
@@ -1200,7 +1224,7 @@ function formatTanggalRangeID(s){
     // Fallback: tampilkan apa adanya
     return str;
   }
-  // Bukan rentang, format tunggal
+  // Bukan rentang, format tunggal (pakai hari)
   return formatTanggalID(str);
 }
 
