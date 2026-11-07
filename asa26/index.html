@@ -1561,11 +1561,19 @@ async function loadSoalStatus(){
 
 function renderSoalTabs(){
   const tabs = document.getElementById('soalTabs');
+  // PAKAI data attribute + event delegation (aman dari bug escaping quote)
   tabs.innerHTML = state.soalData.kelas.map(k => {
     const active = (k.kelas === state.soalData.currentKelas) ? ' active' : '';
-    return '<button class="soal-tab' + active + '" onclick="selectSoalKelas(' + JSON.stringify(k.kelas) + ')">' + escHtml(k.kelas) + '</button>';
+    return '<button class="soal-tab' + active + '" data-kelas="' + escHtml(k.kelas) + '">' + escHtml(k.kelas) + '</button>';
   }).join('');
 }
+
+// Event delegation untuk klik tab kelas
+document.getElementById('soalTabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-kelas]');
+  if (!btn) return;
+  selectSoalKelas(btn.dataset.kelas);
+});
 
 function selectSoalKelas(kelas){
   state.soalData.currentKelas = kelas;
