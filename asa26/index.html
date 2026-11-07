@@ -32,7 +32,8 @@ body::before{content:'';position:fixed;inset:0;background-image:repeating-linear
 #loginLayer.active{display:flex;align-items:center;justify-content:center;padding:24px 16px;}
 .login-wrap{width:100%;max-width:440px;}
 .login-card{padding:36px 28px 28px;}
-.login-emblem{width:96px;height:96px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,var(--gold-bright) 30%,var(--gold-soft) 70%);border:4px solid var(--gold);border-radius:50%;box-shadow:0 0 24px rgba(244,200,66,.5),inset 0 4px 8px rgba(0,0,0,.3);font-size:48px;line-height:1;}
+.login-emblem{width:96px;height:96px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,var(--gold-bright) 30%,var(--gold-soft) 70%);border:4px solid var(--gold);border-radius:50%;box-shadow:0 0 24px rgba(244,200,66,.5),inset 0 4px 8px rgba(0,0,0,.3);font-size:48px;line-height:1;overflow:hidden;}
+.login-emblem img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .login-title{text-align:center;font-family:'Cinzel',serif;font-weight:900;font-size:22px;color:var(--gold-bright);text-shadow:0 2px 4px rgba(0,0,0,.8);margin-bottom:4px;line-height:1.2;}
 .login-sub{text-align:center;font-size:13px;color:var(--cream-soft);letter-spacing:2px;margin-bottom:24px;text-transform:uppercase;}
 .form-group{margin-bottom:18px;}
@@ -159,30 +160,37 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
 .timeline-list::-webkit-scrollbar{width:6px;}
 .timeline-list::-webkit-scrollbar-track{background:rgba(0,0,0,.3);border-radius:3px;}
 .timeline-list::-webkit-scrollbar-thumb{background:var(--gold-soft);border-radius:3px;}
-.tl-item{display:flex;gap:12px;padding:12px 14px;margin-bottom:10px;background:rgba(0,0,0,.25);border:1px solid rgba(212,160,23,.3);border-radius:10px;transition:all .2s;position:relative;}
-.tl-item.selesai{opacity:.7;}
-.tl-item.selesai .tl-kegiatan{text-decoration:line-through;color:var(--cream-soft);}
-.tl-item.highlight{border-color:var(--gold-bright);background:rgba(244,200,66,.10);box-shadow:0 0 8px rgba(244,200,66,.2);}
-.tl-item.highlight::before{content:'★';position:absolute;top:-8px;left:-2px;color:var(--gold-bright);font-size:18px;text-shadow:0 0 6px rgba(244,200,66,.6);}
-.tl-check{flex:0 0 36px;display:flex;align-items:center;justify-content:center;}
-.tl-check-btn{width:32px;height:32px;border-radius:50%;border:2px solid var(--gold-soft);background:rgba(0,0,0,.3);color:var(--cream-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;transition:all .15s;}
-.tl-check-btn:hover{border-color:var(--gold-bright);transform:scale(1.05);}
-.tl-check-btn.belum{border-color:var(--red-bright);color:var(--red-bright);}
-.tl-check-btn.proses{border-color:var(--gold-bright);color:var(--gold-bright);background:rgba(244,200,66,.15);}
-.tl-check-btn.selesai{border-color:var(--green-bright);color:var(--cream);background:linear-gradient(180deg,var(--green-bright),var(--green));}
+
+/* Item timeline - background sesuai status */
+.tl-item{display:flex;gap:12px;padding:12px 14px;margin-bottom:10px;border:1px solid rgba(212,160,23,.3);border-radius:10px;transition:all .2s;position:relative;border-left-width:5px;}
+.tl-item.status-belum{background:rgba(192,57,43,.12);border-color:rgba(192,57,43,.4);border-left-color:var(--red-bright);}
+.tl-item.status-proses{background:rgba(244,200,66,.10);border-color:rgba(244,200,66,.4);border-left-color:var(--gold-bright);}
+.tl-item.status-selesai{background:rgba(107,168,63,.10);border-color:rgba(107,168,63,.4);border-left-color:var(--green-bright);}
+.tl-item.status-selesai .tl-kegiatan{text-decoration:line-through;color:var(--cream-soft);opacity:.85;}
+
+/* Tombol 3 status (BELUM/PROSES/SELESAI) - hanya Sekretaris */
+.tl-status-toggles{flex:0 0 auto;display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
+.tl-status-btn{padding:6px 10px;font-family:'Cinzel',serif;font-weight:700;font-size:10px;letter-spacing:.5px;text-transform:uppercase;border:2px solid;border-radius:6px;cursor:pointer;transition:all .15s;min-width:78px;text-align:center;background:rgba(0,0,0,.4);color:var(--cream-soft);}
+.tl-status-btn:hover{transform:translateY(-1px);}
+.tl-status-btn.belum{border-color:var(--red-bright);color:var(--red-bright);}
+.tl-status-btn.belum.active{background:linear-gradient(180deg,var(--red-bright),var(--red));color:var(--cream);box-shadow:0 2px 4px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.2);}
+.tl-status-btn.proses{border-color:var(--gold-bright);color:var(--gold-bright);}
+.tl-status-btn.proses.active{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:var(--text-dark);box-shadow:0 2px 4px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.4);}
+.tl-status-btn.selesai{border-color:var(--green-bright);color:var(--green-bright);}
+.tl-status-btn.selesai.active{background:linear-gradient(180deg,var(--green-bright),var(--green));color:var(--cream);box-shadow:0 2px 4px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.3);}
+
+/* Badge status (untuk non-sekretaris, hanya lihat) */
+.tl-status-badge-readonly{padding:6px 12px;font-family:'Cinzel',serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;border:2px solid;border-radius:14px;display:inline-block;min-width:78px;text-align:center;}
+.tl-status-badge-readonly.belum{background:linear-gradient(180deg,var(--red-bright),var(--red));color:var(--cream);border-color:#5a0e0e;}
+.tl-status-badge-readonly.proses{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:var(--text-dark);border-color:var(--gold-soft);}
+.tl-status-badge-readonly.selesai{background:linear-gradient(180deg,var(--green-bright),var(--green));color:var(--cream);border-color:#2c4a1a;}
+
 .tl-content{flex:1;min-width:0;}
 .tl-kegiatan{font-size:14px;font-weight:600;color:var(--cream);margin-bottom:4px;line-height:1.4;}
 .tl-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:11px;color:var(--cream-soft);}
 .tl-tenggat{padding:2px 8px;border-radius:10px;background:rgba(0,0,0,.4);color:var(--gold-bright);font-weight:600;}
-.tl-status-badge{padding:2px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:10px;}
-.tl-status-belum{background:rgba(192,57,43,.3);color:#ffb0a0;}
-.tl-status-proses{background:rgba(244,200,66,.25);color:var(--gold-bright);}
-.tl-status-selesai{background:rgba(107,168,63,.3);color:#c8f0a0;}
-.tl-actions{flex:0 0 auto;display:flex;flex-direction:column;gap:6px;}
-.tl-action-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--gold-soft);background:rgba(0,0,0,.3);color:var(--cream-soft);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;}
-.tl-action-btn:hover{border-color:var(--gold-bright);color:var(--cream);}
-.tl-action-btn.active-star{color:var(--gold-bright);background:rgba(244,200,66,.2);border-color:var(--gold-bright);}
-.tl-action-btn:disabled{opacity:.4;cursor:not-allowed;}
+.tl-overdue{padding:2px 8px;border-radius:10px;background:rgba(192,57,43,.35);color:#ffb0a0;font-weight:700;}
+
 .tl-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid var(--gold-soft);border-radius:8px;}
 .tl-summary-item{font-size:12px;color:var(--cream);}
 .tl-summary-item strong{color:var(--gold-bright);font-size:14px;}
@@ -232,7 +240,7 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
 <section id="loginLayer" class="layer active">
   <div class="login-wrap">
     <div class="coc-panel login-card">
-      <div class="login-emblem">&#9876;&#xFE0E;</div>
+      <div class="login-emblem"><img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo ASAS" onerror="this.style.display='none';this.parentElement.innerHTML='&#9876;&#xFE0E;';" /></div>
       <div class="login-title">ASAS 2026<br/>SMP 1 NEGERI MOGA</div>
       <div class="login-sub">PANEL SEKRETARIS PANITIA</div>
       <div id="loginAlert" class="alert"></div>
@@ -259,7 +267,10 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
 <section id="dashboardLayer" class="layer">
   <div class="dash-header">
     <div>
-      <div class="dash-title">&#9876; PANEL SEKRETARIS ASAS 2026</div>
+      <div class="dash-title" style="display:flex;align-items:center;gap:10px;">
+        <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" style="width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;" onerror="this.style.display='none';" />
+        <span>PANEL SEKRETARIS ASAS 2026</span>
+      </div>
       <div class="dash-subtitle">SMP 1 NEGERI MOGA &middot; SEMESTER 1</div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
@@ -318,7 +329,7 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
     <div class="modal-body">
       <div id="timelineSummary" class="tl-summary"></div>
       <div id="timelineReadonlyNotice" class="timeline-readonly-notice hidden">
-        &#8505; Anda login sebagai <strong>ANGGOTA</strong>. Timeline hanya bisa dilihat. Hubungi Sekretaris/Ketua untuk update status.
+        &#8505; Anda login sebagai <strong>KETUA/ANGGOTA</strong>. Agenda hanya bisa dilihat. <strong>Hanya Sekretaris</strong> yang berhak mengubah status kegiatan.
       </div>
       <div id="timelineAlert" class="alert"></div>
       <div id="timelineList" class="timeline-list">
@@ -341,7 +352,9 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
       <button class="modal-close" onclick="closeModal('aboutModal')">&times;</button>
     </div>
     <div class="modal-body" style="text-align:center;padding:28px 20px;">
-      <div style="font-size:54px;margin-bottom:14px;line-height:1;">&#9876;&#xFE0E;</div>
+      <div style="width:80px;height:80px;margin:0 auto 14px;border-radius:50%;overflow:hidden;border:3px solid var(--gold);box-shadow:0 0 16px rgba(244,200,66,.5);">
+        <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo ASAS" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='&#9876;&#xFE0E;';this.parentElement.style.fontSize='54px';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';" />
+      </div>
       <h2 style="font-family:'Cinzel',serif;font-weight:900;font-size:20px;color:var(--gold-bright);margin-bottom:18px;line-height:1.3;text-shadow:0 2px 4px rgba(0,0,0,.6);">Aplikasi Sekretaris<br/>ASAS 2026</h2>
       <div style="background:rgba(0,0,0,.25);border-left:3px solid var(--gold);border-radius:6px;padding:14px 16px;margin-bottom:14px;text-align:left;">
         <div style="margin-bottom:8px;"><div style="font-size:10px;letter-spacing:1.5px;color:var(--cream-soft);text-transform:uppercase;">Pengembang</div><div style="font-size:14px;color:var(--cream);font-weight:600;">Dev by MB</div></div>
@@ -591,7 +604,7 @@ function enterDashboard(showTimelineAfter){
     + (state.nama && state.nama !== state.role ? '<span class="role-nama">' + escHtml(state.nama) + '</span>' : '');
   document.getElementById('addBtn').classList.toggle('hidden', !state.canEdit);
   document.getElementById('actionHeader').classList.toggle('hidden', !state.canEdit);
-  document.getElementById('timelineReadonlyNotice').classList.toggle('hidden', state.canEdit);
+  document.getElementById('timelineReadonlyNotice').classList.toggle('hidden', state.role === 'SEKRETARIS');
   loadBerkas().then(() => {
     // Auto-show timeline setelah login (semua role)
     if (showTimelineAfter && !state.timelineShownThisSession){
@@ -910,71 +923,95 @@ function renderTimeline(){
   const list = document.getElementById('timelineList');
   const tl = state.timeline;
   if (tl.length === 0){
-    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--cream-soft);"><div style="font-size:36px;margin-bottom:8px;">&#128197;</div>Belum ada kegiatan di timeline.<br/><small>Edit sheet TIMELINE di Spreadsheet untuk menambah kegiatan.</small></div>';
+    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--cream-soft);"><div style="font-size:36px;margin-bottom:8px;">&#128197;</div>Belum ada kegiatan di agenda.<br/><small>Edit sheet AGENDA di Spreadsheet untuk menambah kegiatan.</small></div>';
     document.getElementById('timelineSummary').innerHTML = '';
     return;
   }
+  // Tanggal hari ini (UTC, format YYYY-MM-DD)
+  const today = new Date();
+  const todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
   // Summary
   const selesai = tl.filter(t => t.status === 'SELESAI').length;
   const proses = tl.filter(t => t.status === 'PROSES').length;
   const belum = tl.filter(t => t.status === 'BELUM').length;
-  const highlightCount = tl.filter(t => t.highlight === 'YA').length;
+  const overdueCount = tl.filter(t => t.status !== 'SELESAI' && t.tenggat && t.tenggat < todayStr).length;
   const pct = tl.length === 0 ? 0 : Math.round((selesai / tl.length) * 100);
   document.getElementById('timelineSummary').innerHTML =
     '<div class="tl-summary-item"><strong>' + tl.length + '</strong> total</div>'
     + '<div class="tl-summary-item"><strong style="color:var(--green-bright);">' + selesai + '</strong> selesai</div>'
     + '<div class="tl-summary-item"><strong style="color:var(--gold-bright);">' + proses + '</strong> proses</div>'
     + '<div class="tl-summary-item"><strong style="color:var(--red-bright);">' + belum + '</strong> belum</div>'
-    + '<div class="tl-summary-item"><strong style="color:var(--gold-bright);">' + highlightCount + '</strong> highlight</div>'
+    + (overdueCount > 0 ? '<div class="tl-summary-item"><strong style="color:var(--red-bright);">' + overdueCount + '</strong> terlambat</div>' : '')
     + '<div class="tl-summary-item" style="margin-left:auto;"><strong>' + pct + '%</strong> selesai</div>';
 
+  // Helper: cek apakah user boleh edit timeline (hanya SEKRETARIS)
+  const canEditTimeline = (state.role === 'SEKRETARIS');
+
   list.innerHTML = tl.map(t => {
-    const cls = [];
-    if (t.status === 'SELESAI') cls.push('selesai');
-    if (t.highlight === 'YA') cls.push('highlight');
-    const clsStr = cls.length ? ' ' + cls.join(' ') : '';
-    // Check button: BELUM/PROSES/SELESAI
-    const checkIcon = t.status === 'SELESAI' ? '&#10003;' : t.status === 'PROSES' ? '&#9654;' : '';
-    const checkCls = 'tl-check-btn ' + t.status.toLowerCase();
-    const checkTitle = state.canEdit ? 'Klik untuk ubah status (BELUM → PROSES → SELESAI → BELUM)' : 'Status: ' + t.status;
-    const checkBtn = state.canEdit
-      ? '<button class="' + checkCls + '" onclick="cycleTimelineStatus(' + t.row + ')" title="' + checkTitle + '">' + checkIcon + '</button>'
-      : '<div class="' + checkCls + '" title="' + checkTitle + '">' + checkIcon + '</div>';
-    // Status badge
-    const statusBadgeCls = 'tl-status-badge tl-status-' + t.status.toLowerCase();
-    const statusText = t.status;
-    // Highlight star button
-    const starActive = t.highlight === 'YA' ? ' active-star' : '';
-    const starBtn = state.canEdit
-      ? '<button class="tl-action-btn' + starActive + '" onclick="toggleTimelineHighlight(' + t.row + ')" title="' + (t.highlight === 'YA' ? 'Hapus highlight' : 'Tandai prioritas (highlight)') + '">&#9733;</button>'
-      : (t.highlight === 'YA' ? '<div class="tl-action-btn active-star" title="Prioritas">&#9733;</div>' : '');
-    // Tenggat
-    const tenggat = t.tenggat ? '<span class="tl-tenggat">&#128197; ' + escHtml(t.tenggat) + '</span>' : '';
-    return '<div class="tl-item' + clsStr + '">'
-      + '<div class="tl-check">' + checkBtn + '</div>'
+    const statusLower = t.status.toLowerCase();
+    const itemCls = 'tl-item status-' + statusLower;
+    // Cek overdue: kalau status belum/proses DAN tenggat < hari ini
+    const isOverdue = (t.status !== 'SELESAI' && t.tenggat && t.tenggat < todayStr);
+
+    // Bagian kanan: 3 tombol status (SEKRETARIS) atau badge readonly (lainnya)
+    let rightPanel;
+    if (canEditTimeline){
+      // 3 tombol: BELUM, PROSES, SELESAI. Yang aktif = status saat ini
+      const mkBtn = (s, label) => {
+        const active = (t.status === s) ? ' active' : '';
+        return '<button class="tl-status-btn ' + s.toLowerCase() + active + '" onclick="setTimelineStatus(' + t.row + ',\'' + s + '\')" title="Tandai sebagai ' + s + '">' + label + '</button>';
+      };
+      rightPanel = '<div class="tl-status-toggles">'
+        + mkBtn('BELUM', '&#9679; BELUM')
+        + mkBtn('PROSES', '&#9654; PROSES')
+        + mkBtn('SELESAI', '&#10003; SELESAI')
+        + '</div>';
+    } else {
+      // Read-only badge
+      const badgeLabel = t.status === 'SELESAI' ? '&#10003; SELESAI' : t.status === 'PROSES' ? '&#9654; PROSES' : '&#9679; BELUM';
+      rightPanel = '<div class="tl-status-toggles"><span class="tl-status-badge-readonly ' + statusLower + '">' + badgeLabel + '</span></div>';
+    }
+
+    // Tenggat (dengan badge OVERDUE jika terlambat)
+    let tenggat = '';
+    if (t.tenggat){
+      tenggat = '<span class="tl-tenggat">&#128197; ' + escHtml(t.tenggat) + '</span>';
+      if (isOverdue){
+        tenggat += ' <span class="tl-overdue">&#9888; TERLAMBAT</span>';
+      }
+    }
+
+    return '<div class="' + itemCls + '">'
       + '<div class="tl-content">'
         + '<div class="tl-kegiatan">' + escHtml(t.kegiatan) + '</div>'
-        + '<div class="tl-meta">' + tenggat + ' <span class="' + statusBadgeCls + '">' + statusText + '</span>' + (t.catatan ? ' <span style="opacity:.7;">&middot; ' + escHtml(t.catatan) + '</span>' : '') + '</div>'
+        + '<div class="tl-meta">' + tenggat + (t.catatan ? ' <span style="opacity:.7;">&middot; ' + escHtml(t.catatan) + '</span>' : '') + '</div>'
       + '</div>'
-      + '<div class="tl-actions">' + starBtn + '</div>'
+      + rightPanel
       + '</div>';
   }).join('');
 }
 
-async function cycleTimelineStatus(row){
-  if (!state.canEdit){ toast('Hanya Sekretaris & Ketua yang boleh edit timeline.', 'error'); return; }
+/* Set status timeline ke nilai tertentu (BELUM/PROSES/SELESAI) - hanya SEKRETARIS */
+async function setTimelineStatus(row, newStatus){
+  if (state.role !== 'SEKRETARIS'){
+    toast('Hanya Sekretaris yang boleh mengubah status agenda.', 'error');
+    return;
+  }
   const t = state.timeline.find(x => x.row === row);
-  if (!t) return;
-  // BELUM → PROSES → SELESAI → BELUM
-  const next = t.status === 'BELUM' ? 'PROSES' : t.status === 'PROSES' ? 'SELESAI' : 'BELUM';
+  if (!t){ toast('Kegiatan tidak ditemukan.', 'error'); return; }
+  if (t.status === newStatus){
+    // Tidak ada perubahan
+    return;
+  }
   showLoading('UPDATE STATUS...');
   try {
-    const r = await apiPost({ action:'updateTimelineItem', id:row, status:next, role:state.role, pin:state.pin });
+    const r = await apiPost({ action:'updateTimelineItem', id:row, status:newStatus, role:state.role, pin:state.pin });
     if (r.ok){
       hideLoading();
-      t.status = next;
+      t.status = newStatus;
       renderTimeline();
-      toast('Status diubah ke ' + next + ' oleh ' + (state.nama || state.role) + '.', 'success');
+      toast('Status diubah ke ' + newStatus + ' oleh ' + (state.nama || state.role) + '.', 'success');
     } else {
       hideLoading();
       toast(r.error || 'Gagal update status.', 'error');
@@ -982,24 +1019,16 @@ async function cycleTimelineStatus(row){
   } catch(err){ hideLoading(); toast(err.message, 'error'); }
 }
 
-async function toggleTimelineHighlight(row){
-  if (!state.canEdit){ toast('Hanya Sekretaris & Ketua yang boleh edit timeline.', 'error'); return; }
+/* Alias cycle (dipertahankan untuk backward compat - tidak dipakai lagi) */
+async function cycleTimelineStatus(row){
   const t = state.timeline.find(x => x.row === row);
   if (!t) return;
-  const next = t.highlight === 'YA' ? 'TIDAK' : 'YA';
-  showLoading('UPDATE HIGHLIGHT...');
-  try {
-    const r = await apiPost({ action:'updateTimelineItem', id:row, highlight:next, role:state.role, pin:state.pin });
-    if (r.ok){
-      hideLoading();
-      t.highlight = next;
-      renderTimeline();
-      toast(next === 'YA' ? 'Kegiatan ditandai prioritas oleh ' + (state.nama || state.role) + '.' : 'Highlight dihapus.', 'success');
-    } else {
-      hideLoading();
-      toast(r.error || 'Gagal update highlight.', 'error');
-    }
-  } catch(err){ hideLoading(); toast(err.message, 'error'); }
+  const next = t.status === 'BELUM' ? 'PROSES' : t.status === 'PROSES' ? 'SELESAI' : 'BELUM';
+  await setTimelineStatus(row, next);
+}
+async function toggleTimelineHighlight(row){
+  // Fitur highlight star sudah dihapus, diganti 3 tombol status
+  toast('Gunakan tombol BELUM/PROSES/SELESAI untuk mengubah status.', 'info');
 }
 
 /* =========================================================
