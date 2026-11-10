@@ -738,7 +738,7 @@ td.action-col{text-align:center;width:240px;white-space:nowrap;}
 /* =========================================================
    KONFIGURASI - GAS_URL
    ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyLH11oP-y6HkbQ6rjUGTuXvkgXfTQVRqvRujJ46F5Kgt4fvohbJlEVkWluS2G-J2Z49Q/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyD3zByGkQ87wjlCZI_2-UqmPeuiHsRmrCinjDJNQWa30fUZZlDXHQEFh6AJOMs3oLK0Q/exec';
 
 /* =========================================================
    STATE
@@ -754,7 +754,8 @@ const state = {
   pendingRename: { row: null, namaLama: null },
   pendingEditTimeline: { row: null, original: null },
   timelineShownThisSession: false,
-  soalData: { kelas: [], currentKelas: null }
+  soalData: { kelas: [], currentKelas: null },
+  logRow: null  // row number di sheet LOG (untuk update saat logout)
 };
 
 /* =========================================================
@@ -816,14 +817,79 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       saveSession();
       hideLoading();
       enterDashboard(true);
+      // Catat login ke sheet LOG (async, tidak block UI)
+      recordLogin();
     } else { hideLoading(); showAlert(document.getElementById('loginAlert'), 'error', r.error || 'PIN salah.'); }
   } catch(err){ hideLoading(); showAlert(document.getElementById('loginAlert'), 'error', 'Gagal terhubung: ' + err.message); }
 });
 
+/* =========================================================
+   LOG AUDIT - collect client info & kirim ke backend
+   ========================================================= */
+async function collectClientInfo(){
+  const info = { ip: '-', provider: '-', lokasi: '-', gps: '-' };
+  // 1. Ambil IP + lokasi + provider dari ipapi.co (free, no key)
+  try {
+    const resp = await fetch('https://ipapi.co/json/', { method: 'GET' });
+    if (resp.ok){
+      const d = await resp.json();
+      info.ip = d.ip || '-';
+      info.provider = d.org || d.asn || '-';
+      info.lokasi = [d.city, d.region, d.country_name].filter(Boolean).join(', ') || '-';
+    }
+  } catch(e){ /* silent - offline atau CORS */ }
+  // 2. Ambil GPS dari browser (perlu user permission)
+  try {
+    if (navigator.geolocation){
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000, maximumAge: 60000 });
+      });
+      if (pos && pos.coords){
+        info.gps = pos.coords.latitude.toFixed(6) + ', ' + pos.coords.longitude.toFixed(6);
+      }
+    }
+  } catch(e){ /* user tolak atau timeout - gps tetap '-' */ }
+  return info;
+}
+
+async function recordLogin(){
+  try {
+    const info = await collectClientInfo();
+    const r = await apiPost({
+      action: 'logLogin',
+      role: state.role,
+      nama: state.nama,
+      ip: info.ip,
+      provider: info.provider,
+      lokasi: info.lokasi,
+      gps: info.gps
+    });
+    if (r.ok && r.logRow){
+      state.logRow = r.logRow;
+      // Simpan logRow ke session supaya persist setelah reload
+      try { localStorage.setItem('asas2026_logRow', String(r.logRow)); } catch(e){}
+    }
+  } catch(e){ /* silent - jangan ganggu user */ }
+}
+
+async function recordLogout(){
+  if (!state.logRow) return;
+  try {
+    await apiPost({ action: 'logLogout', logRow: state.logRow });
+  } catch(e){ /* silent */ }
+  state.logRow = null;
+  try { localStorage.removeItem('asas2026_logRow'); } catch(e){}
+}
+
 function logout(){
+  // Catat logout ke LOG sebelum clear state (pakai logRow yang masih ada)
+  if (state.logRow){
+    recordLogout();  // async fire-and-forget
+  }
   clearSession();
   state.role = null; state.nama = null; state.canEdit = false; state.pin = '';
   state.berkas = []; state.timeline = []; state.currentFolder = 'ALL'; state.timelineShownThisSession = false;
+  state.logRow = null;
   document.getElementById('pinInput').value = '';
   document.getElementById('dashboardLayer').classList.remove('active');
   document.getElementById('loginLayer').classList.add('active');
@@ -1658,6 +1724,11 @@ window.addEventListener('load', async () => {
       const r = await apiGet('login', { pin: saved.pin });
       if (r.ok){
         state.role = r.role; state.nama = r.nama || r.role; state.canEdit = r.canEdit; state.pin = saved.pin;
+        // Restore logRow dari localStorage (session restore = lanjut log lama, tidak catat login baru)
+        try {
+          const lr = localStorage.getItem('asas2026_logRow');
+          if (lr) state.logRow = parseInt(lr, 10);
+        } catch(e){}
         saveSession();
         enterDashboard(false);  // session restore: tidak auto-show timeline (sudah pernah login)
         return;
@@ -1665,6 +1736,17 @@ window.addEventListener('load', async () => {
     } catch(e){ console.warn('Gagal verifikasi sesi:', e); clearSession(); }
   }
   document.getElementById('pinInput').focus();
+});
+
+// Catat logout saat user tutup tab/browser (sebisa mungkin)
+window.addEventListener('beforeunload', () => {
+  if (state.logRow){
+    // Pakai sendBeacon untuk reliable delivery saat page unload
+    try {
+      const body = JSON.stringify({ action: 'logLogout', logRow: state.logRow });
+      navigator.sendBeacon(GAS_URL, body);
+    } catch(e){}
+  }
 });
 </script>
 </body>
