@@ -250,6 +250,23 @@
     .acak-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; background: var(--accent-2); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
     .acak-close:hover { filter: brightness(1.1); }
     .acak-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .acak-link-btn { background: linear-gradient(135deg, #16a34a, #4ade80); color: #fff; border: none; padding: 12px 22px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: transform .15s; }
+    .acak-link-btn:hover { transform: translateY(-2px); }
+
+    /* Link Stats Table */
+    .link-stats-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
+    .link-stats-card .ls-header { background: linear-gradient(135deg, #0d9488, #14b8a6); color: #fff; padding: 16px 22px; }
+    .link-stats-card .ls-header h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800; }
+    .link-stats-card .ls-header p { font-size: 12px; opacity: .9; }
+    .link-stats-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .link-stats-table th { background: #f1f5f9; color: var(--muted); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--border); }
+    .link-stats-table th.num, .link-stats-table td.num { text-align: center; }
+    .link-stats-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .link-stats-table tr:last-child td { border-bottom: none; }
+    .link-stats-table tr:hover td { background: #f8fafc; }
+    .link-stats-table tr.total-row td { font-weight: 800; background: #eff6ff; color: var(--primary); border-top: 2px solid var(--primary); }
+    .link-stats-table .badge-ok { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; background: #dcfce7; color: #15803d; }
+    .link-stats-table .badge-no { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; background: #fee2e2; color: #991b1b; }
   </style>
 </head>
 <body>
@@ -335,6 +352,30 @@
       <div class="label">Belum Selesai</div>
       <div class="value" id="statBelum">0</div>
       <div class="sub">masih dikerjakan</div>
+    </div>
+  </div>
+
+  <!-- LINK SUBMISSION STATS BY KELAS -->
+  <div class="link-stats-card">
+    <div class="ls-header">
+      <h2>📊 Status Pengumpulan Link Google Docs</h2>
+      <p>Jumlah siswa sudah/belum kirim link per kelas</p>
+    </div>
+    <div id="linkStatsBody" style="padding: 0;">
+      <table class="link-stats-table">
+        <thead>
+          <tr>
+            <th>Kelas</th>
+            <th class="num">Total Siswa</th>
+            <th class="num">Sudah Kirim</th>
+            <th class="num">Belum Kirim</th>
+            <th class="num">% Selesai</th>
+          </tr>
+        </thead>
+        <tbody id="linkStatsTable">
+          <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">Memuat data...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -465,8 +506,12 @@
       <div class="ar-name" id="acakNama"></div>
       <div class="ar-class" id="acakKelasLabel"></div>
       <div class="ar-task" id="acakTugas"></div>
+      <div id="acakLinkInfo" style="margin-top: 10px; font-size: 13px; color: var(--muted);"></div>
     </div>
     <div class="acak-actions" id="acakActions" style="display:none;">
+      <a id="acakLinkBtn" class="acak-link-btn" href="#" target="_blank" rel="noopener" style="display:none;">
+        📄 Tampilkan Link
+      </a>
       <button class="btn btn-primary" onclick="startAcakPresentasi()">🎲 Acak Lagi</button>
       <button class="btn btn-ghost" onclick="closeAcakModal()" style="border: 1px solid var(--border);">Tutup</button>
     </div>
@@ -808,26 +853,28 @@
   function filterPenugasan() { currentPage = 1; renderPenugasan(); }
 
   /* ============ ACAK PRESENTASI ============ */
+  var acakPicked = null; // simpan data siswa terpilih
+
   function startAcakPresentasi() {
-    const acakKelasVal = document.getElementById('acakKelas').value;
-    // Filter siswa by kelas (jika dipilih)
-    let candidates = allPenugasan;
+    var acakKelasVal = document.getElementById('acakKelas').value;
+    var candidates = allPenugasan;
     if (acakKelasVal) {
-      candidates = allPenugasan.filter(k => String(k['Kelas'] || '') === acakKelasVal);
+      candidates = allPenugasan.filter(function(k) { return String(k['Kelas'] || '') === acakKelasVal; });
     }
     if (candidates.length === 0) {
       showAlert('error', '⚠️ Tidak ada siswa dengan tugas untuk diacak' + (acakKelasVal ? ' di kelas ' + acakKelasVal : '') + '.');
       return;
     }
 
-    // Tampilkan modal dengan spinner
-    const modal = document.getElementById('acakModal');
-    const wrap = document.getElementById('acakSpinnerWrap');
-    const icon = document.getElementById('acakIcon');
-    const title = document.getElementById('acakTitle');
-    const text = document.getElementById('acakText');
-    const result = document.getElementById('acakResult');
-    const actions = document.getElementById('acakActions');
+    var modal = document.getElementById('acakModal');
+    var wrap = document.getElementById('acakSpinnerWrap');
+    var icon = document.getElementById('acakIcon');
+    var title = document.getElementById('acakTitle');
+    var text = document.getElementById('acakText');
+    var result = document.getElementById('acakResult');
+    var actions = document.getElementById('acakActions');
+    var linkInfo = document.getElementById('acakLinkInfo');
+    var linkBtn = document.getElementById('acakLinkBtn');
 
     wrap.classList.add('spinning');
     icon.textContent = '🎲';
@@ -835,18 +882,32 @@
     text.textContent = 'Mencari siswa untuk presentasi' + (acakKelasVal ? ' dari kelas ' + acakKelasVal : '');
     result.classList.remove('show');
     actions.style.display = 'none';
+    linkBtn.style.display = 'none';
+    linkInfo.innerHTML = '';
     modal.classList.add('show');
 
-    // Acak dan tampilkan hasil setelah 2 detik
     setTimeout(function() {
-      var picked = candidates[Math.floor(Math.random() * candidates.length)];
+      acakPicked = candidates[Math.floor(Math.random() * candidates.length)];
+      var picked = acakPicked;
       wrap.classList.remove('spinning');
-      icon.textContent = picked['Tugas'] ? '🎤' : '⚠️';
+      icon.textContent = '🎤';
       title.textContent = 'Siswa Terpilih!';
       text.textContent = (acakKelasVal ? 'Kelas ' + acakKelasVal : 'Dari semua kelas');
       document.getElementById('acakNama').textContent = picked['Nama'] || '-';
       document.getElementById('acakKelasLabel').textContent = 'Kelas: ' + (picked['Kelas'] || '-') + ' • Absen: ' + (picked['No Absen'] || '-');
       document.getElementById('acakTugas').textContent = picked['Tugas'] || 'Belum ada tugas';
+
+      // Cek link Google Docs
+      var link = String(picked['Link Google Docs'] || '').trim();
+      if (link) {
+        linkInfo.innerHTML = '<span style="color: var(--success); font-weight: 700;">✅ Link Google Docs tersedia</span>';
+        linkBtn.href = link;
+        linkBtn.style.display = 'inline-flex';
+      } else {
+        linkInfo.innerHTML = '<span style="color: var(--accent-2); font-weight: 700;">⚠️ Belum kirim link Google Docs</span>';
+        linkBtn.style.display = 'none';
+      }
+
       result.classList.add('show');
       actions.style.display = 'flex';
     }, 2000);
@@ -987,10 +1048,60 @@
   function updateStats() {
     // Semua baris di allPenugasan sudah punya tugas (difilter di server)
     document.getElementById('statAcak').textContent = allPenugasan.length;
-    const selesai = allPenugasan.filter(k => String(k['Status']) === 'Selesai').length;
-    const belum = allPenugasan.length - selesai;
+    var selesai = allPenugasan.filter(k => String(k['Status']) === 'Selesai').length;
+    var belum = allPenugasan.length - selesai;
     document.getElementById('statSelesai').textContent = selesai;
     document.getElementById('statBelum').textContent = belum;
+    renderLinkStats();
+  }
+
+  /* ============ LINK SUBMISSION STATS BY KELAS ============ */
+  function renderLinkStats() {
+    var tbody = document.getElementById('linkStatsTable');
+    if (!tbody) return;
+    if (allPenugasan.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">Belum ada data.</td></tr>';
+      return;
+    }
+    // Group by kelas
+    var kelasMap = {};
+    allPenugasan.forEach(function(k) {
+      var kls = String(k['Kelas'] || 'Tanpa Kelas').trim();
+      if (!kelasMap[kls]) kelasMap[kls] = { total: 0, sudah: 0, belum: 0 };
+      kelasMap[kls].total++;
+      if (String(k['Link Google Docs'] || '').trim()) {
+        kelasMap[kls].sudah++;
+      } else {
+        kelasMap[kls].belum++;
+      }
+    });
+    // Sort by kelas name
+    var kelasList = Object.keys(kelasMap).sort();
+    var html = '';
+    var grandTotal = 0, grandSudah = 0, grandBelum = 0;
+    kelasList.forEach(function(kls) {
+      var d = kelasMap[kls];
+      var pct = d.total > 0 ? Math.round(d.sudah / d.total * 100) : 0;
+      html += '<tr>' +
+        '<td><strong>' + escapeHtml(kls) + '</strong></td>' +
+        '<td class="num">' + d.total + '</td>' +
+        '<td class="num"><span class="badge-ok">' + d.sudah + '</span></td>' +
+        '<td class="num"><span class="badge-no">' + d.belum + '</span></td>' +
+        '<td class="num">' + pct + '%</td>' +
+        '</tr>';
+      grandTotal += d.total;
+      grandSudah += d.sudah;
+      grandBelum += d.belum;
+    });
+    var grandPct = grandTotal > 0 ? Math.round(grandSudah / grandTotal * 100) : 0;
+    html += '<tr class="total-row">' +
+      '<td>TOTAL</td>' +
+      '<td class="num">' + grandTotal + '</td>' +
+      '<td class="num">' + grandSudah + '</td>' +
+      '<td class="num">' + grandBelum + '</td>' +
+      '<td class="num">' + grandPct + '%</td>' +
+      '</tr>';
+    tbody.innerHTML = html;
   }
 
   /* ============================================================
