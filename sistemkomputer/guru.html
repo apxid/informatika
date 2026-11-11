@@ -331,6 +331,18 @@
       border-radius: 10px; padding: 10px 14px; margin-bottom: 16px;
       word-break: break-all; font-size: 12px; font-family: monospace;
     }
+    .siswa-result .anggota-display {
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+      text-align: left; font-size: 13px; line-height: 1.7;
+      max-height: 140px; overflow-y: auto;
+    }
+    .siswa-result .anggota-display .a-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+      opacity: .8; font-weight: 700; margin-bottom: 6px;
+    }
+    .siswa-result .anggota-display .a-list { color: #fff; }
+    .siswa-result .anggota-display .a-list .a-item { padding: 1px 0; }
     .siswa-result .actions-row {
       display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
     }
@@ -471,7 +483,7 @@
   <div class="tabs">
     <button class="active" onclick="switchTab('kelompok')">👥 Data Kelompok & Penugasan</button>
     <button onclick="switchTab('siswa')">🎓 Data Siswa (Master)</button>
-    <button onclick="switchTab('presentasi')">🎤 Acak Presentasi Siswa</button>
+    <button onclick="switchTab('presentasi')">🎤 Acak Presentasi Kelompok</button>
   </div>
 
   <!-- TAB PANEL: KELOMPOK -->
@@ -608,43 +620,47 @@
       </div>
     </div>
 
-    <!-- Card 2: Acak Siswa untuk Presentasi -->
+    <!-- Card 2: Acak Kelompok untuk Presentasi -->
     <div class="card">
       <div class="card-header" style="background: linear-gradient(135deg, var(--success), #4ade80);">
         <div>
-          <h2>🎤 Acak Siswa untuk Presentasi</h2>
-          <p class="sub">Pilih 1 siswa acak dari kelompok yang sudah kirim link → tampilkan ke seluruh siswa</p>
+          <h2>🎤 Acak Kelompok untuk Presentasi</h2>
+          <p class="sub">Pilih 1 kelompok acak yang sudah kirim link → tampilkan ke seluruh siswa</p>
         </div>
       </div>
       <div class="card-body">
 
         <div class="acak-siswa-card">
-          <h3>🎲 Acak Siswa Presentasi</h3>
-          <p class="sub">Siswa dipilih acak dari kelompok yang <strong>SUDAH MENGIRIM link Google Docs</strong>.<br>
-            Klik tombol di bawah untuk mengundi, lalu tekan <strong>"Tampilkan ke Siswa"</strong> agar hasilnya muncul di halaman siswa.</p>
+          <h3>🎲 Acak Kelompok Presentasi</h3>
+          <p class="sub">Sistem akan memilih 1 <strong>KELOMPOK</strong> acak dari kelompok yang
+            <strong>SUDAH MENGIRIM link Google Docs</strong>.<br>
+            Klik tombol di bawah untuk mengundi, lalu tekan <strong>"Tampilkan ke Siswa"</strong>
+            agar nama kelompok + anggota + link muncul di halaman siswa.</p>
 
           <div class="acak-siswa-controls">
             <select id="acakKelasFilter">
               <option value="">Semua Kelas</option>
             </select>
-            <button class="btn-acak-siswa" id="btnAcakSiswa" onclick="acakSiswaPresentation()">
-              <span style="font-size: 20px;">🎲</span> Acak Siswa Sekarang
+            <button class="btn-acak-siswa" id="btnAcakSiswa" onclick="acakKelompokPresentation()">
+              <span style="font-size: 20px;">🎲</span> Acak Kelompok Sekarang
             </button>
           </div>
         </div>
 
-        <!-- Hasil acak -->
+        <!-- Hasil acak kelompok -->
         <div class="siswa-result" id="siswaResult">
-          <div class="label-kecil">Siswa Terpilih untuk Presentasi</div>
+          <div class="label-kecil">Kelompok Terpilih untuk Presentasi</div>
           <div class="nama-besar" id="resultNama">—</div>
+
+          <div class="anggota-display">
+            <div class="a-label">👥 Anggota Kelompok</div>
+            <div class="a-list" id="resultAnggota">—</div>
+          </div>
+
           <div class="meta-row">
             <div>
               <span class="l">Kelas</span>
               <span class="v" id="resultKelas">—</span>
-            </div>
-            <div>
-              <span class="l">Kelompok</span>
-              <span class="v" id="resultKelompok">—</span>
             </div>
             <div>
               <span class="l">Tugas</span>
@@ -657,7 +673,7 @@
             <button class="btn-tampilkan" id="btnTampilkan" onclick="tampilkanKeSiswa()">
               <span style="font-size: 18px;">📢</span> Tampilkan ke Siswa
             </button>
-            <button class="btn-acak-lagi" onclick="acakSiswaPresentation()">
+            <button class="btn-acak-lagi" onclick="acakKelompokPresentation()">
               🎲 Acak Lagi
             </button>
             <button class="btn-stop-tampil" id="btnStopTampil" onclick="stopTampilanSiswa()">
@@ -1372,12 +1388,16 @@
   }
 
   /* ============================================================
-   *  FITUR BARU: TAB PRESENTASI (Acak Siswa + Tampilkan ke Siswa)
+   *  FITUR BARU: TAB PRESENTASI (Acak Kelompok + Tampilkan ke Siswa)
    * ============================================================ */
 
-  let currentPickedStudent = null;   // siswa hasil acak terakhir
+  let currentPickedGroup = null;     // kelompok hasil acak terakhir
   let activeBroadcastId = null;       // ID broadcast yang sedang aktif (dari polling)
   let broadcastPollTimer = null;
+
+  // Backward-compat alias: kalau ada kode lama yang pakai currentPickedStudent
+  // (sebenarnya tidak ada lagi, tapi jaga-jaga)
+  // Catatan: currentPickedStudent dihapus — sekarang semua pakai currentPickedGroup.
 
   /* ---- Alert khusus tab presentasi ---- */
   function showAlertPresentasi(type, msg) {
@@ -1476,8 +1496,8 @@
     }
   }
 
-  /* ---- Acak siswa untuk presentasi ---- */
-  async function acakSiswaPresentation() {
+  /* ---- Acak KELOMPOK untuk presentasi ---- */
+  async function acakKelompokPresentation() {
     const kelas = document.getElementById('acakKelasFilter').value;
     const btn = document.getElementById('btnAcakSiswa');
     const result = document.getElementById('siswaResult');
@@ -1486,44 +1506,57 @@
     btn.innerHTML = '<span style="font-size: 20px;">⏳</span> Mengundi...';
 
     try {
-      const res = await callAPI('getRandomSubmittedStudent', { kelas: kelas });
+      const res = await callAPI('getRandomSubmittedGroup', { kelas: kelas });
       btn.disabled = false;
-      btn.innerHTML = '<span style="font-size: 20px;">🎲</span> Acak Siswa Sekarang';
+      btn.innerHTML = '<span style="font-size: 20px;">🎲</span> Acak Kelompok Sekarang';
 
       if (!res.success) {
         showAlertPresentasi('error', '❌ ' + res.message);
         result.classList.remove('show');
-        currentPickedStudent = null;
+        currentPickedGroup = null;
         return;
       }
 
-      const s = res.student;
-      currentPickedStudent = s;
+      const g = res.group;
+      currentPickedGroup = g;
 
-      // Render hasil
-      document.getElementById('resultNama').textContent = s.nama;
-      document.getElementById('resultKelas').textContent = s.kelas;
-      document.getElementById('resultKelompok').textContent = s.kelompokNama;
-      document.getElementById('resultTugas').textContent = s.tugas || '-';
-      document.getElementById('resultLink').textContent = s.linkGDocs;
+      // Render hasil: nama kelompok (besar) + anggota list + kelas + tugas + link
+      document.getElementById('resultNama').textContent = g.namaKelompok;
+      document.getElementById('resultKelas').textContent = g.kelas;
+      document.getElementById('resultTugas').textContent = g.tugas || '-';
+      document.getElementById('resultLink').textContent = g.linkGDocs;
+
+      // Tampilkan daftar anggota kelompok
+      const anggotaArr = g.anggota || [];
+      const anggotaHtml = anggotaArr.length > 0
+        ? anggotaArr.map(function (n, i) {
+            return '<div class="a-item">' + (i + 1) + '. ' + escapeHtml(n) + '</div>';
+          }).join('')
+        : '<em>Tidak ada data anggota.</em>';
+      document.getElementById('resultAnggota').innerHTML = anggotaHtml;
+
       result.classList.add('show');
 
       // Reset state tombol tampilkan/stop berdasarkan status broadcast aktif
       updateTombolTampilkanState();
 
-      showAlertPresentasi('success', '✅ Siswa terpilih: ' + s.nama + ' (' + s.kelas + '). Tekan "Tampilkan ke Siswa" untuk broadcast.');
+      showAlertPresentasi('success', '✅ Kelompok terpilih: ' + g.namaKelompok + ' (' + g.kelas + ', ' + anggotaArr.length + ' anggota). Tekan "Tampilkan ke Siswa" untuk broadcast.');
       result.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (err) {
       btn.disabled = false;
-      btn.innerHTML = '<span style="font-size: 20px;">🎲</span> Acak Siswa Sekarang';
+      btn.innerHTML = '<span style="font-size: 20px;">🎲</span> Acak Kelompok Sekarang';
       showAlertPresentasi('error', '❌ Gagal mengundi: ' + err.message);
     }
   }
 
-  /* ---- Tombol "Tampilkan ke Siswa" → kirim broadcast ---- */
+  // Backward-compat alias: fungsi lama `acakSiswaPresentation` tetap tersedia
+  // (jika ada tombol/cache browser yang masih panggil versi lama)
+  async function acakSiswaPresentation() { return acakKelompokPresentation(); }
+
+  /* ---- Tombol "Tampilkan ke Siswa" → kirim broadcast (data kelompok) ---- */
   async function tampilkanKeSiswa() {
-    if (!currentPickedStudent) {
-      showAlertPresentasi('error', '⚠️ Acak siswa dulu sebelum menampilkan.');
+    if (!currentPickedGroup) {
+      showAlertPresentasi('error', '⚠️ Acak kelompok dulu sebelum menampilkan.');
       return;
     }
     const btn = document.getElementById('btnTampilkan');
@@ -1531,10 +1564,11 @@
     btn.innerHTML = '<span style="font-size: 18px;">⏳</span> Mengaktifkan...';
     try {
       const res = await callAPI('broadcastPresentation', {
-        nama:       currentPickedStudent.nama,
-        kelas:      currentPickedStudent.kelas,
-        tugas:      currentPickedStudent.tugas,
-        linkGDocs:  currentPickedStudent.linkGDocs
+        nama:       currentPickedGroup.namaKelompok,   // nama kelompok (bukan siswa)
+        kelas:      currentPickedGroup.kelas,
+        tugas:      currentPickedGroup.tugas,
+        linkGDocs:  currentPickedGroup.linkGDocs,
+        anggota:    currentPickedGroup.anggotaStr      // string daftar anggota
       }, 'POST');
       btn.disabled = false;
       btn.innerHTML = '<span style="font-size: 18px;">📢</span> Tampilkan ke Siswa';
@@ -1544,7 +1578,7 @@
       }
       activeBroadcastId = res.id;
       updateTombolTampilkanState();
-      updateBroadcastStatusBanner(true, currentPickedStudent);
+      updateBroadcastStatusBanner(true, currentPickedGroup);
       showAlertPresentasi('success', '📢 ' + res.message);
       pollBroadcastStatus(); // segera sync status
     } catch (err) {
@@ -1588,12 +1622,19 @@
     }
   }
 
-  /* ---- Tampilkan/sembunyikan banner status broadcast di atas tab ---- */
-  function updateBroadcastStatusBanner(isActive, student) {
+  /* ---- Tampilkan/sembunyikan banner status broadcast di atas tab ----
+     Catatan: parameter `obj` bisa berupa:
+       - object group dari acakKelompokPresentation: { namaKelompok, kelas, ... }
+       - object broadcast dari polling getBroadcast: { nama, kelas, ... }
+     Kita handle keduanya supaya fleksibel. */
+  function updateBroadcastStatusBanner(isActive, obj) {
     const banner = document.getElementById('broadcastStatus');
     const info = document.getElementById('broadcastStatusInfo');
-    if (isActive && student) {
-      info.innerHTML = 'Tampilan popup aktif untuk siswa: <strong>' + escapeHtml(student.nama) + '</strong> (' + escapeHtml(student.kelas) + '). Siswa lain akan melihat popup ini di halaman index.html.';
+    if (isActive && obj) {
+      // Support 2 format: namaKelompok (group) atau nama (broadcast)
+      const nama = obj.namaKelompok || obj.nama || '';
+      const kelas = obj.kelas || '';
+      info.innerHTML = 'Tampilan popup aktif untuk kelompok: <strong>' + escapeHtml(nama) + '</strong> (' + escapeHtml(kelas) + '). Siswa lain akan melihat popup ini di halaman index.html.';
       banner.classList.add('show');
     } else {
       info.textContent = '';
