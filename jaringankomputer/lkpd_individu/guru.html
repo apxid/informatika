@@ -509,9 +509,12 @@
       <div id="acakLinkInfo" style="margin-top: 10px; font-size: 13px; color: var(--muted);"></div>
     </div>
     <div class="acak-actions" id="acakActions" style="display:none;">
-      <a id="acakLinkBtn" class="acak-link-btn" href="#" target="_blank" rel="noopener" style="display:none;">
-        📄 Tampilkan Link
+      <a id="acakLinkBtn" class="acak-link-btn" href="#" target="_blank" rel="noopener" style="display:none;" onclick="tampilkanKeSiswa(); return false;">
+        📄 Tampilkan ke Siswa
       </a>
+      <button id="acakStopBtn" class="btn btn-danger" onclick="stopPresentation()" style="display:none;">
+        ⏹ Stop Presentasi
+      </button>
       <button class="btn btn-primary" onclick="startAcakPresentasi()">🎲 Acak Lagi</button>
       <button class="btn btn-ghost" onclick="closeAcakModal()" style="border: 1px solid var(--border);">Tutup</button>
     </div>
@@ -528,7 +531,7 @@
    *  yang Anda dapat setelah deploy di Google Apps Script.
    *  Contoh: https://script.google.com/macros/s/AKfycbyXXX/exec
    * ===================================================== */
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkYg8lMaX8QCPDE-4UiFqNisBv6lTt9tzdkzYn6j58vWGFmmKx_TuRiNy4Oo962Oqw/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoZFqDV2NCNZlfSakoqWvMaix1H6W8AIDxxZ1kN6ggaxPG1tnbQp1Bu0BYotv4N8U/exec';
 
   // URL Spreadsheet langsung dari ID (sudah diisi otomatis dari kode.gs)
   const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1FmlCyt698HUezCxjpJ6LuTbeaTL0qrGSFcLz3O2HN80/edit';
@@ -915,6 +918,44 @@
 
   function closeAcakModal() {
     document.getElementById('acakModal').classList.remove('show');
+  }
+
+  /* ============ TAMPILKAN KE SISWA (trigger popup di index.html) ============ */
+  async function tampilkanKeSiswa() {
+    if (!acakPicked) return;
+    var nama = acakPicked['Nama'] || '';
+    var kelas = acakPicked['Kelas'] || '';
+    var tugas = acakPicked['Tugas'] || '';
+    var link = String(acakPicked['Link Google Docs'] || '').trim();
+    if (!link) {
+      showAlert('error', '⚠️ Siswa ini belum mengirim link Google Docs.');
+      return;
+    }
+    try {
+      var res = await callAPI('setPresentation', { nama: nama, kelas: kelas, tugas: tugas, link: link }, 'POST');
+      if (res.success) {
+        showAlert('success', '✅ ' + res.message + '. Popup muncul di layar semua siswa dalam ~5 detik.');
+        document.getElementById('acakStopBtn').style.display = 'inline-flex';
+        document.getElementById('acakLinkBtn').style.display = 'none';
+      } else {
+        showAlert('error', '❌ Gagal: ' + (res.message || 'unknown'));
+      }
+    } catch (err) {
+      showAlert('error', '❌ ' + err.message);
+    }
+  }
+
+  async function stopPresentation() {
+    try {
+      var res = await callAPI('clearPresentation', {}, 'POST');
+      if (res.success) {
+        showAlert('success', '✅ Presentasi dihentikan. Popup siswa tertutup.');
+        document.getElementById('acakStopBtn').style.display = 'none';
+        document.getElementById('acakLinkBtn').style.display = 'inline-flex';
+      }
+    } catch (err) {
+      showAlert('error', '❌ ' + err.message);
+    }
   }
 
   async function updateStatus(rowNum, status) {
