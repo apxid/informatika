@@ -227,6 +227,156 @@
       margin-top: 8px; font-size: 12px;
       color: var(--warn); font-weight: 700;
     }
+
+    /* ============ TAB PRESENTASI (Acak Siswa) ============ */
+    .pres-stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px; margin-bottom: 22px;
+    }
+    .pres-stat-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 16px 18px; box-shadow: var(--shadow);
+      border-top: 4px solid var(--primary-2);
+    }
+    .pres-stat-card .head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 10px;
+    }
+    .pres-stat-card .kelas {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800; color: var(--primary); font-size: 16px;
+    }
+    .pres-stat-card .total {
+      font-size: 11px; color: var(--muted); font-weight: 700;
+    }
+    .pres-stat-card .bars { display: flex; gap: 4px; height: 8px; border-radius: 4px; overflow: hidden; background: var(--border); margin-bottom: 8px; }
+    .pres-stat-card .bar-sudah { background: var(--success); }
+    .pres-stat-card .bar-belum { background: var(--accent-2); }
+    .pres-stat-card .nums { display: flex; justify-content: space-between; font-size: 12px; }
+    .pres-stat-card .num-sudah { color: var(--success); font-weight: 800; }
+    .pres-stat-card .num-belum { color: var(--accent-2); font-weight: 800; }
+
+    .pres-stat-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    .pres-stat-table th, .pres-stat-table td { border: 1px solid var(--border); padding: 9px 12px; text-align: center; }
+    .pres-stat-table th { background: var(--primary); color: #fff; font-weight: 700; font-size: 12px; }
+    .pres-stat-table td.kelas-col { text-align: left; font-weight: 800; color: var(--primary); }
+    .pres-stat-table tr:nth-child(even) { background: #f8fafc; }
+    .pres-stat-table .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-weight: 800; font-size: 12px; }
+    .pill.sudah { background: #dcfce7; color: #166534; }
+    .pill.belum { background: #fee2e2; color: #991b1b; }
+
+    .acak-siswa-card {
+      background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%);
+      border-radius: var(--radius);
+      padding: 24px; box-shadow: var(--shadow);
+      border: 2px dashed var(--success);
+      text-align: center; margin-bottom: 20px;
+    }
+    .acak-siswa-card h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px; font-weight: 800; color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .acak-siswa-card .sub {
+      font-size: 13px; color: var(--muted); margin-bottom: 18px;
+    }
+    .acak-siswa-controls {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .acak-siswa-controls select {
+      padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid var(--border); font-family: inherit;
+      font-size: 14px; font-weight: 700; background: #fff; color: var(--text);
+    }
+    .btn-acak-siswa {
+      background: linear-gradient(135deg, var(--success), #4ade80);
+      color: #fff; border: none; padding: 14px 28px;
+      border-radius: 12px; font-size: 16px; font-weight: 900;
+      cursor: pointer; box-shadow: 0 10px 22px -8px rgba(22,163,74,.5);
+      transition: transform .15s, box-shadow .15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-acak-siswa:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -10px rgba(22,163,74,.6); }
+    .btn-acak-siswa:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .siswa-result {
+      display: none;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      color: #fff; border-radius: var(--radius);
+      padding: 28px 24px; box-shadow: var(--shadow-lg);
+      margin-top: 18px; animation: pop .4s ease;
+    }
+    .siswa-result.show { display: block; }
+    @keyframes pop { 0% { transform: scale(.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .siswa-result .label-kecil {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+      opacity: .85; font-weight: 700; margin-bottom: 4px;
+    }
+    .siswa-result .nama-besar {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 28px; font-weight: 900; line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .siswa-result .meta-row {
+      display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px;
+      margin-bottom: 16px; opacity: .95;
+    }
+    .siswa-result .meta-row div { display: flex; flex-direction: column; }
+    .siswa-result .meta-row .l { font-size: 11px; opacity: .8; font-weight: 700; }
+    .siswa-result .meta-row .v { font-weight: 800; font-size: 14px; }
+    .siswa-result .link-box {
+      background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25);
+      border-radius: 10px; padding: 10px 14px; margin-bottom: 16px;
+      word-break: break-all; font-size: 12px; font-family: monospace;
+    }
+    .siswa-result .actions-row {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    }
+    .siswa-result .btn-tampilkan {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff; border: none; padding: 14px 26px;
+      border-radius: 12px; font-size: 15px; font-weight: 900;
+      cursor: pointer; box-shadow: 0 10px 22px -8px rgba(245,158,11,.6);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-tampilkan:hover { transform: translateY(-2px); }
+    .btn-tampilkan:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .siswa-result .btn-acak-lagi {
+      background: rgba(255,255,255,.2); color: #fff;
+      border: 1px solid rgba(255,255,255,.4);
+      padding: 14px 22px; border-radius: 12px;
+      font-size: 14px; font-weight: 800; cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .siswa-result .btn-acak-lagi:hover { background: rgba(255,255,255,.3); }
+    .siswa-result .btn-stop-tampil {
+      background: rgba(239,68,68,.9); color: #fff;
+      border: none; padding: 14px 22px; border-radius: 12px;
+      font-size: 14px; font-weight: 800; cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: none;
+    }
+    .btn-stop-tampil.show { display: inline-flex; align-items: center; gap: 8px; }
+    .btn-stop-tampil:hover { background: var(--accent-2); }
+
+    .broadcast-status {
+      display: none;
+      background: #fef3c7; border-left: 4px solid var(--accent);
+      padding: 12px 16px; border-radius: 10px; margin-bottom: 18px;
+      font-size: 13px; color: #92400e; font-weight: 700;
+      align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .broadcast-status.show { display: flex; }
+    .broadcast-status .dot {
+      width: 10px; height: 10px; background: var(--accent-2);
+      border-radius: 50%; animation: pulse 1.4s ease infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+    .broadcast-status .info { flex: 1; min-width: 200px; }
+    .broadcast-status .info strong { color: var(--accent-2); }
   </style>
 </head>
 <body>
@@ -321,6 +471,7 @@
   <div class="tabs">
     <button class="active" onclick="switchTab('kelompok')">👥 Data Kelompok & Penugasan</button>
     <button onclick="switchTab('siswa')">🎓 Data Siswa (Master)</button>
+    <button onclick="switchTab('presentasi')">🎤 Acak Presentasi Siswa</button>
   </div>
 
   <!-- TAB PANEL: KELOMPOK -->
@@ -407,6 +558,121 @@
     </div>
   </div>
 
+  <!-- TAB PANEL: PRESENTASI (Acak Siswa + Tampilkan ke Siswa) -->
+  <div class="tab-panel" id="panel-presentasi">
+
+    <!-- Status broadcast aktif -->
+    <div class="broadcast-status" id="broadcastStatus">
+      <span class="dot"></span>
+      <span class="info" id="broadcastStatusInfo">Tampilan popup sedang aktif di halaman siswa.</span>
+      <button class="btn btn-danger btn-sm" onclick="stopTampilanSiswa()">⏹ Stop Tampilan</button>
+    </div>
+
+    <!-- Card 1: Statistik pengumpulan per kelas -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2>📊 Statistik Pengumpulan Link Google Docs</h2>
+          <p class="sub">Diurutkan per kelas (sort by kelas) — jumlah siswa yang sudah vs belum kirim</p>
+        </div>
+        <button class="btn btn-ghost" onclick="loadSubmissionStats()" title="Refresh statistik">
+          ↻ Refresh Stats
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="pres-stats-grid" id="presStatsGrid">
+          <div class="pres-stat-card"><div class="kelas">Memuat statistik...</div></div>
+        </div>
+
+        <h3 style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 800; color: var(--primary); margin: 20px 0 8px;">
+          📋 Rincian per Kelas (Sort by Kelas)
+        </h3>
+        <div class="table-wrap">
+          <table class="pres-stat-table" id="presStatsTable">
+            <thead>
+              <tr>
+                <th>Kelas</th>
+                <th>Total Kelompok</th>
+                <th>Kelompok Sudah Kirim</th>
+                <th>Kelompok Belum Kirim</th>
+                <th>Total Siswa di Kelas</th>
+                <th>Siswa Sudah Kirim</th>
+                <th>Siswa Belum Kirim</th>
+              </tr>
+            </thead>
+            <tbody id="presStatsBody">
+              <tr><td colspan="7" style="color: var(--muted); font-style: italic;">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Acak Siswa untuk Presentasi -->
+    <div class="card">
+      <div class="card-header" style="background: linear-gradient(135deg, var(--success), #4ade80);">
+        <div>
+          <h2>🎤 Acak Siswa untuk Presentasi</h2>
+          <p class="sub">Pilih 1 siswa acak dari kelompok yang sudah kirim link → tampilkan ke seluruh siswa</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="acak-siswa-card">
+          <h3>🎲 Acak Siswa Presentasi</h3>
+          <p class="sub">Siswa dipilih acak dari kelompok yang <strong>SUDAH MENGIRIM link Google Docs</strong>.<br>
+            Klik tombol di bawah untuk mengundi, lalu tekan <strong>"Tampilkan ke Siswa"</strong> agar hasilnya muncul di halaman siswa.</p>
+
+          <div class="acak-siswa-controls">
+            <select id="acakKelasFilter">
+              <option value="">Semua Kelas</option>
+            </select>
+            <button class="btn-acak-siswa" id="btnAcakSiswa" onclick="acakSiswaPresentation()">
+              <span style="font-size: 20px;">🎲</span> Acak Siswa Sekarang
+            </button>
+          </div>
+        </div>
+
+        <!-- Hasil acak -->
+        <div class="siswa-result" id="siswaResult">
+          <div class="label-kecil">Siswa Terpilih untuk Presentasi</div>
+          <div class="nama-besar" id="resultNama">—</div>
+          <div class="meta-row">
+            <div>
+              <span class="l">Kelas</span>
+              <span class="v" id="resultKelas">—</span>
+            </div>
+            <div>
+              <span class="l">Kelompok</span>
+              <span class="v" id="resultKelompok">—</span>
+            </div>
+            <div>
+              <span class="l">Tugas</span>
+              <span class="v" id="resultTugas">—</span>
+            </div>
+          </div>
+          <div class="label-kecil">Link Google Docs</div>
+          <div class="link-box" id="resultLink">—</div>
+          <div class="actions-row">
+            <button class="btn-tampilkan" id="btnTampilkan" onclick="tampilkanKeSiswa()">
+              <span style="font-size: 18px;">📢</span> Tampilkan ke Siswa
+            </button>
+            <button class="btn-acak-lagi" onclick="acakSiswaPresentation()">
+              🎲 Acak Lagi
+            </button>
+            <button class="btn-stop-tampil" id="btnStopTampil" onclick="stopTampilanSiswa()">
+              ⏹ Stop Tampilan
+            </button>
+          </div>
+        </div>
+
+        <div class="alert" id="alertPresentasi" style="margin-top: 16px;"></div>
+
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- SAVE OVERLAY -->
@@ -419,10 +685,10 @@
    *  yang Anda dapat setelah deploy di Google Apps Script.
    *  Contoh: https://script.google.com/macros/s/AKfycbyXXX/exec
    * ===================================================== */
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoZFqDV2NCNZlfSakoqWvMaix1H6W8AIDxxZ1kN6ggaxPG1tnbQp1Bu0BYotv4N8U/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0AM2FXt3RSMyO5Fqs_Gtq5lfkdSf7PhxjyhjKJ2XbX0NszckRU54SxfwvUff1Q-Qxrw/exec';
 
   // URL Spreadsheet langsung dari ID (sudah diisi otomatis dari kode.gs)
-  const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1FmlCyt698HUezCxjpJ6LuTbeaTL0qrGSFcLz3O2HN80/edit';
+  const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1MvJX8oTtNtJbl8JgCSl8zB3VDOwKhVbw_ToTb7YwraQ/edit';
 
   // === KONFIGURASI PIN GURU ===
   // Ganti angka di bawah untuk mengubah PIN masuk guru.
@@ -571,6 +837,9 @@
     await loadKelompok();
     await loadKelasFilter();
     await loadSiswa();
+    await loadSubmissionStats();
+    await loadAcakKelasFilter();
+    pollBroadcastStatus();
   }
 
   /* ============ API CALL HELPER (fetch cross-origin) ============ */
@@ -603,13 +872,19 @@
   function switchTab(name) {
     document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const buttons = document.querySelectorAll('.tabs button');
     if (name === 'kelompok') {
-      document.querySelector('.tabs button').classList.add('active');
+      buttons[0].classList.add('active');
       document.getElementById('panel-kelompok').classList.add('active');
-    } else {
-      document.querySelectorAll('.tabs button')[1].classList.add('active');
+    } else if (name === 'siswa') {
+      buttons[1].classList.add('active');
       document.getElementById('panel-siswa').classList.add('active');
       loadSiswa();
+    } else if (name === 'presentasi') {
+      buttons[2].classList.add('active');
+      document.getElementById('panel-presentasi').classList.add('active');
+      loadSubmissionStats();
+      pollBroadcastStatus();
     }
   }
 
@@ -1094,6 +1369,268 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  /* ============================================================
+   *  FITUR BARU: TAB PRESENTASI (Acak Siswa + Tampilkan ke Siswa)
+   * ============================================================ */
+
+  let currentPickedStudent = null;   // siswa hasil acak terakhir
+  let activeBroadcastId = null;       // ID broadcast yang sedang aktif (dari polling)
+  let broadcastPollTimer = null;
+
+  /* ---- Alert khusus tab presentasi ---- */
+  function showAlertPresentasi(type, msg) {
+    const box = document.getElementById('alertPresentasi');
+    if (!box) return;
+    box.className = 'alert ' + type + ' show';
+    box.textContent = msg;
+    if (type === 'success') setTimeout(() => box.classList.remove('show'), 5000);
+  }
+
+  /* ---- Load dropdown kelas untuk filter acak siswa ---- */
+  async function loadAcakKelasFilter() {
+    const sel = document.getElementById('acakKelasFilter');
+    if (!sel) return;
+    try {
+      const res = await callAPI('getClasses');
+      if (!res.success || !res.classes) return;
+      const current = sel.value;
+      sel.innerHTML = '<option value="">Semua Kelas</option>' +
+        res.classes.map(c => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>').join('');
+      sel.value = current || '';
+    } catch (err) { /* ignore */ }
+  }
+
+  /* ---- Load statistik pengumpulan per kelas ---- */
+  async function loadSubmissionStats() {
+    const grid = document.getElementById('presStatsGrid');
+    const tbody = document.getElementById('presStatsBody');
+    if (!grid || !tbody) return;
+    try {
+      const res = await callAPI('getSubmissionStats');
+      if (!res.success) throw new Error(res.message || 'Gagal memuat statistik');
+      const data = res.data || [];
+      const total = res.total || {};
+
+      // Render grid cards (ringkasan per kelas)
+      if (data.length === 0) {
+        grid.innerHTML = '<div class="pres-stat-card"><div class="kelas">Belum ada data kelompok.</div></div>';
+      } else {
+        grid.innerHTML = data.map(function (s) {
+          const totalSiswaKirim = (s.siswaSudahKirim || 0) + (s.siswaBelumKirim || 0);
+          const pctSudah = totalSiswaKirim > 0 ? Math.round((s.siswaSudahKirim / totalSiswaKirim) * 100) : 0;
+          const pctBelum = 100 - pctSudah;
+          return `
+            <div class="pres-stat-card">
+              <div class="head">
+                <div class="kelas">${escapeHtml(s.kelas)}</div>
+                <div class="total">${s.kelompokTotal} kelompok</div>
+              </div>
+              <div class="bars">
+                <div class="bar-sudah" style="width: ${pctSudah}%"></div>
+                <div class="bar-belum" style="width: ${pctBelum}%"></div>
+              </div>
+              <div class="nums">
+                <span class="num-sudah">✓ ${s.siswaSudahKirim} siswa kirim</span>
+                <span class="num-belum">${s.siswaBelumKirim} belum ✗</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render tabel rincian
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color: var(--muted); font-style: italic;">Belum ada data.</td></tr>';
+      } else {
+        tbody.innerHTML = data.map(function (s) {
+          return `
+            <tr>
+              <td class="kelas-col">${escapeHtml(s.kelas)}</td>
+              <td>${s.kelompokTotal}</td>
+              <td><span class="pill sudah">${s.kelompokSubmitted}</span></td>
+              <td><span class="pill belum">${s.kelompokNotSubmitted}</span></td>
+              <td>${s.totalSiswa || '-'}</td>
+              <td><span class="pill sudah">${s.siswaSudahKirim}</span></td>
+              <td><span class="pill belum">${s.siswaBelumKirim}</span></td>
+            </tr>
+          `;
+        }).join('');
+        // Tambah baris total di paling bawah
+        tbody.innerHTML += `
+          <tr style="background: #fef3c7; font-weight: 800;">
+            <td class="kelas-col" style="color: var(--accent-2);">TOTAL (${total.kelasCount || 0} kelas)</td>
+            <td>${total.kelompokTotal || 0}</td>
+            <td><span class="pill sudah">${total.kelompokSubmitted || 0}</span></td>
+            <td><span class="pill belum">${total.kelompokNotSubmitted || 0}</span></td>
+            <td>—</td>
+            <td><span class="pill sudah">${total.siswaSudahKirim || 0}</span></td>
+            <td><span class="pill belum">${total.siswaBelumKirim || 0}</span></td>
+          </tr>
+        `;
+      }
+    } catch (err) {
+      grid.innerHTML = '<div class="pres-stat-card"><div class="kelas" style="color: var(--accent-2);">❌ Gagal: ' + escapeHtml(err.message) + '</div></div>';
+      tbody.innerHTML = '<tr><td colspan="7" style="color: var(--accent-2);">❌ ' + escapeHtml(err.message) + '</td></tr>';
+    }
+  }
+
+  /* ---- Acak siswa untuk presentasi ---- */
+  async function acakSiswaPresentation() {
+    const kelas = document.getElementById('acakKelasFilter').value;
+    const btn = document.getElementById('btnAcakSiswa');
+    const result = document.getElementById('siswaResult');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span style="font-size: 20px;">⏳</span> Mengundi...';
+
+    try {
+      const res = await callAPI('getRandomSubmittedStudent', { kelas: kelas });
+      btn.disabled = false;
+      btn.innerHTML = '<span style="font-size: 20px;">🎲</span> Acak Siswa Sekarang';
+
+      if (!res.success) {
+        showAlertPresentasi('error', '❌ ' + res.message);
+        result.classList.remove('show');
+        currentPickedStudent = null;
+        return;
+      }
+
+      const s = res.student;
+      currentPickedStudent = s;
+
+      // Render hasil
+      document.getElementById('resultNama').textContent = s.nama;
+      document.getElementById('resultKelas').textContent = s.kelas;
+      document.getElementById('resultKelompok').textContent = s.kelompokNama;
+      document.getElementById('resultTugas').textContent = s.tugas || '-';
+      document.getElementById('resultLink').textContent = s.linkGDocs;
+      result.classList.add('show');
+
+      // Reset state tombol tampilkan/stop berdasarkan status broadcast aktif
+      updateTombolTampilkanState();
+
+      showAlertPresentasi('success', '✅ Siswa terpilih: ' + s.nama + ' (' + s.kelas + '). Tekan "Tampilkan ke Siswa" untuk broadcast.');
+      result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = '<span style="font-size: 20px;">🎲</span> Acak Siswa Sekarang';
+      showAlertPresentasi('error', '❌ Gagal mengundi: ' + err.message);
+    }
+  }
+
+  /* ---- Tombol "Tampilkan ke Siswa" → kirim broadcast ---- */
+  async function tampilkanKeSiswa() {
+    if (!currentPickedStudent) {
+      showAlertPresentasi('error', '⚠️ Acak siswa dulu sebelum menampilkan.');
+      return;
+    }
+    const btn = document.getElementById('btnTampilkan');
+    btn.disabled = true;
+    btn.innerHTML = '<span style="font-size: 18px;">⏳</span> Mengaktifkan...';
+    try {
+      const res = await callAPI('broadcastPresentation', {
+        nama:       currentPickedStudent.nama,
+        kelas:      currentPickedStudent.kelas,
+        tugas:      currentPickedStudent.tugas,
+        linkGDocs:  currentPickedStudent.linkGDocs
+      }, 'POST');
+      btn.disabled = false;
+      btn.innerHTML = '<span style="font-size: 18px;">📢</span> Tampilkan ke Siswa';
+      if (!res.success) {
+        showAlertPresentasi('error', '❌ ' + res.message);
+        return;
+      }
+      activeBroadcastId = res.id;
+      updateTombolTampilkanState();
+      updateBroadcastStatusBanner(true, currentPickedStudent);
+      showAlertPresentasi('success', '📢 ' + res.message);
+      pollBroadcastStatus(); // segera sync status
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = '<span style="font-size: 18px;">📢</span> Tampilkan ke Siswa';
+      showAlertPresentasi('error', '❌ Gagal mengaktifkan: ' + err.message);
+    }
+  }
+
+  /* ---- Tombol "Stop Tampilan" → matikan broadcast ---- */
+  async function stopTampilanSiswa() {
+    try {
+      const res = await callAPI('clearBroadcast', {}, 'POST');
+      if (!res.success) {
+        showAlertPresentasi('error', '❌ ' + res.message);
+        return;
+      }
+      activeBroadcastId = null;
+      updateTombolTampilkanState();
+      updateBroadcastStatusBanner(false);
+      showAlertPresentasi('success', '⏹ ' + res.message);
+    } catch (err) {
+      showAlertPresentasi('error', '❌ Gagal stop: ' + err.message);
+    }
+  }
+
+  /* ---- Sync UI tombol berdasarkan status broadcast aktif ---- */
+  function updateTombolTampilkanState() {
+    const btnTampil = document.getElementById('btnTampilkan');
+    const btnStop = document.getElementById('btnStopTampil');
+    if (activeBroadcastId) {
+      // Ada broadcast aktif → disable Tampilkan, tampilkan Stop
+      btnTampil.disabled = true;
+      btnTampil.innerHTML = '<span style="font-size: 18px;">✓</span> Sedang Ditampilkan';
+      btnStop.classList.add('show');
+    } else {
+      // Tidak ada broadcast aktif → enable Tampilkan, sembunyikan Stop
+      btnTampil.disabled = false;
+      btnTampil.innerHTML = '<span style="font-size: 18px;">📢</span> Tampilkan ke Siswa';
+      btnStop.classList.remove('show');
+    }
+  }
+
+  /* ---- Tampilkan/sembunyikan banner status broadcast di atas tab ---- */
+  function updateBroadcastStatusBanner(isActive, student) {
+    const banner = document.getElementById('broadcastStatus');
+    const info = document.getElementById('broadcastStatusInfo');
+    if (isActive && student) {
+      info.innerHTML = 'Tampilan popup aktif untuk siswa: <strong>' + escapeHtml(student.nama) + '</strong> (' + escapeHtml(student.kelas) + '). Siswa lain akan melihat popup ini di halaman index.html.';
+      banner.classList.add('show');
+    } else {
+      info.textContent = '';
+      banner.classList.remove('show');
+    }
+  }
+
+  /* ---- Polling status broadcast (untuk sync guru.html ↔ index.html) ----
+     Cek setiap 5 detik apakah masih ada broadcast aktif.
+     Jika broadcast dimatikan dari sisi lain (misal guru buka di tab lain),
+     UI di sini juga ikut update. */
+  function pollBroadcastStatus() {
+    if (broadcastPollTimer) clearInterval(broadcastPollTimer);
+    broadcastPollTimer = setInterval(checkBroadcastStatus, 5000);
+    // Cek langsung sekali saat masuk tab
+    checkBroadcastStatus();
+  }
+
+  async function checkBroadcastStatus() {
+    try {
+      const res = await callAPI('getBroadcast');
+      if (!res.success) return;
+      if (res.active && res.broadcast) {
+        activeBroadcastId = res.broadcast.id;
+        updateTombolTampilkanState();
+        updateBroadcastStatusBanner(true, {
+          nama: res.broadcast.nama,
+          kelas: res.broadcast.kelas
+        });
+      } else {
+        if (activeBroadcastId) {
+          activeBroadcastId = null;
+          updateTombolTampilkanState();
+          updateBroadcastStatusBanner(false);
+        }
+      }
+    } catch (err) { /* silent — polling, jangan ganggu */ }
   }
 </script>
 
