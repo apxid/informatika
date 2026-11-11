@@ -139,6 +139,128 @@
     .save-overlay.show { display: grid; }
     .save-overlay .loader { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
 
+    /* ============ MODAL BROADCAST (guru tampilkan hasil siswa) ============ */
+    .broadcast-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,.85);
+      backdrop-filter: blur(10px);
+      display: none; place-items: center;
+      z-index: 1500; padding: 20px;
+      animation: fadeIn .3s ease;
+    }
+    .broadcast-modal-overlay.show { display: grid; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .broadcast-modal {
+      background: linear-gradient(135deg, #fff 0%, #eff6ff 100%);
+      border-radius: 24px;
+      padding: 36px 30px;
+      max-width: 480px; width: 100%;
+      box-shadow: 0 25px 60px -15px rgba(0,0,0,.6);
+      text-align: center; position: relative;
+      border: 4px solid var(--primary);
+      animation: popIn .4s cubic-bezier(.34, 1.56, .64, 1);
+    }
+    @keyframes popIn {
+      0% { transform: scale(.7) translateY(20px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .broadcast-modal .badge-presentation {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff; padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 14px -4px rgba(245,158,11,.5);
+    }
+    .broadcast-modal .pres-icon {
+      width: 84px; height: 84px;
+      margin: 0 auto 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 42px;
+      box-shadow: 0 12px 28px -8px rgba(30,58,138,.5);
+    }
+    .broadcast-modal h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: var(--muted); margin-bottom: 4px;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .broadcast-modal .student-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 28px; font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 12px;
+      line-height: 1.15;
+      word-break: break-word;
+    }
+    .broadcast-modal .meta-chips {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .broadcast-modal .chip {
+      background: #dbeafe; color: var(--primary);
+      padding: 5px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+    }
+    .broadcast-modal .chip.task {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+    }
+    .broadcast-modal .link-display {
+      background: #f8fafc; border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 10px 14px;
+      margin-bottom: 18px;
+      font-family: monospace; font-size: 12px;
+      word-break: break-all; color: var(--text);
+      max-height: 80px; overflow-y: auto; text-align: left;
+    }
+    .broadcast-modal .actions {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+    }
+    .broadcast-modal .btn-buka-link {
+      background: linear-gradient(135deg, var(--success), #4ade80);
+      color: #fff; border: none;
+      padding: 14px 26px; border-radius: 12px;
+      font-size: 15px; font-weight: 900; cursor: pointer;
+      box-shadow: 0 10px 22px -8px rgba(22,163,74,.55);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-buka-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -10px rgba(22,163,74,.65);
+    }
+    .broadcast-modal .btn-tutup {
+      background: var(--bg); color: var(--text);
+      border: 1.5px solid var(--border);
+      padding: 14px 22px; border-radius: 12px;
+      font-size: 14px; font-weight: 800; cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .btn-tutup:hover { background: #e2e8f0; }
+    .broadcast-modal .footer-note {
+      margin-top: 14px; font-size: 11px; color: var(--muted); font-style: italic;
+    }
+    .broadcast-modal .live-dot {
+      position: absolute; top: 16px; right: 16px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-2); color: #fff;
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 10px; font-weight: 800;
+    }
+    .broadcast-modal .live-dot::before {
+      content: ''; width: 8px; height: 8px;
+      background: #fff; border-radius: 50%;
+      animation: pulse 1.4s ease infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
     .radio-group { display: flex; gap: 8px; }
     .radio-group label { flex: 1; display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); padding: 10px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all .15s; background: #fff; }
     .radio-group input[type="radio"] { accent-color: var(--primary); }
@@ -447,6 +569,32 @@
   <div class="save-overlay" id="saveOverlay"><div class="loader"></div></div>
 
   <!-- ========================================================= -->
+  <!--  MODAL BROADCAST (muncul otomatis saat guru klik         -->
+  <!--  "Tampilkan ke Siswa" — menampilkan nama siswa + link GDocs) -->
+  <!-- ========================================================= -->
+  <div class="broadcast-modal-overlay" id="broadcastModalOverlay">
+    <div class="broadcast-modal">
+      <span class="live-dot">LIVE</span>
+      <div class="badge-presentation">📺 Presentasi Siswa</div>
+      <div class="pres-icon">🎤</div>
+      <h2>Siswa Terpilih untuk Presentasi</h2>
+      <div class="student-name" id="bcStudentName">—</div>
+      <div class="meta-chips">
+        <span class="chip" id="bcChipKelas">—</span>
+        <span class="chip task" id="bcChipTugas">—</span>
+      </div>
+      <div class="link-display" id="bcLinkDisplay">—</div>
+      <div class="actions">
+        <a class="btn-buka-link" id="bcBtnBuka" href="#" target="_blank" rel="noopener">
+          <span style="font-size: 18px;">🔗</span> Buka Google Docs
+        </a>
+        <button class="btn-tutup" onclick="closeBroadcastModal()">✕ Tutup</button>
+      </div>
+      <div class="footer-note" id="bcFooterNote">Tampilan ini dikirim oleh guru.</div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
   <!--  JAVASCRIPT                                                 -->
   <!-- ========================================================= -->
   <script>
@@ -456,7 +604,7 @@
      *  yang Anda dapat setelah deploy di Google Apps Script.
      *  Contoh: https://script.google.com/macros/s/AKfycbyXXX/exec
      * ===================================================== */
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoZFqDV2NCNZlfSakoqWvMaix1H6W8AIDxxZ1kN6ggaxPG1tnbQp1Bu0BYotv4N8U/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0AM2FXt3RSMyO5Fqs_Gtq5lfkdSf7PhxjyhjKJ2XbX0NszckRU54SxfwvUff1Q-Qxrw/exec';
 
     // State
     let currentGroup = null;
@@ -1024,6 +1172,104 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    /* ============================================================
+     *  FITUR BARU: POLLING BROADCAST PRESENTASI
+     * ============================================================
+     *  index.html akan polling endpoint `getBroadcast` setiap 3 detik.
+     *  Jika ada broadcast aktif (guru klik "Tampilkan ke Siswa" di
+     *  guru.html), modal otomatis muncul menampilkan:
+     *    - Nama siswa terpilih
+     *    - Kelas & tugas (chip)
+     *    - Link Google Docs (tombol "Buka Google Docs")
+     *  Jika siswa menekan "Tutup" → simpan ID ke sessionStorage,
+     *  jadi modal tidak muncul lagi untuk broadcast yang sama
+     *  (kecuali guru memulai broadcast baru).
+     *  Jika broadcast di-stop guru → modal tertutup otomatis.
+     * ============================================================ */
+    let broadcastPollTimer = null;
+    let lastBroadcastId = null;          // ID broadcast yang sedang ditampilkan
+    let lastShownBroadcastId = null;     // ID yang sudah pernah ditampilkan (di-close siswa)
+
+    (function startBroadcastPolling() {
+      // Restore "already closed" ID dari session sebelumnya (jika ada)
+      try {
+        lastShownBroadcastId = sessionStorage.getItem('bcClosedId') || null;
+      } catch (e) { /* sessionStorage mungkin disabled */ }
+
+      // Mulai polling tiap 3 detik
+      broadcastPollTimer = setInterval(pollBroadcast, 3000);
+      // Cek langsung sekali saat halaman load
+      pollBroadcast();
+    })();
+
+    async function pollBroadcast() {
+      try {
+        const res = await callAPI('getBroadcast');
+        if (!res || !res.success) return;
+
+        if (res.active && res.broadcast) {
+          const bc = res.broadcast;
+          // Hanya tampilkan modal jika ID berbeda dari yang sudah ditampilkan
+          if (bc.id && bc.id !== lastShownBroadcastId) {
+            showBroadcastModal(bc);
+            lastBroadcastId = bc.id;
+          }
+        } else {
+          // Tidak ada broadcast aktif → tutup modal jika sedang terbuka
+          if (lastBroadcastId) {
+            hideBroadcastModal();
+            lastBroadcastId = null;
+          }
+        }
+      } catch (err) {
+        // Silent fail: jangan ganggu alur siswa jika polling error
+        // (misalnya koneksi sebentar putus)
+      }
+    }
+
+    function showBroadcastModal(bc) {
+      const overlay = document.getElementById('broadcastModalOverlay');
+      document.getElementById('bcStudentName').textContent = bc.nama || '—';
+      // Nilai kelas di spreadsheet sudah ber-format "Kelas 9D", jadi tidak perlu prepend lagi
+      document.getElementById('bcChipKelas').textContent = bc.kelas || '';
+      document.getElementById('bcChipTugas').textContent = bc.tugas || '';
+      document.getElementById('bcLinkDisplay').textContent = bc.linkGDocs || '—';
+
+      const btnBuka = document.getElementById('bcBtnBuka');
+      if (bc.linkGDocs) {
+        btnBuka.href = bc.linkGDocs;
+        btnBuka.style.display = '';
+      } else {
+        btnBuka.href = '#';
+        btnBuka.style.display = 'none';
+      }
+
+      document.getElementById('bcFooterNote').textContent =
+        'Tampilan ini dikirim oleh guru • ' + (bc.timestamp || '');
+
+      overlay.classList.add('show');
+      // Cegah scroll body
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideBroadcastModal() {
+      const overlay = document.getElementById('broadcastModalOverlay');
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    // Dipanggil dari tombol "Tutup" di modal
+    function closeBroadcastModal() {
+      // Tandai ID ini sudah ditutup → jangan tampil lagi untuk broadcast yang sama
+      if (lastBroadcastId) {
+        lastShownBroadcastId = lastBroadcastId;
+        try {
+          sessionStorage.setItem('bcClosedId', lastBroadcastId);
+        } catch (e) { /* ignore */ }
+      }
+      hideBroadcastModal();
     }
   </script>
 
