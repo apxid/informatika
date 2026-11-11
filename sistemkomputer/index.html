@@ -218,6 +218,23 @@
       word-break: break-all; color: var(--text);
       max-height: 80px; overflow-y: auto; text-align: left;
     }
+    .broadcast-modal .anggota-section {
+      background: #f0fdf4; border: 1.5px solid #16a34a;
+      border-radius: 12px; padding: 12px 16px;
+      margin-bottom: 16px; text-align: left;
+      max-height: 160px; overflow-y: auto;
+    }
+    .broadcast-modal .anggota-section .a-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+      color: #166534; font-weight: 800; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .broadcast-modal .anggota-section .a-list {
+      font-size: 13px; color: var(--text); line-height: 1.7;
+    }
+    .broadcast-modal .anggota-section .a-list .a-item {
+      padding: 1px 0;
+    }
     .broadcast-modal .actions {
       display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
     }
@@ -570,15 +587,20 @@
 
   <!-- ========================================================= -->
   <!--  MODAL BROADCAST (muncul otomatis saat guru klik         -->
-  <!--  "Tampilkan ke Siswa" — menampilkan nama siswa + link GDocs) -->
+  <!--  "Tampilkan ke Siswa" — menampilkan nama KELOMPOK +       -->
+  <!--  anggota + link GDocs kelompok terpilih)                  -->
   <!-- ========================================================= -->
   <div class="broadcast-modal-overlay" id="broadcastModalOverlay">
     <div class="broadcast-modal">
       <span class="live-dot">LIVE</span>
-      <div class="badge-presentation">📺 Presentasi Siswa</div>
+      <div class="badge-presentation">📺 Presentasi Kelompok</div>
       <div class="pres-icon">🎤</div>
-      <h2>Siswa Terpilih untuk Presentasi</h2>
+      <h2>Kelompok Terpilih untuk Presentasi</h2>
       <div class="student-name" id="bcStudentName">—</div>
+      <div class="anggota-section" id="bcAnggotaSection">
+        <div class="a-label">👥 Anggota Kelompok</div>
+        <div class="a-list" id="bcAnggota">—</div>
+      </div>
       <div class="meta-chips">
         <span class="chip" id="bcChipKelas">—</span>
         <span class="chip task" id="bcChipTugas">—</span>
@@ -1231,11 +1253,31 @@
 
     function showBroadcastModal(bc) {
       const overlay = document.getElementById('broadcastModalOverlay');
+      // Nama kelompok (sebelumnya: nama siswa)
       document.getElementById('bcStudentName').textContent = bc.nama || '—';
       // Nilai kelas di spreadsheet sudah ber-format "Kelas 9D", jadi tidak perlu prepend lagi
       document.getElementById('bcChipKelas').textContent = bc.kelas || '';
       document.getElementById('bcChipTugas').textContent = bc.tugas || '';
       document.getElementById('bcLinkDisplay').textContent = bc.linkGDocs || '—';
+
+      // === Tampilkan daftar anggota kelompok ===
+      const anggotaSection = document.getElementById('bcAnggotaSection');
+      const anggotaList = document.getElementById('bcAnggota');
+      if (bc.anggota && String(bc.anggota).trim()) {
+        const anggotaArr = parseAnggota(bc.anggota);
+        if (anggotaArr.length > 0) {
+          anggotaList.innerHTML = anggotaArr.map(function (n, i) {
+            return '<div class="a-item">' + (i + 1) + '. ' + escapeHtml(n) + '</div>';
+          }).join('');
+          anggotaSection.style.display = '';
+        } else {
+          anggotaList.textContent = '—';
+          anggotaSection.style.display = '';
+        }
+      } else {
+        // Tidak ada data anggota → sembunyikan section supaya modal rapi
+        anggotaSection.style.display = 'none';
+      }
 
       const btnBuka = document.getElementById('bcBtnBuka');
       if (bc.linkGDocs) {
@@ -1252,6 +1294,20 @@
       overlay.classList.add('show');
       // Cegah scroll body
       document.body.style.overflow = 'hidden';
+    }
+
+    // Helper: parse string anggota "1. NAMA1 2. NAMA2 ..." → array
+    // Sama dengan parseAnggota di Code.gs, untuk konsistensi parsing
+    function parseAnggota(str) {
+      if (!str) return [];
+      const s = String(str).trim();
+      if (/\d+\.\s/.test(s)) {
+        return s
+          .split(/\s*\d+\.\s/)
+          .map(function (x) { return x.trim(); })
+          .filter(function (x) { return x.length > 0; });
+      }
+      return s.split(/\n/).map(function (x) { return x.trim(); }).filter(function (x) { return x.length > 0; });
     }
 
     function hideBroadcastModal() {
