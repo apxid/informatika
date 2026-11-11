@@ -441,7 +441,7 @@
     /* =====================================================
      *  KONFIGURASI - WAJIB ISI DENGAN URL EXEC GAS
      * ===================================================== */
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz86IDVs2h60cYq74Zp4RudJKlaNNuVDjvmMVBRI-eVkvg7FWMJkHGm3LuRy_a-xj2Eqw/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkYg8lMaX8QCPDE-4UiFqNisBv6lTt9tzdkzYn6j58vWGFmmKx_TuRiNy4Oo962Oqw/exec';
 
     // State
     let currentSiswa = null;
@@ -652,11 +652,9 @@
       document.getElementById('submissionForm').style.display = 'none';
       document.getElementById('submissionForm').innerHTML = '';
 
-      // Login ke server (simpan row kosong)
-      try {
-        const res = await callAPI('loginStudent', { nama, absen, kelas }, 'POST');
-        if (res.success && res.rowNum) currentRowNum = res.rowNum;
-      } catch (err) { /* ignore */ }
+      // TIDAK membuat row kosong di server.
+      // Row hanya dibuat saat siswa klik "Acak Tugas" (claimRandomTopic).
+      // Ini mencegah baris "Menunggu Acak" yang tidak perlu di sheet Penugasan.
 
       document.getElementById('layer1').classList.remove('active');
       document.getElementById('layer2').classList.add('active');
