@@ -227,6 +227,29 @@
       margin-top: 8px; font-size: 12px;
       color: var(--warn); font-weight: 700;
     }
+    /* Pagination */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; flex-wrap: wrap; border-top: 1px solid var(--border); }
+    .pagination button { padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; background: #fff; cursor: pointer; font-weight: 700; font-size: 13px; color: var(--text); transition: all .15s; }
+    .pagination button:hover:not(:disabled) { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .pagination button:disabled { opacity: .4; cursor: not-allowed; }
+    .pagination .page-info { font-size: 13px; color: var(--muted); font-weight: 700; padding: 0 10px; }
+
+    /* Acak Presentasi Modal */
+    .acak-modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.8); backdrop-filter: blur(8px); display: none; place-items: center; z-index: 1200; padding: 20px; }
+    .acak-modal-overlay.show { display: grid; animation: fadeIn .3s ease; }
+    .acak-modal-card { background: #fff; border-radius: 24px; padding: 40px 32px; max-width: 480px; width: 100%; text-align: center; box-shadow: var(--shadow-lg); position: relative; }
+    .acak-spinner-wrap { width: 120px; height: 120px; margin: 0 auto 20px; position: relative; }
+    .acak-spinner-wrap .ring { position: absolute; inset: 0; border-radius: 50%; border: 8px solid var(--border); border-top-color: var(--primary); animation: spin 1s linear infinite; }
+    .acak-spinner-wrap.spinning .ring { animation-duration: .3s; }
+    .acak-spinner-wrap .icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 40px; }
+    .acak-result { display: none; margin-top: 16px; }
+    .acak-result.show { display: block; animation: pop .4s ease; }
+    .acak-result .ar-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
+    .acak-result .ar-class { font-size: 14px; color: var(--muted); font-weight: 700; margin-bottom: 12px; }
+    .acak-result .ar-task { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: 800; font-size: 16px; }
+    .acak-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; background: var(--accent-2); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .acak-close:hover { filter: brightness(1.1); }
+    .acak-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -299,7 +322,7 @@
       <div class="sub">dari data master</div>
     </div>
     <div class="stat-card accent">
-      <div class="label">Sudah Acak</div>
+      <div class="label">Dapat Tugas</div>
       <div class="value" id="statAcak">0</div>
       <div class="sub">dapat materi</div>
     </div>
@@ -312,6 +335,24 @@
       <div class="label">Belum Selesai</div>
       <div class="value" id="statBelum">0</div>
       <div class="sub">masih dikerjakan</div>
+    </div>
+  </div>
+
+  <!-- ACAK PRESENTASI BAR -->
+  <div class="card" style="margin-bottom: 20px;">
+    <div class="card-header" style="background: linear-gradient(135deg, var(--accent), var(--accent-2));">
+      <div>
+        <h2>🎲 Acak Presentasi Siswa</h2>
+        <p class="sub">Pilih kelas lalu klik untuk mengundi siswa yang presentasi</p>
+      </div>
+      <div class="filter-group">
+        <select id="acakKelas" style="background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: #fff; border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 14px; font-weight: 700;">
+          <option value="" style="color:#000">Semua Kelas</option>
+        </select>
+        <button class="btn btn-primary" onclick="startAcakPresentasi()" style="font-size: 16px; padding: 12px 24px;">
+          🎲 Acak Siswa Presentasi
+        </button>
+      </div>
     </div>
   </div>
 
@@ -353,8 +394,8 @@
               <th>#</th>
               <th>Timestamp</th>
               <th>Nama</th>
+              <th>Absen</th>
               <th>Kelas</th>
-              <th>Anggota</th>
               <th>Tugas</th>
               <th>Link GDocs</th>
               <th>Tgl. Presentasi</th>
@@ -367,6 +408,7 @@
             <tr class="empty-row"><td colspan="11">Memuat data penugasan...</td></tr>
           </tbody>
         </table>
+        <div class="pagination" id="pagination"></div>
       </div>
     </div>
   </div>
@@ -407,6 +449,28 @@
     </div>
   </div>
 
+</div>
+
+<!-- ACAK PRESENTASI MODAL -->
+<div class="acak-modal-overlay" id="acakModal">
+  <div class="acak-modal-card">
+    <button class="acak-close" onclick="closeAcakModal()">✕</button>
+    <div class="acak-spinner-wrap" id="acakSpinnerWrap">
+      <div class="ring"></div>
+      <div class="icon" id="acakIcon">🎲</div>
+    </div>
+    <h3 id="acakTitle" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 4px;">Mengundi Siswa...</h3>
+    <p id="acakText" style="font-size: 13px; color: var(--muted);">Mencari siswa untuk presentasi</p>
+    <div class="acak-result" id="acakResult">
+      <div class="ar-name" id="acakNama"></div>
+      <div class="ar-class" id="acakKelasLabel"></div>
+      <div class="ar-task" id="acakTugas"></div>
+    </div>
+    <div class="acak-actions" id="acakActions" style="display:none;">
+      <button class="btn btn-primary" onclick="startAcakPresentasi()">🎲 Acak Lagi</button>
+      <button class="btn btn-ghost" onclick="closeAcakModal()" style="border: 1px solid var(--border);">Tutup</button>
+    </div>
+  </div>
 </div>
 
 <!-- SAVE OVERLAY -->
@@ -640,6 +704,7 @@
 
   function populateKelasFilter() {
     const sel = document.getElementById('filterKelasPenugasan');
+    const acakSel = document.getElementById('acakKelas');
     if (!sel) return;
     // Ambil kelas unik dari data penugasan
     const kelasSet = new Set();
@@ -650,13 +715,20 @@
     const kelasList = Array.from(kelasSet).sort();
     // Preserve current selection
     const current = sel.value;
-    sel.innerHTML = '<option value="">Semua Kelas</option>' +
+    const html = '<option value="">Semua Kelas</option>' +
       kelasList.map(k => '<option value="' + escapeHtml(k) + '">' + escapeHtml(k) + '</option>').join('');
+    sel.innerHTML = html;
+    if (acakSel) acakSel.innerHTML = html;
     sel.value = current || '';
   }
 
+  // Pagination state
+  let currentPage = 1;
+  const itemsPerPage = 15;
+
   function renderPenugasan() {
     const body = document.getElementById('penugasanBody');
+    const pagDiv = document.getElementById('pagination');
     const search = (document.getElementById('searchPenugasan').value || '').toLowerCase();
     const statusFilter = document.getElementById('filterStatus').value;
     const kelasFilter = document.getElementById('filterKelasPenugasan').value;
@@ -671,72 +743,118 @@
       return matchSearch && matchStatus && matchKelas;
     });
 
-    // Sort by kelas (A-Z), lalu by nama siswa (A-Z) untuk tampilan rapi
     filtered.sort((a, b) => {
       const kA = String(a['Kelas'] || '');
       const kB = String(b['Kelas'] || '');
       if (kA !== kB) return kA.localeCompare(kB);
-      const nA = String(a['Nama'] || '');
-      const nB = String(b['Nama'] || '');
-      return nA.localeCompare(nB);
+      return String(a['Nama'] || '').localeCompare(String(b['Nama'] || ''));
     });
 
     if (filtered.length === 0) {
-      body.innerHTML = '<tr class="empty-row"><td colspan="11">Tidak ada data sesuai filter. Minta siswa buka halaman index.html untuk mulai.</td></tr>';
+      body.innerHTML = '<tr class="empty-row"><td colspan="11">Tidak ada data. Minta siswa buka halaman index.html untuk mulai.</td></tr>';
+      if (pagDiv) pagDiv.innerHTML = '';
       return;
     }
 
-    body.innerHTML = filtered.map((p, i) => {
+    // Pagination: slice filtered data
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    if (currentPage > totalPages) currentPage = 1;
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const pageData = filtered.slice(startIdx, startIdx + itemsPerPage);
+
+    body.innerHTML = pageData.map((p, i) => {
       const linkGDocs = String(p['Link Google Docs'] || '').trim();
       const linkHtml = linkGDocs
-        ? '<a class="link-docs" href="' + escapeHtml(linkGDocs) + '" target="_blank" rel="noopener">🔗 Buka Docs</a>'
+        ? '<a class="link-docs" href="' + escapeHtml(linkGDocs) + '" target="_blank" rel="noopener">🔗 Buka</a>'
         : '<span style="color: var(--muted); font-style: italic;">belum ada</span>';
-
       const status = String(p['Status'] || 'Belum');
       const tugasVal = String(p['Tugas'] || '').trim();
-      const tugasHtml = tugasVal
-        ? escapeHtml(tugasVal)
-        : '<span style="display: inline-block; padding: 4px 10px; background: #fef3c7; color: #92400e; border-radius: 999px; font-size: 11px; font-weight: 800;">⏳ Menunggu Acak</span>';
+      const tugasHtml = tugasVal ? escapeHtml(tugasVal) : '<span style="color: var(--muted); font-style: italic;">—</span>';
+      const rowNum = startIdx + i + 1;
 
-      return `
-        <tr data-rownum="${p.rowNum}">
-          <td>${i + 1}</td>
-          <td style="font-size: 12px; color: var(--muted);">${escapeHtml(p['TimestampStr'] || '')}</td>
-          <td><strong>${escapeHtml(p['Nama'] || '')}</strong></td>
-          <td><strong style="color: var(--primary);">${escapeHtml(p['Kelas'] || '')}</strong></td>
-          <td class="anggota-cell">${escapeHtml(p['No Absen'] || '')}</td>
-          <td>${tugasHtml}</td>
-          <td style="min-width: 100px;">${linkHtml}</td>
-          <td style="min-width: 140px;">
-            <input type="date" value="${escapeHtml(p['TanggalPresentasiStr'] || '')}"
-                   onchange="updateTanggal(${p.rowNum}, this.value)">
-          </td>
-          <td style="min-width: 130px;">
-            <select onchange="updateStatus(${p.rowNum}, this.value)">
-              <option value="Belum" ${status === 'Belum' ? 'selected' : ''}>⏳ Belum</option>
-              <option value="Selesai" ${status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
-            </select>
-          </td>
-          <td>
-            <input type="number" min="0" max="100" step="1" value="${p['Nilai'] !== '' && p['Nilai'] !== undefined && p['Nilai'] !== null ? p['Nilai'] : ''}"
-                   placeholder="-" onchange="updateNilai(${p.rowNum}, this.value)" style="width: 70px;">
-          </td>
-          <td>
-            <div class="btn-row">
-              <button class="btn btn-accent btn-sm" onclick="reopenSiswa(${p.rowNum})" title="Buka ulang untuk lanjut di pertemuan berikutnya">
-                🔓
-              </button>
-              <button class="btn btn-danger btn-sm" onclick="deleteSiswa(${p.rowNum})" title="Hapus siswa">
-                🗑
-              </button>
-            </div>
-          </td>
-        </tr>
-      `;
+      return '<tr data-rownum="' + p.rowNum + '">' +
+        '<td>' + rowNum + '</td>' +
+        '<td style="font-size: 12px; color: var(--muted);">' + escapeHtml(p['TimestampStr'] || '') + '</td>' +
+        '<td><strong>' + escapeHtml(p['Nama'] || '') + '</strong></td>' +
+        '<td>' + escapeHtml(p['No Absen'] || '-') + '</td>' +
+        '<td><strong style="color: var(--primary);">' + escapeHtml(p['Kelas'] || '') + '</strong></td>' +
+        '<td>' + tugasHtml + '</td>' +
+        '<td style="min-width: 80px;">' + linkHtml + '</td>' +
+        '<td style="min-width: 130px;"><input type="date" value="' + escapeHtml(p['TanggalPresentasiStr'] || '') + '" onchange="updateTanggal(' + p.rowNum + ', this.value)"></td>' +
+        '<td style="min-width: 120px;"><select onchange="updateStatus(' + p.rowNum + ', this.value)"><option value="Belum" ' + (status === 'Belum' ? 'selected' : '') + '>⏳ Belum</option><option value="Selesai" ' + (status === 'Selesai' ? 'selected' : '') + '>✅ Selesai</option></select></td>' +
+        '<td><input type="number" min="0" max="100" step="1" value="' + (p['Nilai'] !== '' && p['Nilai'] !== undefined && p['Nilai'] !== null ? p['Nilai'] : '') + '" placeholder="-" onchange="updateNilai(' + p.rowNum + ', this.value)" style="width: 60px;"></td>' +
+        '<td><div class="btn-row"><button class="btn btn-accent btn-sm" onclick="reopenSiswa(' + p.rowNum + ')" title="Buka ulang tugas">🔓</button><button class="btn btn-danger btn-sm" onclick="deleteSiswa(' + p.rowNum + ')" title="Hapus">🗑</button></div></td>' +
+        '</tr>';
     }).join('');
+
+    // Render pagination controls
+    if (pagDiv) {
+      if (totalPages <= 1) {
+        pagDiv.innerHTML = '<span class="page-info">Total: ' + filtered.length + ' siswa</span>';
+      } else {
+        pagDiv.innerHTML =
+          '<button onclick="changePage(-1)" ' + (currentPage <= 1 ? 'disabled' : '') + '>← Sebelumnya</button>' +
+          '<span class="page-info">Hal ' + currentPage + ' / ' + totalPages + ' • ' + filtered.length + ' siswa</span>' +
+          '<button onclick="changePage(1)" ' + (currentPage >= totalPages ? 'disabled' : '') + '>Berikutnya →</button>';
+      }
+    }
   }
 
-  function filterPenugasan() { renderPenugasan(); }
+  function changePage(dir) {
+    currentPage += dir;
+    renderPenugasan();
+  }
+
+  function filterPenugasan() { currentPage = 1; renderPenugasan(); }
+
+  /* ============ ACAK PRESENTASI ============ */
+  function startAcakPresentasi() {
+    const acakKelasVal = document.getElementById('acakKelas').value;
+    // Filter siswa by kelas (jika dipilih)
+    let candidates = allPenugasan;
+    if (acakKelasVal) {
+      candidates = allPenugasan.filter(k => String(k['Kelas'] || '') === acakKelasVal);
+    }
+    if (candidates.length === 0) {
+      showAlert('error', '⚠️ Tidak ada siswa dengan tugas untuk diacak' + (acakKelasVal ? ' di kelas ' + acakKelasVal : '') + '.');
+      return;
+    }
+
+    // Tampilkan modal dengan spinner
+    const modal = document.getElementById('acakModal');
+    const wrap = document.getElementById('acakSpinnerWrap');
+    const icon = document.getElementById('acakIcon');
+    const title = document.getElementById('acakTitle');
+    const text = document.getElementById('acakText');
+    const result = document.getElementById('acakResult');
+    const actions = document.getElementById('acakActions');
+
+    wrap.classList.add('spinning');
+    icon.textContent = '🎲';
+    title.textContent = 'Mengundi Siswa...';
+    text.textContent = 'Mencari siswa untuk presentasi' + (acakKelasVal ? ' dari kelas ' + acakKelasVal : '');
+    result.classList.remove('show');
+    actions.style.display = 'none';
+    modal.classList.add('show');
+
+    // Acak dan tampilkan hasil setelah 2 detik
+    setTimeout(function() {
+      var picked = candidates[Math.floor(Math.random() * candidates.length)];
+      wrap.classList.remove('spinning');
+      icon.textContent = picked['Tugas'] ? '🎤' : '⚠️';
+      title.textContent = 'Siswa Terpilih!';
+      text.textContent = (acakKelasVal ? 'Kelas ' + acakKelasVal : 'Dari semua kelas');
+      document.getElementById('acakNama').textContent = picked['Nama'] || '-';
+      document.getElementById('acakKelasLabel').textContent = 'Kelas: ' + (picked['Kelas'] || '-') + ' • Absen: ' + (picked['No Absen'] || '-');
+      document.getElementById('acakTugas').textContent = picked['Tugas'] || 'Belum ada tugas';
+      result.classList.add('show');
+      actions.style.display = 'flex';
+    }, 2000);
+  }
+
+  function closeAcakModal() {
+    document.getElementById('acakModal').classList.remove('show');
+  }
 
   async function updateStatus(rowNum, status) {
     try {
@@ -867,7 +985,8 @@
 
   /* ============ STATS ============ */
   function updateStats() {
-    document.getElementById('statAcak').textContent = allPenugasan.filter(k => String(k['Tugas'] || '').trim().length > 0).length;
+    // Semua baris di allPenugasan sudah punya tugas (difilter di server)
+    document.getElementById('statAcak').textContent = allPenugasan.length;
     const selesai = allPenugasan.filter(k => String(k['Status']) === 'Selesai').length;
     const belum = allPenugasan.length - selesai;
     document.getElementById('statSelesai').textContent = selesai;
