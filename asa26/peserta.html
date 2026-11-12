@@ -1245,9 +1245,15 @@ function renderDenah(data){
   let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (${data.totalRuang} ruang)</h4>`;
 
   data.ruangs.forEach(ruang => {
+    const totalSiswa = ruang.pesertaACount + ruang.pesertaBCount;
     html += `<h5 style="margin-top:24px; color:var(--c-primary); border-bottom:2px solid var(--c-primary); padding-bottom:4px;">`;
-    html += `Ruang ${ruang.id} - ${ruang.nama} &middot; Kelas ${ruang.kelasA} &times; Kelas ${ruang.kelasB}`;
+    html += `DENAH RUANG ${ruang.id} - ${ruang.nama}`;
     html += `</h5>`;
+
+    // Keterangan jumlah siswa
+    html += `<div style="font-size:12px; color:var(--c-text-soft); margin-bottom:8px;">`;
+    html += `Kelas ${ruang.kelasA} = ${ruang.pesertaACount} Siswa &middot; Kelas ${ruang.kelasB} = ${ruang.pesertaBCount} Siswa &middot; Total: ${totalSiswa} Siswa`;
+    html += `</div>`;
 
     html += `<div class="denah-wrap" style="margin-bottom:18px; padding:14px;">`;
     html += `<table style="border-collapse:collapse; width:100%;">`;
@@ -1278,7 +1284,14 @@ function renderDenah(data){
       });
       html += `</tr>`;
     }
-    html += `</tbody></table></div>`;
+    html += `</tbody></table>`;
+
+    // PENGAWAS row - di tengah bawah
+    html += `<div style="margin-top:8px; text-align:center;">`;
+    html += `<div style="display:inline-block; padding:8px 40px; background:#6C5CE7; color:white; font-weight:700; border-radius:8px; font-size:14px;">PENGAWAS</div>`;
+    html += `</div>`;
+
+    html += `</div>`;
   });
 
   wrap.innerHTML = html;
@@ -1290,11 +1303,19 @@ function exportDenahXlsx(){
   const wb = XLSX.utils.book_new();
 
   d.ruangs.forEach(ruang => {
+    const totalSiswa = ruang.pesertaACount + ruang.pesertaBCount;
     const aoa = [];
+
+    // Title
+    aoa.push([`DENAH RUANG ${ruang.id} - ${ruang.nama}`]);
+    aoa.push([`Kelas ${ruang.kelasA} = ${ruang.pesertaACount} Siswa  |  Kelas ${ruang.kelasB} = ${ruang.pesertaBCount} Siswa  |  Total: ${totalSiswa} Siswa`]);
+    aoa.push(['']);
+
     // Header: kolom labels B C D E F G H I J K L
     const headerRow = [''];
     ruang.gridInfo.colLabels.forEach(label => headerRow.push(label));
     aoa.push(headerRow);
+
     // Baris dari 9 (atas) ke 1 (bawah)
     for (let r = d.gridRows - 1; r >= 0; r--) {
       const rowNum = r + 1;
@@ -1308,6 +1329,21 @@ function exportDenahXlsx(){
       });
       aoa.push(rowData);
     }
+
+    // PENGAWAS row (di tengah)
+    aoa.push(['']);
+    const pengawasRow = [];
+    for (let i = 0; i <= d.gridCols; i++) {
+      pengawasRow.push(i === Math.floor(d.gridCols / 2) + 1 ? 'PENGAWAS' : '');
+    }
+    aoa.push(pengawasRow);
+
+    // Keterangan di bawah
+    aoa.push(['']);
+    aoa.push([`Kelas ${ruang.kelasA} = ${ruang.pesertaACount} Siswa`]);
+    aoa.push([`Kelas ${ruang.kelasB} = ${ruang.pesertaBCount} Siswa`]);
+    aoa.push([`Total: ${totalSiswa} Siswa`]);
+
     const sheetName = ('R' + ruang.id + '-' + String(ruang.nama).substring(0, 25)).substring(0, 31);
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), sheetName);
   });
