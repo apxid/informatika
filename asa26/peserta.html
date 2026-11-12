@@ -411,61 +411,12 @@
 
       <!-- SUBMENU: PIKET -->
       <div id="sub-piket" class="hidden" style="margin-top:20px;">
-        <h3 style="color:var(--c-primary);">&#128197; Daftar Piket Asas Kelas (antar Kelas)</h3>
-        <div class="form-row" style="margin-top:12px;">
-          <div class="form-group">
-            <label>Kelas A</label>
-            <select id="piketKelasA">
-              <option value="9" selected>Kelas 9</option>
-              <option value="7">Kelas 7</option>
-              <option value="8">Kelas 8</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Kelas B</label>
-            <select id="piketKelasB">
-              <option value="9">Kelas 9</option>
-              <option value="7" selected>Kelas 7</option>
-              <option value="8">Kelas 8</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Tanggal Mulai</label>
-            <input type="date" id="piketTglMulai">
-          </div>
-          <div class="form-group">
-            <label>Tanggal Selesai</label>
-            <input type="date" id="piketTglSelesai">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Jumlah Siswa Kelas A / Hari</label>
-            <input type="number" id="piketJmlA" value="1" min="1" max="5">
-          </div>
-          <div class="form-group">
-            <label>Jumlah Siswa Kelas B / Hari</label>
-            <input type="number" id="piketJmlB" value="1" min="1" max="5">
-          </div>
-          <div class="form-group">
-            <label>Hari Aktif</label>
-            <select id="piketHariAktif" multiple class="multi-sel">
-              <option value="Senin" selected>Senin</option>
-              <option value="Selasa" selected>Selasa</option>
-              <option value="Rabu" selected>Rabu</option>
-              <option value="Kamis" selected>Kamis</option>
-              <option value="Jumat" selected>Jumat</option>
-              <option value="Sabtu" selected>Sabtu</option>
-              <option value="Minggu">Minggu</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Seed Acak (opsional)</label>
-            <input type="number" id="piketSeed" placeholder="kosongkan = random">
-          </div>
-        </div>
+        <h3 style="color:var(--c-primary);">&#128197; Daftar Piket Asas per Ruang (Ruang 1 - 27)</h3>
+        <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">
+          Piket di-generate per ruang dari konfigurasi RUANG_UJIAN. Setiap ruang menampilkan peserta dari Kelas A dan Kelas B yang sudah ditempatkan di ruang tersebut.
+        </p>
         <div class="btn-bar">
-          <button class="btn btn-primary" onclick="genPiket()"><span>&#9889;</span> Generate Jadwal Piket</button>
+          <button class="btn btn-primary" onclick="genPiket()"><span>&#9889;</span> Generate Daftar Piket per Ruang</button>
           <button class="btn btn-success" onclick="exportPiketXlsx()"><span>&#128229;</span> Download Excel</button>
           <button class="btn btn-warning" onclick="savePiketToServer()"><span>&#128190;</span> Simpan ke Spreadsheet</button>
         </div>
@@ -474,39 +425,18 @@
 
       <!-- SUBMENU: DENAH -->
       <div id="sub-denah" class="hidden" style="margin-top:20px;">
-        <h3 style="color:var(--c-primary);">&#129689; Denah Tempat Duduk Peserta</h3>
+        <h3 style="color:var(--c-primary);">&#129689; Denah Tempat Duduk per Ruang (Ruang 1 - 27)</h3>
+        <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">
+          Denah di-generate per ruang dari konfigurasi RUANG_UJIAN. Setiap ruang dipecah menjadi beberapa denah (default 4 baris × 2 kursi = 8 kursi per denah). Kursi KANAN untuk Kelas A, kursi KIRI untuk Kelas B.
+        </p>
         <div class="form-row" style="margin-top:12px;">
           <div class="form-group">
-            <label>Kelas - Kursi KANAN</label>
-            <select id="denahKelasA">
-              <option value="9" selected>Kelas 9</option>
-              <option value="7">Kelas 7</option>
-              <option value="8">Kelas 8</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Kelas - Kursi KIRI</label>
-            <select id="denahKelasB">
-              <option value="9">Kelas 9</option>
-              <option value="7" selected>Kelas 7</option>
-              <option value="8">Kelas 8</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Jumlah Baris</label>
+            <label>Baris per Denah</label>
             <input type="number" id="denahBaris" value="4" min="1" max="20">
-          </div>
-          <div class="form-group">
-            <label>Nama Ruang</label>
-            <input type="text" id="denahRuang" value="Ruang 1">
-          </div>
-          <div class="form-group">
-            <label>Seed Acak (opsional)</label>
-            <input type="number" id="denahSeed" placeholder="kosongkan = random">
           </div>
         </div>
         <div class="btn-bar">
-          <button class="btn btn-primary" onclick="genDenah()"><span>&#9889;</span> Generate Denah</button>
+          <button class="btn btn-primary" onclick="genDenah()"><span>&#9889;</span> Generate Denah per Ruang</button>
           <button class="btn btn-success" onclick="exportDenahXlsx()"><span>&#128229;</span> Download Excel</button>
           <button class="btn btn-warning" onclick="saveDenahToServer()"><span>&#128190;</span> Simpan ke Spreadsheet</button>
         </div>
@@ -870,14 +800,6 @@ async function logout(){
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pinInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') submitPin(); });
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth()+1).padStart(2,'0');
-  const dd = String(today.getDate()).padStart(2,'0');
-  document.getElementById('piketTglMulai').value = `${yyyy}-${mm}-${dd}`;
-  const nextWeek = new Date(today); nextWeek.setDate(today.getDate()+7);
-  document.getElementById('piketTglSelesai').value =
-    `${nextWeek.getFullYear()}-${String(nextWeek.getMonth()+1).padStart(2,'0')}-${String(nextWeek.getDate()).padStart(2,'0')}`;
   renderRoomEditor();
 });
 
@@ -1235,26 +1157,12 @@ async function savePesertaToServer(){
 async function genPiket(){
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    const kelasA = document.getElementById('piketKelasA').value;
-    const kelasB = document.getElementById('piketKelasB').value;
-    if (kelasA === kelasB){ toast('Kelas A dan B tidak boleh sama.', 'warn'); resetBtn(btn); return; }
-    const tglMulai = document.getElementById('piketTglMulai').value;
-    const tglSelesai = document.getElementById('piketTglSelesai').value;
-    if (!tglMulai || !tglSelesai){ toast('Tanggal wajib diisi.', 'warn'); resetBtn(btn); return; }
-    const hariAktif = Array.from(document.getElementById('piketHariAktif').selectedOptions).map(o => o.value);
-    const jmlA = parseInt(document.getElementById('piketJmlA').value) || 1;
-    const jmlB = parseInt(document.getElementById('piketJmlB').value) || 1;
-    const seedRaw = document.getElementById('piketSeed').value.trim();
-    const payload = {
-      kelasA, kelasB, tanggalMulai: tglMulai, tanggalSelesai: tglSelesai,
-      hariAktif, jumlahPerHariA: jmlA, jumlahPerHariB: jmlB,
-      seed: seedRaw ? parseInt(seedRaw) : Math.floor(Math.random()*1e9)
-    };
-    const res = await callPost('generatepiket', payload);
+    // Tidak ada input - langsung pakai konfigurasi RUANG_UJIAN
+    const res = await callPost('generatepiket', {});
     if (res.success){
       STATE.piketData = res;
       renderPiket(res);
-      toast(`Berhasil generate ${res.rows.length} baris piket.`, 'success');
+      toast(`Berhasil generate piket untuk ${res.totalRuang} ruang.`, 'success');
     } else {
       toast(res.message || 'Gagal generate.', 'error');
     }
@@ -1264,37 +1172,58 @@ async function genPiket(){
 
 function renderPiket(data){
   const wrap = document.getElementById('piketResult');
-  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#128197; Jadwal Piket: Kelas ${data.kelasA} &times; Kelas ${data.kelasB}</h4>`;
-  html += `<div class="table-wrap"><table class="data-table"><thead><tr>
-    <th>NO</th><th>HARI &amp; TANGGAL</th>
-    <th>NO PESERTA (KELAS ${data.kelasA})</th><th>NAMA (KELAS ${data.kelasA})</th>
-    <th>NO PESERTA (KELAS ${data.kelasB})</th><th>NAMA (KELAS ${data.kelasB})</th>
-  </tr></thead><tbody>`;
-  data.rows.forEach(r => {
-    const a = (r.pesertaA && r.pesertaA[0]) || {};
-    const b = (r.pesertaB && r.pesertaB[0]) || {};
-    html += `<tr>
-      <td>${r.no}</td><td><b>${r.hariTanggal}</b></td>
-      <td>${a.nomorPeserta||''}</td><td>${a.nama||''}</td>
-      <td>${b.nomorPeserta||''}</td><td>${b.nama||''}</td>
-    </tr>`;
+  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#128197; Daftar Piket per Ruang (${data.totalRuang} ruang)</h4>`;
+  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">Kursi KANAN = Kelas A, Kursi KIRI = Kelas B (sesuai konfigurasi RUANG_UJIAN).</p>`;
+
+  // Card per ruang
+  data.rooms.forEach(room => {
+    const maxLen = Math.max(room.pesertaA.length, room.pesertaB.length, 1);
+    html += `<div class="piket-card">`;
+    html += `<div class="tgl">Ruang ${room.id} - ${room.nama} &middot; Kelas ${room.kelasA} (kanan) &times; Kelas ${room.kelasB} (kiri)</div>`;
+    html += `<div style="font-size:11px; color:var(--c-text-soft); margin-top:4px;">Peserta A: ${room.pesertaA.length} | Peserta B: ${room.pesertaB.length}</div>`;
+    html += `<div class="table-wrap" style="margin-top:8px;"><table class="data-table"><thead><tr>
+      <th style="width:40px;">#</th>
+      <th>NO PESERTA (KELAS ${room.kelasA})</th><th>NAMA (KELAS ${room.kelasA})</th>
+      <th>NO PESERTA (KELAS ${room.kelasB})</th><th>NAMA (KELAS ${room.kelasB})</th>
+    </tr></thead><tbody>`;
+    for (let i = 0; i < maxLen; i++) {
+      const a = room.pesertaA[i] || {};
+      const b = room.pesertaB[i] || {};
+      html += `<tr>
+        <td>${i+1}</td>
+        <td><b>${a.nomorPeserta || '-'}</b></td><td>${a.nama || '-'}</td>
+        <td><b>${b.nomorPeserta || '-'}</b></td><td>${b.nama || '-'}</td>
+      </tr>`;
+    }
+    html += `</tbody></table></div></div>`;
   });
-  html += `</tbody></table></div>`;
+
   wrap.innerHTML = html;
 }
 
 function exportPiketXlsx(){
   if (!STATE.piketData){ toast('Generate dulu.', 'warn'); return; }
   const d = STATE.piketData;
-  const aoa = [[`NO`,`HARI & TANGGAL`,`NO PESERTA (KELAS ${d.kelasA})`,`NAMA (KELAS ${d.kelasA})`,`NO PESERTA (KELAS ${d.kelasB})`,`NAMA (KELAS ${d.kelasB})`]];
-  d.rows.forEach(r => {
-    const a = (r.pesertaA && r.pesertaA[0]) || {};
-    const b = (r.pesertaB && r.pesertaB[0]) || {};
-    aoa.push([r.no, r.hariTanggal, a.nomorPeserta||'', a.nama||'', b.nomorPeserta||'', b.nama||'']);
+  const aoa = [['NO','RUANG','KELAS A','NO PESERTA (A)','NAMA (A)','KELAS B','NO PESERTA (B)','NAMA (B)']];
+  let no = 1;
+  d.rooms.forEach(room => {
+    const maxLen = Math.max(room.pesertaA.length, room.pesertaB.length, 1);
+    for (let i = 0; i < maxLen; i++) {
+      const a = room.pesertaA[i] || {};
+      const b = room.pesertaB[i] || {};
+      aoa.push([
+        no++,
+        room.nama,
+        room.kelasA,
+        a.nomorPeserta || '', a.nama || '',
+        room.kelasB,
+        b.nomorPeserta || '', b.nama || ''
+      ]);
+    }
   });
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Piket Asas');
-  XLSX.writeFile(wb, 'Daftar_Piket_Asas_Kelas.xlsx');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Piket per Ruang');
+  XLSX.writeFile(wb, 'Daftar_Piket_Asas_per_Ruang.xlsx');
   toast('Excel terdownload.', 'success');
 }
 
@@ -1302,32 +1231,25 @@ async function savePiketToServer(){
   if (!STATE.piketData){ toast('Generate dulu.', 'warn'); return; }
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    const res = await callPost('savepiket', { data: STATE.piketData.rows });
+    const res = await callPost('savepiket', { data: STATE.piketData.rooms });
     toast(res.success ? `Tersimpan ${res.saved} baris.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
   finally { resetBtn(btn); }
 }
 
 /* =========================================================================
-   SUBMENU DENAH
+   SUBMENU DENAH (per ruang, auto-batch)
    ========================================================================= */
 async function genDenah(){
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    const kelasA = document.getElementById('denahKelasA').value;
-    const kelasB = document.getElementById('denahKelasB').value;
-    if (kelasA === kelasB){ toast('Kelas kanan & kiri tidak boleh sama.', 'warn'); resetBtn(btn); return; }
-    const payload = {
-      kelasA, kelasB,
-      jumlahBaris: parseInt(document.getElementById('denahBaris').value) || 4,
-      namaRuang: document.getElementById('denahRuang').value || 'Ruang 1',
-      seed: document.getElementById('denahSeed').value.trim() ? parseInt(document.getElementById('denahSeed').value) : Math.floor(Math.random()*1e9)
-    };
-    const res = await callPost('generatedenah', payload);
+    const barisPerDenah = parseInt(document.getElementById('denahBaris').value) || 4;
+    const res = await callPost('generatedenah', { jumlahBaris: barisPerDenah });
     if (res.success){
       STATE.denahData = res;
       renderDenah(res);
-      toast(`Berhasil generate denah ${res.jumlahBaris} baris.`, 'success');
+      const totalDenahs = res.ruangs.reduce((a,b) => a + b.denahs.length, 0);
+      toast(`Berhasil generate ${totalDenahs} denah dari ${res.totalRuang} ruang (${res.barisPerDenah} baris × 2 kursi per denah).`, 'success');
     } else {
       toast(res.message || 'Gagal generate.', 'error');
     }
@@ -1337,40 +1259,92 @@ async function genDenah(){
 
 function renderDenah(data){
   const wrap = document.getElementById('denahResult');
-  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah ${data.namaRuang}</h4>`;
-  html += `<p style="font-size:13px; color:var(--c-text-soft);">Kursi KANAN &rarr; Kelas ${data.kelasA} &middot; Kursi KIRI &rarr; Kelas ${data.kelasB}</p>`;
-  html += `<div class="denah-wrap"><div class="denah-papan">PAPAN TULIS / DEPAN RUANG</div>`;
-  data.baris.forEach(b => {
-    html += `<div class="denah-row">
-      <div class="denah-chair left">
-        <div class="chair-label">Baris ${b.baris} &middot; KURSI KIRI</div>
-        <div class="chair-no">${b.kiri.nomorPeserta}</div>
-        <div class="chair-nama">${b.kiri.nama}</div>
-        <div class="chair-kelas"><span class="badge badge-${data.kelasB}">${b.kiri.kelas}</span></div>
-      </div>
-      <div class="denah-chair right">
-        <div class="chair-label">Baris ${b.baris} &middot; KURSI KANAN</div>
-        <div class="chair-no">${b.kanan.nomorPeserta}</div>
-        <div class="chair-nama">${b.kanan.nama}</div>
-        <div class="chair-kelas"><span class="badge badge-${data.kelasA}">${b.kanan.kelas}</span></div>
-      </div>
-    </div>`;
+  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (${data.totalRuang} ruang)</h4>`;
+  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">`;
+  html += `${data.barisPerDenah} baris × 2 kursi = ${data.kursiPerDenah} kursi per denah. `;
+  html += `Setiap ruang dipecah menjadi beberapa denah bila peserta > ${data.kursiPerDenah}. `;
+  html += `Kursi KANAN = Kelas A, Kursi KIRI = Kelas B.</p>`;
+
+  data.ruangs.forEach(ruang => {
+    html += `<h5 style="margin-top:24px; color:var(--c-primary); border-bottom:2px solid var(--c-primary); padding-bottom:4px;">`;
+    html += `Ruang ${ruang.id} - ${ruang.nama} &middot; Kelas ${ruang.kelasA} (kanan, ${ruang.pesertaACount} siswa) &times; Kelas ${ruang.kelasB} (kiri, ${ruang.pesertaBCount} siswa)`;
+    html += `</h5>`;
+
+    ruang.denahs.forEach(denah => {
+      html += `<div class="denah-wrap" style="margin-bottom:18px;">`;
+      html += `<div class="denah-papan">RUANG ${ruang.nama.toUpperCase()} - DENAH ${denah.batch} dari ${ruang.denahs.length}</div>`;
+      denah.baris.forEach(b => {
+        html += `<div class="denah-row">`;
+        // KURSI KIRI (kelas B)
+        if (b.kiri) {
+          const kodeKls = String(b.kiri.kelas || '').replace(/\D/g,'');
+          html += `<div class="denah-chair left">
+            <div class="chair-label">Baris ${b.baris} &middot; KURSI KIRI</div>
+            <div class="chair-no">${b.kiri.nomorPeserta || '-'}</div>
+            <div class="chair-nama">${b.kiri.nama || '-'}</div>
+            <div class="chair-kelas"><span class="badge badge-${kodeKls}">${b.kiri.kelas || '-'}</span></div>
+          </div>`;
+        } else {
+          html += `<div class="denah-chair left" style="opacity:0.4;">
+            <div class="chair-label">Baris ${b.baris} &middot; KURSI KIRI</div>
+            <div class="chair-no">-</div>
+            <div class="chair-nama">(kosong)</div>
+          </div>`;
+        }
+        // KURSI KANAN (kelas A)
+        if (b.kanan) {
+          const kodeKls = String(b.kanan.kelas || '').replace(/\D/g,'');
+          html += `<div class="denah-chair right">
+            <div class="chair-label">Baris ${b.baris} &middot; KURSI KANAN</div>
+            <div class="chair-no">${b.kanan.nomorPeserta || '-'}</div>
+            <div class="chair-nama">${b.kanan.nama || '-'}</div>
+            <div class="chair-kelas"><span class="badge badge-${kodeKls}">${b.kanan.kelas || '-'}</span></div>
+          </div>`;
+        } else {
+          html += `<div class="denah-chair right" style="opacity:0.4;">
+            <div class="chair-label">Baris ${b.baris} &middot; KURSI KANAN</div>
+            <div class="chair-no">-</div>
+            <div class="chair-nama">(kosong)</div>
+          </div>`;
+        }
+        html += `</div>`;
+      });
+      html += `</div>`;
+    });
   });
-  html += `</div>`;
+
   wrap.innerHTML = html;
 }
 
 function exportDenahXlsx(){
   if (!STATE.denahData){ toast('Generate dulu.', 'warn'); return; }
   const d = STATE.denahData;
-  const aoa = [[`DENAH ${d.namaRuang.toUpperCase()}`],[`Kursi KANAN: Kelas ${d.kelasA} | Kursi KIRI: Kelas ${d.kelasB}`],['']];
-  aoa.push(['BARIS','NO KURSI KIRI','NAMA (KIRI)','KELAS (KIRI)','NO KURSI KANAN','NAMA (KANAN)','KELAS (KANAN)']);
-  d.baris.forEach(b => {
-    aoa.push([b.baris, b.kiri.nomorPeserta, b.kiri.nama, b.kiri.kelas, b.kanan.nomorPeserta, b.kanan.nama, b.kanan.kelas]);
+  const aoa = [[`DENAH TEMPAT DUDUK PER RUANG (${d.totalRuang} RUANG)`]];
+  aoa.push([`${d.barisPerDenah} baris × 2 kursi per denah. KANAN=Kelas A, KIRI=Kelas B`]);
+  aoa.push(['']);
+
+  d.ruangs.forEach(ruang => {
+    aoa.push([`=== RUANG ${ruang.id} - ${ruang.nama} | Kelas ${ruang.kelasA} (kanan, ${ruang.pesertaACount} siswa) & Kelas ${ruang.kelasB} (kiri, ${ruang.pesertaBCount} siswa) ===`]);
+    ruang.denahs.forEach(denah => {
+      aoa.push([`--- Denah ${denah.batch} dari ${ruang.denahs.length} ---`]);
+      aoa.push(['BARIS','NO KURSI KIRI','NAMA (KIRI)','KELAS (KIRI)','NO KURSI KANAN','NAMA (KANAN)','KELAS (KANAN)']);
+      denah.baris.forEach(b => {
+        const kiri = b.kiri || {};
+        const kanan = b.kanan || {};
+        aoa.push([
+          b.baris,
+          kiri.nomorPeserta || '-', kiri.nama || '-', kiri.kelas || '-',
+          kanan.nomorPeserta || '-', kanan.nama || '-', kanan.kelas || '-'
+        ]);
+      });
+      aoa.push(['']);
+    });
+    aoa.push(['']);
   });
+
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Denah');
-  XLSX.writeFile(wb, 'Denah_Tempat_Duduk.xlsx');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Denah per Ruang');
+  XLSX.writeFile(wb, 'Denah_Tempat_Duduk_per_Ruang.xlsx');
   toast('Excel terdownload.', 'success');
 }
 
@@ -1378,7 +1352,7 @@ async function saveDenahToServer(){
   if (!STATE.denahData){ toast('Generate dulu.', 'warn'); return; }
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    const res = await callPost('savedenah', { data: STATE.denahData.baris });
+    const res = await callPost('savedenah', { data: STATE.denahData.ruangs });
     toast(res.success ? `Tersimpan ${res.saved} baris.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
   finally { resetBtn(btn); }
