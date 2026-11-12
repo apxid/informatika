@@ -231,62 +231,64 @@
   table.kelas-stats td{ padding:9px 12px; border-bottom:1px solid var(--c-border); }
   table.kelas-stats tbody tr:hover{ background:#E0F7FA; }
 
-  /* KARTU PESERTA - Layout F4 (21x33cm), 2 kolom per siswa (kiri: peserta+TTD, kanan: jadwal) */
-  .kartu-page{
-    margin-top:16px;
-  }
+  /* KARTU PESERTA - Layout F4 (21x33cm), 4 kartu per lembar */
+  .kartu-page{ margin-top:16px; }
   .kartu-row{
     display:grid; grid-template-columns:1fr 1fr; gap:0;
-    border:1px solid #333; margin-bottom:8px;
+    border:1px solid #333; margin-bottom:4px;
     page-break-inside:avoid;
   }
   .kartu-card{
-    padding:14px 16px;
-    font-family:'Times New Roman',serif; font-size:11px; line-height:1.4;
+    padding:6px 10px;
+    font-family:'Times New Roman',serif; font-size:9px; line-height:1.3;
     position:relative;
   }
   .kartu-card.left{ border-right:1px solid #333; }
   .kartu-card .kc-top{
     display:flex; justify-content:space-between; align-items:flex-start;
-    border-bottom:2px solid #333; padding-bottom:6px; margin-bottom:8px;
+    border-bottom:1.5px solid #333; padding-bottom:3px; margin-bottom:4px;
   }
-  .kartu-card .kc-logo-area{ display:flex; align-items:center; gap:8px; }
+  .kartu-card .kc-logo-area{ display:flex; align-items:center; gap:5px; }
   .kartu-card .kc-logo{
-    width:50px; height:50px; object-fit:contain; border-radius:4px;
+    width:32px; height:32px; object-fit:contain; border-radius:3px;
   }
-  .kartu-card .kc-school-info{ font-size:10px; line-height:1.3; }
-  .kartu-card .kc-school-name{ font-weight:700; font-size:13px; }
-  .kartu-card .kc-event-title{ font-weight:700; font-size:10px; }
+  .kartu-card .kc-school-info{ font-size:7px; line-height:1.2; }
+  .kartu-card .kc-school-name{ font-weight:700; font-size:10px; }
+  .kartu-card .kc-event-title{ font-weight:700; font-size:7px; }
   .kartu-card .kc-roman{
-    font-size:36px; font-weight:900; font-family:'Times New Roman',serif;
-    border:3px solid #333; padding:4px 14px; line-height:1;
+    font-size:22px; font-weight:900; font-family:'Times New Roman',serif;
+    border:2px solid #333; padding:2px 8px; line-height:1;
   }
   .kartu-card .kc-title{
-    text-align:center; font-weight:700; font-size:13px; margin:8px 0 10px;
+    text-align:center; font-weight:700; font-size:10px; margin:3px 0 5px;
     text-decoration:underline;
   }
-  .kartu-card .kc-fields{ font-size:12px; line-height:1.8; }
-  .kartu-card .kc-fields .kc-row{ display:flex; gap:4px; }
-  .kartu-card .kc-fields .kc-label{ width:80px; font-weight:600; }
-  .kartu-card .kc-fields .kc-sep{ width:10px; text-align:center; }
-  .kartu-card .kc-fields .kc-val{ flex:1; border-bottom:1px dotted #666; min-height:16px; }
-  .kartu-card .kc-schedule{ font-size:10px; width:100%; border-collapse:collapse; margin-top:6px; }
+  .kartu-card .kc-fields{ font-size:9px; line-height:1.5; }
+  .kartu-card .kc-fields .kc-row{ display:flex; gap:3px; }
+  .kartu-card .kc-fields .kc-label{ width:65px; font-weight:600; }
+  .kartu-card .kc-fields .kc-sep{ width:6px; text-align:center; }
+  .kartu-card .kc-fields .kc-val{ flex:1; border-bottom:1px dotted #666; min-height:12px; }
+  .kartu-card .kc-schedule{ font-size:7px; width:100%; border-collapse:collapse; margin-top:3px; }
   .kartu-card .kc-schedule th, .kartu-card .kc-schedule td{
-    border:1px solid #666; padding:2px 4px; font-size:10px;
+    border:1px solid #666; padding:1px 2px; font-size:7px;
   }
   .kartu-card .kc-schedule th{ background:#e8e8e8; font-weight:700; }
   .kartu-card .kc-signature{
-    margin-top:20px; text-align:right; font-size:11px;
+    margin-top:6px; width:55%; margin-left:auto;
+    text-align:left; font-size:8px;
   }
   .kartu-card .kc-signature .kc-sig-name{ font-weight:700; text-decoration:underline; }
+  .kartu-card .kc-ttd-img{
+    width:80px; height:35px; object-fit:contain; margin-bottom:2px;
+  }
   @media print {
     body * { visibility:hidden; }
     #printArea, #printArea * { visibility:visible; }
     #printArea{ position:absolute; left:0; top:0; width:100%; }
     .no-print{ display:none !important; }
-    @page{ size:21cm 33cm; margin:8mm; }
+    @page{ size:21cm 33cm; margin:6mm; }
     .kartu-page{ margin:0 !important; }
-    .kartu-row{ border:1px solid #333 !important; margin-bottom:6px !important; }
+    .kartu-row{ border:1px solid #333 !important; margin-bottom:3px !important; }
     .kartu-card{ box-shadow:none !important; }
   }
 
@@ -502,7 +504,28 @@
     <!-- ============== TAB 3: CETAK KARTU PESERTA ASAS ============== -->
     <section id="tab-kartu" class="panel hidden">
       <h2><span>&#127903;</span> Cetak Kartu Peserta Asas</h2>
-      <p class="desc">Data peserta diambil dari sheet KELAS7/KELAS8/KELAS9 (kolom NO PESERTA). Pastikan Anda sudah klik "Apply No. Peserta" di Tab 2 sebelum mencetak.</p>
+      <p class="desc">Data peserta diambil dari sheet KELAS7/KELAS8/KELAS9 (kolom NO PESERTA). Pastikan Anda sudah klik "Apply No. Peserta" di Tab 2 sebelum mencetak. 1 lembar F4 = 4 kartu (4 siswa).</p>
+
+      <!-- Settings: Logo & TTD URL -->
+      <div style="background:#F5F7FF; padding:14px; border-radius:10px; margin-bottom:16px; border:1px solid var(--c-border);">
+        <h3 style="font-size:14px; color:var(--c-primary); margin-bottom:10px;">&#9881; Pengaturan Gambar</h3>
+        <div class="form-row" style="margin-bottom:8px;">
+          <div class="form-group" style="grid-column:1 / -1;">
+            <label>URL Gambar Logo (kiri atas kartu)</label>
+            <input type="text" id="settingLogoUrl" placeholder="https://..." style="font-size:12px;">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:8px;">
+          <div class="form-group" style="grid-column:1 / -1;">
+            <label>URL Gambar TTD Kepala Sekolah</label>
+            <input type="text" id="settingTtdUrl" placeholder="https://... (kosongkan jika tidak ada)" style="font-size:12px;">
+          </div>
+        </div>
+        <div class="btn-bar">
+          <button class="btn btn-soft btn-sm" onclick="saveImageSettings()">&#128190; Simpan Pengaturan</button>
+          <button class="btn btn-soft btn-sm" onclick="resetImageSettings()">&#8634; Reset ke Default</button>
+        </div>
+      </div>
 
       <div class="form-row">
         <div class="form-group">
@@ -796,6 +819,7 @@ async function logout(){
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pinInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') submitPin(); });
   renderRoomEditor();
+  loadImageSettings();
 });
 
 async function loadInitial(){
@@ -1417,6 +1441,10 @@ function renderKartu(data){
     return;
   }
 
+  // Ambil URL logo & TTD dari localStorage
+  const logoUrl = localStorage.getItem('asasKartu_logoUrl') || 'https://yanuar-moga.github.io/assets/logo.jpg';
+  const ttdUrl = localStorage.getItem('asasKartu_ttdUrl') || '';
+
   // Helper: convert kode kelas (7/8/9) to Roman numeral
   function toRoman(kelasStr) {
     const kode = String(kelasStr).replace(/\D/g, '');
@@ -1447,7 +1475,6 @@ function renderKartu(data){
     ['Sabtu, 12 Des 2026', 'IPS (07:30-09:30)', 'B. Jawa (10:00-11:00)']
   ];
 
-  // Bangun kartu - 1 siswa per baris, 2 kolom (kiri: peserta+TTD, kanan: jadwal tanpa TTD)
   let html = '<div class="kartu-page">';
 
   data.forEach(function(s) {
@@ -1457,56 +1484,53 @@ function renderKartu(data){
     html += '<div class="kartu-row">';
 
     // === KOLOM KIRI: KARTU PESERTA (dengan TTD KS) ===
-    html += `
-      <div class="kartu-card left">
-        <div class="kc-top">
-          <div class="kc-logo-area">
-            <img src="https://yanuar-moga.github.io/assets/logo.jpg" class="kc-logo" alt="">
-            <div class="kc-school-info">
-              <div class="kc-school-name">SMP NEGERI 1 MOGA</div>
-              <div class="kc-event-title">ASESMEN SUMATIF AKHIR SEMESTER (ASAS)</div>
-              <div style="font-size:9px;">T.P. 2026/2027</div>
-            </div>
-          </div>
-          <div class="kc-roman">${roman}</div>
-        </div>
-        <div class="kc-title">KARTU PESERTA</div>
-        <div class="kc-fields">
-          <div class="kc-row"><span class="kc-label">No. Peserta</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;${s.noPeserta}</span></div>
-          <div class="kc-row"><span class="kc-label">Nama</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;${s.nama}</span></div>
-          <div class="kc-row"><span class="kc-label">NIS / NISN</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;${s.nis} / ${s.nisn}</span></div>
-          <div class="kc-row"><span class="kc-label">Kelas</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;${s.kelas}</span></div>
-          <div class="kc-row"><span class="kc-label">Ruang</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;${ruang}</span></div>
-        </div>
-        <div class="kc-signature">
-          <div>Moga, 5 Desember 2026</div>
-          <div>Kepala Sekolah,</div>
-          <div style="height:40px;"></div>
-          <div class="kc-sig-name">DARIAH, S.Pd., M.Pd.</div>
-          <div>NIP. 197306022007012006</div>
-        </div>
-      </div>
-    `;
+    html += '<div class="kartu-card left">';
+    html += '<div class="kc-top">';
+    html += '<div class="kc-logo-area">';
+    html += '<img src="' + logoUrl + '" class="kc-logo" alt="">';
+    html += '<div class="kc-school-info">';
+    html += '<div class="kc-school-name">SMP NEGERI 1 MOGA</div>';
+    html += '<div class="kc-event-title">ASESMEN SUMATIF AKHIR SEMESTER (ASAS)</div>';
+    html += '<div style="font-size:7px;">T.P. 2026/2027</div>';
+    html += '</div></div>';
+    html += '<div class="kc-roman">' + roman + '</div>';
+    html += '</div>';
+    html += '<div class="kc-title">KARTU PESERTA</div>';
+    html += '<div class="kc-fields">';
+    html += '<div class="kc-row"><span class="kc-label">No. Peserta</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.noPeserta + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">Nama</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.nama + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">NIS / NISN</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.nis + ' / ' + s.nisn + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">Kelas</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.kelas + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">Ruang</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + ruang + '</span></div>';
+    html += '</div>';
+    // TTD block - posisi kanan, text rata kiri
+    html += '<div class="kc-signature">';
+    html += '<div>Moga, 5 Desember 2026</div>';
+    html += '<div>Kepala Sekolah,</div>';
+    if (ttdUrl) {
+      html += '<img src="' + ttdUrl + '" class="kc-ttd-img" alt="ttd">';
+    } else {
+      html += '<div style="height:25px;"></div>';
+    }
+    html += '<div class="kc-sig-name">DARIAH, S.Pd., M.Pd.</div>';
+    html += '<div>NIP. 197306022007012006</div>';
+    html += '</div>';
+    html += '</div>';
 
     // === KOLOM KANAN: JADWAL UJIAN (TANPA TTD KS) ===
-    html += `
-      <div class="kartu-card">
-        <div class="kc-top">
-          <div class="kc-logo-area">
-            <img src="https://yanuar-moga.github.io/assets/logo.jpg" class="kc-logo" alt="">
-            <div class="kc-school-info">
-              <div class="kc-school-name">SMP NEGERI 1 MOGA</div>
-              <div class="kc-event-title">ASESMEN SUMATIF AKHIR SEMESTER (ASAS)</div>
-              <div style="font-size:9px;">T.P. 2026/2027</div>
-            </div>
-          </div>
-          <div class="kc-roman">${roman}</div>
-        </div>
-        <div class="kc-title">JADWAL UJIAN</div>
-        <table class="kc-schedule">
-          <thead><tr><th>HARI / TANGGAL</th><th>MATA PELAJARAN</th></tr></thead>
-          <tbody>
-    `;
+    html += '<div class="kartu-card">';
+    html += '<div class="kc-top">';
+    html += '<div class="kc-logo-area">';
+    html += '<img src="' + logoUrl + '" class="kc-logo" alt="">';
+    html += '<div class="kc-school-info">';
+    html += '<div class="kc-school-name">SMP NEGERI 1 MOGA</div>';
+    html += '<div class="kc-event-title">ASESMEN SUMATIF AKHIR SEMESTER (ASAS)</div>';
+    html += '<div style="font-size:7px;">T.P. 2026/2027</div>';
+    html += '</div></div>';
+    html += '<div class="kc-roman">' + roman + '</div>';
+    html += '</div>';
+    html += '<div class="kc-title">JADWAL UJIAN</div>';
+    html += '<table class="kc-schedule"><thead><tr><th>HARI / TANGGAL</th><th>MATA PELAJARAN</th></tr></thead><tbody>';
     jadwalRows.forEach(function(row) {
       html += '<tr><td style="white-space:nowrap;">' + row[0] + '</td><td>';
       html += '<div>' + row[1] + '</div>';
@@ -1515,11 +1539,8 @@ function renderKartu(data){
       }
       html += '</td></tr>';
     });
-    html += `
-          </tbody>
-        </table>
-      </div>
-    `;
+    html += '</tbody></table>';
+    html += '</div>';
 
     html += '</div>'; // .kartu-row
   });
@@ -1528,6 +1549,44 @@ function renderKartu(data){
 
   wrap.innerHTML = html;
   printArea.innerHTML = html;
+}
+
+// =========================================================================
+// SETTINGS: Logo & TTD URL (disimpan di localStorage)
+// =========================================================================
+function loadImageSettings(){
+  const logoInput = document.getElementById('settingLogoUrl');
+  const ttdInput = document.getElementById('settingTtdUrl');
+  if (logoInput) logoInput.value = localStorage.getItem('asasKartu_logoUrl') || 'https://yanuar-moga.github.io/assets/logo.jpg';
+  if (ttdInput) ttdInput.value = localStorage.getItem('asasKartu_ttdUrl') || '';
+}
+
+function saveImageSettings(){
+  const logoUrl = document.getElementById('settingLogoUrl').value.trim();
+  const ttdUrl = document.getElementById('settingTtdUrl').value.trim();
+  if (logoUrl) {
+    localStorage.setItem('asasKartu_logoUrl', logoUrl);
+  }
+  if (ttdUrl) {
+    localStorage.setItem('asasKartu_ttdUrl', ttdUrl);
+  } else {
+    localStorage.removeItem('asasKartu_ttdUrl');
+  }
+  toast('Pengaturan gambar tersimpan. Klik "Muat Data Kartu" untuk refresh.', 'success');
+  // Re-render bila sudah ada data
+  if (STATE.kartuData && STATE.kartuData.length) {
+    renderKartu(STATE.kartuData);
+  }
+}
+
+function resetImageSettings(){
+  localStorage.removeItem('asasKartu_logoUrl');
+  localStorage.removeItem('asasKartu_ttdUrl');
+  loadImageSettings();
+  toast('Pengaturan gambar direset ke default.', 'warn');
+  if (STATE.kartuData && STATE.kartuData.length) {
+    renderKartu(STATE.kartuData);
+  }
 }
 
 function exportKartuXlsx(){
