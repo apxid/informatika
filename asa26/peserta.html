@@ -300,13 +300,59 @@
     <button class="btn btn-primary" id="btnSubmitPin" onclick="submitPin()">
       <span id="pinBtnText">Masuk</span>
     </button>
-    <button class="btn btn-soft" id="btnDebug" onclick="runDebugDiagnosis()" style="margin-top:8px; background:#FFF3E0; color:#E67E22;">
-      <span>&#128270;</span> Test Koneksi &amp; Debug
-    </button>
     <div id="debugOutput" style="margin-top:12px; text-align:left; font-size:11px; color:var(--c-text-soft); max-height:240px; overflow-y:auto; background:#F5F7FF; padding:10px; border-radius:8px; display:none;"></div>
-    <p style="margin-top:12px; font-size:11px; color:var(--c-text-soft);">
-      Default PIN: <b>1234</b> (ganti di sheet CONFIG)
-    </p>
+    <button class="btn btn-soft" id="btnAbout" onclick="openAboutModal()" style="margin-top:12px; background:#F5F7FF; color:var(--c-primary); width:100%; justify-content:center;">
+      <span>&#8505;</span> About Aplikasi
+    </button>
+  </div>
+</div>
+
+<!-- MODAL ABOUT APLIKASI -->
+<div id="aboutModal" class="modal-overlay hidden">
+  <div class="modal-card" style="max-width:460px;">
+    <div class="lock-ico" style="background:linear-gradient(135deg,#6C5CE7 0%,#FF6B9D 100%);">&#128187;</div>
+    <h2 style="margin-bottom:10px;">Tentang Aplikasi</h2>
+    <div style="text-align:left; font-size:13px; color:var(--c-text); line-height:1.7;">
+      <div style="margin-bottom:14px;">
+        <div style="font-weight:700; font-size:18px; color:var(--c-primary);">Asas Kelas</div>
+        <div style="color:var(--c-text-soft); font-size:12px;">Sistem Penataan Peserta, Piket &amp; Denah - SMPN 1 Moga</div>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft); width:100px;">Versi</td>
+          <td style="padding:6px 0; font-weight:600;">v3.0</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft);">Developer</td>
+          <td style="padding:6px 0; font-weight:700; color:var(--c-primary);">DEV BY MB</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft);">Build</td>
+          <td style="padding:6px 0; font-weight:600;">12 November 2026</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft);">Timezone</td>
+          <td style="padding:6px 0; font-weight:600;">WIB (GMT+7)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft);">Backend</td>
+          <td style="padding:6px 0; font-weight:600;">Google Apps Script</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft);">Frontend</td>
+          <td style="padding:6px 0; font-weight:600;">HTML statis (GitHub Pages)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft); vertical-align:top;">Link</td>
+          <td style="padding:6px 0;">
+            <a href="https://lynk.id/mb_dprint" target="_blank" rel="noopener" style="color:var(--c-primary); font-weight:600; text-decoration:none; word-break:break-all;">
+              lynk.id/mb_dprint &#8599;
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <button class="btn btn-primary" onclick="closeAboutModal()" style="width:100%; justify-content:center; margin-top:18px;">Tutup</button>
   </div>
 </div>
 
@@ -323,6 +369,7 @@
     <div class="user-box">
       <span>&#128100;</span>
       <span id="userStatus">Logged in</span>
+      <button class="btn btn-sm" onclick="openAboutModal()" style="background:rgba(255,255,255,0.2); color:white;">About</button>
       <button class="btn btn-sm" onclick="logout()" style="background:rgba(255,255,255,0.2); color:white;">Keluar</button>
     </div>
   </header>
@@ -415,6 +462,12 @@
         <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">
           Piket di-generate per ruang dari konfigurasi RUANG_UJIAN. Setiap ruang menampilkan peserta dari Kelas A dan Kelas B yang sudah ditempatkan di ruang tersebut.
         </p>
+        <div class="form-row" style="margin-top:12px; max-width:300px;">
+          <div class="form-group">
+            <label>Tanggal Pelaksanaan Piket</label>
+            <input type="date" id="piketTanggal">
+          </div>
+        </div>
         <div class="btn-bar">
           <button class="btn btn-primary" onclick="genPiket()"><span>&#9889;</span> Generate Daftar Piket per Ruang</button>
           <button class="btn btn-success" onclick="exportPiketXlsx()"><span>&#128229;</span> Download Excel</button>
@@ -427,16 +480,12 @@
       <div id="sub-denah" class="hidden" style="margin-top:20px;">
         <h3 style="color:var(--c-primary);">&#129689; Denah Tempat Duduk per Ruang (Ruang 1 - 27)</h3>
         <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">
-          Denah di-generate per ruang dari konfigurasi RUANG_UJIAN. Setiap ruang dipecah menjadi beberapa denah (default 4 baris × 2 kursi = 8 kursi per denah). Kursi KANAN untuk Kelas A, kursi KIRI untuk Kelas B.
+          Denah grid 8 kolom × 8 baris per ruang. Kolom (kanan ke kiri): L K J I H G F E.
+          Pola penempatan: L=A, K=B, J=lorong, I=A, H=B, G=lorong, F=A, E=B.
+          Setiap kolom diisi 4 peserta di baris ganjil (1, 3, 5, 7). Kapasitas: 16 peserta per kelas.
         </p>
-        <div class="form-row" style="margin-top:12px;">
-          <div class="form-group">
-            <label>Baris per Denah</label>
-            <input type="number" id="denahBaris" value="4" min="1" max="20">
-          </div>
-        </div>
         <div class="btn-bar">
-          <button class="btn btn-primary" onclick="genDenah()"><span>&#9889;</span> Generate Denah per Ruang</button>
+          <button class="btn btn-primary" onclick="genDenah()"><span>&#9889;</span> Generate Denah per Ruang (8x8)</button>
           <button class="btn btn-success" onclick="exportDenahXlsx()"><span>&#128229;</span> Download Excel</button>
           <button class="btn btn-warning" onclick="saveDenahToServer()"><span>&#128190;</span> Simpan ke Spreadsheet</button>
         </div>
@@ -683,9 +732,8 @@ async function submitPin(){
       const hintEl = document.getElementById('debugOutput');
       hintEl.style.display = 'block';
       hintEl.innerHTML = `<b>&#9888; PIN salah. Saran:</b><br>
-        1. Pastikan sheet CONFIG cell B1 berisi: <code>1234</code> (tanpa spasi)<br>
-        2. Pastikan Web App sudah di-deploy ulang: <b>Deploy > Manage deployments > Edit > Version: New version > Deploy</b><br>
-        3. Klik tombol <b>Test Koneksi &amp; Debug</b> di bawah untuk diagnosis otomatis.<br>
+        1. Pastikan sheet CONFIG ada baris dengan kolom A="PIN" dan kolom B berisi PIN (mis. 1234).<br>
+        2. Pastikan Web App sudah di-deploy ulang: <b>Deploy > Manage deployments > Edit > Version: New version > Deploy</b>.<br>
         <br><b>Response server:</b><br><pre style="font-size:10px; white-space:pre-wrap;">${JSON.stringify(res, null, 2)}</pre>`;
     }
   } catch(e) {
@@ -695,11 +743,11 @@ async function submitPin(){
     hintEl.innerHTML = `<b>&#10060; Error koneksi:</b><br>
       <code>${e.message}</code><br><br>
       <b>Kemungkinan penyebab:</b><br>
-      1. URL exec salah - cek baris <code>GAS_URL</code><br>
+      1. URL exec salah - cek baris <code>GAS_URL</code> di index.html<br>
       2. Web App deployment: akses harus <b>Anyone</b><br>
       3. SPREADSHEET_ID salah di Kode.gs<br>
       4. Belum re-deploy setelah ganti SPREADSHEET_ID<br>
-      <br>Klik tombol <b>Test Koneksi &amp; Debug</b> di bawah.`;
+      5. Browser cache - hard refresh: Ctrl+Shift+R`;
   } finally {
     btn.disabled = false;
     btnText.textContent = 'Masuk';
@@ -707,83 +755,24 @@ async function submitPin(){
 }
 
 /**
- * Fungsi diagnosis otomatis - panggil endpoint testConfig di GAS.
- * Menampilkan info lengkap untuk troubleshooting masalah PIN.
+ * Buka modal About Aplikasi.
  */
-async function runDebugDiagnosis(){
-  const outEl = document.getElementById('debugOutput');
-  const btn = document.getElementById('btnDebug');
-  outEl.style.display = 'block';
-  outEl.innerHTML = '<b>&#9203; Memeriksa koneksi ke server...</b>';
-  btn.disabled = true;
-  const origBtn = btn.innerHTML;
-  btn.innerHTML = '<span class="loader"></span> Menguji...';
-
-  try {
-    // Step 1: test koneksi ke endpoint info
-    outEl.innerHTML += '<br><br><b>1. Tes koneksi ke Web App...</b><br>';
-    let infoRes;
-    try {
-      infoRes = await callGet('info', {});
-      outEl.innerHTML += `<span style="color:green;">&#10004; Web App aktif. Versi: ${infoRes.version || '?'}, TZ: ${infoRes.tz || '?'}</span><br>`;
-    } catch (e) {
-      outEl.innerHTML += `<span style="color:red;">&#10006; Gagal terhubung: ${e.message}</span><br>`;
-      outEl.innerHTML += '<br>Kemungkinan: URL salah, deployment akses bukan "Anyone", atau Web App belum di-deploy.<br>';
-      btn.disabled = false; btn.innerHTML = origBtn;
-      return;
-    }
-
-    // Step 2: test endpoint testconfig (tidak butuh PIN)
-    outEl.innerHTML += '<br><b>2. Tes akses spreadsheet &amp; konfigurasi...</b><br>';
-    let cfgRes;
-    try {
-      cfgRes = await callGet('testconfig', {});
-      outEl.innerHTML += `<pre style="font-size:10px; white-space:pre-wrap; background:white; padding:8px; border-radius:4px; margin-top:4px;">${JSON.stringify(cfgRes, null, 2)}</pre>`;
-    } catch (e) {
-      outEl.innerHTML += `<span style="color:red;">&#10006; Error: ${e.message}</span><br>`;
-      outEl.innerHTML += '<br>Pastikan Kode.gs sudah berisi function <code>testConfig()</code>. Re-deploy Web App.<br>';
-      btn.disabled = false; btn.innerHTML = origBtn;
-      return;
-    }
-
-    // Step 3: analisis hasil
-    outEl.innerHTML += '<br><b>3. Analisis &amp; saran perbaikan:</b><br>';
-    if (cfgRes.instructions && cfgRes.instructions.length) {
-      cfgRes.instructions.forEach((ins, i) => {
-        outEl.innerHTML += `<span style="color:#E67E22;">&#9888;</span> ${ins}<br>`;
-      });
-    } else {
-      outEl.innerHTML += '<span style="color:green;">&#10004; Tidak ada masalah terdeteksi di sisi server.</span><br>';
-    }
-
-    // Step 4: tes verifyPin dengan input user
-    const pinInput = document.getElementById('pinInput').value.trim();
-    if (pinInput) {
-      outEl.innerHTML += `<br><b>4. Tes verifyPin dengan input Anda ("${pinInput}"):</b><br>`;
-      try {
-        const verifyRes = await callGet('debugpin', { pin: pinInput });
-        outEl.innerHTML += `<pre style="font-size:10px; white-space:pre-wrap; background:white; padding:8px; border-radius:4px; margin-top:4px;">${JSON.stringify(verifyRes, null, 2)}</pre>`;
-      } catch (e) {
-        outEl.innerHTML += `<span style="color:red;">&#10006; Error: ${e.message}</span><br>`;
-      }
-    } else {
-      outEl.innerHTML += '<br><b>4. (Kosongkan dulu kolom PIN di atas bila ingin lihat info lebih)</b><br>';
-      outEl.innerHTML += 'Isi PIN dulu di kolom atas lalu klik "Test Koneksi & Debug" lagi untuk tes verifyPin.<br>';
-    }
-
-    outEl.innerHTML += '<br><b style="color:var(--c-primary);">&#128161; Penyebab paling umum PIN tidak bisa masuk:</b><br>';
-    outEl.innerHTML += '<ol style="margin-left:18px;">' +
-      '<li>Web App belum di-deploy ulang setelah ganti <code>SPREADSHEET_ID</code>. Solusi: Deploy > Manage deployments > Edit > New version > Deploy.</li>' +
-      '<li>Function <code>setupInitial</code> belum pernah di-run di editor GAS (akibatnya sheet CONFIG belum punya PIN di B1).</li>' +
-      '<li>Cell B1 di sheet CONFIG bukan berisi teks "1234" (bisa di-format sebagai number, atau ada spasi).</li>' +
-      '<li>Web App akses masih "Only myself" - ubah ke "Anyone".</li>' +
-      '<li>Browser cache masih simpan index.html versi lama (hard refresh: Ctrl+Shift+R).</li>' +
-      '</ol>';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = origBtn;
-  }
+function openAboutModal(){
+  document.getElementById('aboutModal').classList.remove('hidden');
 }
+
+/**
+ * Tutup modal About Aplikasi.
+ */
+function closeAboutModal(){
+  document.getElementById('aboutModal').classList.add('hidden');
+}
+
+// Tutup modal About bila klik di luar card
+document.addEventListener('click', function(e){
+  const aboutModal = document.getElementById('aboutModal');
+  if (e.target === aboutModal) closeAboutModal();
+});
 
 async function logout(){
   try {
@@ -800,6 +789,13 @@ async function logout(){
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pinInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') submitPin(); });
+  // Set default tanggal piket = hari ini
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  const tglInput = document.getElementById('piketTanggal');
+  if (tglInput) tglInput.value = `${yyyy}-${mm}-${dd}`;
   renderRoomEditor();
 });
 
@@ -1157,8 +1153,9 @@ async function savePesertaToServer(){
 async function genPiket(){
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    // Tidak ada input - langsung pakai konfigurasi RUANG_UJIAN
-    const res = await callPost('generatepiket', {});
+    // Ambil input tanggal dari user, kirim ke backend untuk dijadikan HARI & TANGGAL
+    const tanggalISO = document.getElementById('piketTanggal').value || '';
+    const res = await callPost('generatepiket', { tanggal: tanggalISO });
     if (res.success){
       STATE.piketData = res;
       renderPiket(res);
@@ -1172,8 +1169,9 @@ async function genPiket(){
 
 function renderPiket(data){
   const wrap = document.getElementById('piketResult');
+  const hariTanggal = data.hariTanggal || '-';
   let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#128197; Daftar Piket per Ruang (${data.totalRuang} ruang)</h4>`;
-  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">Kursi KANAN = Kelas A, Kursi KIRI = Kelas B (sesuai konfigurasi RUANG_UJIAN).</p>`;
+  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">Tanggal Pelaksanaan: <b>${hariTanggal}</b>. Kursi KANAN = Kelas A, Kursi KIRI = Kelas B (sesuai konfigurasi RUANG_UJIAN).</p>`;
 
   // Card per ruang
   data.rooms.forEach(room => {
@@ -1182,7 +1180,8 @@ function renderPiket(data){
     html += `<div class="tgl">Ruang ${room.id} - ${room.nama} &middot; Kelas ${room.kelasA} (kanan) &times; Kelas ${room.kelasB} (kiri)</div>`;
     html += `<div style="font-size:11px; color:var(--c-text-soft); margin-top:4px;">Peserta A: ${room.pesertaA.length} | Peserta B: ${room.pesertaB.length}</div>`;
     html += `<div class="table-wrap" style="margin-top:8px;"><table class="data-table"><thead><tr>
-      <th style="width:40px;">#</th>
+      <th style="width:40px;">NO</th>
+      <th>HARI &amp; TANGGAL</th>
       <th>NO PESERTA (KELAS ${room.kelasA})</th><th>NAMA (KELAS ${room.kelasA})</th>
       <th>NO PESERTA (KELAS ${room.kelasB})</th><th>NAMA (KELAS ${room.kelasB})</th>
     </tr></thead><tbody>`;
@@ -1191,6 +1190,7 @@ function renderPiket(data){
       const b = room.pesertaB[i] || {};
       html += `<tr>
         <td>${i+1}</td>
+        <td><b>${hariTanggal}</b></td>
         <td><b>${a.nomorPeserta || '-'}</b></td><td>${a.nama || '-'}</td>
         <td><b>${b.nomorPeserta || '-'}</b></td><td>${b.nama || '-'}</td>
       </tr>`;
@@ -1204,7 +1204,8 @@ function renderPiket(data){
 function exportPiketXlsx(){
   if (!STATE.piketData){ toast('Generate dulu.', 'warn'); return; }
   const d = STATE.piketData;
-  const aoa = [['NO','RUANG','KELAS A','NO PESERTA (A)','NAMA (A)','KELAS B','NO PESERTA (B)','NAMA (B)']];
+  const hariTanggal = d.hariTanggal || '-';
+  const aoa = [['NO','HARI & TANGGAL','NO PESERTA (KELAS A)','NAMA (KELAS A)','NO PESERTA (KELAS B)','NAMA (KELAS B)']];
   let no = 1;
   d.rooms.forEach(room => {
     const maxLen = Math.max(room.pesertaA.length, room.pesertaB.length, 1);
@@ -1213,10 +1214,8 @@ function exportPiketXlsx(){
       const b = room.pesertaB[i] || {};
       aoa.push([
         no++,
-        room.nama,
-        room.kelasA,
+        hariTanggal,
         a.nomorPeserta || '', a.nama || '',
-        room.kelasB,
         b.nomorPeserta || '', b.nama || ''
       ]);
     }
@@ -1231,25 +1230,26 @@ async function savePiketToServer(){
   if (!STATE.piketData){ toast('Generate dulu.', 'warn'); return; }
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    const res = await callPost('savepiket', { data: STATE.piketData.rooms });
+    const res = await callPost('savepiket', {
+      hariTanggal: STATE.piketData.hariTanggal,
+      rooms: STATE.piketData.rooms
+    });
     toast(res.success ? `Tersimpan ${res.saved} baris.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
   finally { resetBtn(btn); }
 }
 
 /* =========================================================================
-   SUBMENU DENAH (per ruang, auto-batch)
+   SUBMENU DENAH (per ruang, grid 8x8)
    ========================================================================= */
 async function genDenah(){
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    const barisPerDenah = parseInt(document.getElementById('denahBaris').value) || 4;
-    const res = await callPost('generatedenah', { jumlahBaris: barisPerDenah });
+    const res = await callPost('generatedenah', {});
     if (res.success){
       STATE.denahData = res;
       renderDenah(res);
-      const totalDenahs = res.ruangs.reduce((a,b) => a + b.denahs.length, 0);
-      toast(`Berhasil generate ${totalDenahs} denah dari ${res.totalRuang} ruang (${res.barisPerDenah} baris × 2 kursi per denah).`, 'success');
+      toast(`Berhasil generate denah 8x8 untuk ${res.totalRuang} ruang.`, 'success');
     } else {
       toast(res.message || 'Gagal generate.', 'error');
     }
@@ -1259,58 +1259,64 @@ async function genDenah(){
 
 function renderDenah(data){
   const wrap = document.getElementById('denahResult');
-  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (${data.totalRuang} ruang)</h4>`;
+  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (Grid 8x8, ${data.totalRuang} ruang)</h4>`;
   html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">`;
-  html += `${data.barisPerDenah} baris × 2 kursi = ${data.kursiPerDenah} kursi per denah. `;
-  html += `Setiap ruang dipecah menjadi beberapa denah bila peserta > ${data.kursiPerDenah}. `;
-  html += `Kursi KANAN = Kelas A, Kursi KIRI = Kelas B.</p>`;
+  html += `Kolom (kiri ke kanan): E F G H I J K L. `;
+  html += `Pola: L=A, K=B, J=lorong, I=A, H=B, G=lorong, F=A, E=B. `;
+  html += `Peserta di baris ganjil (1, 3, 5, 7).</p>`;
 
+  // Untuk tiap ruang
   data.ruangs.forEach(ruang => {
     html += `<h5 style="margin-top:24px; color:var(--c-primary); border-bottom:2px solid var(--c-primary); padding-bottom:4px;">`;
-    html += `Ruang ${ruang.id} - ${ruang.nama} &middot; Kelas ${ruang.kelasA} (kanan, ${ruang.pesertaACount} siswa) &times; Kelas ${ruang.kelasB} (kiri, ${ruang.pesertaBCount} siswa)`;
+    html += `Ruang ${ruang.id} - ${ruang.nama} &middot; Kelas ${ruang.kelasA} (A, ${ruang.pesertaACount} siswa) &times; Kelas ${ruang.kelasB} (B, ${ruang.pesertaBCount} siswa)`;
     html += `</h5>`;
 
-    ruang.denahs.forEach(denah => {
-      html += `<div class="denah-wrap" style="margin-bottom:18px;">`;
-      html += `<div class="denah-papan">RUANG ${ruang.nama.toUpperCase()} - DENAH ${denah.batch} dari ${ruang.denahs.length}</div>`;
-      denah.baris.forEach(b => {
-        html += `<div class="denah-row">`;
-        // KURSI KIRI (kelas B)
-        if (b.kiri) {
-          const kodeKls = String(b.kiri.kelas || '').replace(/\D/g,'');
-          html += `<div class="denah-chair left">
-            <div class="chair-label">Baris ${b.baris} &middot; KURSI KIRI</div>
-            <div class="chair-no">${b.kiri.nomorPeserta || '-'}</div>
-            <div class="chair-nama">${b.kiri.nama || '-'}</div>
-            <div class="chair-kelas"><span class="badge badge-${kodeKls}">${b.kiri.kelas || '-'}</span></div>
-          </div>`;
-        } else {
-          html += `<div class="denah-chair left" style="opacity:0.4;">
-            <div class="chair-label">Baris ${b.baris} &middot; KURSI KIRI</div>
-            <div class="chair-no">-</div>
-            <div class="chair-nama">(kosong)</div>
-          </div>`;
-        }
-        // KURSI KANAN (kelas A)
-        if (b.kanan) {
-          const kodeKls = String(b.kanan.kelas || '').replace(/\D/g,'');
-          html += `<div class="denah-chair right">
-            <div class="chair-label">Baris ${b.baris} &middot; KURSI KANAN</div>
-            <div class="chair-no">${b.kanan.nomorPeserta || '-'}</div>
-            <div class="chair-nama">${b.kanan.nama || '-'}</div>
-            <div class="chair-kelas"><span class="badge badge-${kodeKls}">${b.kanan.kelas || '-'}</span></div>
-          </div>`;
-        } else {
-          html += `<div class="denah-chair right" style="opacity:0.4;">
-            <div class="chair-label">Baris ${b.baris} &middot; KURSI KANAN</div>
-            <div class="chair-no">-</div>
-            <div class="chair-nama">(kosong)</div>
-          </div>`;
-        }
-        html += `</div>`;
-      });
-      html += `</div>`;
+    // Render grid sebagai table: rows = 8, cols = 8 (E F G H I J K L)
+    // Tampilan: kolom paling kanan = L (paling dekat papan tulis)
+    html += `<div class="denah-wrap" style="margin-bottom:18px; padding:14px;">`;
+    html += `<div class="denah-papan">PAPAN TULIS / DEPAN RUANG ${ruang.nama.toUpperCase()}</div>`;
+    html += `<table style="border-collapse:collapse; width:100%; margin-top:8px;">`;
+
+    // Header row: kolom labels (E F G H I J K L)
+    html += `<thead><tr><th style="border:1px solid #ccc; padding:6px; background:#F5F7FF; font-size:11px; color:#636E72;">ROW</th>`;
+    ruang.gridInfo.colLabels.slice().reverse().forEach(label => {
+      html += `<th style="border:1px solid #ccc; padding:6px; background:#F5F7FF; font-weight:700; color:#6C5CE7; font-size:13px;">${label}</th>`;
     });
+    html += `</tr></thead><tbody>`;
+
+    // Render baris dari 8 (atas) ke 1 (bawah)
+    for (let r = data.gridRows - 1; r >= 0; r--) {
+      const rowNum = r + 1;
+      const isFilledRow = ruang.gridInfo.filledRows.indexOf(rowNum) >= 0;
+      const rowBg = isFilledRow ? '#FFFFFF' : '#FAFBFF';
+      html += `<tr><td style="border:1px solid #ccc; padding:6px; background:#F5F7FF; font-weight:700; color:#636E72; text-align:center;">${rowNum}</td>`;
+      // Kolom: dari E (kiri) ke L (kanan) - tampil terbalik dari grid
+      // grid[r] = [L, K, J, I, H, G, F, E] - kita reverse untuk tampil E-L
+      const rowCells = ruang.grid[r].slice().reverse();
+      rowCells.forEach(cell => {
+        if (cell.type === 'lorong') {
+          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFE5B4; text-align:center; font-size:10px; color:#E67E22;">LORONG</td>`;
+        } else if (cell.type === 'lorong-h') {
+          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFF8E1; text-align:center; font-size:10px; color:#FFB142;">- Lorong H -</td>`;
+        } else if (cell.peserta) {
+          const kodeKls = String(cell.peserta.kelas || '').replace(/\D/g,'');
+          const typeColor = cell.type === 'A' ? '#6C5CE7' : '#FF6B9D';
+          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center;">`;
+          html += `<div style="font-size:9px; color:${typeColor}; font-weight:700;">${cell.col}${cell.row} &middot; ${cell.type}</div>`;
+          html += `<div style="font-size:13px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta || '-'}</div>`;
+          html += `<div style="font-size:10px; color:#2D3436; margin-top:2px;">${cell.peserta.nama || '-'}</div>`;
+          html += `<div style="margin-top:2px;"><span class="badge badge-${kodeKls}" style="font-size:9px;">${cell.peserta.kelas || '-'}</span></div>`;
+          html += `</td>`;
+        } else {
+          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center; opacity:0.5;">`;
+          html += `<div style="font-size:9px; color:#999;">${cell.col}${cell.row} &middot; ${cell.type}</div>`;
+          html += `<div style="font-size:11px; color:#999;">(kosong)</div>`;
+          html += `</td>`;
+        }
+      });
+      html += `</tr>`;
+    }
+    html += `</tbody></table></div>`;
   });
 
   wrap.innerHTML = html;
@@ -1319,32 +1325,59 @@ function renderDenah(data){
 function exportDenahXlsx(){
   if (!STATE.denahData){ toast('Generate dulu.', 'warn'); return; }
   const d = STATE.denahData;
-  const aoa = [[`DENAH TEMPAT DUDUK PER RUANG (${d.totalRuang} RUANG)`]];
-  aoa.push([`${d.barisPerDenah} baris × 2 kursi per denah. KANAN=Kelas A, KIRI=Kelas B`]);
+  const aoa = [[`DENAH TEMPAT DUDUK PER RUANG (GRID 8x8) - ${d.totalRuang} RUANG`]];
+  aoa.push([`Kolom (kiri ke kanan): E F G H I J K L`]);
+  aoa.push([`Pola: L=A, K=B, J=lorong, I=A, H=B, G=lorong, F=A, E=B`]);
+  aoa.push([`Peserta di baris ganjil (1, 3, 5, 7)`]);
   aoa.push(['']);
 
   d.ruangs.forEach(ruang => {
-    aoa.push([`=== RUANG ${ruang.id} - ${ruang.nama} | Kelas ${ruang.kelasA} (kanan, ${ruang.pesertaACount} siswa) & Kelas ${ruang.kelasB} (kiri, ${ruang.pesertaBCount} siswa) ===`]);
-    ruang.denahs.forEach(denah => {
-      aoa.push([`--- Denah ${denah.batch} dari ${ruang.denahs.length} ---`]);
-      aoa.push(['BARIS','NO KURSI KIRI','NAMA (KIRI)','KELAS (KIRI)','NO KURSI KANAN','NAMA (KANAN)','KELAS (KANAN)']);
-      denah.baris.forEach(b => {
-        const kiri = b.kiri || {};
-        const kanan = b.kanan || {};
-        aoa.push([
-          b.baris,
-          kiri.nomorPeserta || '-', kiri.nama || '-', kiri.kelas || '-',
-          kanan.nomorPeserta || '-', kanan.nama || '-', kanan.kelas || '-'
-        ]);
+    aoa.push([`=== RUANG ${ruang.id} - ${ruang.nama} | Kelas ${ruang.kelasA} (A, ${ruang.pesertaACount}) & Kelas ${ruang.kelasB} (B, ${ruang.pesertaBCount}) ===`]);
+    // Header kolom
+    aoa.push(['ROW', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']);
+    // Render dari baris 8 ke 1
+    for (let r = d.gridRows - 1; r >= 0; r--) {
+      const rowNum = r + 1;
+      const rowCells = ruang.grid[r].slice().reverse(); // E F G H I J K L
+      const rowData = [rowNum];
+      rowCells.forEach(cell => {
+        if (cell.type === 'lorong') {
+          rowData.push('LORONG');
+        } else if (cell.type === 'lorong-h') {
+          rowData.push('-');
+        } else if (cell.peserta) {
+          rowData.push(`${cell.peserta.nomorPeserta || '-'} (${cell.peserta.nama || '-'})`);
+        } else {
+          rowData.push('(kosong)');
+        }
       });
-      aoa.push(['']);
+      aoa.push(rowData);
+    }
+    aoa.push(['']);
+
+    // Detail per peserta
+    aoa.push([`--- Detail Peserta Ruang ${ruang.nama} ---`]);
+    aoa.push(['KOLOM', 'BARIS', 'TIPE', 'NO PESERTA', 'NAMA', 'KELAS', 'URUT ABSEN']);
+    ruang.grid.forEach(gridRow => {
+      gridRow.forEach(cell => {
+        if (cell.peserta) {
+          aoa.push([
+            cell.col, cell.row, cell.type,
+            cell.peserta.nomorPeserta || '',
+            cell.peserta.nama || '',
+            cell.peserta.kelas || '',
+            cell.peserta.urutAbsen || ''
+          ]);
+        }
+      });
     });
+    aoa.push(['']);
     aoa.push(['']);
   });
 
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Denah per Ruang');
-  XLSX.writeFile(wb, 'Denah_Tempat_Duduk_per_Ruang.xlsx');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Denah 8x8');
+  XLSX.writeFile(wb, 'Denah_Tempat_Duduk_8x8_per_Ruang.xlsx');
   toast('Excel terdownload.', 'success');
 }
 
