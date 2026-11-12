@@ -292,7 +292,7 @@
 <!-- MODAL PIN -->
 <div id="pinModal" class="modal-overlay">
   <div class="modal-card">
-    <div class="lock-ico">&#128274;</div>
+    <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin:0 auto 14px; box-shadow:0 6px 18px rgba(108,92,231,0.30); display:block;">
     <h2>Masuk Aplikasi</h2>
     <p class="sub">Asas Kelas &middot; SMP Negeri 1 Moga<br>Masukkan PIN untuk melanjutkan</p>
     <input type="password" id="pinInput" class="pin-input" maxlength="20" placeholder="&bull;&bull;&bull;&bull;" autocomplete="off">
@@ -1243,53 +1243,39 @@ async function genDenah(){
 function renderDenah(data){
   const wrap = document.getElementById('denahResult');
   let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (Grid 8x8, ${data.totalRuang} ruang)</h4>`;
-  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">`;
-  html += `Kolom (kiri ke kanan): E F G H I J K L. `;
-  html += `Pola: L=A, K=B, J=lorong, I=A, H=B, G=lorong, F=A, E=B. `;
-  html += `Peserta di baris ganjil (1, 3, 5, 7).</p>`;
 
   // Untuk tiap ruang
   data.ruangs.forEach(ruang => {
     html += `<h5 style="margin-top:24px; color:var(--c-primary); border-bottom:2px solid var(--c-primary); padding-bottom:4px;">`;
-    html += `Ruang ${ruang.id} - ${ruang.nama} &middot; Kelas ${ruang.kelasA} (A, ${ruang.pesertaACount} siswa) &times; Kelas ${ruang.kelasB} (B, ${ruang.pesertaBCount} siswa)`;
+    html += `Ruang ${ruang.id} - ${ruang.nama} &middot; Kelas ${ruang.kelasA} &times; Kelas ${ruang.kelasB}`;
     html += `</h5>`;
 
     // Render grid sebagai table: rows = 8, cols = 8 (E F G H I J K L)
-    // Tampilan: kolom paling kanan = L (paling dekat papan tulis)
     html += `<div class="denah-wrap" style="margin-bottom:18px; padding:14px;">`;
-    html += `<div class="denah-papan">PAPAN TULIS / DEPAN RUANG ${ruang.nama.toUpperCase()}</div>`;
     html += `<table style="border-collapse:collapse; width:100%; margin-top:8px;">`;
 
     // Header row: kolom labels (E F G H I J K L)
-    html += `<thead><tr><th style="border:1px solid #ccc; padding:6px; background:#F5F7FF; font-size:11px; color:#636E72;">ROW</th>`;
+    html += `<thead><tr><th style="border:1px solid #eee; padding:6px; background:#F5F7FF; font-size:11px; color:#636E72;"></th>`;
     ruang.gridInfo.colLabels.slice().reverse().forEach(label => {
-      html += `<th style="border:1px solid #ccc; padding:6px; background:#F5F7FF; font-weight:700; color:#6C5CE7; font-size:13px;">${label}</th>`;
+      html += `<th style="border:1px solid #eee; padding:6px; background:#F5F7FF; font-weight:700; color:#6C5CE7; font-size:13px;">${label}</th>`;
     });
     html += `</tr></thead><tbody>`;
 
     // Render baris dari 8 (atas) ke 1 (bawah)
     for (let r = data.gridRows - 1; r >= 0; r--) {
       const rowNum = r + 1;
-      const isFilledRow = ruang.gridInfo.filledRows.indexOf(rowNum) >= 0;
-      const rowBg = isFilledRow ? '#FFFFFF' : '#FAFBFF';
-      html += `<tr><td style="border:1px solid #ccc; padding:6px; background:#F5F7FF; font-weight:700; color:#636E72; text-align:center;">${rowNum}</td>`;
-      // Kolom: dari E (kiri) ke L (kanan) - tampil terbalik dari grid
-      // grid[r] = [L, K, J, I, H, G, F, E] - kita reverse untuk tampil E-L
+      html += `<tr><td style="border:1px solid #eee; padding:6px; background:#F5F7FF; font-weight:700; color:#636E72; text-align:center;">${rowNum}</td>`;
       const rowCells = ruang.grid[r].slice().reverse();
       rowCells.forEach(cell => {
-        if (cell.type === 'lorong') {
-          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFE5B4; text-align:center; font-size:10px; color:#E67E22;">&nbsp;</td>`;
-        } else if (cell.type === 'lorong-h') {
-          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFF8E1; text-align:center; font-size:10px; color:#FFB142;">&nbsp;</td>`;
-        } else if (cell.peserta) {
+        if (cell.type === 'lorong' || cell.type === 'lorong-h') {
+          html += `<td style="border:1px solid #eee; padding:6px; background:#FAFBFF;">&nbsp;</td>`;
+        } else if (cell.peserta && cell.peserta.nomorPeserta) {
           const typeColor = cell.type === 'A' ? '#6C5CE7' : '#FF6B9D';
-          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center; vertical-align:middle;">`;
-          html += `<div style="font-size:14px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta || '-'}</div>`;
+          html += `<td style="border:1px solid #ccc; padding:6px; background:white; text-align:center; vertical-align:middle;">`;
+          html += `<div style="font-size:14px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta}</div>`;
           html += `</td>`;
         } else {
-          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center; opacity:0.4;">`;
-          html += `<div style="font-size:14px; color:#999;">-</div>`;
-          html += `</td>`;
+          html += `<td style="border:1px solid #eee; padding:6px; background:white;">&nbsp;</td>`;
         }
       });
       html += `</tr>`;
@@ -1303,59 +1289,38 @@ function renderDenah(data){
 function exportDenahXlsx(){
   if (!STATE.denahData){ toast('Generate dulu.', 'warn'); return; }
   const d = STATE.denahData;
-  const aoa = [[`DENAH TEMPAT DUDUK PER RUANG (GRID 8x8) - ${d.totalRuang} RUANG`]];
-  aoa.push([`Kolom (kiri ke kanan): E F G H I J K L`]);
-  aoa.push([`Pola: L=A, K=B, J=lorong, I=A, H=B, G=lorong, F=A, E=B`]);
-  aoa.push([`Peserta di baris ganjil (1, 3, 5, 7)`]);
-  aoa.push(['']);
+  // Buat 1 sheet per ruang - hanya layout grid dengan nomor peserta saja
+  const wb = XLSX.utils.book_new();
 
   d.ruangs.forEach(ruang => {
-    aoa.push([`=== RUANG ${ruang.id} - ${ruang.nama} | Kelas ${ruang.kelasA} (A, ${ruang.pesertaACount}) & Kelas ${ruang.kelasB} (B, ${ruang.pesertaBCount}) ===`]);
-    // Header kolom
-    aoa.push(['ROW', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']);
-    // Render dari baris 8 ke 1
+    const aoa = [];
+    // Header: kolom labels (E F G H I J K L)
+    const headerRow = [''];
+    ruang.gridInfo.colLabels.slice().reverse().forEach(label => headerRow.push(label));
+    aoa.push(headerRow);
+    // Baris dari 8 (atas) ke 1 (bawah)
     for (let r = d.gridRows - 1; r >= 0; r--) {
       const rowNum = r + 1;
-      const rowCells = ruang.grid[r].slice().reverse(); // E F G H I J K L
+      const rowCells = ruang.grid[r].slice().reverse();
       const rowData = [rowNum];
       rowCells.forEach(cell => {
-        if (cell.type === 'lorong') {
-          rowData.push('LORONG');
-        } else if (cell.type === 'lorong-h') {
-          rowData.push('-');
-        } else if (cell.peserta) {
-          rowData.push(`${cell.peserta.nomorPeserta || '-'} (${cell.peserta.nama || '-'})`);
+        if (cell.type === 'lorong' || cell.type === 'lorong-h') {
+          rowData.push(''); // kosong, tidak ada teks
+        } else if (cell.peserta && cell.peserta.nomorPeserta) {
+          rowData.push(cell.peserta.nomorPeserta); // hanya nomor peserta
         } else {
-          rowData.push('(kosong)');
+          rowData.push(''); // kosong, tidak ada teks
         }
       });
       aoa.push(rowData);
     }
-    aoa.push(['']);
-
-    // Detail per peserta
-    aoa.push([`--- Detail Peserta Ruang ${ruang.nama} ---`]);
-    aoa.push(['KOLOM', 'BARIS', 'TIPE', 'NO PESERTA', 'NAMA', 'KELAS', 'URUT ABSEN']);
-    ruang.grid.forEach(gridRow => {
-      gridRow.forEach(cell => {
-        if (cell.peserta) {
-          aoa.push([
-            cell.col, cell.row, cell.type,
-            cell.peserta.nomorPeserta || '',
-            cell.peserta.nama || '',
-            cell.peserta.kelas || '',
-            cell.peserta.urutAbsen || ''
-          ]);
-        }
-      });
-    });
-    aoa.push(['']);
-    aoa.push(['']);
+    // Nama sheet: ruang nama (max 31 char - batas Excel)
+    const sheetName = ('R' + ruang.id + '-' + String(ruang.nama).substring(0, 25)).substring(0, 31);
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
   });
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Denah 8x8');
-  XLSX.writeFile(wb, 'Denah_Tempat_Duduk_8x8_per_Ruang.xlsx');
+  XLSX.writeFile(wb, 'Denah_Tempat_Duduk_per_Ruang.xlsx');
   toast('Excel terdownload.', 'success');
 }
 
