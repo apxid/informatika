@@ -1242,40 +1242,38 @@ async function genDenah(){
 
 function renderDenah(data){
   const wrap = document.getElementById('denahResult');
-  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (Grid 8x8, ${data.totalRuang} ruang)</h4>`;
+  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (${data.totalRuang} ruang)</h4>`;
 
-  // Untuk tiap ruang
   data.ruangs.forEach(ruang => {
     html += `<h5 style="margin-top:24px; color:var(--c-primary); border-bottom:2px solid var(--c-primary); padding-bottom:4px;">`;
     html += `Ruang ${ruang.id} - ${ruang.nama} &middot; Kelas ${ruang.kelasA} &times; Kelas ${ruang.kelasB}`;
     html += `</h5>`;
 
-    // Render grid sebagai table: rows = 8, cols = 8 (E F G H I J K L)
     html += `<div class="denah-wrap" style="margin-bottom:18px; padding:14px;">`;
-    html += `<table style="border-collapse:collapse; width:100%; margin-top:8px;">`;
+    html += `<table style="border-collapse:collapse; width:100%;">`;
 
-    // Header row: kolom labels (E F G H I J K L)
-    html += `<thead><tr><th style="border:1px solid #eee; padding:6px; background:#F5F7FF; font-size:11px; color:#636E72;"></th>`;
-    ruang.gridInfo.colLabels.slice().reverse().forEach(label => {
-      html += `<th style="border:1px solid #eee; padding:6px; background:#F5F7FF; font-weight:700; color:#6C5CE7; font-size:13px;">${label}</th>`;
+    // Header: kolom labels B C D E F G H I J K L
+    html += `<thead><tr><th style="border:1px solid #eee; padding:4px; background:#F5F7FF;"></th>`;
+    ruang.gridInfo.colLabels.forEach(label => {
+      const isLorong = (label === 'D' || label === 'G' || label === 'J');
+      html += `<th style="border:1px solid #eee; padding:4px; background:${isLorong ? '#FFF8E1' : '#F5F7FF'}; font-weight:700; color:#6C5CE7; font-size:12px;">${label}</th>`;
     });
     html += `</tr></thead><tbody>`;
 
-    // Render baris dari 8 (atas) ke 1 (bawah)
+    // Render baris dari 9 (atas) ke 1 (bawah)
     for (let r = data.gridRows - 1; r >= 0; r--) {
       const rowNum = r + 1;
-      html += `<tr><td style="border:1px solid #eee; padding:6px; background:#F5F7FF; font-weight:700; color:#636E72; text-align:center;">${rowNum}</td>`;
-      const rowCells = ruang.grid[r].slice().reverse();
-      rowCells.forEach(cell => {
-        if (cell.type === 'lorong' || cell.type === 'lorong-h') {
-          html += `<td style="border:1px solid #eee; padding:6px; background:#FAFBFF;">&nbsp;</td>`;
+      html += `<tr><td style="border:1px solid #eee; padding:4px; background:#F5F7FF; font-weight:700; color:#636E72; text-align:center; font-size:11px;">${rowNum}</td>`;
+      ruang.grid[r].forEach(cell => {
+        if (cell.type === 'lorong' || cell.type === 'empty') {
+          html += `<td style="border:1px solid #eee; padding:4px;">&nbsp;</td>`;
         } else if (cell.peserta && cell.peserta.nomorPeserta) {
           const typeColor = cell.type === 'A' ? '#6C5CE7' : '#FF6B9D';
-          html += `<td style="border:1px solid #ccc; padding:6px; background:white; text-align:center; vertical-align:middle;">`;
-          html += `<div style="font-size:14px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta}</div>`;
+          html += `<td style="border:1px solid #ccc; padding:4px; background:white; text-align:center; vertical-align:middle;">`;
+          html += `<div style="font-size:13px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta}</div>`;
           html += `</td>`;
         } else {
-          html += `<td style="border:1px solid #eee; padding:6px; background:white;">&nbsp;</td>`;
+          html += `<td style="border:1px solid #eee; padding:4px;">&nbsp;</td>`;
         }
       });
       html += `</tr>`;
@@ -1289,35 +1287,29 @@ function renderDenah(data){
 function exportDenahXlsx(){
   if (!STATE.denahData){ toast('Generate dulu.', 'warn'); return; }
   const d = STATE.denahData;
-  // Buat 1 sheet per ruang - hanya layout grid dengan nomor peserta saja
   const wb = XLSX.utils.book_new();
 
   d.ruangs.forEach(ruang => {
     const aoa = [];
-    // Header: kolom labels (E F G H I J K L)
+    // Header: kolom labels B C D E F G H I J K L
     const headerRow = [''];
-    ruang.gridInfo.colLabels.slice().reverse().forEach(label => headerRow.push(label));
+    ruang.gridInfo.colLabels.forEach(label => headerRow.push(label));
     aoa.push(headerRow);
-    // Baris dari 8 (atas) ke 1 (bawah)
+    // Baris dari 9 (atas) ke 1 (bawah)
     for (let r = d.gridRows - 1; r >= 0; r--) {
       const rowNum = r + 1;
-      const rowCells = ruang.grid[r].slice().reverse();
       const rowData = [rowNum];
-      rowCells.forEach(cell => {
-        if (cell.type === 'lorong' || cell.type === 'lorong-h') {
-          rowData.push(''); // kosong, tidak ada teks
-        } else if (cell.peserta && cell.peserta.nomorPeserta) {
-          rowData.push(cell.peserta.nomorPeserta); // hanya nomor peserta
+      ruang.grid[r].forEach(cell => {
+        if (cell.peserta && cell.peserta.nomorPeserta) {
+          rowData.push(cell.peserta.nomorPeserta);
         } else {
-          rowData.push(''); // kosong, tidak ada teks
+          rowData.push('');
         }
       });
       aoa.push(rowData);
     }
-    // Nama sheet: ruang nama (max 31 char - batas Excel)
     const sheetName = ('R' + ruang.id + '-' + String(ruang.nama).substring(0, 25)).substring(0, 31);
-    const ws = XLSX.utils.aoa_to_sheet(aoa);
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), sheetName);
   });
 
   XLSX.writeFile(wb, 'Denah_Tempat_Duduk_per_Ruang.xlsx');
