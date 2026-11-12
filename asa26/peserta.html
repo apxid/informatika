@@ -374,11 +374,16 @@
       <p class="desc">Atur pasangan kelas + range absen untuk setiap ruang. Contoh: Ruang 1 diisi Kelas 9A (absen 1-16) dan Kelas 7A (absen 1-16). Setelah konfigurasi disimpan, klik "Apply No. Peserta" untuk mengisi kolom NO PESERTA di sheet KELAS7/8/9.</p>
 
       <div class="btn-bar">
-        <button class="btn btn-soft" onclick="addRoom()"><span>+</span> Tambah Ruang</button>
+        <button class="btn btn-success" onclick="applyRuangPatternAuto()"><span>&#9889;</span> Auto-Generate Pattern (27 Ruang)</button>
+        <button class="btn btn-soft" onclick="previewRuangPattern()"><span>&#128065;</span> Preview Pattern</button>
+        <button class="btn btn-soft" onclick="addRoom()"><span>+</span> Tambah Ruang Manual</button>
         <button class="btn btn-warning" onclick="saveRoomConfig()"><span>&#128190;</span> Simpan Konfigurasi</button>
         <button class="btn btn-primary" onclick="applyNoPeserta()"><span>&#9889;</span> Apply No. Peserta ke Sheet Kelas</button>
         <button class="btn btn-soft" onclick="loadRoomConfig()"><span>&#128260;</span> Muat Konfigurasi Tersimpan</button>
       </div>
+
+      <!-- Info panel pattern -->
+      <div id="patternInfo" style="margin-top:12px; padding:12px 14px; background:#FFF8E1; border:1px solid #FFE082; border-radius:10px; font-size:12px; display:none;"></div>
 
       <div id="roomEditList" class="room-edit-list"></div>
 
@@ -1063,6 +1068,105 @@ async function applyNoPeserta(){
     }
   } catch(e) { toast('Error: ' + e.message, 'error'); }
   finally { resetBtn(btn); }
+}
+
+/* =========================================================================
+   AUTO-GENERATE PATTERN 27 RUANG (SMPN 1 MOGA)
+   ========================================================================= */
+
+/** Preview pattern 27 ruang - tampilkan di editor tanpa save */
+async function previewRuangPattern(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callGet('getruangpattern', { pin: STATE.pin });
+    if (res.success){
+      // Isi STATE.rooms dengan pattern
+      STATE.rooms = res.rooms.map(r => ({
+        id: r.id,
+        nama: r.nama,
+        kelasA: r.kelasA,
+        aMula: r.absenAMula,
+        aHingga: r.absenAHingga,
+        kelasB: r.kelasB,
+        bMula: r.absenBMula,
+        bHingga: r.absenBHingga
+      }));
+      renderRoomEditor();
+      // Tampilkan info panel
+      renderPatternInfo(res);
+      toast(`Pattern ${res.totalRooms} ruang dimuat ke editor. Klik "Simpan Konfigurasi" untuk menyimpan, atau langsung klik "Auto-Generate Pattern" untuk simpan+apply.`, 'success');
+    } else {
+      toast(res.message || 'Gagal load pattern.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/** Auto-generate pattern + simpan + apply nomor peserta dalam satu klik */
+async function applyRuangPatternAuto(){
+  if (!confirm('Ini akan MENGGANTI seluruh konfigurasi RUANG_UJIAN dengan pattern 27 ruang SMPN 1 Moga dan otomatis apply nomor peserta ke sheet kelas. Lanjutkan?')) return;
+  const btn = event.currentTarget; setBtnLoading(btn, 'Memproses...');
+  try {
+    const res = await callPost('applyruangpattern', { options: { applyNoPeserta: true } });
+    if (res.success){
+      // Update STATE.rooms dari hasil
+      STATE.rooms = res.rooms.map(r => ({
+        id: r.id, nama: r.nama,
+        kelasA: r.kelasA, aMula: r.absenAMula, aHingga: r.absenAHingga,
+        kelasB: r.kelasB, bMula: r.absenBMula, bHingga: r.absenBHingga
+      }));
+      renderRoomEditor();
+      // Tampilkan info panel dengan statistik
+      renderPatternInfo({ ...res, success: true, totalRooms: res.rooms.length, kelasStats: res.kelasStats, counter: null });
+      const assignCount = res.applyResult ? res.applyResult.totalAssigned : 0;
+      toast(`Pattern ${res.roomsSaved} ruang tersimpan & ${assignCount} nomor peserta di-apply.`, 'success');
+    } else {
+      toast(res.message || 'Gagal apply pattern.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/** Render info panel pattern dengan statistik */
+function renderPatternInfo(res){
+  const el = document.getElementById('patternInfo');
+  if (!el) return;
+  el.style.display = 'block';
+  let html = `<div style="font-weight:700; color:#E67E22; margin-bottom:8px;">&#9889; Pattern ${res.totalRooms || (res.rooms ? res.rooms.length : '?')} Ruang - SMPN 1 Moga</div>`;
+  html += `<div style="margin-bottom:8px;">Setiap kelas paralel dibagi ke 2 ruang berurutan: <b>absen 1-16</b> (ruang 1) &amp; <b>absen 17-32</b> (ruang 2).</div>`;
+
+  if (res.kelasStats) {
+    html += '<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:6px;"><thead>';
+    html += '<tr style="background:#FFE082;"><th style="padding:4px 6px; text-align:left;">KELAS</th><th style="padding:4px 6px;">TOTAL SISWA</th><th style="padding:4px 6px;">L</th><th style="padding:4px 6px;">P</th><th style="padding:4px 6px;">RUANG 1 (1-16)</th><th style="padding:4px 6px;">RUANG 2 (17-end)</th><th style="padding:4px 6px;">STATUS</th></tr></thead><tbody>';
+    const kelasLabels = Object.keys(res.kelasStats).sort();
+    kelasLabels.forEach(k => {
+      const s = res.kelasStats[k];
+      const r1 = Math.min(16, s.total);
+      const r2 = Math.max(0, s.total - 16);
+      let status = '', color = '';
+      if (s.total <= 16) { status = 'Muat di 1 ruang'; color = '#FF9800'; }
+      else if (s.total <= 32) { status = 'Ideal (2 ruang)'; color = '#4CAF50'; }
+      else { status = `Lebih ${s.total - 32} siswa`; color = '#F44336'; }
+      html += `<tr style="background:white; border-bottom:1px solid #eee;">`;
+      html += `<td style="padding:4px 6px;"><b>${k}</b></td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${s.total}</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${s.laki}</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${s.perempuan}</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${r1} siswa</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${r2} siswa</td>`;
+      html += `<td style="padding:4px 6px; text-align:center; color:${color}; font-weight:700;">${status}</td>`;
+      html += `</tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (res.applyResult && res.applyResult.report) {
+    html += `<div style="margin-top:10px; padding:8px; background:#E8F5E9; border-radius:6px;">`;
+    html += `<b>&#10004; Apply No. Peserta:</b> ${res.applyResult.totalAssigned} siswa sudah di-assign nomor peserta di sheet KELAS7/8/9.`;
+    html += `</div>`;
+  }
+
+  el.innerHTML = html;
 }
 
 /* =========================================================================
