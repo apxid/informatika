@@ -300,6 +300,10 @@
     <button class="btn btn-primary" id="btnSubmitPin" onclick="submitPin()">
       <span id="pinBtnText">Masuk</span>
     </button>
+    <button class="btn btn-soft" id="btnDebug" onclick="runDebugDiagnosis()" style="margin-top:8px; background:#FFF3E0; color:#E67E22;">
+      <span>&#128270;</span> Test Koneksi &amp; Debug
+    </button>
+    <div id="debugOutput" style="margin-top:12px; text-align:left; font-size:11px; color:var(--c-text-soft); max-height:240px; overflow-y:auto; background:#F5F7FF; padding:10px; border-radius:8px; display:none;"></div>
     <p style="margin-top:12px; font-size:11px; color:var(--c-text-soft);">
       Default PIN: <b>1234</b> (ganti di sheet CONFIG)
     </p>
@@ -735,16 +739,114 @@ async function submitPin(){
       await loadInitial();
       toast('Berhasil masuk. Selamat datang!', 'success');
     } else {
+      // Tampilkan error lebih informatif
       errEl.textContent = res.message || 'PIN salah.';
       const inp = document.getElementById('pinInput');
       inp.classList.add('error');
       setTimeout(() => inp.classList.remove('error'), 400);
+      // Tampilkan hint troubleshooting
+      const hintEl = document.getElementById('debugOutput');
+      hintEl.style.display = 'block';
+      hintEl.innerHTML = `<b>&#9888; PIN salah. Saran:</b><br>
+        1. Pastikan sheet CONFIG cell B1 berisi: <code>1234</code> (tanpa spasi)<br>
+        2. Pastikan Web App sudah di-deploy ulang: <b>Deploy > Manage deployments > Edit > Version: New version > Deploy</b><br>
+        3. Klik tombol <b>Test Koneksi &amp; Debug</b> di bawah untuk diagnosis otomatis.<br>
+        <br><b>Response server:</b><br><pre style="font-size:10px; white-space:pre-wrap;">${JSON.stringify(res, null, 2)}</pre>`;
     }
   } catch(e) {
     errEl.textContent = 'Gagal terhubung ke server. Periksa GAS_URL.';
+    const hintEl = document.getElementById('debugOutput');
+    hintEl.style.display = 'block';
+    hintEl.innerHTML = `<b>&#10060; Error koneksi:</b><br>
+      <code>${e.message}</code><br><br>
+      <b>Kemungkinan penyebab:</b><br>
+      1. URL exec salah - cek baris <code>GAS_URL</code><br>
+      2. Web App deployment: akses harus <b>Anyone</b><br>
+      3. SPREADSHEET_ID salah di Kode.gs<br>
+      4. Belum re-deploy setelah ganti SPREADSHEET_ID<br>
+      <br>Klik tombol <b>Test Koneksi &amp; Debug</b> di bawah.`;
   } finally {
     btn.disabled = false;
     btnText.textContent = 'Masuk';
+  }
+}
+
+/**
+ * Fungsi diagnosis otomatis - panggil endpoint testConfig di GAS.
+ * Menampilkan info lengkap untuk troubleshooting masalah PIN.
+ */
+async function runDebugDiagnosis(){
+  const outEl = document.getElementById('debugOutput');
+  const btn = document.getElementById('btnDebug');
+  outEl.style.display = 'block';
+  outEl.innerHTML = '<b>&#9203; Memeriksa koneksi ke server...</b>';
+  btn.disabled = true;
+  const origBtn = btn.innerHTML;
+  btn.innerHTML = '<span class="loader"></span> Menguji...';
+
+  try {
+    // Step 1: test koneksi ke endpoint info
+    outEl.innerHTML += '<br><br><b>1. Tes koneksi ke Web App...</b><br>';
+    let infoRes;
+    try {
+      infoRes = await callGet('info', {});
+      outEl.innerHTML += `<span style="color:green;">&#10004; Web App aktif. Versi: ${infoRes.version || '?'}, TZ: ${infoRes.tz || '?'}</span><br>`;
+    } catch (e) {
+      outEl.innerHTML += `<span style="color:red;">&#10006; Gagal terhubung: ${e.message}</span><br>`;
+      outEl.innerHTML += '<br>Kemungkinan: URL salah, deployment akses bukan "Anyone", atau Web App belum di-deploy.<br>';
+      btn.disabled = false; btn.innerHTML = origBtn;
+      return;
+    }
+
+    // Step 2: test endpoint testconfig (tidak butuh PIN)
+    outEl.innerHTML += '<br><b>2. Tes akses spreadsheet &amp; konfigurasi...</b><br>';
+    let cfgRes;
+    try {
+      cfgRes = await callGet('testconfig', {});
+      outEl.innerHTML += `<pre style="font-size:10px; white-space:pre-wrap; background:white; padding:8px; border-radius:4px; margin-top:4px;">${JSON.stringify(cfgRes, null, 2)}</pre>`;
+    } catch (e) {
+      outEl.innerHTML += `<span style="color:red;">&#10006; Error: ${e.message}</span><br>`;
+      outEl.innerHTML += '<br>Pastikan Kode.gs sudah berisi function <code>testConfig()</code>. Re-deploy Web App.<br>';
+      btn.disabled = false; btn.innerHTML = origBtn;
+      return;
+    }
+
+    // Step 3: analisis hasil
+    outEl.innerHTML += '<br><b>3. Analisis &amp; saran perbaikan:</b><br>';
+    if (cfgRes.instructions && cfgRes.instructions.length) {
+      cfgRes.instructions.forEach((ins, i) => {
+        outEl.innerHTML += `<span style="color:#E67E22;">&#9888;</span> ${ins}<br>`;
+      });
+    } else {
+      outEl.innerHTML += '<span style="color:green;">&#10004; Tidak ada masalah terdeteksi di sisi server.</span><br>';
+    }
+
+    // Step 4: tes verifyPin dengan input user
+    const pinInput = document.getElementById('pinInput').value.trim();
+    if (pinInput) {
+      outEl.innerHTML += `<br><b>4. Tes verifyPin dengan input Anda ("${pinInput}"):</b><br>`;
+      try {
+        const verifyRes = await callGet('debugpin', { pin: pinInput });
+        outEl.innerHTML += `<pre style="font-size:10px; white-space:pre-wrap; background:white; padding:8px; border-radius:4px; margin-top:4px;">${JSON.stringify(verifyRes, null, 2)}</pre>`;
+      } catch (e) {
+        outEl.innerHTML += `<span style="color:red;">&#10006; Error: ${e.message}</span><br>`;
+      }
+    } else {
+      outEl.innerHTML += '<br><b>4. (Kosongkan dulu kolom PIN di atas bila ingin lihat info lebih)</b><br>';
+      outEl.innerHTML += 'Isi PIN dulu di kolom atas lalu klik "Test Koneksi & Debug" lagi untuk tes verifyPin.<br>';
+    }
+
+    outEl.innerHTML += '<br><b style="color:var(--c-primary);">&#128161; Penyebab paling umum PIN tidak bisa masuk:</b><br>';
+    outEl.innerHTML += '<ol style="margin-left:18px;">' +
+      '<li>Web App belum di-deploy ulang setelah ganti <code>SPREADSHEET_ID</code>. Solusi: Deploy > Manage deployments > Edit > New version > Deploy.</li>' +
+      '<li>Function <code>setupInitial</code> belum pernah di-run di editor GAS (akibatnya sheet CONFIG belum punya PIN di B1).</li>' +
+      '<li>Cell B1 di sheet CONFIG bukan berisi teks "1234" (bisa di-format sebagai number, atau ada spasi).</li>' +
+      '<li>Web App akses masih "Only myself" - ubah ke "Anyone".</li>' +
+      '<li>Browser cache masih simpan index.html versi lama (hard refresh: Ctrl+Shift+R).</li>' +
+      '</ol>';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origBtn;
   }
 }
 
