@@ -310,7 +310,7 @@
 <!-- MODAL ABOUT APLIKASI -->
 <div id="aboutModal" class="modal-overlay hidden">
   <div class="modal-card" style="max-width:460px;">
-    <div class="lock-ico" style="background:linear-gradient(135deg,#6C5CE7 0%,#FF6B9D 100%);">&#128187;</div>
+    <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" style="width:120px; height:120px; object-fit:cover; border-radius:50%; margin:0 auto 14px; box-shadow:0 6px 18px rgba(108,92,231,0.30); display:block;">
     <h2 style="margin-bottom:10px;">Tentang Aplikasi</h2>
     <div style="text-align:left; font-size:13px; color:var(--c-text); line-height:1.7;">
       <div style="margin-bottom:14px;">
@@ -331,18 +331,6 @@
           <td style="padding:6px 0; font-weight:600;">12 November 2026</td>
         </tr>
         <tr>
-          <td style="padding:6px 0; color:var(--c-text-soft);">Timezone</td>
-          <td style="padding:6px 0; font-weight:600;">WIB (GMT+7)</td>
-        </tr>
-        <tr>
-          <td style="padding:6px 0; color:var(--c-text-soft);">Backend</td>
-          <td style="padding:6px 0; font-weight:600;">Google Apps Script</td>
-        </tr>
-        <tr>
-          <td style="padding:6px 0; color:var(--c-text-soft);">Frontend</td>
-          <td style="padding:6px 0; font-weight:600;">HTML statis (GitHub Pages)</td>
-        </tr>
-        <tr>
           <td style="padding:6px 0; color:var(--c-text-soft); vertical-align:top;">Link</td>
           <td style="padding:6px 0;">
             <a href="https://lynk.id/mb_dprint" target="_blank" rel="noopener" style="color:var(--c-primary); font-weight:600; text-decoration:none; word-break:break-all;">
@@ -360,7 +348,7 @@
 <div id="appMain" class="hidden">
   <header class="app-header">
     <div class="brand">
-      <div class="logo">&#127979;</div>
+      <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" style="width:52px; height:52px; object-fit:cover; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
       <div>
         <h1>Asas Kelas</h1>
         <div class="subtitle">SMP Negeri 1 Moga &middot; Sistem Penataan Peserta &amp; Piket</div>
@@ -460,14 +448,8 @@
       <div id="sub-piket" class="hidden" style="margin-top:20px;">
         <h3 style="color:var(--c-primary);">&#128197; Daftar Piket Asas per Ruang (Ruang 1 - 27)</h3>
         <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">
-          Piket di-generate per ruang dari konfigurasi RUANG_UJIAN. Setiap ruang menampilkan peserta dari Kelas A dan Kelas B yang sudah ditempatkan di ruang tersebut.
+          Setiap ruang berisi 32 peserta (16 Kelas A + 16 Kelas B). Dibagi rata ke 6 hari (Senin 7 Des - Sabtu 12 Des 2026). Setiap hari ada peserta dari Kelas A dan Kelas B.
         </p>
-        <div class="form-row" style="margin-top:12px; max-width:300px;">
-          <div class="form-group">
-            <label>Tanggal Pelaksanaan Piket</label>
-            <input type="date" id="piketTanggal">
-          </div>
-        </div>
         <div class="btn-bar">
           <button class="btn btn-primary" onclick="genPiket()"><span>&#9889;</span> Generate Daftar Piket per Ruang</button>
           <button class="btn btn-success" onclick="exportPiketXlsx()"><span>&#128229;</span> Download Excel</button>
@@ -789,13 +771,6 @@ async function logout(){
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pinInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') submitPin(); });
-  // Set default tanggal piket = hari ini
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth()+1).padStart(2,'0');
-  const dd = String(today.getDate()).padStart(2,'0');
-  const tglInput = document.getElementById('piketTanggal');
-  if (tglInput) tglInput.value = `${yyyy}-${mm}-${dd}`;
   renderRoomEditor();
 });
 
@@ -1153,13 +1128,12 @@ async function savePesertaToServer(){
 async function genPiket(){
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
-    // Ambil input tanggal dari user, kirim ke backend untuk dijadikan HARI & TANGGAL
-    const tanggalISO = document.getElementById('piketTanggal').value || '';
-    const res = await callPost('generatepiket', { tanggal: tanggalISO });
+    // Panggil backend - tanggal hardcoded: Senin 7 Des - Sabtu 12 Des 2026
+    const res = await callPost('generatepiket', {});
     if (res.success){
       STATE.piketData = res;
       renderPiket(res);
-      toast(`Berhasil generate piket untuk ${res.totalRuang} ruang.`, 'success');
+      toast(`Berhasil generate piket ${res.totalHari} hari untuk ${res.totalRuang} ruang.`, 'success');
     } else {
       toast(res.message || 'Gagal generate.', 'error');
     }
@@ -1169,33 +1143,39 @@ async function genPiket(){
 
 function renderPiket(data){
   const wrap = document.getElementById('piketResult');
-  const hariTanggal = data.hariTanggal || '-';
-  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#128197; Daftar Piket per Ruang (${data.totalRuang} ruang)</h4>`;
-  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">Tanggal Pelaksanaan: <b>${hariTanggal}</b>. Kursi KANAN = Kelas A, Kursi KIRI = Kelas B (sesuai konfigurasi RUANG_UJIAN).</p>`;
+  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#128197; Daftar Piket per Ruang (${data.totalRuang} ruang &times; ${data.totalHari} hari)</h4>`;
+  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">Periode: <b>${data.periodeMulai}</b> s/d <b>${data.periodeSelesai}</b>. Setiap ruang punya 32 peserta (16 A + 16 B) dibagi rata ke 6 hari.</p>`;
 
   // Card per ruang
   data.rooms.forEach(room => {
-    const maxLen = Math.max(room.pesertaA.length, room.pesertaB.length, 1);
     html += `<div class="piket-card">`;
-    html += `<div class="tgl">Ruang ${room.id} - ${room.nama} &middot; Kelas ${room.kelasA} (kanan) &times; Kelas ${room.kelasB} (kiri)</div>`;
-    html += `<div style="font-size:11px; color:var(--c-text-soft); margin-top:4px;">Peserta A: ${room.pesertaA.length} | Peserta B: ${room.pesertaB.length}</div>`;
-    html += `<div class="table-wrap" style="margin-top:8px;"><table class="data-table"><thead><tr>
-      <th style="width:40px;">NO</th>
-      <th>HARI &amp; TANGGAL</th>
-      <th>NO PESERTA (KELAS ${room.kelasA})</th><th>NAMA (KELAS ${room.kelasA})</th>
-      <th>NO PESERTA (KELAS ${room.kelasB})</th><th>NAMA (KELAS ${room.kelasB})</th>
-    </tr></thead><tbody>`;
-    for (let i = 0; i < maxLen; i++) {
-      const a = room.pesertaA[i] || {};
-      const b = room.pesertaB[i] || {};
-      html += `<tr>
-        <td>${i+1}</td>
-        <td><b>${hariTanggal}</b></td>
-        <td><b>${a.nomorPeserta || '-'}</b></td><td>${a.nama || '-'}</td>
-        <td><b>${b.nomorPeserta || '-'}</b></td><td>${b.nama || '-'}</td>
-      </tr>`;
-    }
-    html += `</tbody></table></div></div>`;
+    html += `<div class="tgl">Ruang ${room.id} - ${room.nama} &middot; Kelas ${room.kelasA} &times; Kelas ${room.kelasB}</div>`;
+    html += `<div style="font-size:11px; color:var(--c-text-soft); margin-top:4px;">Total peserta: ${room.pesertaA.length + room.pesertaB.length} (${room.pesertaA.length}A + ${room.pesertaB.length}B)</div>`;
+
+    // Jadwal per hari
+    room.jadwal.forEach(hari => {
+      html += `<div style="margin-top:10px; padding:8px; background:white; border-radius:6px; border-left:4px solid var(--c-accent);">`;
+      html += `<div style="font-weight:700; color:var(--c-primary); font-size:13px;">${hari.hariTanggal}</div>`;
+      html += `<div style="font-size:11px; color:var(--c-text-soft); margin-top:2px;">Jumlah: ${hari.pesertaA.length} Kelas A + ${hari.pesertaB.length} Kelas B = ${hari.pesertaA.length + hari.pesertaB.length} piket</div>`;
+      html += `<div class="table-wrap" style="margin-top:6px;"><table class="data-table"><thead><tr>
+        <th style="width:40px;">NO</th>
+        <th>NO PESERTA (KELAS ${room.kelasA})</th><th>NAMA (KELAS ${room.kelasA})</th>
+        <th>NO PESERTA (KELAS ${room.kelasB})</th><th>NAMA (KELAS ${room.kelasB})</th>
+      </tr></thead><tbody>`;
+      const maxLen = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
+      for (let i = 0; i < maxLen; i++) {
+        const a = hari.pesertaA[i] || {};
+        const b = hari.pesertaB[i] || {};
+        html += `<tr>
+          <td>${i+1}</td>
+          <td><b>${a.nomorPeserta || '-'}</b></td><td>${a.nama || '-'}</td>
+          <td><b>${b.nomorPeserta || '-'}</b></td><td>${b.nama || '-'}</td>
+        </tr>`;
+      }
+      html += `</tbody></table></div></div>`;
+    });
+
+    html += `</div>`;
   });
 
   wrap.innerHTML = html;
@@ -1204,21 +1184,23 @@ function renderPiket(data){
 function exportPiketXlsx(){
   if (!STATE.piketData){ toast('Generate dulu.', 'warn'); return; }
   const d = STATE.piketData;
-  const hariTanggal = d.hariTanggal || '-';
-  const aoa = [['NO','HARI & TANGGAL','NO PESERTA (KELAS A)','NAMA (KELAS A)','NO PESERTA (KELAS B)','NAMA (KELAS B)']];
+  const aoa = [['NO','RUANG','HARI & TANGGAL','NO PESERTA (KELAS A)','NAMA (KELAS A)','NO PESERTA (KELAS B)','NAMA (KELAS B)']];
   let no = 1;
   d.rooms.forEach(room => {
-    const maxLen = Math.max(room.pesertaA.length, room.pesertaB.length, 1);
-    for (let i = 0; i < maxLen; i++) {
-      const a = room.pesertaA[i] || {};
-      const b = room.pesertaB[i] || {};
-      aoa.push([
-        no++,
-        hariTanggal,
-        a.nomorPeserta || '', a.nama || '',
-        b.nomorPeserta || '', b.nama || ''
-      ]);
-    }
+    room.jadwal.forEach(hari => {
+      const maxLen = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
+      for (let i = 0; i < maxLen; i++) {
+        const a = hari.pesertaA[i] || {};
+        const b = hari.pesertaB[i] || {};
+        aoa.push([
+          no++,
+          room.nama,
+          hari.hariTanggal,
+          a.nomorPeserta || '', a.nama || '',
+          b.nomorPeserta || '', b.nama || ''
+        ]);
+      }
+    });
   });
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Piket per Ruang');
@@ -1231,7 +1213,8 @@ async function savePiketToServer(){
   const btn = event.currentTarget; setBtnLoading(btn);
   try {
     const res = await callPost('savepiket', {
-      hariTanggal: STATE.piketData.hariTanggal,
+      periodeMulai: STATE.piketData.periodeMulai,
+      periodeSelesai: STATE.piketData.periodeSelesai,
       rooms: STATE.piketData.rooms
     });
     toast(res.success ? `Tersimpan ${res.saved} baris.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
@@ -1295,22 +1278,17 @@ function renderDenah(data){
       const rowCells = ruang.grid[r].slice().reverse();
       rowCells.forEach(cell => {
         if (cell.type === 'lorong') {
-          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFE5B4; text-align:center; font-size:10px; color:#E67E22;">LORONG</td>`;
+          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFE5B4; text-align:center; font-size:10px; color:#E67E22;">&nbsp;</td>`;
         } else if (cell.type === 'lorong-h') {
-          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFF8E1; text-align:center; font-size:10px; color:#FFB142;">- Lorong H -</td>`;
+          html += `<td style="border:1px solid #ddd; padding:6px; background:#FFF8E1; text-align:center; font-size:10px; color:#FFB142;">&nbsp;</td>`;
         } else if (cell.peserta) {
-          const kodeKls = String(cell.peserta.kelas || '').replace(/\D/g,'');
           const typeColor = cell.type === 'A' ? '#6C5CE7' : '#FF6B9D';
-          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center;">`;
-          html += `<div style="font-size:9px; color:${typeColor}; font-weight:700;">${cell.col}${cell.row} &middot; ${cell.type}</div>`;
-          html += `<div style="font-size:13px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta || '-'}</div>`;
-          html += `<div style="font-size:10px; color:#2D3436; margin-top:2px;">${cell.peserta.nama || '-'}</div>`;
-          html += `<div style="margin-top:2px;"><span class="badge badge-${kodeKls}" style="font-size:9px;">${cell.peserta.kelas || '-'}</span></div>`;
+          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center; vertical-align:middle;">`;
+          html += `<div style="font-size:14px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta || '-'}</div>`;
           html += `</td>`;
         } else {
-          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center; opacity:0.5;">`;
-          html += `<div style="font-size:9px; color:#999;">${cell.col}${cell.row} &middot; ${cell.type}</div>`;
-          html += `<div style="font-size:11px; color:#999;">(kosong)</div>`;
+          html += `<td style="border:1px solid #ccc; padding:6px; background:${rowBg}; text-align:center; opacity:0.4;">`;
+          html += `<div style="font-size:14px; color:#999;">-</div>`;
           html += `</td>`;
         }
       });
