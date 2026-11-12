@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asas Kelas - SMP Negeri 1 Moga</title>
+
+<!-- Library SheetJS untuk export Excel -->
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+<style>
+  :root{
+    --c-primary:    #6C5CE7;
+    --c-primary-2:   #8E7BFF;
+    --c-secondary:   #00CEC9;
+    --c-accent:      #FFB142;
+    --c-pink:        #FF6B9D;
+    --c-green:       #2ECC71;
+    --c-red:         #FF7675;
+    --c-bg-1:        #F5F7FF;
+    --c-bg-2:        #FFF6E5;
+    --c-card:        #FFFFFF;
+    --c-text:        #2D3436;
+    --c-text-soft:   #636E72;
+    --c-border:      #E8EAF6;
+    --c-shadow:      0 10px 25px rgba(108, 92, 231, 0.15);
+    --c-shadow-sm:   0 4px 12px rgba(108, 92, 231, 0.10);
+    --radius:        16px;
+    --radius-sm:     10px;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html, body{ height:100%; }
+  body{
+    font-family:'Segoe UI','Roboto',system-ui,sans-serif;
+    color:var(--c-text);
+    background:linear-gradient(135deg,var(--c-bg-1) 0%,var(--c-bg-2) 100%);
+    min-height:100vh; line-height:1.5;
+  }
+
+  header.app-header{
+    background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-primary-2) 50%,var(--c-secondary) 100%);
+    color:white; padding:18px 24px; box-shadow:var(--c-shadow);
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:12px;
+  }
+  header.app-header .brand{ display:flex; align-items:center; gap:14px; }
+  header.app-header .logo{
+    width:52px; height:52px; background:rgba(255,255,255,0.25);
+    border-radius:14px; display:grid; place-items:center; font-size:28px;
+  }
+  header.app-header h1{ font-size:22px; font-weight:700; letter-spacing:0.3px; }
+  header.app-header .subtitle{ font-size:13px; opacity:0.9; }
+  header.app-header .user-box{
+    background:rgba(255,255,255,0.18); padding:6px 14px; border-radius:999px;
+    font-size:13px; display:flex; align-items:center; gap:8px;
+  }
+
+  .container{ max-width:1200px; margin:0 auto; padding:24px; }
+
+  nav.tabs{
+    display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px;
+    background:var(--c-card); padding:8px; border-radius:var(--radius);
+    box-shadow:var(--c-shadow-sm);
+  }
+  nav.tabs button{
+    flex:1; min-width:170px; padding:14px 16px; border:none; background:transparent;
+    color:var(--c-text-soft); font-size:13px; font-weight:600; cursor:pointer;
+    border-radius:var(--radius-sm); transition:all 0.25s ease;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  nav.tabs button:hover{ background:var(--c-bg-1); color:var(--c-primary); }
+  nav.tabs button.active{
+    background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-primary-2) 100%);
+    color:white; box-shadow:0 6px 16px rgba(108,92,231,0.35);
+  }
+  nav.tabs button .ico{ font-size:18px; }
+
+  /* SUBNAV untuk submenu di bawah tab 2 */
+  nav.subnav{
+    display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;
+    background:#FFF; padding:6px; border-radius:var(--radius-sm);
+    box-shadow:var(--c-shadow-sm); border:1px solid var(--c-border);
+  }
+  nav.subnav button{
+    padding:9px 16px; border:1px solid var(--c-border); background:#FAFBFF;
+    color:var(--c-text-soft); font-size:12px; font-weight:600; cursor:pointer;
+    border-radius:8px; transition:all 0.2s;
+  }
+  nav.subnav button:hover{ background:var(--c-bg-1); color:var(--c-primary); border-color:var(--c-primary); }
+  nav.subnav button.active{
+    background:linear-gradient(135deg,var(--c-secondary) 0%,#0984E3 100%);
+    color:white; border-color:transparent;
+  }
+
+  .panel{
+    background:var(--c-card); border-radius:var(--radius); padding:24px;
+    box-shadow:var(--c-shadow); margin-bottom:22px; border:1px solid var(--c-border);
+  }
+  .panel h2{
+    font-size:20px; margin-bottom:4px; color:var(--c-primary);
+    display:flex; align-items:center; gap:10px;
+  }
+  .panel .desc{ color:var(--c-text-soft); font-size:13px; margin-bottom:18px; }
+
+  .form-row{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px; margin-bottom:16px;
+  }
+  .form-group label{
+    display:block; font-size:12px; font-weight:600; color:var(--c-text-soft);
+    margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;
+  }
+  .form-group input, .form-group select, .form-group textarea{
+    width:100%; padding:11px 14px; border:2px solid var(--c-border);
+    border-radius:var(--radius-sm); font-size:14px; background:#FAFBFF;
+    transition:all 0.2s ease; font-family:inherit;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus{
+    outline:none; border-color:var(--c-primary); background:white;
+    box-shadow:0 0 0 3px rgba(108,92,231,0.12);
+  }
+
+  .btn{
+    padding:12px 22px; border:none; border-radius:var(--radius-sm);
+    font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s ease;
+    display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+  }
+  .btn-primary{ background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-primary-2) 100%); color:white; box-shadow:0 6px 14px rgba(108,92,231,0.35); }
+  .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(108,92,231,0.45); }
+  .btn-success{ background:linear-gradient(135deg,var(--c-green) 0%,#27AE60 100%); color:white; }
+  .btn-warning{ background:linear-gradient(135deg,var(--c-accent) 0%,#E67E22 100%); color:white; }
+  .btn-soft{ background:var(--c-bg-1); color:var(--c-primary); }
+  .btn-danger{ background:linear-gradient(135deg,var(--c-red) 0%,#E84393 100%); color:white; }
+  .btn-sm{ padding:7px 14px; font-size:12px; }
+  .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .btn-bar{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+
+  .table-wrap{ overflow-x:auto; border-radius:var(--radius-sm); border:1px solid var(--c-border); margin-top:12px; }
+  table.data-table{ width:100%; border-collapse:collapse; font-size:13px; min-width:600px; }
+  table.data-table thead{ background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-primary-2) 100%); color:white; }
+  table.data-table th{ padding:12px 14px; text-align:left; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.4px; }
+  table.data-table td{ padding:10px 14px; border-bottom:1px solid var(--c-border); }
+  table.data-table tbody tr:nth-child(even){ background:#FAFBFF; }
+  table.data-table tbody tr:hover{ background:#F0EDFF; }
+
+  .badge{ display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; }
+  .badge-7{ background:#FFE5F0; color:#C44569; }
+  .badge-8{ background:#E0F7FA; color:#00838F; }
+  .badge-9{ background:#E8F5E9; color:#2E7D32; }
+
+  /* DENAH */
+  .denah-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; padding:20px;
+    background:linear-gradient(135deg,#FFF8E1 0%,#FCE4EC 100%); border-radius:var(--radius); margin-top:16px; }
+  .denah-papan{ background:#4a3018; color:#FFE4B5; padding:10px 40px; border-radius:6px 6px 0 0; font-weight:700; text-align:center; letter-spacing:2px; font-size:13px; }
+  .denah-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%; max-width:600px; }
+  .denah-chair{ background:white; border:2px solid var(--c-border); border-radius:var(--radius-sm); padding:12px; text-align:center; box-shadow:var(--c-shadow-sm); transition:transform 0.2s; }
+  .denah-chair:hover{ transform:scale(1.03); }
+  .denah-chair.left{ border-left:5px solid var(--c-pink); }
+  .denah-chair.right{ border-right:5px solid var(--c-secondary); }
+  .denah-chair .chair-label{ font-size:11px; color:var(--c-text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+  .denah-chair .chair-no{ font-weight:700; color:var(--c-primary); font-size:14px; }
+  .denah-chair .chair-nama{ font-size:14px; margin-top:6px; min-height:36px; }
+  .denah-chair .chair-kelas{ margin-top:4px; }
+
+  /* MODAL PIN */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(45,52,54,0.65); backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center; z-index:9999; padding:20px;
+  }
+  .modal-card{ background:white; border-radius:24px; padding:36px 30px; width:100%; max-width:420px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25); text-align:center; animation:pop 0.35s ease; }
+  @keyframes pop{ from{transform:scale(0.85); opacity:0;} to{transform:scale(1); opacity:1;} }
+  .modal-card .lock-ico{
+    width:80px; height:80px; margin:0 auto 14px;
+    background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-secondary) 100%);
+    border-radius:50%; display:grid; place-items:center; font-size:40px; color:white;
+    box-shadow:0 10px 22px rgba(108,92,231,0.4);
+  }
+  .modal-card h2{ color:var(--c-text); font-size:22px; margin-bottom:6px; }
+  .modal-card p.sub{ color:var(--c-text-soft); font-size:13px; margin-bottom:22px; }
+  .pin-input{
+    width:100%; padding:16px; text-align:center; font-size:22px; letter-spacing:8px;
+    border:2px solid var(--c-border); border-radius:var(--radius-sm); background:var(--c-bg-1); transition:all 0.2s;
+  }
+  .pin-input:focus{ outline:none; border-color:var(--c-primary); background:white; box-shadow:0 0 0 4px rgba(108,92,231,0.15); }
+  .pin-input.error{ border-color:var(--c-red); animation:shake 0.35s; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);} }
+  .pin-error-msg{ color:var(--c-red); font-size:13px; margin-top:10px; min-height:18px; }
+  .modal-card .btn{ width:100%; justify-content:center; margin-top:14px; padding:14px; font-size:15px; }
+
+  /* TOAST */
+  .toast-wrap{ position:fixed; top:20px; right:20px; z-index:10000; display:flex; flex-direction:column; gap:8px; }
+  .toast{ background:white; padding:12px 18px; border-radius:var(--radius-sm); box-shadow:var(--c-shadow); border-left:5px solid var(--c-primary); font-size:13px; min-width:240px; animation:slideIn 0.3s ease; }
+  .toast.success{ border-left-color:var(--c-green); }
+  .toast.error{ border-left-color:var(--c-red); }
+  .toast.warn{ border-left-color:var(--c-accent); }
+  @keyframes slideIn{ from{transform:translateX(110%); opacity:0;} to{transform:translateX(0); opacity:1;} }
+
+  /* LOADER */
+  .loader{ width:22px; height:22px; border:3px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.8s linear infinite; display:inline-block; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* STAT CARDS */
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:22px; }
+  .stat-card{ background:white; padding:16px 18px; border-radius:var(--radius); box-shadow:var(--c-shadow-sm); border:1px solid var(--c-border); border-top:4px solid var(--c-primary); }
+  .stat-card.k7{ border-top-color:var(--c-pink); }
+  .stat-card.k8{ border-top-color:var(--c-secondary); }
+  .stat-card.k9{ border-top-color:var(--c-green); }
+  .stat-card .label{ font-size:12px; color:var(--c-text-soft); text-transform:uppercase; letter-spacing:0.5px; }
+  .stat-card .value{ font-size:28px; font-weight:700; color:var(--c-text); margin-top:4px; }
+
+  /* ROOM CONFIG TABLE */
+  .room-edit-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .room-edit-item{
+    display:grid; grid-template-columns:40px 1fr 70px 60px 60px 1fr 70px 60px 60px 40px;
+    gap:6px; align-items:center; background:var(--c-bg-1); padding:10px;
+    border-radius:var(--radius-sm); border:1px solid var(--c-border);
+  }
+  .room-edit-item input, .room-edit-item select{
+    padding:6px 8px; border:1px solid var(--c-border); border-radius:6px; font-size:12px; background:white;
+  }
+  .room-edit-item .lbl-tiny{ font-size:10px; color:var(--c-text-soft); text-transform:uppercase; }
+  .room-edit-item .btn-del{ background:var(--c-red); color:white; border:none; padding:6px; border-radius:6px; cursor:pointer; font-weight:700; font-size:14px; }
+
+  .multi-sel{ min-height:70px; }
+
+  /* KELAS STATS TABLE */
+  table.kelas-stats{ width:100%; border-collapse:collapse; font-size:13px; min-width:600px; }
+  table.kelas-stats thead{ background:linear-gradient(135deg,var(--c-secondary) 0%,#0984E3 100%); color:white; }
+  table.kelas-stats th{ padding:10px 12px; text-align:left; font-weight:600; font-size:12px; }
+  table.kelas-stats td{ padding:9px 12px; border-bottom:1px solid var(--c-border); }
+  table.kelas-stats tbody tr:hover{ background:#E0F7FA; }
+
+  /* KARTU PESERTA - Layout F4 (21x33cm), 4 kartu per lembar */
+  .kartu-page{ margin-top:16px; }
+  .kartu-row{
+    display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border:1px solid #333; margin-bottom:4px;
+    page-break-inside:avoid;
+  }
+  .kartu-card{
+    padding:6px 10px;
+    font-family:'Times New Roman',serif; font-size:9px; line-height:1.3;
+    position:relative;
+  }
+  .kartu-card.left{ border-right:1px solid #333; }
+  .kartu-card .kc-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    border-bottom:1.5px solid #333; padding-bottom:3px; margin-bottom:4px;
+  }
+  .kartu-card .kc-logo-area{ display:flex; align-items:center; gap:5px; }
+  .kartu-card .kc-logo{
+    width:32px; height:32px; object-fit:contain; border-radius:3px;
+  }
+  .kartu-card .kc-school-info{ font-size:7px; line-height:1.2; }
+  .kartu-card .kc-school-name{ font-weight:700; font-size:10px; }
+  .kartu-card .kc-event-title{ font-weight:700; font-size:7px; }
+  .kartu-card .kc-roman{
+    font-size:22px; font-weight:900; font-family:'Times New Roman',serif;
+    border:2px solid #333; padding:2px 8px; line-height:1;
+  }
+  .kartu-card .kc-title{
+    text-align:center; font-weight:700; font-size:10px; margin:3px 0 5px;
+    text-decoration:underline;
+  }
+  .kartu-card .kc-fields{ font-size:9px; line-height:1.5; }
+  .kartu-card .kc-fields .kc-row{ display:flex; gap:3px; }
+  .kartu-card .kc-fields .kc-label{ width:65px; font-weight:600; }
+  .kartu-card .kc-fields .kc-sep{ width:6px; text-align:center; }
+  .kartu-card .kc-fields .kc-val{ flex:1; border-bottom:1px dotted #666; min-height:12px; }
+  .kartu-card .kc-schedule{ font-size:7px; width:100%; border-collapse:collapse; margin-top:3px; }
+  .kartu-card .kc-schedule th, .kartu-card .kc-schedule td{
+    border:1px solid #666; padding:1px 2px; font-size:7px;
+  }
+  .kartu-card .kc-schedule th{ background:#e8e8e8; font-weight:700; }
+  .kartu-card .kc-signature{
+    margin-top:6px; width:55%; margin-left:auto;
+    text-align:left; font-size:8px;
+  }
+  .kartu-card .kc-signature .kc-sig-name{ font-weight:700; text-decoration:underline; }
+  .kartu-card .kc-ttd-img{
+    width:80px; height:35px; object-fit:contain; margin-bottom:2px;
+  }
+  @media print {
+    body * { visibility:hidden; }
+    #printArea, #printArea * { visibility:visible; }
+    #printArea{ position:absolute; left:0; top:0; width:100%; }
+    .no-print{ display:none !important; }
+    @page{ size:21cm 33cm; margin:6mm; }
+    .kartu-page{ margin:0 !important; }
+    .kartu-row{ border:1px solid #333 !important; margin-bottom:3px !important; }
+    .kartu-card{ box-shadow:none !important; }
+  }
+
+  .hidden{ display:none !important; }
+
+  .footer{ text-align:center; color:var(--c-text-soft); font-size:12px; padding:16px; }
+  .footer a{ color:var(--c-primary); text-decoration:none; }
+
+  /* INFO BAR - shows user info bar after login */
+  .infobar{
+    background:linear-gradient(135deg,#E8F5E9 0%,#E3F2FD 100%);
+    border:1px solid #C8E6C9;
+    padding:10px 16px; border-radius:var(--radius-sm); margin-bottom:14px;
+    display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:var(--c-text);
+  }
+  .infobar b{ color:var(--c-primary); }
+
+  @media (max-width:720px){
+    .room-edit-item{ grid-template-columns:1fr; }
+    header.app-header{ flex-direction:column; text-align:center; }
+    .kartu-row{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MODAL PIN -->
+<div id="pinModal" class="modal-overlay">
+  <div class="modal-card">
+    <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin:0 auto 14px; box-shadow:0 6px 18px rgba(108,92,231,0.30); display:block;">
+    <h2>Masuk Aplikasi</h2>
+    <p class="sub">Asas Kelas &middot; SMP Negeri 1 Moga<br>Masukkan PIN untuk melanjutkan</p>
+    <input type="password" id="pinInput" class="pin-input" maxlength="20" placeholder="&bull;&bull;&bull;&bull;" autocomplete="off">
+    <div class="pin-error-msg" id="pinError"></div>
+    <button class="btn btn-primary" id="btnSubmitPin" onclick="submitPin()">
+      <span id="pinBtnText">Masuk</span>
+    </button>
+    <div id="debugOutput" style="margin-top:12px; text-align:left; font-size:11px; color:var(--c-text-soft); max-height:240px; overflow-y:auto; background:#F5F7FF; padding:10px; border-radius:8px; display:none;"></div>
+    <button class="btn btn-soft" id="btnAbout" onclick="openAboutModal()" style="margin-top:12px; background:#F5F7FF; color:var(--c-primary); width:100%; justify-content:center;">
+      <span>&#8505;</span> About Aplikasi
+    </button>
+  </div>
+</div>
+
+<!-- MODAL ABOUT APLIKASI -->
+<div id="aboutModal" class="modal-overlay hidden">
+  <div class="modal-card" style="max-width:460px;">
+    <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" style="width:120px; height:120px; object-fit:cover; border-radius:50%; margin:0 auto 14px; box-shadow:0 6px 18px rgba(108,92,231,0.30); display:block;">
+    <h2 style="margin-bottom:10px;">Tentang Aplikasi</h2>
+    <div style="text-align:left; font-size:13px; color:var(--c-text); line-height:1.7;">
+      <div style="margin-bottom:14px;">
+        <div style="font-weight:700; font-size:18px; color:var(--c-primary);">Asas Kelas</div>
+        <div style="color:var(--c-text-soft); font-size:12px;">Sistem Penataan Peserta, Piket &amp; Denah - SMPN 1 Moga</div>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft); width:100px;">Versi</td>
+          <td style="padding:6px 0; font-weight:600;">v3.0</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft);">Developer</td>
+          <td style="padding:6px 0; font-weight:700; color:var(--c-primary);">DEV BY MB</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft);">Build</td>
+          <td style="padding:6px 0; font-weight:600;">12 November 2026</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0; color:var(--c-text-soft); vertical-align:top;">Link</td>
+          <td style="padding:6px 0;">
+            <a href="https://lynk.id/mb_dprint" target="_blank" rel="noopener" style="color:var(--c-primary); font-weight:600; text-decoration:none; word-break:break-all;">
+              lynk.id/mb_dprint &#8599;
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <button class="btn btn-primary" onclick="closeAboutModal()" style="width:100%; justify-content:center; margin-top:18px;">Tutup</button>
+  </div>
+</div>
+
+<!-- APP UTAMA -->
+<div id="appMain" class="hidden">
+  <header class="app-header">
+    <div class="brand">
+      <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" style="width:52px; height:52px; object-fit:cover; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+      <div>
+        <h1>Asas Kelas</h1>
+        <div class="subtitle">SMP Negeri 1 Moga &middot; Sistem Penataan Peserta &amp; Piket</div>
+      </div>
+    </div>
+    <div class="user-box">
+      <span>&#128100;</span>
+      <span id="userStatus">Logged in</span>
+      <button class="btn btn-sm" onclick="openAboutModal()" style="background:rgba(255,255,255,0.2); color:white;">About</button>
+      <button class="btn btn-sm" onclick="logout()" style="background:rgba(255,255,255,0.2); color:white;">Keluar</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- INFO BAR - data akses user -->
+    <div id="infoBar" class="infobar hidden"></div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card k7"><div class="label">Siswa Kelas 7</div><div class="value" id="statK7">-</div></div>
+      <div class="stat-card k8"><div class="label">Siswa Kelas 8</div><div class="value" id="statK8">-</div></div>
+      <div class="stat-card k9"><div class="label">Siswa Kelas 9</div><div class="value" id="statK9">-</div></div>
+    </div>
+
+    <!-- NAV TABS -->
+    <nav class="tabs">
+      <button class="active" data-tab="data" onclick="switchTab('data')">
+        <span class="ico">&#128202;</span> 1. Data Siswa per Kelas
+      </button>
+      <button data-tab="ruang" onclick="switchTab('ruang')">
+        <span class="ico">&#128209;</span> 2. Pembagian Ruang Ujian
+      </button>
+      <button data-tab="kartu" onclick="switchTab('kartu')">
+        <span class="ico">&#127903;</span> 3. Cetak Kartu Peserta Asas
+      </button>
+    </nav>
+
+    <!-- ============== TAB 1: DATA SISWA PER KELAS ============== -->
+    <section id="tab-data" class="panel">
+      <h2><span>&#128202;</span> Data Siswa per Kelas</h2>
+      <p class="desc">Rekap jumlah siswa laki-laki, perempuan, total, dan nama wali kelas - dikelompokkan per kelas paralel (7A, 7B, ... 9I).</p>
+
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="loadKelasStats()">
+          <span>&#128260;</span> Muat Statistik Kelas
+        </button>
+        <button class="btn btn-success" onclick="exportKelasStatsXlsx()">
+          <span>&#128229;</span> Download Excel
+        </button>
+      </div>
+
+      <div id="kelasStatsResult"></div>
+    </section>
+
+    <!-- ============== TAB 2: PEMBAGIAN RUANG UJIAN ============== -->
+    <section id="tab-ruang" class="panel hidden">
+      <h2><span>&#128209;</span> Penentuan Pembagian Ruang Ujian</h2>
+      <p class="desc">Atur pasangan kelas + range absen untuk setiap ruang. Contoh: Ruang 1 diisi Kelas 9A (absen 1-16) dan Kelas 7A (absen 1-16). Setelah konfigurasi disimpan, klik "Apply No. Peserta" untuk mengisi kolom NO PESERTA di sheet KELAS7/8/9.</p>
+
+      <div class="btn-bar">
+        <button class="btn btn-success" onclick="applyRuangPatternAuto()"><span>&#9889;</span> Auto-Generate Pattern (27 Ruang)</button>
+        <button class="btn btn-soft" onclick="previewRuangPattern()"><span>&#128065;</span> Preview Pattern</button>
+        <button class="btn btn-soft" onclick="addRoom()"><span>+</span> Tambah Ruang Manual</button>
+        <button class="btn btn-warning" onclick="saveRoomConfig()"><span>&#128190;</span> Simpan Konfigurasi</button>
+        <button class="btn btn-primary" onclick="applyNoPeserta()"><span>&#9889;</span> Apply No. Peserta ke Sheet Kelas</button>
+        <button class="btn btn-soft" onclick="loadRoomConfig()"><span>&#128260;</span> Muat Konfigurasi Tersimpan</button>
+      </div>
+
+      <!-- Info panel pattern -->
+      <div id="patternInfo" style="margin-top:12px; padding:12px 14px; background:#FFF8E1; border:1px solid #FFE082; border-radius:10px; font-size:12px; display:none;"></div>
+
+      <div id="roomEditList" class="room-edit-list"></div>
+
+      <!-- SUBNAV untuk submenu setelah pembagian ruang -->
+      <div style="margin-top:24px; padding-top:18px; border-top:2px dashed var(--c-border);">
+        <h3 style="color:var(--c-primary); margin-bottom:10px; font-size:16px;">Setelah pembagian ruang tersimpan, lanjutkan ke:</h3>
+        <nav class="subnav">
+          <button data-sub="peserta" onclick="switchSub('peserta')">&#128203; Daftar Peserta (per Ruang)</button>
+          <button data-sub="piket" onclick="switchSub('piket')">&#128197; Daftar Piket Asas (antar Kelas)</button>
+          <button data-sub="denah" onclick="switchSub('denah')">&#129689; Denah Tempat Duduk</button>
+        </nav>
+      </div>
+
+      <!-- SUBMENU: PESERTA -->
+      <div id="sub-peserta" class="hidden" style="margin-top:20px;">
+        <h3 style="color:var(--c-primary);">&#128203; Daftar Peserta per Ruang</h3>
+        <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">Generate dari konfigurasi ruang di atas.</p>
+        <div class="btn-bar">
+          <button class="btn btn-primary" onclick="genPeserta()"><span>&#9889;</span> Generate Daftar Peserta</button>
+          <button class="btn btn-success" onclick="exportPesertaXlsx()"><span>&#128229;</span> Download Excel</button>
+          <button class="btn btn-warning" onclick="savePesertaToServer()"><span>&#128190;</span> Simpan ke Spreadsheet</button>
+        </div>
+        <div id="pesertaResult"></div>
+      </div>
+
+      <!-- SUBMENU: PIKET -->
+      <div id="sub-piket" class="hidden" style="margin-top:20px;">
+        <h3 style="color:var(--c-primary);">&#128197; Daftar Piket Asas per Ruang (Ruang 1 - 27)</h3>
+        <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">
+          Setiap ruang berisi 32 peserta (16 Kelas A + 16 Kelas B). Dibagi rata ke 6 hari (Senin 7 Des - Sabtu 12 Des 2026). Setiap hari ada peserta dari Kelas A dan Kelas B.
+        </p>
+        <div class="btn-bar">
+          <button class="btn btn-primary" onclick="genPiket()"><span>&#9889;</span> Generate Daftar Piket per Ruang</button>
+          <button class="btn btn-success" onclick="exportPiketXlsx()"><span>&#128229;</span> Download Excel</button>
+          <button class="btn btn-warning" onclick="savePiketToServer()"><span>&#128190;</span> Simpan ke Spreadsheet</button>
+        </div>
+        <div id="piketResult"></div>
+      </div>
+
+      <!-- SUBMENU: DENAH -->
+      <div id="sub-denah" class="hidden" style="margin-top:20px;">
+        <h3 style="color:var(--c-primary);">&#129689; Denah Tempat Duduk per Ruang (Ruang 1 - 27)</h3>
+        <p style="font-size:13px; color:var(--c-text-soft); margin-bottom:12px;">
+          Denah grid 8 kolom × 8 baris per ruang. Kolom (kanan ke kiri): L K J I H G F E.
+          Pola penempatan: L=A, K=B, J=lorong, I=A, H=B, G=lorong, F=A, E=B.
+          Setiap kolom diisi 4 peserta di baris ganjil (1, 3, 5, 7). Kapasitas: 16 peserta per kelas.
+        </p>
+        <div class="btn-bar">
+          <button class="btn btn-primary" onclick="genDenah()"><span>&#9889;</span> Generate Denah per Ruang (8x8)</button>
+          <button class="btn btn-success" onclick="exportDenahXlsx()"><span>&#128229;</span> Download Excel</button>
+          <button class="btn btn-warning" onclick="saveDenahToServer()"><span>&#128190;</span> Simpan ke Spreadsheet</button>
+        </div>
+        <div id="denahResult"></div>
+      </div>
+    </section>
+
+    <!-- ============== TAB 3: CETAK KARTU PESERTA ASAS ============== -->
+    <section id="tab-kartu" class="panel hidden">
+      <h2><span>&#127903;</span> Cetak Kartu Peserta Asas</h2>
+      <p class="desc">Data peserta diambil dari sheet KELAS7/KELAS8/KELAS9 (kolom NO PESERTA). Pastikan Anda sudah klik "Apply No. Peserta" di Tab 2 sebelum mencetak. 1 lembar F4 = 4 kartu (4 siswa).</p>
+
+      <!-- Settings: Logo & TTD URL -->
+      <div style="background:#F5F7FF; padding:14px; border-radius:10px; margin-bottom:16px; border:1px solid var(--c-border);">
+        <h3 style="font-size:14px; color:var(--c-primary); margin-bottom:10px;">&#9881; Pengaturan Gambar</h3>
+        <div class="form-row" style="margin-bottom:8px;">
+          <div class="form-group" style="grid-column:1 / -1;">
+            <label>URL Gambar Logo (kiri atas kartu)</label>
+            <input type="text" id="settingLogoUrl" placeholder="https://..." style="font-size:12px;">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:8px;">
+          <div class="form-group" style="grid-column:1 / -1;">
+            <label>URL Gambar TTD Kepala Sekolah</label>
+            <input type="text" id="settingTtdUrl" placeholder="https://... (kosongkan jika tidak ada)" style="font-size:12px;">
+          </div>
+        </div>
+        <div class="btn-bar">
+          <button class="btn btn-soft btn-sm" onclick="saveImageSettings()">&#128190; Simpan Pengaturan</button>
+          <button class="btn btn-soft btn-sm" onclick="resetImageSettings()">&#8634; Reset ke Default</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Filter Kelas</label>
+          <select id="kartuFilterKelas">
+            <option value="">Semua Kelas</option>
+            <option value="7">Kelas 7 (semua paralel)</option>
+            <option value="8">Kelas 8 (semua paralel)</option>
+            <option value="9">Kelas 9 (semua paralel)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Atau Label Spesifik (mis. 7A, 9B)</label>
+          <input type="text" id="kartuFilterLabel" placeholder="mis. 7A">
+        </div>
+      </div>
+
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="loadKartuData()"><span>&#128260;</span> Muat Data Kartu</button>
+        <button class="btn btn-success" onclick="exportKartuXlsx()"><span>&#128229;</span> Download Excel</button>
+        <button class="btn btn-warning" onclick="window.print()"><span>&#128424;</span> Cetak / Simpan PDF</button>
+      </div>
+
+      <div id="kartuCount" style="margin-top:12px; font-size:13px; color:var(--c-text-soft);"></div>
+      <div id="kartuResult"></div>
+    </section>
+
+    <!-- ============== TAB 4: LOG AKSES ============== -->
+    <section id="tab-log" class="panel hidden">
+      <h2><span>&#128221;</span> Log Akses Aplikasi</h2>
+      <p class="desc">Audit trail siapa saja yang masuk aplikasi (zona waktu WIB / GMT+7).</p>
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="loadLog()"><span>&#128260;</span> Muat Log</button>
+      </div>
+      <div id="logResult"></div>
+    </section>
+
+    <div class="footer">
+      Dibuat untuk SMP Negeri 1 Moga &middot; <b>Asas Kelas App v2.0</b> &middot; Backend: Google Apps Script &middot; Frontend: GitHub Pages
+    </div>
+  </div>
+</div>
+
+<!-- Print area untuk cetak kartu -->
+<div id="printArea"></div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* =========================================================================
+   KONFIGURASI - GANTI DENGAN URL EXEC WEB APP ANDA
+   ========================================================================= */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwbXFeBi4sTbwEsAr47h9uoPYETljMPzYExgh7fEtM4riB11OEz5CgLI2XyVFxsM2FdEQ/exec';
+
+let STATE = {
+  pin: '',
+  sessionId: '',
+  pesertaData: null,
+  piketData: null,
+  denahData: null,
+  kelasStats: null,
+  kartuData: null,
+  logData: null,
+  rooms: [
+    { id: 1, nama: 'Ruang 1', kelasA: '9A', aMula: 1, aHingga: 16, kelasB: '7A', bMula: 1, bHingga: 16 }
+  ],
+  currentSub: 'peserta'
+};
+
+/* =========================================================================
+   UTILITAS
+   ========================================================================= */
+function toast(msg, type='info'){
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(110%)'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+function setBtnLoading(btn, label){
+  btn.dataset.origLabel = btn.innerHTML;
+  btn.innerHTML = '<span class="loader"></span> ' + (label || 'Memproses...');
+  btn.disabled = true;
+}
+function resetBtn(btn){
+  if (btn.dataset.origLabel) btn.innerHTML = btn.dataset.origLabel;
+  btn.disabled = false;
+}
+async function callGet(action, params){
+  const url = new URL(GAS_URL);
+  url.searchParams.set('action', action);
+  if (params) Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+  const res = await fetch(url.toString(), { method:'GET', redirect:'follow' });
+  return res.json();
+}
+async function callPost(action, payload){
+  const body = Object.assign({}, payload, { action: action, pin: STATE.pin });
+  const res = await fetch(GAS_URL, {
+    method:'POST', redirect:'follow',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+/* =========================================================================
+   DEVICE / IP / BROWSER DETECTION
+   ========================================================================= */
+function parseUserAgent(){
+  const ua = navigator.userAgent || '';
+  let browser = 'Unknown', os = 'Unknown', device = 'Desktop';
+  // Browser
+  if (/Edg\//.test(ua)) browser = 'Microsoft Edge';
+  else if (/OPR\//.test(ua) || /Opera/.test(ua)) browser = 'Opera';
+  else if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) browser = 'Google Chrome';
+  else if (/Firefox\//.test(ua)) browser = 'Mozilla Firefox';
+  else if (/Safari\//.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
+  // OS
+  if (/Windows NT 10/.test(ua)) os = 'Windows 10/11';
+  else if (/Windows NT/.test(ua)) os = 'Windows';
+  else if (/Android/.test(ua)) os = 'Android ' + (ua.match(/Android\s([0-9.]+)/)||['',''])[1];
+  else if (/iPhone|iPad|iPod/.test(ua)) os = 'iOS';
+  else if (/Mac OS X/.test(ua)) os = 'macOS';
+  else if (/Linux/.test(ua)) os = 'Linux';
+  // Device
+  if (/Mobi|Android|iPhone|iPod/.test(ua)) device = 'Mobile';
+  else if (/iPad|Tablet/.test(ua)) device = 'Tablet';
+  return { browser, os, device, ua };
+}
+
+async function fetchIpInfo(){
+  try {
+    const r = await fetch('https://ipapi.co/json/');
+    const j = await r.json();
+    return {
+      ip: j.ip || '-',
+      provider: j.org || j.asn || '-',
+      lokasi: [j.city, j.region, j.country_name].filter(Boolean).join(', ') || '-'
+    };
+  } catch(e) {
+    try {
+      const r2 = await fetch('https://api.ipify.org?format=json');
+      const j2 = await r2.json();
+      return { ip: j2.ip || '-', provider: '-', lokasi: '-' };
+    } catch(e2){
+      return { ip: '-', provider: '-', lokasi: '-' };
+    }
+  }
+}
+
+function fetchGPS(){
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) { resolve('tidak didukung browser'); return; }
+    let done = false;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (done) return; done = true;
+        resolve(`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)} (akurasi ±${Math.round(pos.coords.accuracy)}m)`);
+      },
+      (err) => {
+        if (done) return; done = true;
+        resolve('tidak diizinkan user');
+      },
+      { timeout: 5000, enableHighAccuracy: false }
+    );
+    // fallback timeout
+    setTimeout(() => { if (!done) { done = true; resolve('timeout'); } }, 5500);
+  });
+}
+
+/* =========================================================================
+   PIN AUTH + LOGGING
+   ========================================================================= */
+async function submitPin(){
+  const pin = document.getElementById('pinInput').value.trim();
+  const errEl = document.getElementById('pinError');
+  const btn = document.getElementById('btnSubmitPin');
+  const btnText = document.getElementById('pinBtnText');
+  if (!pin){ errEl.textContent = 'PIN tidak boleh kosong.'; return; }
+  errEl.textContent = '';
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="loader"></span> Memeriksa...';
+  try {
+    const res = await callGet('verifypin', { pin: pin });
+    if (res.success) {
+      STATE.pin = pin;
+      STATE.sessionId = 'S-' + Date.now() + '-' + Math.random().toString(36).substr(2,6);
+      // Setelah PIN benar, kumpulkan info device/ip/gps dan kirim log
+      const uaInfo = parseUserAgent();
+      const ipInfo = await fetchIpInfo();
+      const gpsInfo = await fetchGPS();
+      try {
+        await callPost('loginlog', {
+          sessionId: STATE.sessionId,
+          masukSebagai: 'Admin / Panitia',
+          ip: ipInfo.ip,
+          provider: ipInfo.provider,
+          lokasi: ipInfo.lokasi,
+          gps: gpsInfo,
+          device: uaInfo.device,
+          browser: uaInfo.browser,
+          os: uaInfo.os
+        });
+      } catch(e) { console.warn('loginlog failed:', e); }
+
+      // Tampilkan info bar
+      const ib = document.getElementById('infoBar');
+      ib.classList.remove('hidden');
+      ib.innerHTML = `
+        <div><b>Sesi:</b> ${STATE.sessionId}</div>
+        <div><b>IP:</b> ${ipInfo.ip}</div>
+        <div><b>Lokasi:</b> ${ipInfo.lokasi}</div>
+        <div><b>Provider:</b> ${ipInfo.provider}</div>
+        <div><b>Device:</b> ${uaInfo.device}</div>
+        <div><b>Browser:</b> ${uaInfo.browser}</div>
+        <div><b>OS:</b> ${uaInfo.os}</div>
+        <div><b>GPS:</b> ${gpsInfo}</div>
+      `;
+
+      document.getElementById('pinModal').classList.add('hidden');
+      document.getElementById('appMain').classList.remove('hidden');
+      await loadInitial();
+      toast('Berhasil masuk. Selamat datang!', 'success');
+    } else {
+      // Tampilkan error lebih informatif
+      errEl.textContent = res.message || 'PIN salah.';
+      const inp = document.getElementById('pinInput');
+      inp.classList.add('error');
+      setTimeout(() => inp.classList.remove('error'), 400);
+      // Tampilkan hint troubleshooting
+      const hintEl = document.getElementById('debugOutput');
+      hintEl.style.display = 'block';
+      hintEl.innerHTML = `<b>&#9888; PIN salah. Saran:</b><br>
+        1. Pastikan sheet CONFIG ada baris dengan kolom A="PIN" dan kolom B berisi PIN (mis. 1234).<br>
+        2. Pastikan Web App sudah di-deploy ulang: <b>Deploy > Manage deployments > Edit > Version: New version > Deploy</b>.<br>
+        <br><b>Response server:</b><br><pre style="font-size:10px; white-space:pre-wrap;">${JSON.stringify(res, null, 2)}</pre>`;
+    }
+  } catch(e) {
+    errEl.textContent = 'Gagal terhubung ke server. Periksa GAS_URL.';
+    const hintEl = document.getElementById('debugOutput');
+    hintEl.style.display = 'block';
+    hintEl.innerHTML = `<b>&#10060; Error koneksi:</b><br>
+      <code>${e.message}</code><br><br>
+      <b>Kemungkinan penyebab:</b><br>
+      1. URL exec salah - cek baris <code>GAS_URL</code> di index.html<br>
+      2. Web App deployment: akses harus <b>Anyone</b><br>
+      3. SPREADSHEET_ID salah di Kode.gs<br>
+      4. Belum re-deploy setelah ganti SPREADSHEET_ID<br>
+      5. Browser cache - hard refresh: Ctrl+Shift+R`;
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Masuk';
+  }
+}
+
+/**
+ * Buka modal About Aplikasi.
+ */
+function openAboutModal(){
+  document.getElementById('aboutModal').classList.remove('hidden');
+}
+
+/**
+ * Tutup modal About Aplikasi.
+ */
+function closeAboutModal(){
+  document.getElementById('aboutModal').classList.add('hidden');
+}
+
+// Tutup modal About bila klik di luar card
+document.addEventListener('click', function(e){
+  const aboutModal = document.getElementById('aboutModal');
+  if (e.target === aboutModal) closeAboutModal();
+});
+
+async function logout(){
+  try {
+    await callPost('logoutlog', { sessionId: STATE.sessionId });
+  } catch(e) { console.warn('logoutlog failed:', e); }
+  STATE.pin = '';
+  STATE.sessionId = '';
+  document.getElementById('appMain').classList.add('hidden');
+  document.getElementById('infoBar').classList.add('hidden');
+  document.getElementById('pinModal').classList.remove('hidden');
+  document.getElementById('pinInput').value = '';
+  toast('Anda keluar. Log akses dicatat.', 'warn');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pinInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') submitPin(); });
+  renderRoomEditor();
+  loadImageSettings();
+});
+
+async function loadInitial(){
+  try {
+    const res = await callGet('getallstudents', { pin: STATE.pin });
+    if (res.success){
+      document.getElementById('statK7').textContent = (res.all.kelas7 || []).length;
+      document.getElementById('statK8').textContent = (res.all.kelas8 || []).length;
+      document.getElementById('statK9').textContent = (res.all.kelas9 || []).length;
+    } else {
+      toast('Gagal memuat data siswa: ' + (res.message || 'unknown'), 'error');
+    }
+  } catch(e) { toast('Error koneksi: ' + e.message, 'error'); }
+}
+
+/* =========================================================================
+   TAB SWITCH (3 tab utama)
+   ========================================================================= */
+function switchTab(name){
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`nav.tabs button[data-tab="${name}"]`).classList.add('active');
+  ['data','ruang','kartu','log'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.classList.toggle('hidden', t !== name);
+  });
+}
+
+function switchSub(name){
+  document.querySelectorAll('nav.subnav button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`nav.subnav button[data-sub="${name}"]`).classList.add('active');
+  ['peserta','piket','denah'].forEach(t => {
+    document.getElementById('sub-'+t).classList.toggle('hidden', t !== name);
+  });
+  STATE.currentSub = name;
+}
+
+/* =========================================================================
+   TAB 1: KELAS STATS
+   ========================================================================= */
+async function loadKelasStats(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callGet('getkelasstats', { pin: STATE.pin });
+    if (res.success){
+      STATE.kelasStats = res.stats;
+      renderKelasStats(res.stats);
+      toast('Statistik kelas dimuat.', 'success');
+    } else {
+      toast(res.message || 'Gagal memuat statistik.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+function renderKelasStats(stats){
+  const wrap = document.getElementById('kelasStatsResult');
+  let html = '';
+  ['7','8','9'].forEach(k => {
+    const arr = stats[k] || [];
+    if (!arr.length) return;
+    let totalL = 0, totalP = 0, totalAll = 0;
+    html += `<h3 style="margin-top:18px; color:var(--c-primary);">Kelas ${k}</h3>`;
+    html += `<div class="table-wrap"><table class="kelas-stats"><thead><tr>
+      <th>KELAS</th><th>WALI KELAS</th><th>LAKI-LAKI</th><th>PEREMPUAN</th><th>TOTAL</th>
+    </tr></thead><tbody>`;
+    arr.forEach(item => {
+      html += `<tr>
+        <td><span class="badge badge-${k}">${item.kelas}</span></td>
+        <td>${item.wali}</td>
+        <td style="text-align:center;">${item.laki}</td>
+        <td style="text-align:center;">${item.perempuan}</td>
+        <td style="text-align:center; font-weight:700;">${item.total}</td>
+      </tr>`;
+      totalL += item.laki; totalP += item.perempuan; totalAll += item.total;
+    });
+    html += `<tr style="background:#FFF8E1; font-weight:700;">
+      <td colspan="2">TOTAL KELAS ${k}</td>
+      <td style="text-align:center;">${totalL}</td>
+      <td style="text-align:center;">${totalP}</td>
+      <td style="text-align:center;">${totalAll}</td>
+    </tr>`;
+    html += `</tbody></table></div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function exportKelasStatsXlsx(){
+  if (!STATE.kelasStats){ toast('Muat statistik dulu.', 'warn'); return; }
+  const aoa = [['KELAS','WALI KELAS','LAKI-LAKI','PEREMPUAN','TOTAL']];
+  ['7','8','9'].forEach(k => {
+    (STATE.kelasStats[k] || []).forEach(item => {
+      aoa.push([item.kelas, item.wali, item.laki, item.perempuan, item.total]);
+    });
+    aoa.push(['']); // separator
+  });
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  XLSX.utils.book_append_sheet(wb, ws, 'Statistik Kelas');
+  XLSX.writeFile(wb, 'Statistik_Siswa_per_Kelas.xlsx');
+  toast('Excel terdownload.', 'success');
+}
+
+/* =========================================================================
+   TAB 2: PEMBAGIAN RUANG UJIAN
+   ========================================================================= */
+function renderRoomEditor(){
+  const wrap = document.getElementById('roomEditList');
+  wrap.innerHTML = '';
+  STATE.rooms.forEach((r, idx) => {
+    const div = document.createElement('div');
+    div.className = 'room-edit-item';
+    div.innerHTML = `
+      <input type="number" value="${r.id}" style="text-align:center;" title="ID Ruang" onchange="STATE.rooms[${idx}].id=parseInt(this.value)||1">
+      <input type="text" value="${r.nama}" placeholder="Nama ruang" onchange="STATE.rooms[${idx}].nama=this.value">
+      <input type="text" value="${r.kelasA}" placeholder="9A" onchange="STATE.rooms[${idx}].kelasA=this.value.toUpperCase()">
+      <input type="number" value="${r.aMula}" min="1" onchange="STATE.rooms[${idx}].aMula=parseInt(this.value)||1" title="Absen mulai kelas A">
+      <input type="number" value="${r.aHingga}" min="1" onchange="STATE.rooms[${idx}].aHingga=parseInt(this.value)||16" title="Absen hingga kelas A">
+      <input type="text" value="${r.kelasB}" placeholder="7A" onchange="STATE.rooms[${idx}].kelasB=this.value.toUpperCase()">
+      <input type="number" value="${r.bMula}" min="1" onchange="STATE.rooms[${idx}].bMula=parseInt(this.value)||1" title="Absen mulai kelas B">
+      <input type="number" value="${r.bHingga}" min="1" onchange="STATE.rooms[${idx}].bHingga=parseInt(this.value)||16" title="Absen hingga kelas B">
+      <button class="btn-del" onclick="removeRoom(${idx})" title="Hapus">&times;</button>
+    `;
+    // Label row di atas
+    const labelDiv = document.createElement('div');
+    labelDiv.style.cssText = 'display:grid; grid-template-columns:40px 1fr 70px 60px 60px 1fr 70px 60px 60px 40px; gap:6px; margin-bottom:4px; padding:0 10px; font-size:10px; color:var(--c-text-soft); text-transform:uppercase;';
+    labelDiv.innerHTML = `
+      <div>ID</div><div>Nama Ruang</div>
+      <div>Kelas A</div><div>Absen Mula</div><div>Absen Akhir</div>
+      <div>Kelas B</div><div>Absen Mula</div><div>Absen Akhir</div>
+      <div></div>
+    `;
+    wrap.appendChild(labelDiv);
+    wrap.appendChild(div);
+  });
+}
+
+function addRoom(){
+  const newId = STATE.rooms.length ? Math.max(...STATE.rooms.map(r=>r.id))+1 : 1;
+  STATE.rooms.push({ id:newId, nama:'Ruang '+newId, kelasA:'', aMula:1, aHingga:16, kelasB:'', bMula:1, bHingga:16 });
+  renderRoomEditor();
+}
+
+function removeRoom(idx){
+  if (STATE.rooms.length <= 1){ toast('Minimal 1 ruang.', 'warn'); return; }
+  STATE.rooms.splice(idx, 1);
+  renderRoomEditor();
+}
+
+async function saveRoomConfig(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const rooms = STATE.rooms.map(r => ({
+      id: r.id, nama: r.nama,
+      kelasA: r.kelasA, absenAMula: r.aMula, absenAHingga: r.aHingga,
+      kelasB: r.kelasB, absenBMula: r.bMula, absenBHingga: r.bHingga
+    }));
+    const res = await callPost('saveruang', { rooms: rooms });
+    toast(res.success ? `Konfigurasi ${res.saved} ruang tersimpan.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+async function loadRoomConfig(){
+  try {
+    const res = await callGet('getruang', { pin: STATE.pin });
+    if (res.success && res.rooms.length){
+      STATE.rooms = res.rooms.map(r => ({
+        id: r.id, nama: r.nama, kelasA: r.kelasA, aMula: r.absenAMula, aHingga: r.absenAHingga,
+        kelasB: r.kelasB, bMula: r.absenBMula, bHingga: r.absenBHingga
+      }));
+      renderRoomEditor();
+      toast(`${res.rooms.length} ruang dimuat.`, 'success');
+    } else {
+      toast('Belum ada konfigurasi tersimpan.', 'warn');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function applyNoPeserta(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callPost('applynomorpeserta', {});
+    if (res.success){
+      toast(`No. Peserta berhasil di-apply ke ${res.totalAssigned} siswa.`, 'success');
+    } else {
+      toast(res.message || 'Gagal apply no peserta.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/* =========================================================================
+   AUTO-GENERATE PATTERN 27 RUANG (SMPN 1 MOGA)
+   ========================================================================= */
+
+/** Preview pattern 27 ruang - tampilkan di editor tanpa save */
+async function previewRuangPattern(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callGet('getruangpattern', { pin: STATE.pin });
+    if (res.success){
+      // Isi STATE.rooms dengan pattern
+      STATE.rooms = res.rooms.map(r => ({
+        id: r.id,
+        nama: r.nama,
+        kelasA: r.kelasA,
+        aMula: r.absenAMula,
+        aHingga: r.absenAHingga,
+        kelasB: r.kelasB,
+        bMula: r.absenBMula,
+        bHingga: r.absenBHingga
+      }));
+      renderRoomEditor();
+      // Tampilkan info panel
+      renderPatternInfo(res);
+      toast(`Pattern ${res.totalRooms} ruang dimuat ke editor. Klik "Simpan Konfigurasi" untuk menyimpan, atau langsung klik "Auto-Generate Pattern" untuk simpan+apply.`, 'success');
+    } else {
+      toast(res.message || 'Gagal load pattern.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/** Auto-generate pattern + simpan + apply nomor peserta dalam satu klik */
+async function applyRuangPatternAuto(){
+  if (!confirm('Ini akan MENGGANTI seluruh konfigurasi RUANG_UJIAN dengan pattern 27 ruang SMPN 1 Moga dan otomatis apply nomor peserta ke sheet kelas. Lanjutkan?')) return;
+  const btn = event.currentTarget; setBtnLoading(btn, 'Memproses...');
+  try {
+    const res = await callPost('applyruangpattern', { options: { applyNoPeserta: true } });
+    if (res.success){
+      // Update STATE.rooms dari hasil
+      STATE.rooms = res.rooms.map(r => ({
+        id: r.id, nama: r.nama,
+        kelasA: r.kelasA, aMula: r.absenAMula, aHingga: r.absenAHingga,
+        kelasB: r.kelasB, bMula: r.absenBMula, bHingga: r.absenBHingga
+      }));
+      renderRoomEditor();
+      // Tampilkan info panel dengan statistik
+      renderPatternInfo({ ...res, success: true, totalRooms: res.rooms.length, kelasStats: res.kelasStats, counter: null });
+      const assignCount = res.applyResult ? res.applyResult.totalAssigned : 0;
+      toast(`Pattern ${res.roomsSaved} ruang tersimpan & ${assignCount} nomor peserta di-apply.`, 'success');
+    } else {
+      toast(res.message || 'Gagal apply pattern.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/** Render info panel pattern dengan statistik */
+function renderPatternInfo(res){
+  const el = document.getElementById('patternInfo');
+  if (!el) return;
+  el.style.display = 'block';
+  let html = `<div style="font-weight:700; color:#E67E22; margin-bottom:8px;">&#9889; Pattern ${res.totalRooms || (res.rooms ? res.rooms.length : '?')} Ruang - SMPN 1 Moga</div>`;
+  html += `<div style="margin-bottom:8px;">Setiap kelas paralel dibagi ke 2 ruang berurutan: <b>absen 1-16</b> (ruang 1) &amp; <b>absen 17-32</b> (ruang 2).</div>`;
+
+  if (res.kelasStats) {
+    html += '<table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:6px;"><thead>';
+    html += '<tr style="background:#FFE082;"><th style="padding:4px 6px; text-align:left;">KELAS</th><th style="padding:4px 6px;">TOTAL SISWA</th><th style="padding:4px 6px;">L</th><th style="padding:4px 6px;">P</th><th style="padding:4px 6px;">RUANG 1 (1-16)</th><th style="padding:4px 6px;">RUANG 2 (17-end)</th><th style="padding:4px 6px;">STATUS</th></tr></thead><tbody>';
+    const kelasLabels = Object.keys(res.kelasStats).sort();
+    kelasLabels.forEach(k => {
+      const s = res.kelasStats[k];
+      const r1 = Math.min(16, s.total);
+      const r2 = Math.max(0, s.total - 16);
+      let status = '', color = '';
+      if (s.total <= 16) { status = 'Muat di 1 ruang'; color = '#FF9800'; }
+      else if (s.total <= 32) { status = 'Ideal (2 ruang)'; color = '#4CAF50'; }
+      else { status = `Lebih ${s.total - 32} siswa`; color = '#F44336'; }
+      html += `<tr style="background:white; border-bottom:1px solid #eee;">`;
+      html += `<td style="padding:4px 6px;"><b>${k}</b></td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${s.total}</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${s.laki}</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${s.perempuan}</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${r1} siswa</td>`;
+      html += `<td style="padding:4px 6px; text-align:center;">${r2} siswa</td>`;
+      html += `<td style="padding:4px 6px; text-align:center; color:${color}; font-weight:700;">${status}</td>`;
+      html += `</tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (res.applyResult && res.applyResult.report) {
+    html += `<div style="margin-top:10px; padding:8px; background:#E8F5E9; border-radius:6px;">`;
+    html += `<b>&#10004; Apply No. Peserta:</b> ${res.applyResult.totalAssigned} siswa sudah di-assign nomor peserta di sheet KELAS7/8/9.`;
+    html += `</div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+/* =========================================================================
+   SUBMENU PESERTA - generate dari konfigurasi RUANG_UJIAN
+   ========================================================================= */
+async function genPeserta(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callPost('generatepeserta', {});
+    if (res.success){
+      STATE.pesertaData = res;
+      renderPeserta(res);
+      toast(`Berhasil generate ${res.rooms.reduce((a,b)=>a+b.peserta.length,0)} peserta.`, 'success');
+    } else {
+      toast(res.message || 'Gagal generate.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+function renderPeserta(data){
+  const wrap = document.getElementById('pesertaResult');
+  let html = '';
+  data.rooms.forEach(room => {
+    html += `<h4 style="margin-top:18px; color:var(--c-primary);">&#128209; ${room.nama} <span style="font-size:13px; color:var(--c-text-soft); font-weight:normal;">(${room.peserta.length} peserta)</span></h4>`;
+    html += `<div class="table-wrap"><table class="data-table"><thead><tr>
+      <th>NO</th><th>NOMOR PESERTA</th><th>NAMA PESERTA</th><th>KELAS</th><th>L/P</th>
+    </tr></thead><tbody>`;
+    room.peserta.forEach(p => {
+      html += `<tr>
+        <td>${p.no}</td><td><b>${p.nomorPeserta}</b></td><td>${p.nama}</td>
+        <td><span class="badge badge-${String(p.kelas).replace(/\D/g,'')}">${p.kelas}</span></td><td>${p.lp}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function exportPesertaXlsx(){
+  if (!STATE.pesertaData){ toast('Generate dulu.', 'warn'); return; }
+  const aoa = [['NO','NOMOR PESERTA','NAMA PESERTA','KELAS','L/P','RUANG']];
+  let no = 1;
+  STATE.pesertaData.rooms.forEach(room => {
+    room.peserta.forEach(p => { aoa.push([no++, p.nomorPeserta, p.nama, p.kelas, p.lp, room.nama]); });
+  });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Daftar Peserta');
+  XLSX.writeFile(wb, 'Daftar_Peserta_Per_Ruang.xlsx');
+  toast('Excel terdownload.', 'success');
+}
+
+async function savePesertaToServer(){
+  if (!STATE.pesertaData){ toast('Generate dulu.', 'warn'); return; }
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callPost('savepeserta', { data: STATE.pesertaData.rooms });
+    toast(res.success ? `Tersimpan ${res.saved} baris.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/* =========================================================================
+   SUBMENU PIKET
+   ========================================================================= */
+async function genPiket(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    // Panggil backend - tanggal hardcoded: Senin 7 Des - Sabtu 12 Des 2026
+    const res = await callPost('generatepiket', {});
+    if (res.success){
+      STATE.piketData = res;
+      renderPiket(res);
+      toast(`Berhasil generate piket ${res.totalHari} hari untuk ${res.totalRuang} ruang.`, 'success');
+    } else {
+      toast(res.message || 'Gagal generate.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+function renderPiket(data){
+  const wrap = document.getElementById('piketResult');
+  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#128197; Daftar Piket per Ruang (${data.totalRuang} ruang &times; ${data.totalHari} hari)</h4>`;
+  html += `<p style="font-size:12px; color:var(--c-text-soft); margin-bottom:10px;">Periode: <b>${data.periodeMulai}</b> s/d <b>${data.periodeSelesai}</b>. Setiap ruang punya 32 peserta (16 A + 16 B) dibagi rata ke 6 hari.</p>`;
+
+  // Card per ruang
+  data.rooms.forEach(room => {
+    html += `<div class="piket-card">`;
+    html += `<div class="tgl">Ruang ${room.id} - ${room.nama} &middot; Kelas ${room.kelasA} &times; Kelas ${room.kelasB}</div>`;
+    html += `<div style="font-size:11px; color:var(--c-text-soft); margin-top:4px;">Total peserta: ${room.pesertaA.length + room.pesertaB.length} (${room.pesertaA.length}A + ${room.pesertaB.length}B)</div>`;
+
+    // Jadwal per hari
+    room.jadwal.forEach(hari => {
+      html += `<div style="margin-top:10px; padding:8px; background:white; border-radius:6px; border-left:4px solid var(--c-accent);">`;
+      html += `<div style="font-weight:700; color:var(--c-primary); font-size:13px;">${hari.hariTanggal}</div>`;
+      html += `<div style="font-size:11px; color:var(--c-text-soft); margin-top:2px;">Jumlah: ${hari.pesertaA.length} Kelas A + ${hari.pesertaB.length} Kelas B = ${hari.pesertaA.length + hari.pesertaB.length} piket</div>`;
+      html += `<div class="table-wrap" style="margin-top:6px;"><table class="data-table"><thead><tr>
+        <th style="width:40px;">NO</th>
+        <th>NO PESERTA (KELAS ${room.kelasA})</th><th>NAMA (KELAS ${room.kelasA})</th>
+        <th>NO PESERTA (KELAS ${room.kelasB})</th><th>NAMA (KELAS ${room.kelasB})</th>
+      </tr></thead><tbody>`;
+      const maxLen = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
+      for (let i = 0; i < maxLen; i++) {
+        const a = hari.pesertaA[i] || {};
+        const b = hari.pesertaB[i] || {};
+        html += `<tr>
+          <td>${i+1}</td>
+          <td><b>${a.nomorPeserta || '-'}</b></td><td>${a.nama || '-'}</td>
+          <td><b>${b.nomorPeserta || '-'}</b></td><td>${b.nama || '-'}</td>
+        </tr>`;
+      }
+      html += `</tbody></table></div></div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  wrap.innerHTML = html;
+}
+
+function exportPiketXlsx(){
+  if (!STATE.piketData){ toast('Generate dulu.', 'warn'); return; }
+  const d = STATE.piketData;
+  const aoa = [['NO','RUANG','HARI & TANGGAL','NO PESERTA (KELAS A)','NAMA (KELAS A)','NO PESERTA (KELAS B)','NAMA (KELAS B)']];
+  let no = 1;
+  d.rooms.forEach(room => {
+    room.jadwal.forEach(hari => {
+      const maxLen = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
+      for (let i = 0; i < maxLen; i++) {
+        const a = hari.pesertaA[i] || {};
+        const b = hari.pesertaB[i] || {};
+        aoa.push([
+          no++,
+          room.nama,
+          hari.hariTanggal,
+          a.nomorPeserta || '', a.nama || '',
+          b.nomorPeserta || '', b.nama || ''
+        ]);
+      }
+    });
+  });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Piket per Ruang');
+  XLSX.writeFile(wb, 'Daftar_Piket_Asas_per_Ruang.xlsx');
+  toast('Excel terdownload.', 'success');
+}
+
+async function savePiketToServer(){
+  if (!STATE.piketData){ toast('Generate dulu.', 'warn'); return; }
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callPost('savepiket', {
+      periodeMulai: STATE.piketData.periodeMulai,
+      periodeSelesai: STATE.piketData.periodeSelesai,
+      rooms: STATE.piketData.rooms
+    });
+    toast(res.success ? `Tersimpan ${res.saved} baris.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/* =========================================================================
+   SUBMENU DENAH (per ruang, grid 8x8)
+   ========================================================================= */
+async function genDenah(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callPost('generatedenah', {});
+    if (res.success){
+      STATE.denahData = res;
+      renderDenah(res);
+      toast(`Berhasil generate denah 8x8 untuk ${res.totalRuang} ruang.`, 'success');
+    } else {
+      toast(res.message || 'Gagal generate.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+function renderDenah(data){
+  const wrap = document.getElementById('denahResult');
+  let html = `<h4 style="margin-top:18px; color:var(--c-primary);">&#129689; Denah per Ruang (${data.totalRuang} ruang)</h4>`;
+
+  data.ruangs.forEach(ruang => {
+    const totalSiswa = ruang.pesertaACount + ruang.pesertaBCount;
+    html += `<h5 style="margin-top:24px; color:var(--c-primary); border-bottom:2px solid var(--c-primary); padding-bottom:4px;">`;
+    html += `DENAH RUANG ${ruang.id} - ${ruang.nama}`;
+    html += `</h5>`;
+
+    // Keterangan jumlah siswa
+    html += `<div style="font-size:12px; color:var(--c-text-soft); margin-bottom:8px;">`;
+    html += `Kelas ${ruang.kelasA} = ${ruang.pesertaACount} Siswa &middot; Kelas ${ruang.kelasB} = ${ruang.pesertaBCount} Siswa &middot; Total: ${totalSiswa} Siswa`;
+    html += `</div>`;
+
+    html += `<div class="denah-wrap" style="margin-bottom:18px; padding:14px;">`;
+    html += `<table style="border-collapse:collapse; width:100%;">`;
+
+    // Header: kolom labels B C D E F G H I J K L
+    html += `<thead><tr><th style="border:1px solid #eee; padding:4px; background:#F5F7FF;"></th>`;
+    ruang.gridInfo.colLabels.forEach(label => {
+      const isLorong = (label === 'D' || label === 'G' || label === 'J');
+      html += `<th style="border:1px solid #eee; padding:4px; background:${isLorong ? '#FFF8E1' : '#F5F7FF'}; font-weight:700; color:#6C5CE7; font-size:12px;">${label}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    // Render baris dari 9 (atas) ke 1 (bawah)
+    for (let r = data.gridRows - 1; r >= 0; r--) {
+      const rowNum = r + 1;
+      html += `<tr><td style="border:1px solid #eee; padding:4px; background:#F5F7FF; font-weight:700; color:#636E72; text-align:center; font-size:11px;">${rowNum}</td>`;
+      ruang.grid[r].forEach(cell => {
+        if (cell.type === 'lorong' || cell.type === 'empty') {
+          html += `<td style="border:1px solid #eee; padding:4px;">&nbsp;</td>`;
+        } else if (cell.peserta && cell.peserta.nomorPeserta) {
+          const typeColor = cell.type === 'A' ? '#6C5CE7' : '#FF6B9D';
+          html += `<td style="border:1px solid #ccc; padding:4px; background:white; text-align:center; vertical-align:middle;">`;
+          html += `<div style="font-size:13px; font-weight:700; color:${typeColor};">${cell.peserta.nomorPeserta}</div>`;
+          html += `</td>`;
+        } else {
+          html += `<td style="border:1px solid #eee; padding:4px;">&nbsp;</td>`;
+        }
+      });
+      html += `</tr>`;
+    }
+    html += `</tbody></table>`;
+
+    // PENGAWAS row - di tengah bawah
+    html += `<div style="margin-top:8px; text-align:center;">`;
+    html += `<div style="display:inline-block; padding:8px 40px; background:#6C5CE7; color:white; font-weight:700; border-radius:8px; font-size:14px;">PENGAWAS</div>`;
+    html += `</div>`;
+
+    html += `</div>`;
+  });
+
+  wrap.innerHTML = html;
+}
+
+function exportDenahXlsx(){
+  if (!STATE.denahData){ toast('Generate dulu.', 'warn'); return; }
+  const d = STATE.denahData;
+  const wb = XLSX.utils.book_new();
+
+  d.ruangs.forEach(ruang => {
+    const totalSiswa = ruang.pesertaACount + ruang.pesertaBCount;
+    const aoa = [];
+
+    // Title
+    aoa.push([`DENAH RUANG ${ruang.id} - ${ruang.nama}`]);
+    aoa.push([`Kelas ${ruang.kelasA} = ${ruang.pesertaACount} Siswa  |  Kelas ${ruang.kelasB} = ${ruang.pesertaBCount} Siswa  |  Total: ${totalSiswa} Siswa`]);
+    aoa.push(['']);
+
+    // Header: kolom labels B C D E F G H I J K L
+    const headerRow = [''];
+    ruang.gridInfo.colLabels.forEach(label => headerRow.push(label));
+    aoa.push(headerRow);
+
+    // Baris dari 9 (atas) ke 1 (bawah)
+    for (let r = d.gridRows - 1; r >= 0; r--) {
+      const rowNum = r + 1;
+      const rowData = [rowNum];
+      ruang.grid[r].forEach(cell => {
+        if (cell.peserta && cell.peserta.nomorPeserta) {
+          rowData.push(cell.peserta.nomorPeserta);
+        } else {
+          rowData.push('');
+        }
+      });
+      aoa.push(rowData);
+    }
+
+    // PENGAWAS row (di tengah)
+    aoa.push(['']);
+    const pengawasRow = [];
+    for (let i = 0; i <= d.gridCols; i++) {
+      pengawasRow.push(i === Math.floor(d.gridCols / 2) + 1 ? 'PENGAWAS' : '');
+    }
+    aoa.push(pengawasRow);
+
+    // Keterangan di bawah
+    aoa.push(['']);
+    aoa.push([`Kelas ${ruang.kelasA} = ${ruang.pesertaACount} Siswa`]);
+    aoa.push([`Kelas ${ruang.kelasB} = ${ruang.pesertaBCount} Siswa`]);
+    aoa.push([`Total: ${totalSiswa} Siswa`]);
+
+    const sheetName = ('R' + ruang.id + '-' + String(ruang.nama).substring(0, 25)).substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), sheetName);
+  });
+
+  XLSX.writeFile(wb, 'Denah_Tempat_Duduk_per_Ruang.xlsx');
+  toast('Excel terdownload.', 'success');
+}
+
+async function saveDenahToServer(){
+  if (!STATE.denahData){ toast('Generate dulu.', 'warn'); return; }
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callPost('savedenah', { data: STATE.denahData.ruangs });
+    toast(res.success ? `Tersimpan ${res.saved} baris.` : 'Gagal: ' + res.message, res.success ? 'success' : 'error');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+/* =========================================================================
+   TAB 3: CETAK KARTU PESERTA
+   ========================================================================= */
+async function loadKartuData(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const filterLabel = document.getElementById('kartuFilterLabel').value.trim();
+    const filterKelas = document.getElementById('kartuFilterKelas').value;
+    const target = filterLabel || filterKelas || '';
+    const res = await callGet('getkartudata', { pin: STATE.pin, kelas: target });
+    if (res.success){
+      STATE.kartuData = res.data;
+      document.getElementById('kartuCount').textContent = `Ditemukan ${res.count} siswa dengan nomor peserta.`;
+      renderKartu(res.data);
+      toast(`Ditemukan ${res.count} kartu.`, 'success');
+    } else {
+      toast(res.message || 'Gagal memuat kartu.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+function renderKartu(data){
+  const wrap = document.getElementById('kartuResult');
+  const printArea = document.getElementById('printArea');
+  if (!data.length){
+    wrap.innerHTML = '<p style="color:var(--c-text-soft); margin-top:12px;">Belum ada data. Pastikan sudah klik "Apply No. Peserta" di Tab 2.</p>';
+    printArea.innerHTML = '';
+    return;
+  }
+
+  // Ambil URL logo & TTD dari localStorage
+  const logoUrl = localStorage.getItem('asasKartu_logoUrl') || 'https://yanuar-moga.github.io/assets/logo.jpg';
+  const ttdUrl = localStorage.getItem('asasKartu_ttdUrl') || '';
+
+  // Helper: convert kode kelas (7/8/9) to Roman numeral
+  function toRoman(kelasStr) {
+    const kode = String(kelasStr).replace(/\D/g, '');
+    if (kode === '9') return 'IX';
+    if (kode === '8') return 'VIII';
+    if (kode === '7') return 'VII';
+    return '';
+  }
+
+  // Helper: cari ruang ujian berdasarkan noPeserta
+  function findRuang(noPeserta) {
+    if (!STATE.pesertaData || !STATE.pesertaData.rooms) return '-';
+    for (const room of STATE.pesertaData.rooms) {
+      if (room.peserta && room.peserta.some(p => p.nomorPeserta === noPeserta)) {
+        return room.nama || ('Ruang ' + room.id);
+      }
+    }
+    return '-';
+  }
+
+  // Jadwal ujian (sama untuk semua)
+  const jadwalRows = [
+    ['Senin, 7 Des 2026', 'B. Indonesia (07:30-09:30)', 'PABP (10:00-12:00)'],
+    ['Selasa, 8 Des 2026', 'PPKn (07:30-09:30)', 'Informatika (10:00-11:30)'],
+    ['Rabu, 9 Des 2026', 'B. Inggris (07:30-09:30)', 'Prakarya/Seni (10:00-11:30)'],
+    ['Kamis, 10 Des 2026', 'IPA (07:30-09:30)', 'PJOK (10:00-11:30)'],
+    ['Jumat, 11 Des 2026', 'Matematika (07:30-09:30)', '-'],
+    ['Sabtu, 12 Des 2026', 'IPS (07:30-09:30)', 'B. Jawa (10:00-11:00)']
+  ];
+
+  let html = '<div class="kartu-page">';
+
+  data.forEach(function(s) {
+    const roman = toRoman(s.kelas);
+    const ruang = findRuang(s.noPeserta);
+
+    html += '<div class="kartu-row">';
+
+    // === KOLOM KIRI: KARTU PESERTA (dengan TTD KS) ===
+    html += '<div class="kartu-card left">';
+    html += '<div class="kc-top">';
+    html += '<div class="kc-logo-area">';
+    html += '<img src="' + logoUrl + '" class="kc-logo" alt="">';
+    html += '<div class="kc-school-info">';
+    html += '<div class="kc-school-name">SMP NEGERI 1 MOGA</div>';
+    html += '<div class="kc-event-title">ASESMEN SUMATIF AKHIR SEMESTER (ASAS)</div>';
+    html += '<div style="font-size:7px;">T.P. 2026/2027</div>';
+    html += '</div></div>';
+    html += '<div class="kc-roman">' + roman + '</div>';
+    html += '</div>';
+    html += '<div class="kc-title">KARTU PESERTA</div>';
+    html += '<div class="kc-fields">';
+    html += '<div class="kc-row"><span class="kc-label">No. Peserta</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.noPeserta + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">Nama</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.nama + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">NIS / NISN</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.nis + ' / ' + s.nisn + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">Kelas</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + s.kelas + '</span></div>';
+    html += '<div class="kc-row"><span class="kc-label">Ruang</span><span class="kc-sep">:</span><span class="kc-val">&nbsp;' + ruang + '</span></div>';
+    html += '</div>';
+    // TTD block - posisi kanan, text rata kiri
+    html += '<div class="kc-signature">';
+    html += '<div>Moga, 5 Desember 2026</div>';
+    html += '<div>Kepala Sekolah,</div>';
+    if (ttdUrl) {
+      html += '<img src="' + ttdUrl + '" class="kc-ttd-img" alt="ttd">';
+    } else {
+      html += '<div style="height:25px;"></div>';
+    }
+    html += '<div class="kc-sig-name">DARIAH, S.Pd., M.Pd.</div>';
+    html += '<div>NIP. 197306022007012006</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // === KOLOM KANAN: JADWAL UJIAN (TANPA TTD KS) ===
+    html += '<div class="kartu-card">';
+    html += '<div class="kc-top">';
+    html += '<div class="kc-logo-area">';
+    html += '<img src="' + logoUrl + '" class="kc-logo" alt="">';
+    html += '<div class="kc-school-info">';
+    html += '<div class="kc-school-name">SMP NEGERI 1 MOGA</div>';
+    html += '<div class="kc-event-title">ASESMEN SUMATIF AKHIR SEMESTER (ASAS)</div>';
+    html += '<div style="font-size:7px;">T.P. 2026/2027</div>';
+    html += '</div></div>';
+    html += '<div class="kc-roman">' + roman + '</div>';
+    html += '</div>';
+    html += '<div class="kc-title">JADWAL UJIAN</div>';
+    html += '<table class="kc-schedule"><thead><tr><th>HARI / TANGGAL</th><th>MATA PELAJARAN</th></tr></thead><tbody>';
+    jadwalRows.forEach(function(row) {
+      html += '<tr><td style="white-space:nowrap;">' + row[0] + '</td><td>';
+      html += '<div>' + row[1] + '</div>';
+      if (row[2] && row[2] !== '-') {
+        html += '<div>' + row[2] + '</div>';
+      }
+      html += '</td></tr>';
+    });
+    html += '</tbody></table>';
+    html += '</div>';
+
+    html += '</div>'; // .kartu-row
+  });
+
+  html += '</div>'; // .kartu-page
+
+  wrap.innerHTML = html;
+  printArea.innerHTML = html;
+}
+
+// =========================================================================
+// SETTINGS: Logo & TTD URL (disimpan di localStorage)
+// =========================================================================
+function loadImageSettings(){
+  const logoInput = document.getElementById('settingLogoUrl');
+  const ttdInput = document.getElementById('settingTtdUrl');
+  if (logoInput) logoInput.value = localStorage.getItem('asasKartu_logoUrl') || 'https://yanuar-moga.github.io/assets/logo.jpg';
+  if (ttdInput) ttdInput.value = localStorage.getItem('asasKartu_ttdUrl') || '';
+}
+
+function saveImageSettings(){
+  const logoUrl = document.getElementById('settingLogoUrl').value.trim();
+  const ttdUrl = document.getElementById('settingTtdUrl').value.trim();
+  if (logoUrl) {
+    localStorage.setItem('asasKartu_logoUrl', logoUrl);
+  }
+  if (ttdUrl) {
+    localStorage.setItem('asasKartu_ttdUrl', ttdUrl);
+  } else {
+    localStorage.removeItem('asasKartu_ttdUrl');
+  }
+  toast('Pengaturan gambar tersimpan. Klik "Muat Data Kartu" untuk refresh.', 'success');
+  // Re-render bila sudah ada data
+  if (STATE.kartuData && STATE.kartuData.length) {
+    renderKartu(STATE.kartuData);
+  }
+}
+
+function resetImageSettings(){
+  localStorage.removeItem('asasKartu_logoUrl');
+  localStorage.removeItem('asasKartu_ttdUrl');
+  loadImageSettings();
+  toast('Pengaturan gambar direset ke default.', 'warn');
+  if (STATE.kartuData && STATE.kartuData.length) {
+    renderKartu(STATE.kartuData);
+  }
+}
+
+function exportKartuXlsx(){
+  if (!STATE.kartuData || !STATE.kartuData.length){ toast('Muat data kartu dulu.', 'warn'); return; }
+  const aoa = [['NO PESERTA','NAMA','L/P','KELAS','NIS','NISN','WALI KELAS']];
+  STATE.kartuData.forEach(s => {
+    aoa.push([s.noPeserta, s.nama, s.lp, s.kelas, s.nis, s.nisn, s.wali]);
+  });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Kartu Peserta');
+  XLSX.writeFile(wb, 'Data_Kartu_Peserta_Asas.xlsx');
+  toast('Excel terdownload.', 'success');
+}
+
+/* =========================================================================
+   LOG VIEW
+   ========================================================================= */
+async function loadLog(){
+  const btn = event.currentTarget; setBtnLoading(btn);
+  try {
+    const res = await callGet('getlog', { pin: STATE.pin });
+    if (res.success){
+      STATE.logData = res.data;
+      renderLog(res.data);
+      toast(`${res.data.length} log dimuat.`, 'success');
+    } else {
+      toast(res.message || 'Gagal memuat log.', 'error');
+    }
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { resetBtn(btn); }
+}
+
+function renderLog(data){
+  const wrap = document.getElementById('logResult');
+  if (!data.length){
+    wrap.innerHTML = '<p style="color:var(--c-text-soft); margin-top:12px;">Belum ada log akses.</p>';
+    return;
+  }
+  let html = `<div class="table-wrap"><table class="data-table"><thead><tr>
+    <th>Timestamp (WIB)</th><th>Masuk Sebagai</th><th>Logout (WIB)</th><th>Lama Masuk</th>
+    <th>Lokasi</th><th>IP</th><th>Provider</th><th>GPS</th><th>Device</th><th>Browser</th><th>OS</th>
+  </tr></thead><tbody>`;
+  data.forEach(r => {
+    html += `<tr>
+      <td>${r.timestamp}</td>
+      <td>${r.masukSebagai}</td>
+      <td>${r.logout || '<span style="color:#999;">masih aktif</span>'}</td>
+      <td>${r.lamaMasuk || '-'}</td>
+      <td>${r.lokasi}</td>
+      <td>${r.ip}</td>
+      <td>${r.provider}</td>
+      <td style="font-size:11px;">${r.gps}</td>
+      <td>${r.device}</td>
+      <td>${r.browser}</td>
+      <td>${r.os}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  wrap.innerHTML = html;
+}
+
+</script>
+</body>
+</html>
