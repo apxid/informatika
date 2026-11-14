@@ -179,16 +179,20 @@ input,select{font-family:inherit;outline:none}
     width:215mm;height:330mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;
-    padding:5mm 5mm 3mm;box-sizing:border-box;
+    padding:0;box-sizing:border-box;
   }
   .print-page:last-child{page-break-after:auto}
 
   .print-unit{
     flex:1;
     display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;
-    margin-bottom:2.5mm;page-break-inside:avoid;
-    min-height:0;
+    padding:3mm 5mm;box-sizing:border-box;
+    page-break-inside:avoid;min-height:0;
+    border-top:.5pt dashed #000;
     position:relative;
+  }
+  .print-unit:last-child{
+    border-bottom:.5pt dashed #000;
   }
 
   .pcard{
@@ -244,7 +248,7 @@ input,select{font-family:inherit;outline:none}
   .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
   .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif}
 
-  /* Schedule — header row lebih tinggi, kolom fit-content */
+  /* Schedule — header row lebih tinggi, border tipis, baris pendek */
   .pcard .pstitle{text-align:center;font-size:7pt;font-weight:bold;color:#000;margin-top:3pt;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
   .pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif}
   .pcard .ptable col.c-no{width:7%}
@@ -252,23 +256,69 @@ input,select{font-family:inherit;outline:none}
   .pcard .ptable col.c-waktu{width:22%}
   .pcard .ptable col.c-mapel{width:27%}
   .pcard .ptable col.c-ket{width:14%}
-  .pcard .ptable th,.pcard .ptable td{border:.5pt solid #000;padding:1pt 1.5pt;vertical-align:middle;font-size:6pt;line-height:1.2;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:5.8pt;padding:5pt 1.5pt;border-bottom:1pt solid #000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable th,.pcard .ptable td{border:.3pt solid #000;padding:.3pt 1pt;vertical-align:middle;font-size:6pt;line-height:1.1;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:5.8pt;padding:2pt 1pt;border-bottom:.5pt solid #000;font-family:"Times New Roman",Times,serif}
   .pcard .ptable td.c{text-align:center;font-family:"Times New Roman",Times,serif}
   .pcard .ptable td.l{text-align:left;font-family:"Times New Roman",Times,serif}
   .pcard .ptable td.ket{font-size:5.5pt;font-style:italic;color:#000;font-family:"Times New Roman",Times,serif}
   .pcard .ptable td.no{font-weight:bold;text-align:center;font-family:"Times New Roman",Times,serif}
+}
 
-  /* Garis putus-putus pembatas potong kertas
-     Setiap F4 = 4 unit peserta (1 unit = 1 baris)
-     Garis: (1) atas unit 1, (2) atas unit 2 = bawah unit 1,
-     (3) atas unit 3 = bawah unit 2, (4) atas unit 4 = bawah unit 3,
-     (5) bawah unit 4
-  */
-  .cut-line{
-    border:none;border-top:.5pt dashed #000;
-    height:0;margin:0;padding:0;
+/* ===== LABEL PRINT CSS (landscape F4) ===== */
+.label-print-only{display:none}
+@media print{
+  body.printing-labels #app,
+  body.printing-labels .app-header,
+  body.printing-labels .app-main,
+  body.printing-labels .app-footer,
+  body.printing-labels #loginScreen,
+  body.printing-labels #alertContainer,
+  body.printing-labels #loadingOverlay,
+  body.printing-labels #settingsModal,
+  body.printing-labels #aboutModal,
+  body.printing-labels #printArea{display:none!important}
+  body.printing-labels #labelPrintArea{display:block!important}
+  body.printing-labels .label-print-only{display:block}
+
+  body.printing-labels .label-page{
+    width:330mm;height:215mm;
+    page-break-after:always;page-break-inside:avoid;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:repeat(4,1fr);
+    gap:3mm;
+    padding:5mm;box-sizing:border-box;
+  }
+  body.printing-labels .label-page:last-child{page-break-after:auto}
+
+  body.printing-labels .label-card{
+    border:1.5pt solid #000;border-radius:0;
+    padding:4mm 6mm;box-sizing:border-box;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    font-family:"Times New Roman",Times,serif;
+    text-align:center;color:#000;
     page-break-inside:avoid;
+  }
+  body.printing-labels .label-card .room-title{
+    font-size:22pt;font-weight:bold;color:#000;
+    margin-bottom:3mm;font-family:"Times New Roman",Times,serif;
+    letter-spacing:1pt;
+  }
+  body.printing-labels .label-card .room-subtitle{
+    font-size:10pt;color:#000;margin-bottom:4mm;
+    font-family:"Times New Roman",Times,serif;
+  }
+  body.printing-labels .label-card .room-info{
+    font-size:13pt;line-height:1.8;color:#000;
+    font-family:"Times New Roman",Times,serif;
+  }
+  body.printing-labels .label-card .room-info .kelas{
+    font-weight:bold;font-family:"Times New Roman",Times,serif;
+  }
+  body.printing-labels .label-card .school-name{
+    font-size:9pt;color:#000;margin-top:4mm;
+    font-family:"Times New Roman",Times,serif;font-style:italic;
   }
 }
 
@@ -419,6 +469,7 @@ input,select{font-family:inherit;outline:none}
       <div class="field">
         <label for="kelasFilter">Kelas</label>
         <select id="kelasFilter">
+          <option value="all">Semua Kelas</option>
           <option value="7">Kelas 7 (VII)</option>
           <option value="8">Kelas 8 (VIII)</option>
           <option value="9">Kelas 9 (IX)</option>
@@ -442,6 +493,10 @@ input,select{font-family:inherit;outline:none}
         <button class="btn-secondary" id="btnPrint">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Cetak PDF (F4)
+        </button>
+        <button class="btn-ghost" id="btnLabels" title="Cetak Label Ruang Ujian (F4 Landscape)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4v10l8 4 8-4z"/><path d="M12 22V12"/><path d="M4 7l8 5 8-5"/></svg>
+          Cetak Label Ruang
         </button>
       </div>
     </div>
@@ -594,6 +649,9 @@ input,select{font-family:inherit;outline:none}
 
 <!-- ============ PRINT AREA ============ -->
 <div id="printArea" class="print-only"></div>
+
+<!-- ============ LABEL PRINT AREA ============ -->
+<div id="labelPrintArea" class="label-print-only"></div>
 
 <script>
 /* =========================================================
@@ -793,7 +851,8 @@ function showApp(){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('app').classList.remove('hidden');
   applySettingsToForm();
-  document.getElementById('kelasFilter').value = '7';
+  document.getElementById('kelasFilter').value = 'all';
+  populateRuangDropdown();
 }
 
 function doLogout(){
@@ -842,20 +901,18 @@ async function loadStudents(){
     });
     return;
   }
-  showLoading('Memuat data kelas '+kelas+'...');
+  const kelasLabel = kelas === 'all' ? 'Semua Kelas' : 'Kelas '+kelas;
+  showLoading('Memuat data '+kelasLabel+'...');
   try{
     const res = await callGas('getStudents', {kelas:kelas});
     if(!res.success) throw new Error(res.error||'Gagal memuat data');
     STATE.students = res.students || [];
-    const ruangs = [...new Set(STATE.students.map(s=>s.ruang).filter(Boolean))].sort();
-    STATE.ruangList = ruangs;
-    const ruangSel = document.getElementById('ruangFilter');
-    ruangSel.innerHTML = '<option value="">Semua Ruang</option>'+ruangs.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
     document.getElementById('searchInput').value='';
+    document.getElementById('ruangFilter').value='';
     applyFilters();
     showAlert({
       type:'success', title:'Data Berhasil Dimuat',
-      message:`${STATE.students.length} peserta dari Kelas ${kelas} berhasil dimuat.`,
+      message:`${STATE.students.length} peserta dari ${kelasLabel} berhasil dimuat.`,
       autoClose:2500
     });
   }catch(e){
@@ -865,6 +922,16 @@ async function loadStudents(){
   }
 }
 
+/* Populate static ruang dropdown 1-27 */
+function populateRuangDropdown(){
+  const sel = document.getElementById('ruangFilter');
+  let html = '<option value="">Semua Ruang</option>';
+  for(let i=1; i<=27; i++){
+    html += `<option value="${i}">Ruang ${i}</option>`;
+  }
+  sel.innerHTML = html;
+}
+
 /* =========================================================
    FILTER
    ========================================================= */
@@ -872,7 +939,7 @@ function applyFilters(){
   const ruang = document.getElementById('ruangFilter').value;
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   STATE.filtered = STATE.students.filter(s=>{
-    if(ruang && s.ruang !== ruang) return false;
+    if(ruang && String(s.ruangId) !== ruang) return false;
     if(q){
       const hay = (String(s.nama||'')+' '+String(s.noPeserta||'')+' '+String(s.nis||'')+' '+String(s.nisn||'')).toLowerCase();
       if(!hay.includes(q)) return false;
@@ -1172,29 +1239,86 @@ function printCards(){
   for(let i=0; i<STATE.filtered.length; i+=CONFIG.PESERTA_PER_PAGE){
     const pagePeserta = STATE.filtered.slice(i, i+CONFIG.PESERTA_PER_PAGE);
     html += '<div class="print-page">';
-    // 5 garis putus-putus pembatas potong kertas:
-    //   (1) atas unit 1
-    //   (2) atas unit 2 = bawah unit 1
-    //   (3) atas unit 3 = bawah unit 2
-    //   (4) atas unit 4 = bawah unit 3
-    //   (5) bawah unit 4
-    html += '<hr class="cut-line"/>';  // (1) atas unit 1
-    pagePeserta.forEach((s, idx) => {
-      html += renderPesertaUnit(s, true);
-      // Setelah unit 1 → (2); setelah unit 2 → (3); setelah unit 3 → (4); setelah unit 4 → (5)
-      html += '<hr class="cut-line"/>';
-    });
+    // Setiap print-unit punya border-top dashed (cut line)
+    // Unit terakhir juga punya border-bottom dashed
+    // Total 5 garis putus-putus: atas unit1, antara unit1-2, antara unit2-3, antara unit3-4, bawah unit4
+    pagePeserta.forEach(s=>{ html += renderPesertaUnit(s, true); });
     html += '</div>';
   }
   printArea.innerHTML = html;
   showAlert({
     type:'info', title:'Siap Cetak',
-    message:`${STATE.filtered.length} peserta akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4. Setiap halaman berisi 4 peserta (kartu kiri = biodata, kartu kanan = jadwal) dengan 5 garis putus-putus pembatas potong kertas. Pilih "Save as PDF", ukuran Folio/F4 (215×330 mm), margin None.`,
+    message:`${STATE.filtered.length} peserta akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4. Setiap halaman berisi 4 peserta (kartu kiri = biodata, kartu kanan = jadwal) dengan 5 garis putus-putus pembatas potong kertas. Tinggi setiap kartu sama. Pilih "Save as PDF", ukuran Folio/F4 (215×330 mm), margin None.`,
     confirmText:'Buka Dialog Cetak',
     cancelText:'Batal'
   }).then(ok=>{
     if(ok) setTimeout(()=>window.print(), 300);
   });
+}
+
+/* =========================================================
+   PRINT LABEL RUANG (F4 Landscape)
+   ========================================================= */
+async function printLabels(){
+  if(!getExecUrl() || getExecUrl().startsWith('GANTI_')){
+    showAlert({type:'error', title:'URL Exec Belum Diisi', message:'Buka Pengaturan dan isi URL Exec GAS terlebih dahulu.'});
+    return;
+  }
+  showLoading('Memuat data label ruang...');
+  try{
+    const res = await callGas('getRuangLabels');
+    if(!res.success) throw new Error(res.error||'Gagal memuat data label');
+    const labels = res.labels || [];
+    if(labels.length === 0){
+      showAlert({type:'warning', title:'Tidak Ada Data', message:'Data ruang ujian tidak ditemukan di sheet RUANG_UJIAN.'});
+      return;
+    }
+    const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+    const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
+    const LABELS_PER_PAGE = 8; // 2 kolom × 4 baris
+
+    let html = '';
+    for(let i=0; i<labels.length; i+=LABELS_PER_PAGE){
+      const pageLabels = labels.slice(i, i+LABELS_PER_PAGE);
+      html += '<div class="label-page">';
+      pageLabels.forEach(lbl=>{
+        const kelasAInfo = lbl.kelasA ? `<div class="room-info"><span class="kelas">Kelas ${escapeHtml(lbl.kelasA)}</span> : ${escapeHtml(lbl.rangeA||'-')}</div>` : '';
+        const kelasBInfo = lbl.kelasB ? `<div class="room-info"><span class="kelas">Kelas ${escapeHtml(lbl.kelasB)}</span> : ${escapeHtml(lbl.rangeB||'-')}</div>` : '';
+        html += `
+          <div class="label-card">
+            <div class="room-title">RUANG ${escapeHtml(String(lbl.id))} (R${escapeHtml(String(lbl.id))})</div>
+            <div class="room-subtitle">RUANG UJIAN ASAS · ${escapeHtml(year)}</div>
+            ${kelasAInfo}
+            ${kelasBInfo}
+            <div class="school-name">${escapeHtml(school)}</div>
+          </div>`;
+      });
+      html += '</div>';
+    }
+    const labelArea = document.getElementById('labelPrintArea');
+    labelArea.innerHTML = html;
+
+    showAlert({
+      type:'info', title:'Siap Cetak Label',
+      message:`${labels.length} label ruang akan dicetak dalam ${Math.ceil(labels.length/LABELS_PER_PAGE)} halaman F4 Landscape (330×215 mm). Pilih "Save as PDF", orientation LANDSCAPE, ukuran Folio/F4, margin None.`,
+      confirmText:'Buka Dialog Cetak',
+      cancelText:'Batal'
+    }).then(ok=>{
+      if(ok){
+        document.body.classList.add('printing-labels');
+        // Inject landscape @page style
+        const style = document.createElement('style');
+        style.id = 'label-landscape-style';
+        style.textContent = '@media print { @page { size: 330mm 215mm; margin: 0; } }';
+        document.head.appendChild(style);
+        setTimeout(()=>window.print(), 300);
+      }
+    });
+  }catch(e){
+    showAlert({type:'error', title:'Gagal Memuat Label', message:e.message});
+  }finally{
+    hideLoading();
+  }
 }
 
 /* =========================================================
@@ -1277,6 +1401,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   document.getElementById('btnLoad').addEventListener('click', loadStudents);
   document.getElementById('btnPrint').addEventListener('click', printCards);
+  document.getElementById('btnLabels').addEventListener('click', printLabels);
   document.getElementById('ruangFilter').addEventListener('change', applyFilters);
   document.getElementById('searchInput').addEventListener('input', applyFilters);
 
@@ -1305,6 +1430,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 window.addEventListener('afterprint', ()=>{
   document.getElementById('printArea').innerHTML = '';
+  document.getElementById('labelPrintArea').innerHTML = '';
+  document.body.classList.remove('printing-labels');
+  const ls = document.getElementById('label-landscape-style');
+  if(ls) ls.remove();
 });
 </script>
 </body>
