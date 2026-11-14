@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cetak Kartu Peserta ASAS · SMP Negeri 1 Moga</title>
+<link rel="icon" href="https://apxid.github.io/informatika/asa26/assets/tut.jpg" />
+<style>
+/* =========================================================
+   PALET & VARIABEL
+   - Biru SMP   : #1d4ed8 / #1e3a8a
+   - Kuning OSIS: #facc15 / #fbbf24
+   - Abu        : #6b7280 / #f3f4f6
+   ========================================================= */
+:root{
+  --biru-900:#0f2557;
+  --biru-700:#1e3a8a;
+  --biru-600:#1d4ed8;
+  --biru-500:#2563eb;
+  --biru-100:#dbeafe;
+  --kuning-500:#f59e0b;
+  --kuning-400:#fbbf24;
+  --kuning-300:#fcd34d;
+  --abu-700:#374151;
+  --abu-500:#6b7280;
+  --abu-300:#d1d5db;
+  --abu-100:#f3f4f6;
+  --abu-50:#f9fafb;
+  --putih:#ffffff;
+  --merah:#dc2626;
+  --hijau:#16a34a;
+  --radius:14px;
+  --shadow-sm:0 4px 14px rgba(15,37,87,.08);
+  --shadow-md:0 10px 30px rgba(15,37,87,.12);
+  --shadow-lg:0 24px 60px rgba(15,37,87,.18);
+  --bg-grad:linear-gradient(135deg,#0f2557 0%,#1e3a8a 45%,#1d4ed8 100%);
+  --bg-grad-soft:linear-gradient(135deg,#dbeafe 0%,#f3f4f6 60%,#fef3c7 100%);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--abu-700);background:var(--bg-grad-soft);min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,select{font-family:inherit;outline:none}
+
+/* ===== Animasi global ===== */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.7)}60%{opacity:1;transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.4)}50%{box-shadow:0 0 0 12px rgba(37,99,235,0)}}
+@keyframes barGrow{from{width:100%}to{width:0%}}
+
+/* ===== LOGIN ===== */
+#loginScreen{position:fixed;inset:0;background:var(--bg-grad);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px;overflow:hidden}
+#loginScreen::before{content:"";position:absolute;width:540px;height:540px;border-radius:50%;background:radial-gradient(circle,rgba(250,204,21,.18) 0%,transparent 70%);top:-180px;right:-120px;animation:float 8s ease-in-out infinite}
+#loginScreen::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.25) 0%,transparent 70%);bottom:-140px;left:-100px;animation:float 9s ease-in-out infinite reverse}
+.login-card{position:relative;background:var(--putih);border-radius:24px;padding:48px 40px 36px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);animation:scaleIn .55s cubic-bezier(.34,1.56,.64,1);z-index:2}
+.login-card .logo-wrap{display:flex;justify-content:center;margin-bottom:18px}
+.login-card .logo-wrap img{width:84px;height:84px;border-radius:18px;object-fit:cover;border:3px solid var(--kuning-400);box-shadow:0 6px 20px rgba(245,158,11,.35);animation:float 5s ease-in-out infinite}
+.login-card h1{text-align:center;font-size:22px;font-weight:800;color:var(--biru-700);letter-spacing:-.3px;line-height:1.2}
+.login-card .subtitle{text-align:center;font-size:13px;color:var(--abu-500);margin-top:6px;margin-bottom:28px}
+.pin-input-group{position:relative;margin-bottom:18px}
+.pin-input-group label{display:block;font-size:12px;font-weight:700;color:var(--abu-700);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.pin-wrap{position:relative;display:flex;align-items:center}
+.pin-wrap svg{position:absolute;left:14px;width:20px;height:20px;color:var(--biru-600)}
+.pin-input{width:100%;padding:14px 14px 14px 44px;font-size:20px;letter-spacing:8px;text-align:center;font-weight:700;border:2px solid var(--abu-300);border-radius:12px;transition:.25s;background:var(--abu-50)}
+.pin-input:focus{border-color:var(--biru-500);background:#fff;box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.pin-input.error{border-color:var(--merah);animation:shake .4s}
+.btn-login{width:100%;padding:14px;background:var(--bg-grad);color:#fff;font-size:15px;font-weight:700;border-radius:12px;letter-spacing:.5px;transition:.25s;box-shadow:0 8px 20px rgba(29,78,216,.35);position:relative;overflow:hidden}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(29,78,216,.45)}
+.btn-login:active{transform:translateY(0)}
+.btn-login:disabled{opacity:.7;cursor:not-allowed}
+.login-foot{text-align:center;margin-top:22px;font-size:11px;color:var(--abu-500)}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:8px}
+
+/* ===== APP UTAMA ===== */
+#app{min-height:100vh;display:flex;flex-direction:column;animation:fadeIn .5s}
+.app-header{background:var(--bg-grad);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-md);position:sticky;top:0;z-index:50}
+.app-header .brand{display:flex;align-items:center;gap:14px}
+.app-header .brand img{width:42px;height:42px;border-radius:10px;border:2px solid var(--kuning-400);object-fit:cover}
+.app-header .brand .text h2{font-size:16px;font-weight:800;letter-spacing:-.2px;line-height:1.1}
+.app-header .brand .text p{font-size:11px;color:var(--kuning-300);font-weight:500;margin-top:2px}
+.header-actions{display:flex;gap:10px;align-items:center}
+.btn-icon{background:rgba(255,255,255,.12);color:#fff;padding:9px 14px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:.22s;border:1px solid rgba(255,255,255,.15)}
+.btn-icon:hover{background:rgba(255,255,255,.22);transform:translateY(-1px)}
+.btn-icon.danger{background:rgba(220,38,38,.18);border-color:rgba(220,38,38,.3)}
+.btn-icon.danger:hover{background:rgba(220,38,38,.3)}
+
+/* Layout main */
+.app-main{flex:1;padding:24px;max-width:1400px;margin:0 auto;width:100%}
+.toolbar{background:#fff;border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow-sm);margin-bottom:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr)) auto;gap:14px;align-items:end;border-top:4px solid var(--biru-500)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;font-weight:700;color:var(--abu-500);text-transform:uppercase;letter-spacing:.4px}
+.field select,.field input{padding:10px 12px;font-size:14px;border:1.5px solid var(--abu-300);border-radius:10px;background:var(--abu-50);transition:.2s;color:var(--abu-700)}
+.field select:focus,.field input:focus{border-color:var(--biru-500);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.btn-primary{background:var(--biru-600);color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:.22s;box-shadow:0 6px 16px rgba(29,78,216,.3);white-space:nowrap}
+.btn-primary:hover{background:var(--biru-700);transform:translateY(-1px);box-shadow:0 10px 22px rgba(29,78,216,.4)}
+.btn-secondary{background:var(--kuning-400);color:var(--biru-900);padding:11px 18px;border-radius:10px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:.22s;box-shadow:0 6px 16px rgba(245,158,11,.3);white-space:nowrap}
+.btn-secondary:hover{background:var(--kuning-500);transform:translateY(-1px);box-shadow:0 10px 22px rgba(245,158,11,.4)}
+.btn-ghost{background:var(--abu-100);color:var(--abu-700);padding:11px 18px;border-radius:10px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;transition:.2s;white-space:nowrap}
+.btn-ghost:hover{background:var(--abu-300)}
+
+/* Stat strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:22px}
+.stat-card{background:#fff;border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm);border-left:5px solid var(--biru-500);transition:.25s;animation:slideUp .4s both}
+.stat-card:nth-child(2){border-left-color:var(--kuning-400)}
+.stat-card:nth-child(3){border-left-color:var(--abu-500)}
+.stat-card .label{font-size:11px;font-weight:700;color:var(--abu-500);text-transform:uppercase;letter-spacing:.4px}
+.stat-card .value{font-size:24px;font-weight:800;color:var(--biru-700);margin-top:4px}
+.stat-card .sub{font-size:11px;color:var(--abu-500);margin-top:2px}
+
+/* Preview area */
+.preview-wrap{background:#fff;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm);min-height:300px}
+.preview-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.preview-head h3{font-size:16px;font-weight:800;color:var(--biru-700)}
+.preview-head .meta{font-size:12px;color:var(--abu-500)}
+.preview-empty{padding:60px 20px;text-align:center;color:var(--abu-500)}
+.preview-empty .icon{font-size:54px;opacity:.5;margin-bottom:10px}
+.preview-empty .title{font-size:16px;font-weight:700;color:var(--abu-700);margin-bottom:6px}
+.preview-empty .desc{font-size:13px}
+.preview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media(max-width:760px){.preview-grid{grid-template-columns:1fr}}
+
+/* Kartu (on-screen preview) */
+.card{background:#fff;border:2px solid var(--biru-700);border-radius:10px;padding:14px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(15,37,87,.08);transition:.3s;animation:slideUp .4s both}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(15,37,87,.15)}
+.card .corner{position:absolute;width:36px;height:36px;border:3px solid var(--kuning-400);opacity:.9}
+.card .corner.tl{top:6px;left:6px;border-right:none;border-bottom:none}
+.card .corner.tr{top:6px;right:6px;border-left:none;border-bottom:none}
+.card .corner.bl{bottom:6px;left:6px;border-right:none;border-top:none}
+.card .corner.br{bottom:6px;right:6px;border-left:none;border-top:none}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;padding:0 4px}
+.card-head .logo{width:46px;height:46px;border-radius:8px;object-fit:cover;border:1.5px solid var(--biru-700)}
+.card-head .roman{font-size:30px;font-weight:900;color:var(--biru-700);letter-spacing:1px;line-height:1;font-family:'Times New Roman',serif}
+.card-title{text-align:center;font-size:13px;font-weight:900;color:var(--biru-700);letter-spacing:.4px;line-height:1.2}
+.card-subtitle{text-align:center;font-size:9.5px;font-weight:700;color:var(--abu-700);margin-top:2px}
+.card-school{text-align:center;font-size:11px;font-weight:800;color:var(--biru-700);margin-top:4px;text-transform:uppercase}
+.card-year{text-align:center;font-size:9.5px;font-weight:700;color:var(--abu-500);margin-top:1px}
+.card-divider{height:2px;background:var(--kuning-400);margin:8px 2px;border-radius:1px}
+.card-info{margin-top:8px;font-size:10.5px;color:var(--abu-700)}
+.card-info table{width:100%;border-collapse:collapse}
+.card-info td{padding:2.5px 4px;vertical-align:top;line-height:1.35}
+.card-info td.lbl{width:74px;font-weight:700;color:var(--abu-500)}
+.card-info td.sep{width:8px;font-weight:700;color:var(--abu-500)}
+.card-info td.val{font-weight:700;color:var(--biru-900)}
+.card-sign{margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:1px}
+.card-sign .ttd-img{width:90px;height:46px;object-fit:contain;opacity:.95}
+.card-sign .ttd-placeholder{width:90px;height:30px;border-bottom:1.5px dotted var(--abu-500)}
+.card-sign .name{font-size:10px;font-weight:800;color:var(--abu-700);text-align:center}
+.card-sign .nip{font-size:9px;color:var(--abu-500);text-align:center}
+.card-date{text-align:center;font-size:9.5px;color:var(--abu-700);margin-top:5px;font-style:italic}
+.card-photo-wrap{position:absolute;bottom:78px;right:14px;width:54px;height:64px;border:1.5px solid var(--biru-700);background:var(--abu-100);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-photo-wrap img{width:100%;height:100%;object-fit:cover}
+.card-photo-wrap .ph-text{font-size:8px;color:var(--abu-500);text-align:center;padding:2px}
+
+/* ===== PRINT ===== */
+.print-only{display:none}
+@media print{
+  @page{size:215mm 330mm;margin:0}
+  body{background:#fff!important}
+  #app,.app-header,.app-main,.toolbar,.stats,.preview-wrap,.preview-head,.preview-grid{display:none!important}
+  .print-only{display:block}
+  .print-page{width:215mm;height:330mm;page-break-after:always;page-break-inside:avoid;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;padding:8mm;box-sizing:border-box}
+  .print-page:last-child{page-break-after:auto}
+  .print-card{border:1.8pt solid #0f2557;border-radius:6pt;padding:9pt;position:relative;overflow:hidden;margin:2mm;box-sizing:border-box;display:flex;flex-direction:column;page-break-inside:avoid}
+  .print-card .corner{position:absolute;width:24pt;height:24pt;border:2pt solid #f59e0b}
+  .print-card .corner.tl{top:4pt;left:4pt;border-right:none;border-bottom:none}
+  .print-card .corner.tr{top:4pt;right:4pt;border-left:none;border-bottom:none}
+  .print-card .corner.bl{bottom:4pt;left:4pt;border-right:none;border-top:none}
+  .print-card .corner.br{bottom:4pt;right:4pt;border-left:none;border-top:none}
+  .print-card .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6pt}
+  .print-card .card-head .logo{width:42pt;height:42pt;border-radius:6pt;object-fit:cover;border:1pt solid #0f2557}
+  .print-card .card-head .roman{font-size:26pt;font-weight:900;color:#0f2557;font-family:'Times New Roman',serif;line-height:1}
+  .print-card .card-title{text-align:center;font-size:11pt;font-weight:900;color:#0f2557;letter-spacing:.3pt;line-height:1.2}
+  .print-card .card-subtitle{text-align:center;font-size:8pt;font-weight:700;color:#374151;margin-top:1pt}
+  .print-card .card-school{text-align:center;font-size:9.5pt;font-weight:800;color:#0f2557;text-transform:uppercase;margin-top:2pt}
+  .print-card .card-year{text-align:center;font-size:8pt;font-weight:700;color:#6b7280;margin-top:1pt}
+  .print-card .card-divider{height:1.5pt;background:#f59e0b;margin:5pt 0;border-radius:1pt}
+  .print-card .card-info{font-size:8.5pt;flex:1}
+  .print-card .card-info table{width:100%;border-collapse:collapse}
+  .print-card .card-info td{padding:1.5pt 2pt;vertical-align:top;line-height:1.3}
+  .print-card .card-info td.lbl{width:58pt;font-weight:700;color:#6b7280;font-size:8pt}
+  .print-card .card-info td.sep{width:6pt;font-weight:700;color:#6b7280}
+  .print-card .card-info td.val{font-weight:700;color:#0f2557;font-size:8.5pt}
+  .print-card .card-sign{margin-top:4pt;display:flex;flex-direction:column;align-items:center;gap:0}
+  .print-card .card-sign .ttd-img{width:80pt;height:38pt;object-fit:contain}
+  .print-card .card-sign .ttd-placeholder{width:80pt;height:24pt;border-bottom:1pt dotted #6b7280}
+  .print-card .card-sign .name{font-size:8.5pt;font-weight:800;color:#374151;text-align:center}
+  .print-card .card-sign .nip{font-size:7.5pt;color:#6b7280;text-align:center}
+  .print-card .card-date{text-align:center;font-size:8pt;color:#374151;margin-top:3pt;font-style:italic}
+  .print-card .card-photo-wrap{position:absolute;bottom:60pt;right:8pt;width:48pt;height:58pt;border:1pt solid #0f2557;background:#f3f4f6;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .print-card .card-photo-wrap img{width:100%;height:100%;object-fit:cover}
+}
+
+/* ===== MODAL ===== */
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,37,87,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;animation:fadeIn .25s}
+.modal-box{background:#fff;border-radius:18px;padding:0;width:100%;max-width:480px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);max-height:92vh;display:flex;flex-direction:column}
+.modal-box.lg{max-width:680px}
+.modal-header{padding:18px 22px;background:var(--bg-grad);color:#fff;display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:16px;font-weight:800;letter-spacing:-.2px}
+.modal-header .close{background:rgba(255,255,255,.15);color:#fff;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;transition:.2s}
+.modal-header .close:hover{background:rgba(255,255,255,.3);transform:rotate(90deg)}
+.modal-body{padding:22px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 22px;background:var(--abu-50);border-top:1px solid var(--abu-300);display:flex;justify-content:flex-end;gap:10px}
+
+/* Settings form */
+.form-row{margin-bottom:16px}
+.form-row label{display:block;font-size:12px;font-weight:700;color:var(--abu-700);margin-bottom:6px}
+.form-row label .hint{font-weight:400;color:var(--abu-500);font-size:11px;margin-left:6px}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:10px 12px;font-size:14px;border:1.5px solid var(--abu-300);border-radius:10px;background:var(--abu-50);transition:.2s;color:var(--abu-700)}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--biru-500);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.form-row .preview-ttd{margin-top:8px;display:flex;align-items:center;gap:12px}
+.form-row .preview-ttd img{width:120px;height:60px;object-fit:contain;border:1.5px dashed var(--abu-300);border-radius:8px;background:#fff;padding:4px}
+.form-row .preview-ttd .ttd-empty{font-size:11px;color:var(--abu-500);font-style:italic}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.form-grid-2{grid-template-columns:1fr}}
+
+/* ===== TOAST / ALERT ===== */
+.alert-backdrop{position:fixed;inset:0;background:rgba(15,37,87,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;animation:fadeIn .2s}
+.alert-box{background:#fff;border-radius:18px;overflow:hidden;width:100%;max-width:400px;box-shadow:var(--shadow-lg);animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+.alert-icon-wrap{padding:24px 20px 12px;display:flex;justify-content:center}
+.alert-icon{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;animation:float 3s ease-in-out infinite}
+.alert-icon.success{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:var(--hijau)}
+.alert-icon.error{background:linear-gradient(135deg,#fee2e2,#fecaca);color:var(--merah)}
+.alert-icon.warning{background:linear-gradient(135deg,#fef3c7,#fde68a);color:var(--kuning-500)}
+.alert-icon.info{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:var(--biru-600)}
+.alert-content{padding:0 24px 14px;text-align:center}
+.alert-content h4{font-size:17px;font-weight:800;color:var(--biru-900);margin-bottom:6px}
+.alert-content p{font-size:13px;color:var(--abu-500);line-height:1.5}
+.alert-actions{padding:0 24px 22px;display:flex;gap:10px;justify-content:center}
+.alert-actions button{flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:700;transition:.2s}
+.alert-actions .btn-ok{background:var(--biru-600);color:#fff}
+.alert-actions .btn-ok:hover{background:var(--biru-700)}
+.alert-actions .btn-cancel{background:var(--abu-100);color:var(--abu-700)}
+.alert-actions .btn-cancel:hover{background:var(--abu-300)}
+.alert-progress{height:4px;background:var(--abu-100);position:relative;overflow:hidden}
+.alert-progress .bar{height:100%;background:linear-gradient(90deg,var(--biru-500),var(--kuning-400));animation:barGrow 3s linear forwards;width:100%;transform-origin:left}
+
+/* Loading overlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.7);backdrop-filter:blur(4px);z-index:3000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;animation:fadeIn .2s}
+.loading-overlay .spinner-lg{width:48px;height:48px;border:4px solid var(--biru-100);border-top-color:var(--biru-600);border-radius:50%;animation:spin .8s linear infinite}
+.loading-overlay p{font-size:13px;font-weight:600;color:var(--biru-700)}
+
+/* Skeleton loader */
+.skeleton-card{background:linear-gradient(90deg,#f3f4f6 25%,#e5e7eb 50%,#f3f4f6 75%);background-size:800px 100%;border-radius:10px;animation:shimmer 1.4s infinite linear;height:240px;border:2px solid var(--abu-300)}
+
+/* Hidden */
+.hidden{display:none!important}
+
+/* Footer */
+.app-footer{text-align:center;padding:18px;font-size:11px;color:var(--abu-500)}
+.app-footer strong{color:var(--biru-700)}
+
+/* Pagination */
+.pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap}
+.pagination button{padding:8px 12px;border-radius:8px;background:#fff;border:1.5px solid var(--abu-300);color:var(--abu-700);font-size:13px;font-weight:600;transition:.2s}
+.pagination button:hover:not(:disabled){border-color:var(--biru-500);color:var(--biru-600)}
+.pagination button.active{background:var(--biru-600);color:#fff;border-color:var(--biru-600)}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+.pagination .info{font-size:12px;color:var(--abu-500);margin:0 6px}
+
+/* About / help on login */
+.login-help{margin-top:14px;padding:10px 12px;background:var(--biru-100);border-radius:10px;font-size:11px;color:var(--biru-700);text-align:center;line-height:1.5}
+.login-help strong{display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+
+@media(max-width:600px){
+  .app-header .brand .text h2{font-size:14px}
+  .app-header .brand .text p{font-size:10px}
+  .btn-icon span:not(.icon-svg){display:none}
+  .login-card{padding:36px 24px 28px}
+  .toolbar{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo-wrap">
+      <img src="https://apxid.github.io/informatika/asa26/assets/tut.jpg" alt="Logo" />
+    </div>
+    <h1>Cetak Kartu Peserta ASAS</h1>
+    <p class="subtitle">SMP Negeri 1 Moga · Tahun Pelajaran 2026/2027</p>
+
+    <div class="pin-input-group">
+      <label for="pinInput">PIN Masuk Aplikasi</label>
+      <div class="pin-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <input type="password" id="pinInput" class="pin-input" maxlength="10" placeholder="• • • • •" inputmode="numeric" autocomplete="off" />
+      </div>
+    </div>
+
+    <button class="btn-login" id="btnLogin">
+      <span class="btn-label">Masuk Aplikasi</span>
+    </button>
+
+    <div class="login-help">
+      <strong>Info Keamanan</strong>
+      Hanya panitia yang memiliki PIN yang dapat mengakses aplikasi ini. PIN tersimpan di sheet <b>CONFIG</b> spreadsheet.
+    </div>
+
+    <p class="login-foot">© 2026 SMP Negeri 1 Moga · Sistem Cetak Kartu ASAS</p>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="hidden">
+  <header class="app-header">
+    <div class="brand">
+      <img src="https://apxid.github.io/informatika/asa26/assets/tut.jpg" alt="Logo" />
+      <div class="text">
+        <h2>Cetak Kartu Peserta ASAS</h2>
+        <p>SMP Negeri 1 Moga · TP 2026/2027</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="btnSettings" title="Pengaturan">
+        <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Pengaturan</span>
+      </button>
+      <button class="btn-icon" id="btnRefresh" title="Muat Ulang">
+        <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Refresh</span>
+      </button>
+      <button class="btn-icon danger" id="btnLogout" title="Keluar">
+        <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>Keluar</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="field">
+        <label for="kelasFilter">Kelas</label>
+        <select id="kelasFilter">
+          <option value="7">Kelas 7 (VII)</option>
+          <option value="8">Kelas 8 (VIII)</option>
+          <option value="9">Kelas 9 (IX)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ruangFilter">Ruang Ujian</label>
+        <select id="ruangFilter">
+          <option value="">Semua Ruang</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="searchInput">Cari Siswa</label>
+        <input type="text" id="searchInput" placeholder="Nama / No. Peserta / NIS" />
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-primary" id="btnLoad">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Muat Data
+        </button>
+        <button class="btn-secondary" id="btnPrint">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Cetak PDF (F4)
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">Total Peserta Dimuat</div>
+        <div class="value" id="statTotal">0</div>
+        <div class="sub">siswa</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Akan Dicetak</div>
+        <div class="value" id="statFilter">0</div>
+        <div class="sub">kartu</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Halaman F4</div>
+        <div class="value" id="statPage">0</div>
+        <div class="sub">lembar (4 kartu/lembar)</div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-wrap">
+      <div class="preview-head">
+        <h3>Pratinjau Kartu Peserta</h3>
+        <span class="meta" id="previewMeta">Belum ada data dimuat</span>
+      </div>
+      <div id="previewBody">
+        <div class="preview-empty">
+          <div class="icon">📋</div>
+          <div class="title">Belum ada data peserta</div>
+          <div class="desc">Pilih kelas lalu klik <b>Muat Data</b> untuk memuat daftar peserta dari spreadsheet.</div>
+        </div>
+      </div>
+      <div class="pagination hidden" id="pagination"></div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <strong>Sistem Cetak Kartu Peserta ASAS</strong> · SMP Negeri 1 Moga · Dibuat untuk panitia ujian
+  </footer>
+</div>
+
+<!-- ============ SETTINGS MODAL ============ -->
+<div id="settingsModal" class="modal-backdrop hidden">
+  <div class="modal-box lg">
+    <div class="modal-header">
+      <h3>Pengaturan Kartu</h3>
+      <button class="close" data-close-settings>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Nama Sekolah</label>
+          <input type="text" id="setSchool" />
+        </div>
+        <div class="form-row">
+          <label>Tahun Pelajaran</label>
+          <input type="text" id="setYear" />
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Nama Kepala Sekolah</label>
+          <input type="text" id="setPrincipalName" />
+        </div>
+        <div class="form-row">
+          <label>NIP Kepala Sekolah</label>
+          <input type="text" id="setPrincipalNip" />
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Tanggal Penerbitan Kartu <span class="hint">(contoh: 5 Desember 2026)</span></label>
+        <input type="text" id="setDate" />
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>URL Logo Kiri Atas</label>
+          <input type="url" id="setLogoUrl" />
+        </div>
+        <div class="form-row">
+          <label>URL TTD Kepala Sekolah</label>
+          <input type="url" id="setTtdUrl" placeholder="https://.../ttd.png" />
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Pratinjau TTD</label>
+        <div class="preview-ttd" id="ttdPreview">
+          <span class="ttd-empty">Belum ada TTD. Masukkan URL gambar tanda tangan di atas.</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>URL Exec Google Apps Script <span class="hint">(link backend)</span></label>
+        <input type="url" id="setExecUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" data-close-settings>Batal</button>
+      <button class="btn-primary" id="btnSaveSettings">Simpan Pengaturan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ALERT CONTAINER ============ -->
+<div id="alertContainer"></div>
+
+<!-- ============ LOADING OVERLAY ============ -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="spinner-lg"></div>
+  <p id="loadingText">Memuat data...</p>
+</div>
+
+<!-- ============ PRINT AREA ============ -->
+<div id="printArea" class="print-only"></div>
+
+<script>
+/* =========================================================
+   KONFIGURASI
+   Ganti EXEC_URL dengan link exec Google Apps Script Anda.
+   ========================================================= */
+const CONFIG = {
+  // GANTI dengan link /exec dari deploy Google Apps Script Anda
+  EXEC_URL: "https://script.google.com/macros/s/AKfycbw9PnmZ7KTAnOWAZfXAL3_T261h-xcb7jwsLBqMZmb-Ii_5LnlJp-w4s80CYxpPQI7ovA/exec",
+  LOGO_DEFAULT: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
+  DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
+  DEFAULT_YEAR: "2026/2027",
+  DEFAULT_PRINCIPAL: "Dariah, S.Pd., M.Pd.",
+  DEFAULT_NIP: "197306022007012006",
+  DEFAULT_DATE: "5 Desember 2026",
+  CARDS_PER_PAGE: 4, // 2 kolom x 2 baris = 4 kartu per F4
+};
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const STATE = {
+  authenticated: false,
+  students: [],
+  filtered: [],
+  ruangList: [],
+  config: {},
+  settings: loadSettings(),
+  currentPage: 1,
+  perPageOnScreen: 8,
+};
+
+/* =========================================================
+   PERSISTENT SETTINGS (localStorage)
+   ========================================================= */
+function loadSettings(){
+  try{
+    const s = JSON.parse(localStorage.getItem('asas_settings')||'{}');
+    return {
+      school: s.school || CONFIG.DEFAULT_SCHOOL,
+      year: s.year || CONFIG.DEFAULT_YEAR,
+      principalName: s.principalName || CONFIG.DEFAULT_PRINCIPAL,
+      principalNip: s.principalNip || CONFIG.DEFAULT_NIP,
+      date: s.date || CONFIG.DEFAULT_DATE,
+      logoUrl: s.logoUrl || CONFIG.LOGO_DEFAULT,
+      ttdUrl: s.ttdUrl || '',
+      execUrl: s.execUrl || CONFIG.EXEC_URL,
+    };
+  }catch(e){
+    return {
+      school: CONFIG.DEFAULT_SCHOOL, year: CONFIG.DEFAULT_YEAR,
+      principalName: CONFIG.DEFAULT_PRINCIPAL, principalNip: CONFIG.DEFAULT_NIP,
+      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_DEFAULT, ttdUrl: '', execUrl: CONFIG.EXEC_URL
+    };
+  }
+}
+function saveSettings(){ localStorage.setItem('asas_settings', JSON.stringify(STATE.settings)); }
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+function getExecUrl(){ return (STATE.settings.execUrl || CONFIG.EXEC_URL).trim(); }
+
+async function callGas(action, params={}){
+  const base = getExecUrl();
+  if(!base || base.startsWith('GANTI_')){
+    throw new Error('URL Exec Google Apps Script belum diisi. Buka Pengaturan → URL Exec GAS.');
+  }
+  const url = new URL(base);
+  url.searchParams.set('action', action);
+  for(const k in params){ if(params[k]!==undefined && params[k]!==null) url.searchParams.set(k, params[k]); }
+  const res = await fetch(url.toString(), {method:'GET', redirect:'follow'});
+  if(!res.ok) throw new Error('HTTP '+res.status+' — gagal menghubungi server GAS.');
+  const text = await res.text();
+  try{ return JSON.parse(text); }
+  catch(e){ throw new Error('Respon server tidak valid: '+text.slice(0,200)); }
+}
+
+function romanFromKelas(kelasStr){
+  // kelasStr seperti "KELAS 7A" atau "7" atau "7A"
+  const m = String(kelasStr).match(/(\d)/);
+  if(!m) return '';
+  const n = parseInt(m[1]);
+  const map = {7:'VII', 8:'VIII', 9:'IX', 10:'X', 11:'XI', 12:'XII'};
+  return map[n] || '';
+}
+function shortKelas(kelasStr){ return String(kelasStr||'').replace(/KELAS\s*/i,'').trim(); }
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* =========================================================
+   ALERT / TOAST (popup dengan animasi)
+   ========================================================= */
+function showAlert({type='info', title, message, confirmText='OK', cancelText=null, onOk=null, autoClose=0}){
+  return new Promise((resolve)=>{
+    const container = document.getElementById('alertContainer');
+    const backdrop = document.createElement('div');
+    backdrop.className = 'alert-backdrop';
+    const icons = {
+      success: '✓', error: '✕', warning: '!', info: 'i'
+    };
+    backdrop.innerHTML = `
+      <div class="alert-box">
+        <div class="alert-icon-wrap">
+          <div class="alert-icon ${type}">${icons[type]||'i'}</div>
+        </div>
+        <div class="alert-content">
+          <h4>${escapeHtml(title||'Informasi')}</h4>
+          <p>${escapeHtml(message||'')}</p>
+        </div>
+        ${autoClose>0?'<div class="alert-progress"><div class="bar"></div></div>':''}
+        <div class="alert-actions">
+          ${cancelText?`<button class="btn-cancel">${escapeHtml(cancelText)}</button>`:''}
+          <button class="btn-ok">${escapeHtml(confirmText)}</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(backdrop);
+    let closed = false;
+    const close = (val)=>{
+      if(closed) return; closed = true;
+      backdrop.style.animation = 'fadeIn .2s reverse';
+      setTimeout(()=>backdrop.remove(), 180);
+      resolve(val);
+    };
+    backdrop.querySelector('.btn-ok').onclick = ()=>{ close(true); if(onOk) onOk(); };
+    if(cancelText){
+      backdrop.querySelector('.btn-cancel').onclick = ()=>close(false);
+    }
+    if(autoClose>0){
+      setTimeout(()=>close(true), autoClose);
+    }
+  });
+}
+function showLoading(text='Memuat data...'){
+  document.getElementById('loadingText').textContent = text;
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+function hideLoading(){ document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+async function doLogin(){
+  const pin = document.getElementById('pinInput').value.trim();
+  const btn = document.getElementById('btnLogin');
+  const label = btn.querySelector('.btn-label');
+  if(!pin){
+    document.getElementById('pinInput').classList.add('error');
+    setTimeout(()=>document.getElementById('pinInput').classList.remove('error'),420);
+    return;
+  }
+  btn.disabled = true;
+  label.innerHTML = '<span class="spinner"></span>Memverifikasi...';
+  try{
+    // Jika URL exec belum diisi, coba pakai PIN default 54321 untuk preview offline
+    if(!getExecUrl() || getExecUrl().startsWith('GANTI_')){
+      if(pin === '54321'){
+        showAlert({
+          type:'warning', title:'Mode Pratinjau',
+          message:'URL Exec GAS belum diisi. Anda login dengan PIN default (54321). Beberapa fitur (memuat data dari spreadsheet) tidak akan berfungsi sampai URL exec diisi di Pengaturan.',
+          autoClose:5000
+        });
+        STATE.authenticated = true;
+        sessionStorage.setItem('asas_auth','1');
+        showApp();
+      } else {
+        throw new Error('URL Exec belum diisi & PIN salah.');
+      }
+    } else {
+      const res = await callGas('verifyPin', {pin:pin});
+      if(res && res.success){
+        STATE.authenticated = true;
+        sessionStorage.setItem('asas_auth','1');
+        showApp();
+        await loadConfig();
+      } else {
+        throw new Error('PIN salah. Coba lagi.');
+      }
+    }
+  }catch(e){
+    document.getElementById('pinInput').classList.add('error');
+    setTimeout(()=>document.getElementById('pinInput').classList.remove('error'),420);
+    showAlert({type:'error', title:'Gagal Masuk', message:e.message||'Terjadi kesalahan saat memverifikasi PIN.'});
+  }finally{
+    btn.disabled = false;
+    label.textContent = 'Masuk Aplikasi';
+  }
+}
+
+function showApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').classList.remove('hidden');
+  applySettingsToForm();
+  document.getElementById('kelasFilter').value = '7';
+}
+
+function doLogout(){
+  sessionStorage.removeItem('asas_auth');
+  STATE.authenticated = false;
+  STATE.students = [];
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('pinInput').value='';
+  document.getElementById('pinInput').focus();
+}
+
+/* =========================================================
+   CONFIG DARI SPREADSHEET
+   ========================================================= */
+async function loadConfig(){
+  if(!getExecUrl() || getExecUrl().startsWith('GANTI_')) return;
+  try{
+    const res = await callGas('getConfig');
+    if(res && res.success && res.config){
+      STATE.config = res.config;
+      // Override defaults dari spreadsheet jika ada
+      const c = res.config;
+      if(c.NAMA_SEKOLAH) STATE.settings.school = c.NAMA_SEKOLAH;
+      if(c.TAHUN_PELAJARAN) STATE.settings.year = c.TAHUN_PELAJARAN;
+      if(c.KEPALA_SEKOLAH_NAMA) STATE.settings.principalName = c.KEPALA_SEKOLAH_NAMA;
+      if(c.KEPALA_SEKOLAH_NIP) STATE.settings.principalNip = c.KEPALA_SEKOLAH_NIP;
+      if(c.TANGGAL_KARTU) STATE.settings.date = c.TANGGAL_KARTU;
+      if(c.LOGO_KIRI_URL) STATE.settings.logoUrl = c.LOGO_KIRI_URL;
+      if(c.TTD_KEPALA_URL) STATE.settings.ttdUrl = c.TTD_KEPALA_URL;
+      saveSettings();
+      applySettingsToForm();
+    }
+  }catch(e){ /* silent */ }
+}
+
+/* =========================================================
+   LOAD STUDENTS
+   ========================================================= */
+async function loadStudents(){
+  const kelas = document.getElementById('kelasFilter').value;
+  if(!kelas){ showAlert({type:'warning', title:'Pilih Kelas', message:'Silakan pilih kelas terlebih dahulu.'}); return; }
+  if(!getExecUrl() || getExecUrl().startsWith('GANTI_')){
+    showAlert({
+      type:'error', title:'URL Exec Belum Diisi',
+      message:'Buka menu Pengaturan (ikon gerigi di kanan atas) dan isi URL Exec Google Apps Script Anda terlebih dahulu.'
+    });
+    return;
+  }
+  showLoading('Memuat data kelas '+kelas+'...');
+  try{
+    const res = await callGas('getStudents', {kelas:kelas});
+    if(!res.success) throw new Error(res.error||'Gagal memuat data');
+    STATE.students = res.students || [];
+    // Populate ruang filter
+    const ruangs = [...new Set(STATE.students.map(s=>s.ruang).filter(Boolean))].sort();
+    STATE.ruangList = ruangs;
+    const ruangSel = document.getElementById('ruangFilter');
+    ruangSel.innerHTML = '<option value="">Semua Ruang</option>'+ruangs.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+    document.getElementById('searchInput').value='';
+    applyFilters();
+    showAlert({
+      type:'success', title:'Data Berhasil Dimuat',
+      message:`${STATE.students.length} peserta dari Kelas ${kelas} berhasil dimuat.`,
+      autoClose:2500
+    });
+  }catch(e){
+    showAlert({type:'error', title:'Gagal Memuat Data', message:e.message});
+  }finally{
+    hideLoading();
+  }
+}
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+function applyFilters(){
+  const ruang = document.getElementById('ruangFilter').value;
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  STATE.filtered = STATE.students.filter(s=>{
+    if(ruang && s.ruang !== ruang) return false;
+    if(q){
+      const hay = (String(s.nama||'')+' '+String(s.noPeserta||'')+' '+String(s.nis||'')+' '+String(s.nisn||'')).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  STATE.currentPage = 1;
+  renderPreview();
+  renderStats();
+}
+
+/* =========================================================
+   RENDER STATS
+   ========================================================= */
+function renderStats(){
+  document.getElementById('statTotal').textContent = STATE.students.length;
+  document.getElementById('statFilter').textContent = STATE.filtered.length;
+  const pages = Math.ceil(STATE.filtered.length / CONFIG.CARDS_PER_PAGE);
+  document.getElementById('statPage').textContent = pages;
+}
+
+/* =========================================================
+   RENDER PREVIEW (on-screen)
+   ========================================================= */
+function renderPreview(){
+  const body = document.getElementById('previewBody');
+  const meta = document.getElementById('previewMeta');
+  if(STATE.filtered.length === 0){
+    body.innerHTML = `
+      <div class="preview-empty">
+        <div class="icon">📋</div>
+        <div class="title">${STATE.students.length===0?'Belum ada data dimuat':'Tidak ada peserta yang cocok'}</div>
+        <div class="desc">${STATE.students.length===0?'Pilih kelas lalu klik <b>Muat Data</b>.':'Coba ubah filter ruang atau kata kunci pencarian.'}</div>
+      </div>`;
+    meta.textContent = 'Belum ada data';
+    document.getElementById('pagination').classList.add('hidden');
+    return;
+  }
+  meta.textContent = `Menampilkan ${STATE.filtered.length} peserta`;
+
+  const start = (STATE.currentPage-1)*STATE.perPageOnScreen;
+  const end = Math.min(start+STATE.perPageOnScreen, STATE.filtered.length);
+  const pageData = STATE.filtered.slice(start, end);
+
+  let html = '<div class="preview-grid">';
+  pageData.forEach((s,i)=>{
+    html += renderCard(s, false);
+  });
+  html += '</div>';
+  body.innerHTML = html;
+
+  // pagination
+  const totalPages = Math.ceil(STATE.filtered.length/STATE.perPageOnScreen);
+  const pag = document.getElementById('pagination');
+  if(totalPages>1){
+    pag.classList.remove('hidden');
+    let phtml = `<button ${STATE.currentPage===1?'disabled':''} id="prevPage">‹ Sebelumnya</button>`;
+    for(let p=1;p<=totalPages;p++){
+      phtml += `<button class="${p===STATE.currentPage?'active':''}" data-page="${p}">${p}</button>`;
+    }
+    phtml += `<button ${STATE.currentPage===totalPages?'disabled':''} id="nextPage">Berikutnya ›</button>`;
+    phtml += `<span class="info">Hal. ${STATE.currentPage}/${totalPages}</span>`;
+    pag.innerHTML = phtml;
+    pag.querySelectorAll('button[data-page]').forEach(b=>{
+      b.onclick = ()=>{ STATE.currentPage = parseInt(b.dataset.page); renderPreview(); window.scrollTo({top:document.querySelector('.preview-wrap').offsetTop-80, behavior:'smooth'}); };
+    });
+    const prev = document.getElementById('prevPage');
+    const next = document.getElementById('nextPage');
+    if(prev) prev.onclick = ()=>{ STATE.currentPage--; renderPreview(); };
+    if(next) next.onclick = ()=>{ STATE.currentPage++; renderPreview(); };
+  } else {
+    pag.classList.add('hidden');
+  }
+}
+
+/* =========================================================
+   RENDER KARTU (1 kartu)
+   ========================================================= */
+function renderCard(s, forPrint){
+  const roman = romanFromKelas(s.kelas);
+  const kelasShort = shortKelas(s.kelas);
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const ttdUrl = STATE.settings.ttdUrl || '';
+  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+  const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
+  const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
+  const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
+  const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
+
+  const ttdHtml = ttdUrl
+    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"/><div class="ttd-placeholder" style="display:none"></div>`
+    : `<div class="ttd-placeholder"></div>`;
+
+  return `
+    <div class="${forPrint?'print-card':'card'}">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+
+      <div class="card-head">
+        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <div class="roman">${escapeHtml(roman)}</div>
+      </div>
+
+      <div class="card-title">KARTU PESERTA</div>
+      <div class="card-subtitle">ASESMEN SUMATIF AKHIR SEMESTER</div>
+      <div class="card-school">${escapeHtml(school)}</div>
+      <div class="card-year">TAHUN PELAJARAN ${escapeHtml(year)}</div>
+
+      <div class="card-divider"></div>
+
+      <div class="card-info">
+        <table>
+          <tr><td class="lbl">No. Peserta</td><td class="sep">:</td><td class="val">${escapeHtml(s.noPeserta||'-')}</td></tr>
+          <tr><td class="lbl">Nama</td><td class="sep">:</td><td class="val">${escapeHtml(s.nama||'-')}</td></tr>
+          <tr><td class="lbl">NIS</td><td class="sep">:</td><td class="val">${escapeHtml(s.nis||'-')}</td></tr>
+          <tr><td class="lbl">NISN</td><td class="sep">:</td><td class="val">${escapeHtml(s.nisn||'-')}</td></tr>
+          <tr><td class="lbl">Kelas</td><td class="sep">:</td><td class="val">${escapeHtml(kelasShort)}</td></tr>
+          <tr><td class="lbl">Ruang</td><td class="sep">:</td><td class="val">${escapeHtml(s.ruang||'-')}</td></tr>
+        </table>
+      </div>
+
+      <div class="card-sign">
+        ${ttdHtml}
+        <div class="name">${escapeHtml(principalName)}</div>
+        <div class="nip">NIP. ${escapeHtml(principalNip)}</div>
+      </div>
+      <div class="card-date">${escapeHtml(date)}</div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   PRINT / PDF
+   ========================================================= */
+function printCards(){
+  if(STATE.filtered.length === 0){
+    showAlert({type:'warning', title:'Tidak Ada Kartu', message:'Tidak ada peserta untuk dicetak. Muat data terlebih dahulu.'});
+    return;
+  }
+  const printArea = document.getElementById('printArea');
+  let html = '';
+  for(let i=0; i<STATE.filtered.length; i+=CONFIG.CARDS_PER_PAGE){
+    const pageCards = STATE.filtered.slice(i, i+CONFIG.CARDS_PER_PAGE);
+    html += '<div class="print-page">';
+    pageCards.forEach(s=>{ html += renderCard(s, true); });
+    html += '</div>';
+  }
+  printArea.innerHTML = html;
+  showAlert({
+    type:'info', title:'Siap Cetak',
+    message:`${STATE.filtered.length} kartu akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.CARDS_PER_PAGE)} halaman F4. Pilih "Save as PDF" pada dialog cetak browser, ukuran kertas Folio/F4 (215×330 mm), margin None.`,
+    confirmText:'Buka Dialog Cetak',
+    cancelText:'Batal'
+  }).then(ok=>{
+    if(ok){
+      setTimeout(()=>window.print(), 300);
+    }
+  });
+}
+
+/* =========================================================
+   SETTINGS FORM
+   ========================================================= */
+function applySettingsToForm(){
+  document.getElementById('setSchool').value = STATE.settings.school || '';
+  document.getElementById('setYear').value = STATE.settings.year || '';
+  document.getElementById('setPrincipalName').value = STATE.settings.principalName || '';
+  document.getElementById('setPrincipalNip').value = STATE.settings.principalNip || '';
+  document.getElementById('setDate').value = STATE.settings.date || '';
+  document.getElementById('setLogoUrl').value = STATE.settings.logoUrl || '';
+  document.getElementById('setTtdUrl').value = STATE.settings.ttdUrl || '';
+  document.getElementById('setExecUrl').value = STATE.settings.execUrl || '';
+  updateTtdPreview();
+}
+function updateTtdPreview(){
+  const url = document.getElementById('setTtdUrl').value.trim();
+  const el = document.getElementById('ttdPreview');
+  if(url){
+    el.innerHTML = `<img src="${escapeHtml(url)}" alt="TTD" onerror="this.parentElement.innerHTML='<span class=\\'ttd-empty\\'>URL gambar tidak valid atau tidak dapat dimuat.</span>'"/>`;
+  } else {
+    el.innerHTML = '<span class="ttd-empty">Belum ada TTD. Masukkan URL gambar tanda tangan di atas.</span>';
+  }
+}
+function openSettings(){
+  applySettingsToForm();
+  document.getElementById('settingsModal').classList.remove('hidden');
+}
+function closeSettings(){
+  document.getElementById('settingsModal').classList.add('hidden');
+}
+function saveSettingsFromForm(){
+  STATE.settings.school = document.getElementById('setSchool').value.trim() || CONFIG.DEFAULT_SCHOOL;
+  STATE.settings.year = document.getElementById('setYear').value.trim() || CONFIG.DEFAULT_YEAR;
+  STATE.settings.principalName = document.getElementById('setPrincipalName').value.trim() || CONFIG.DEFAULT_PRINCIPAL;
+  STATE.settings.principalNip = document.getElementById('setPrincipalNip').value.trim() || CONFIG.DEFAULT_NIP;
+  STATE.settings.date = document.getElementById('setDate').value.trim() || CONFIG.DEFAULT_DATE;
+  STATE.settings.logoUrl = document.getElementById('setLogoUrl').value.trim() || CONFIG.LOGO_DEFAULT;
+  STATE.settings.ttdUrl = document.getElementById('setTtdUrl').value.trim();
+  STATE.settings.execUrl = document.getElementById('setExecUrl').value.trim() || CONFIG.EXEC_URL;
+  saveSettings();
+  closeSettings();
+  renderPreview();
+  showAlert({type:'success', title:'Pengaturan Disimpan', message:'Pengaturan berhasil disimpan di browser ini.', autoClose:2000});
+}
+
+/* =========================================================
+   EVENT BINDINGS
+   ========================================================= */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Enter to login
+  document.getElementById('pinInput').addEventListener('keypress', e=>{
+    if(e.key==='Enter') doLogin();
+  });
+  document.getElementById('btnLogin').addEventListener('click', doLogin);
+
+  // Header buttons
+  document.getElementById('btnSettings').addEventListener('click', openSettings);
+  document.getElementById('btnRefresh').addEventListener('click', async()=>{
+    if(STATE.students.length>0){
+      await loadConfig();
+      await loadStudents();
+    } else {
+      await loadConfig();
+      showAlert({type:'info', title:'Diperbarui', message:'Konfigurasi telah dimuat ulang.', autoClose:1800});
+    }
+  });
+  document.getElementById('btnLogout').addEventListener('click', ()=>{
+    showAlert({
+      type:'warning', title:'Keluar Aplikasi?',
+      message:'Anda akan keluar dari aplikasi dan perlu memasukkan PIN kembali untuk masuk.',
+      confirmText:'Ya, Keluar', cancelText:'Batal'
+    }).then(ok=>{ if(ok) doLogout(); });
+  });
+
+  // Toolbar
+  document.getElementById('btnLoad').addEventListener('click', loadStudents);
+  document.getElementById('btnPrint').addEventListener('click', printCards);
+  document.getElementById('ruangFilter').addEventListener('change', applyFilters);
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+  // Settings modal
+  document.querySelectorAll('[data-close-settings]').forEach(el=>el.addEventListener('click', closeSettings));
+  document.getElementById('setTtdUrl').addEventListener('input', updateTtdPreview);
+  document.getElementById('btnSaveSettings').addEventListener('click', saveSettingsFromForm);
+  document.getElementById('settingsModal').addEventListener('click', e=>{
+    if(e.target.id==='settingsModal') closeSettings();
+  });
+
+  // Auto-restore session
+  if(sessionStorage.getItem('asas_auth')==='1'){
+    STATE.authenticated = true;
+    showApp();
+    loadConfig();
+  } else {
+    document.getElementById('pinInput').focus();
+  }
+});
+
+// After print, clear print area
+window.addEventListener('afterprint', ()=>{
+  document.getElementById('printArea').innerHTML = '';
+});
+</script>
+</body>
+</html>
