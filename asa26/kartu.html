@@ -8,9 +8,6 @@
 <style>
 /* =========================================================
    PALET & VARIABEL
-   - Biru SMP   : #1d4ed8 / #1e3a8a
-   - Kuning OSIS: #facc15 / #fbbf24
-   - Abu        : #6b7280 / #f3f4f6
    ========================================================= */
 :root{
   --biru-900:#0f2557;
@@ -51,7 +48,6 @@ input,select{font-family:inherit;outline:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.4)}50%{box-shadow:0 0 0 12px rgba(37,99,235,0)}}
 @keyframes barGrow{from{width:100%}to{width:0%}}
 
 /* ===== LOGIN ===== */
@@ -122,78 +118,124 @@ input,select{font-family:inherit;outline:none}
 .preview-empty .icon{font-size:54px;opacity:.5;margin-bottom:10px}
 .preview-empty .title{font-size:16px;font-weight:700;color:var(--abu-700);margin-bottom:6px}
 .preview-empty .desc{font-size:13px}
-.preview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-@media(max-width:760px){.preview-grid{grid-template-columns:1fr}}
 
-/* Kartu (on-screen preview) */
-.card{background:#fff;border:2px solid var(--biru-700);border-radius:10px;padding:14px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(15,37,87,.08);transition:.3s;animation:slideUp .4s both}
-.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(15,37,87,.15)}
-.card .corner{position:absolute;width:36px;height:36px;border:3px solid var(--kuning-400);opacity:.9}
-.card .corner.tl{top:6px;left:6px;border-right:none;border-bottom:none}
-.card .corner.tr{top:6px;right:6px;border-left:none;border-bottom:none}
-.card .corner.bl{bottom:6px;left:6px;border-right:none;border-top:none}
-.card .corner.br{bottom:6px;right:6px;border-left:none;border-top:none}
-.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;padding:0 4px}
-.card-head .logo{width:46px;height:46px;border-radius:8px;object-fit:cover;border:1.5px solid var(--biru-700)}
-.card-head .roman{font-size:30px;font-weight:900;color:var(--biru-700);letter-spacing:1px;line-height:1;font-family:'Times New Roman',serif}
-.card-title{text-align:center;font-size:13px;font-weight:900;color:var(--biru-700);letter-spacing:.4px;line-height:1.2}
-.card-subtitle{text-align:center;font-size:9.5px;font-weight:700;color:var(--abu-700);margin-top:2px}
-.card-school{text-align:center;font-size:11px;font-weight:800;color:var(--biru-700);margin-top:4px;text-transform:uppercase}
-.card-year{text-align:center;font-size:9.5px;font-weight:700;color:var(--abu-500);margin-top:1px}
-.card-divider{height:2px;background:var(--kuning-400);margin:8px 2px;border-radius:1px}
-.card-info{margin-top:8px;font-size:10.5px;color:var(--abu-700)}
-.card-info table{width:100%;border-collapse:collapse}
-.card-info td{padding:2.5px 4px;vertical-align:top;line-height:1.35}
-.card-info td.lbl{width:74px;font-weight:700;color:var(--abu-500)}
-.card-info td.sep{width:8px;font-weight:700;color:var(--abu-500)}
-.card-info td.val{font-weight:700;color:var(--biru-900)}
-.card-sign{margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:1px}
-.card-sign .ttd-img{width:90px;height:46px;object-fit:contain;opacity:.95}
-.card-sign .ttd-placeholder{width:90px;height:30px;border-bottom:1.5px dotted var(--abu-500)}
-.card-sign .name{font-size:10px;font-weight:800;color:var(--abu-700);text-align:center}
-.card-sign .nip{font-size:9px;color:var(--abu-500);text-align:center}
-.card-date{text-align:center;font-size:9.5px;color:var(--abu-700);margin-top:5px;font-style:italic}
-.card-photo-wrap{position:absolute;bottom:78px;right:14px;width:54px;height:64px;border:1.5px solid var(--biru-700);background:var(--abu-100);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.card-photo-wrap img{width:100%;height:100%;object-fit:cover}
-.card-photo-wrap .ph-text{font-size:8px;color:var(--abu-500);text-align:center;padding:2px}
+/* ===== PESERTA UNIT (kiri + kanan side-by-side) ===== */
+.preview-list{display:flex;flex-direction:column;gap:22px}
+.peserta-unit{display:grid;grid-template-columns:1fr 1fr;gap:14px;animation:slideUp .4s both}
+@media(max-width:900px){.peserta-unit{grid-template-columns:1fr}}
+
+/* ===== KARTU (on-screen preview) ===== */
+.card{background:#fff;border:2px solid var(--biru-700);border-radius:8px;padding:10px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(15,37,87,.08);font-size:10px;line-height:1.3;display:flex;flex-direction:column}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:6px;padding-bottom:6px;border-bottom:2px solid var(--kuning-400)}
+.card-head .logo{width:42px;height:42px;border-radius:6px;object-fit:cover;border:1.5px solid var(--biru-700);flex-shrink:0}
+.card-head .center{text-align:center;flex:1;line-height:1.15}
+.card-head .center .t1{font-size:11px;font-weight:900;color:var(--biru-700);letter-spacing:.3px}
+.card-head .center .t2{font-size:9px;font-weight:700;color:var(--biru-700)}
+.card-head .center .t3{font-size:9.5px;font-weight:800;color:var(--biru-700);text-transform:uppercase;margin-top:1px}
+.card-head .center .t4{font-size:8.5px;font-weight:700;color:var(--abu-500)}
+.card-head .roman{font-size:22px;font-weight:900;color:var(--biru-700);letter-spacing:1px;line-height:1;font-family:'Times New Roman',serif;flex-shrink:0;width:32px;text-align:center}
+
+/* Biodata box */
+.bio-box{border:1.2px solid var(--biru-700);border-radius:4px;padding:5px 7px;margin-bottom:6px}
+.bio-box table{width:100%;border-collapse:collapse}
+.bio-box td{padding:2px 2px;font-size:9.5px;line-height:1.3;vertical-align:top}
+.bio-box td.lbl{width:74px;font-weight:700;color:var(--abu-500)}
+.bio-box td.sep{width:6px;font-weight:700;color:var(--abu-500)}
+.bio-box td.val{font-weight:700;color:var(--biru-900)}
+
+/* Signature box */
+.sign-box{border:1.2px solid var(--biru-700);border-radius:4px;padding:5px 7px;margin-top:auto;display:flex;flex-direction:column;align-items:flex-end;text-align:left}
+.sign-box .date{font-size:9.5px;color:var(--abu-700);margin-bottom:1px}
+.sign-box .role{font-size:9.5px;color:var(--abu-700);margin-bottom:2px}
+.sign-box .ttd-img{width:90px;height:34px;object-fit:contain;opacity:.95;margin:1px 0}
+.sign-box .ttd-ph{width:90px;height:24px;border-bottom:1.2px dotted var(--abu-500)}
+.sign-box .name{font-size:9.5px;font-weight:800;color:var(--abu-700);margin-top:1px}
+.sign-box .nip{font-size:8.5px;color:var(--abu-500)}
+
+/* Right card - schedule */
+.sched-title{text-align:center;font-size:10px;font-weight:900;color:var(--biru-700);margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
+.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1}
+.sched-table th,.sched-table td{border:.8px solid var(--biru-700);padding:2px 3px;vertical-align:middle}
+.sched-table th{background:var(--biru-100);font-weight:800;color:var(--biru-700);text-align:center;font-size:8px}
+.sched-table td.c{text-align:center}
+.sched-table td.l{text-align:left}
+.sched-table .ket{font-size:7.5px;font-style:italic;color:var(--abu-500)}
 
 /* ===== PRINT ===== */
 .print-only{display:none}
 @media print{
   @page{size:215mm 330mm;margin:0}
-  body{background:#fff!important}
-  #app,.app-header,.app-main,.toolbar,.stats,.preview-wrap,.preview-head,.preview-grid{display:none!important}
+  html,body{background:#fff!important;margin:0;padding:0}
+  #app,.app-header,.app-main,.toolbar,.stats,.preview-wrap,.preview-head,.preview-list,.peserta-unit{display:none!important}
   .print-only{display:block}
-  .print-page{width:215mm;height:330mm;page-break-after:always;page-break-inside:avoid;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;padding:8mm;box-sizing:border-box}
+
+  .print-page{
+    width:215mm;height:330mm;
+    page-break-after:always;page-break-inside:avoid;
+    display:flex;flex-direction:column;
+    padding:5mm 5mm 3mm;box-sizing:border-box;
+  }
   .print-page:last-child{page-break-after:auto}
-  .print-card{border:1.8pt solid #0f2557;border-radius:6pt;padding:9pt;position:relative;overflow:hidden;margin:2mm;box-sizing:border-box;display:flex;flex-direction:column;page-break-inside:avoid}
-  .print-card .corner{position:absolute;width:24pt;height:24pt;border:2pt solid #f59e0b}
-  .print-card .corner.tl{top:4pt;left:4pt;border-right:none;border-bottom:none}
-  .print-card .corner.tr{top:4pt;right:4pt;border-left:none;border-bottom:none}
-  .print-card .corner.bl{bottom:4pt;left:4pt;border-right:none;border-top:none}
-  .print-card .corner.br{bottom:4pt;right:4pt;border-left:none;border-top:none}
-  .print-card .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6pt}
-  .print-card .card-head .logo{width:42pt;height:42pt;border-radius:6pt;object-fit:cover;border:1pt solid #0f2557}
-  .print-card .card-head .roman{font-size:26pt;font-weight:900;color:#0f2557;font-family:'Times New Roman',serif;line-height:1}
-  .print-card .card-title{text-align:center;font-size:11pt;font-weight:900;color:#0f2557;letter-spacing:.3pt;line-height:1.2}
-  .print-card .card-subtitle{text-align:center;font-size:8pt;font-weight:700;color:#374151;margin-top:1pt}
-  .print-card .card-school{text-align:center;font-size:9.5pt;font-weight:800;color:#0f2557;text-transform:uppercase;margin-top:2pt}
-  .print-card .card-year{text-align:center;font-size:8pt;font-weight:700;color:#6b7280;margin-top:1pt}
-  .print-card .card-divider{height:1.5pt;background:#f59e0b;margin:5pt 0;border-radius:1pt}
-  .print-card .card-info{font-size:8.5pt;flex:1}
-  .print-card .card-info table{width:100%;border-collapse:collapse}
-  .print-card .card-info td{padding:1.5pt 2pt;vertical-align:top;line-height:1.3}
-  .print-card .card-info td.lbl{width:58pt;font-weight:700;color:#6b7280;font-size:8pt}
-  .print-card .card-info td.sep{width:6pt;font-weight:700;color:#6b7280}
-  .print-card .card-info td.val{font-weight:700;color:#0f2557;font-size:8.5pt}
-  .print-card .card-sign{margin-top:4pt;display:flex;flex-direction:column;align-items:center;gap:0}
-  .print-card .card-sign .ttd-img{width:80pt;height:38pt;object-fit:contain}
-  .print-card .card-sign .ttd-placeholder{width:80pt;height:24pt;border-bottom:1pt dotted #6b7280}
-  .print-card .card-sign .name{font-size:8.5pt;font-weight:800;color:#374151;text-align:center}
-  .print-card .card-sign .nip{font-size:7.5pt;color:#6b7280;text-align:center}
-  .print-card .card-date{text-align:center;font-size:8pt;color:#374151;margin-top:3pt;font-style:italic}
-  .print-card .card-photo-wrap{position:absolute;bottom:60pt;right:8pt;width:48pt;height:58pt;border:1pt solid #0f2557;background:#f3f4f6;overflow:hidden;display:flex;align-items:center;justify-content:center}
-  .print-card .card-photo-wrap img{width:100%;height:100%;object-fit:cover}
+
+  .print-unit{
+    flex:1;
+    display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;
+    margin-bottom:2.5mm;page-break-inside:avoid;
+    min-height:0;
+  }
+
+  .pcard{
+    border:1.5pt solid #0f2557;border-radius:4pt;
+    padding:3pt 4pt;box-sizing:border-box;
+    display:flex;flex-direction:column;
+    page-break-inside:avoid;overflow:hidden;
+    font-family:'Segoe UI',Arial,sans-serif;
+  }
+
+  /* Header */
+  .pcard .phead{
+    display:flex;justify-content:space-between;align-items:center;gap:3pt;
+    padding-bottom:2pt;border-bottom:1.2pt solid #f59e0b;
+    margin-bottom:2pt;
+  }
+  .pcard .phead .plogo{width:34pt;height:34pt;border-radius:4pt;object-fit:cover;border:1pt solid #0f2557;flex-shrink:0}
+  .pcard .phead .pcenter{flex:1;text-align:center;line-height:1.1}
+  .pcard .phead .pcenter .pt1{font-size:9pt;font-weight:900;color:#0f2557;letter-spacing:.2pt}
+  .pcard .phead .pcenter .pt2{font-size:7pt;font-weight:700;color:#0f2557}
+  .pcard .phead .pcenter .pt3{font-size:7.5pt;font-weight:800;color:#0f2557;text-transform:uppercase;margin-top:.5pt}
+  .pcard .phead .pcenter .pt4{font-size:6.5pt;font-weight:700;color:#6b7280}
+  .pcard .phead .proman{font-size:16pt;font-weight:900;color:#0f2557;font-family:'Times New Roman',serif;line-height:1;flex-shrink:0;width:22pt;text-align:center}
+
+  /* Biodata */
+  .pcard .pbio{border:.8pt solid #0f2557;border-radius:2pt;padding:2pt 3pt;margin-bottom:2pt}
+  .pcard .pbio table{width:100%;border-collapse:collapse}
+  .pcard .pbio td{padding:.5pt 1pt;font-size:7pt;line-height:1.2;vertical-align:top}
+  .pcard .pbio td.lbl{width:50pt;font-weight:700;color:#6b7280}
+  .pcard .pbio td.sep{width:4pt;font-weight:700;color:#6b7280}
+  .pcard .pbio td.val{font-weight:700;color:#0f2557}
+
+  /* Signature */
+  .pcard .psign{border:.8pt solid #0f2557;border-radius:2pt;padding:2pt 3pt;margin-top:auto;display:flex;flex-direction:column;align-items:flex-end;text-align:left}
+  .pcard .psign .pdate{font-size:7pt;color:#374151;margin-bottom:.5pt}
+  .pcard .psign .prole{font-size:7pt;color:#374151;margin-bottom:1pt}
+  .pcard .psign .pttd-img{width:65pt;height:24pt;object-fit:contain;margin:0}
+  .pcard .psign .pttd-ph{width:65pt;height:18pt;border-bottom:.8pt dotted #6b7280}
+  .pcard .psign .pname{font-size:7pt;font-weight:800;color:#374151;margin-top:.5pt}
+  .pcard .psign .pnip{font-size:6.5pt;color:#6b7280}
+
+  /* Schedule */
+  .pcard .pstitle{text-align:center;font-size:7.5pt;font-weight:900;color:#0f2557;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase}
+  .pcard .ptable{width:100%;border-collapse:collapse;flex:1}
+  .pcard .ptable th,.pcard .ptable td{border:.6pt solid #0f2557;padding:.8pt 1.5pt;vertical-align:middle;font-size:6.2pt;line-height:1.1}
+  .pcard .ptable th{background:#dbeafe;font-weight:800;color:#0f2557;text-align:center;font-size:6pt}
+  .pcard .ptable td.c{text-align:center}
+  .pcard .ptable td.l{text-align:left}
+  .pcard .ptable td.ket{font-size:5.8pt;font-style:italic;color:#6b7280}
+  .pcard .ptable td.no{font-weight:700;text-align:center;width:14pt}
+  .pcard .ptable td.hari{width:60pt}
+  .pcard .ptable td.waktu{width:46pt;text-align:center}
+  .pcard .ptable td.mapel{}
+  .pcard .ptable td.ketcol{width:36pt;text-align:center}
 }
 
 /* ===== MODAL ===== */
@@ -245,9 +287,6 @@ input,select{font-family:inherit;outline:none}
 .loading-overlay .spinner-lg{width:48px;height:48px;border:4px solid var(--biru-100);border-top-color:var(--biru-600);border-radius:50%;animation:spin .8s linear infinite}
 .loading-overlay p{font-size:13px;font-weight:600;color:var(--biru-700)}
 
-/* Skeleton loader */
-.skeleton-card{background:linear-gradient(90deg,#f3f4f6 25%,#e5e7eb 50%,#f3f4f6 75%);background-size:800px 100%;border-radius:10px;animation:shimmer 1.4s infinite linear;height:240px;border:2px solid var(--abu-300)}
-
 /* Hidden */
 .hidden{display:none!important}
 
@@ -263,7 +302,7 @@ input,select{font-family:inherit;outline:none}
 .pagination button:disabled{opacity:.4;cursor:not-allowed}
 .pagination .info{font-size:12px;color:var(--abu-500);margin:0 6px}
 
-/* About / help on login */
+/* Login help */
 .login-help{margin-top:14px;padding:10px 12px;background:var(--biru-100);border-radius:10px;font-size:11px;color:var(--biru-700);text-align:center;line-height:1.5}
 .login-help strong{display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
 
@@ -377,12 +416,12 @@ input,select{font-family:inherit;outline:none}
       <div class="stat-card">
         <div class="label">Akan Dicetak</div>
         <div class="value" id="statFilter">0</div>
-        <div class="sub">kartu</div>
+        <div class="sub">peserta</div>
       </div>
       <div class="stat-card">
         <div class="label">Halaman F4</div>
         <div class="value" id="statPage">0</div>
-        <div class="sub">lembar (4 kartu/lembar)</div>
+        <div class="sub">lembar (4 peserta/lembar)</div>
       </div>
     </div>
 
@@ -404,7 +443,7 @@ input,select{font-family:inherit;outline:none}
   </main>
 
   <footer class="app-footer">
-    <strong>Sistem Cetak Kartu Peserta ASAS</strong> · SMP Negeri 1 Moga · Dibuat untuk panitia ujian
+    <strong>Sistem Cetak Kartu Peserta ASAS</strong> · SMP Negeri 1 Moga · 1 lembar F4 = 4 peserta (kiri: biodata, kanan: jadwal)
   </footer>
 </div>
 
@@ -483,10 +522,8 @@ input,select{font-family:inherit;outline:none}
 <script>
 /* =========================================================
    KONFIGURASI
-   Ganti EXEC_URL dengan link exec Google Apps Script Anda.
    ========================================================= */
 const CONFIG = {
-  // GANTI dengan link /exec dari deploy Google Apps Script Anda
   EXEC_URL: "https://script.google.com/macros/s/AKfycbw9PnmZ7KTAnOWAZfXAL3_T261h-xcb7jwsLBqMZmb-Ii_5LnlJp-w4s80CYxpPQI7ovA/exec",
   LOGO_DEFAULT: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
@@ -494,8 +531,39 @@ const CONFIG = {
   DEFAULT_PRINCIPAL: "Dariah, S.Pd., M.Pd.",
   DEFAULT_NIP: "197306022007012006",
   DEFAULT_DATE: "5 Desember 2026",
-  CARDS_PER_PAGE: 4, // 2 kolom x 2 baris = 4 kartu per F4
+  PESERTA_PER_PAGE: 4, // 4 peserta per F4 (setiap peserta = 2 kartu: kiri + kanan)
 };
+
+/* =========================================================
+   JADWAL ASESMEN SUMATIF AKHIR SEMESTER
+   Sama untuk semua peserta (dari gambar referensi)
+   ========================================================= */
+const SCHEDULE = [
+  { no:'1.', hari:'Senin, 7 Desember 2026', sessions:[
+    { waktu:'07.30 - 09.30', mapel:'Bahasa Indonesia', ket:'' },
+    { waktu:'10.00 - 12.00', mapel:'PABP', ket:'' },
+  ]},
+  { no:'2.', hari:'Selasa, 8 Desember 2026', sessions:[
+    { waktu:'07.30 - 09.30', mapel:'Pendidikan Pancasila', ket:'' },
+    { waktu:'10.00 - 11.30', mapel:'Informatika', ket:'' },
+  ]},
+  { no:'3.', hari:'Rabu, 9 Desember 2026', sessions:[
+    { waktu:'07.30 - 09.30', mapel:'Bahasa Inggris', ket:'' },
+    { waktu:'10.00 - 11.30', mapel:'Seni Budaya', ket:'Kelas 7' },
+    { waktu:'10.00 - 11.30', mapel:'Prakarya', ket:'Kelas 8 dan 9' },
+  ]},
+  { no:'4.', hari:'Kamis, 10 Desember 2026', sessions:[
+    { waktu:'07.30 - 09.30', mapel:'IPA', ket:'' },
+    { waktu:'10.00 - 11.30', mapel:'PJOK', ket:'' },
+  ]},
+  { no:'5.', hari:"Jum'at, 11 Desember 2026", sessions:[
+    { waktu:'07.30 - 09.30', mapel:'Matematika', ket:'' },
+  ]},
+  { no:'6.', hari:'Sabtu, 12 Desember 2026', sessions:[
+    { waktu:'07.30 - 09.30', mapel:'IPS', ket:'' },
+    { waktu:'10.00 - 11.30', mapel:'Bahasa Jawa', ket:'' },
+  ]},
+];
 
 /* =========================================================
    STATE
@@ -508,7 +576,7 @@ const STATE = {
   config: {},
   settings: loadSettings(),
   currentPage: 1,
-  perPageOnScreen: 8,
+  perPageOnScreen: 4, // 4 peserta units per preview page
 };
 
 /* =========================================================
@@ -558,7 +626,6 @@ async function callGas(action, params={}){
 }
 
 function romanFromKelas(kelasStr){
-  // kelasStr seperti "KELAS 7A" atau "7" atau "7A"
   const m = String(kelasStr).match(/(\d)/);
   if(!m) return '';
   const n = parseInt(m[1]);
@@ -576,9 +643,7 @@ function showAlert({type='info', title, message, confirmText='OK', cancelText=nu
     const container = document.getElementById('alertContainer');
     const backdrop = document.createElement('div');
     backdrop.className = 'alert-backdrop';
-    const icons = {
-      success: '✓', error: '✕', warning: '!', info: 'i'
-    };
+    const icons = { success: '✓', error: '✕', warning: '!', info: 'i' };
     backdrop.innerHTML = `
       <div class="alert-box">
         <div class="alert-icon-wrap">
@@ -593,8 +658,7 @@ function showAlert({type='info', title, message, confirmText='OK', cancelText=nu
           ${cancelText?`<button class="btn-cancel">${escapeHtml(cancelText)}</button>`:''}
           <button class="btn-ok">${escapeHtml(confirmText)}</button>
         </div>
-      </div>
-    `;
+      </div>`;
     container.appendChild(backdrop);
     let closed = false;
     const close = (val)=>{
@@ -604,12 +668,8 @@ function showAlert({type='info', title, message, confirmText='OK', cancelText=nu
       resolve(val);
     };
     backdrop.querySelector('.btn-ok').onclick = ()=>{ close(true); if(onOk) onOk(); };
-    if(cancelText){
-      backdrop.querySelector('.btn-cancel').onclick = ()=>close(false);
-    }
-    if(autoClose>0){
-      setTimeout(()=>close(true), autoClose);
-    }
+    if(cancelText) backdrop.querySelector('.btn-cancel').onclick = ()=>close(false);
+    if(autoClose>0) setTimeout(()=>close(true), autoClose);
   });
 }
 function showLoading(text='Memuat data...'){
@@ -633,7 +693,6 @@ async function doLogin(){
   btn.disabled = true;
   label.innerHTML = '<span class="spinner"></span>Memverifikasi...';
   try{
-    // Jika URL exec belum diisi, coba pakai PIN default 54321 untuk preview offline
     if(!getExecUrl() || getExecUrl().startsWith('GANTI_')){
       if(pin === '54321'){
         showAlert({
@@ -694,7 +753,6 @@ async function loadConfig(){
     const res = await callGas('getConfig');
     if(res && res.success && res.config){
       STATE.config = res.config;
-      // Override defaults dari spreadsheet jika ada
       const c = res.config;
       if(c.NAMA_SEKOLAH) STATE.settings.school = c.NAMA_SEKOLAH;
       if(c.TAHUN_PELAJARAN) STATE.settings.year = c.TAHUN_PELAJARAN;
@@ -727,7 +785,6 @@ async function loadStudents(){
     const res = await callGas('getStudents', {kelas:kelas});
     if(!res.success) throw new Error(res.error||'Gagal memuat data');
     STATE.students = res.students || [];
-    // Populate ruang filter
     const ruangs = [...new Set(STATE.students.map(s=>s.ruang).filter(Boolean))].sort();
     STATE.ruangList = ruangs;
     const ruangSel = document.getElementById('ruangFilter');
@@ -771,12 +828,12 @@ function applyFilters(){
 function renderStats(){
   document.getElementById('statTotal').textContent = STATE.students.length;
   document.getElementById('statFilter').textContent = STATE.filtered.length;
-  const pages = Math.ceil(STATE.filtered.length / CONFIG.CARDS_PER_PAGE);
+  const pages = Math.ceil(STATE.filtered.length / CONFIG.PESERTA_PER_PAGE);
   document.getElementById('statPage').textContent = pages;
 }
 
 /* =========================================================
-   RENDER PREVIEW (on-screen)
+   RENDER PREVIEW (on-screen) — show peserta units
    ========================================================= */
 function renderPreview(){
   const body = document.getElementById('previewBody');
@@ -792,20 +849,19 @@ function renderPreview(){
     document.getElementById('pagination').classList.add('hidden');
     return;
   }
-  meta.textContent = `Menampilkan ${STATE.filtered.length} peserta`;
+  meta.textContent = `Menampilkan ${STATE.filtered.length} peserta · ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4`;
 
   const start = (STATE.currentPage-1)*STATE.perPageOnScreen;
   const end = Math.min(start+STATE.perPageOnScreen, STATE.filtered.length);
   const pageData = STATE.filtered.slice(start, end);
 
-  let html = '<div class="preview-grid">';
+  let html = '<div class="preview-list">';
   pageData.forEach((s,i)=>{
-    html += renderCard(s, false);
+    html += renderPesertaUnit(s, false);
   });
   html += '</div>';
   body.innerHTML = html;
 
-  // pagination
   const totalPages = Math.ceil(STATE.filtered.length/STATE.perPageOnScreen);
   const pag = document.getElementById('pagination');
   if(totalPages>1){
@@ -830,9 +886,17 @@ function renderPreview(){
 }
 
 /* =========================================================
-   RENDER KARTU (1 kartu)
+   RENDER PESERTA UNIT = KARTU KIRI + KARTU KANAN
    ========================================================= */
-function renderCard(s, forPrint){
+function renderPesertaUnit(s, forPrint){
+  if(forPrint){
+    return `<div class="print-unit">${renderLeftCardPrint(s)}${renderRightCardPrint(s)}</div>`;
+  }
+  return `<div class="peserta-unit">${renderLeftCard(s)}${renderRightCard(s)}</div>`;
+}
+
+/* ---- KARTU KIRI (screen) ---- */
+function renderLeftCard(s){
   const roman = romanFromKelas(s.kelas);
   const kelasShort = shortKelas(s.kelas);
   const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
@@ -844,45 +908,189 @@ function renderCard(s, forPrint){
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
   const ttdHtml = ttdUrl
-    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"/><div class="ttd-placeholder" style="display:none"></div>`
-    : `<div class="ttd-placeholder"></div>`;
+    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'ttd-ph\\'></div>'"/>`
+    : `<div class="ttd-ph"></div>`;
 
   return `
-    <div class="${forPrint?'print-card':'card'}">
-      <div class="corner tl"></div><div class="corner tr"></div>
-      <div class="corner bl"></div><div class="corner br"></div>
-
+    <div class="card">
       <div class="card-head">
         <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <div class="center">
+          <div class="t1">KARTU PESERTA</div>
+          <div class="t2">ASESMEN SUMATIF AKHIR SEMESTER</div>
+          <div class="t3">${escapeHtml(school)}</div>
+          <div class="t4">TAHUN AJARAN ${escapeHtml(year)}</div>
+        </div>
         <div class="roman">${escapeHtml(roman)}</div>
       </div>
 
-      <div class="card-title">KARTU PESERTA</div>
-      <div class="card-subtitle">ASESMEN SUMATIF AKHIR SEMESTER</div>
-      <div class="card-school">${escapeHtml(school)}</div>
-      <div class="card-year">TAHUN PELAJARAN ${escapeHtml(year)}</div>
-
-      <div class="card-divider"></div>
-
-      <div class="card-info">
+      <div class="bio-box">
         <table>
           <tr><td class="lbl">No. Peserta</td><td class="sep">:</td><td class="val">${escapeHtml(s.noPeserta||'-')}</td></tr>
-          <tr><td class="lbl">Nama</td><td class="sep">:</td><td class="val">${escapeHtml(s.nama||'-')}</td></tr>
+          <tr><td class="lbl">Nama Peserta</td><td class="sep">:</td><td class="val">${escapeHtml(s.nama||'-')}</td></tr>
           <tr><td class="lbl">NIS</td><td class="sep">:</td><td class="val">${escapeHtml(s.nis||'-')}</td></tr>
-          <tr><td class="lbl">NISN</td><td class="sep">:</td><td class="val">${escapeHtml(s.nisn||'-')}</td></tr>
           <tr><td class="lbl">Kelas</td><td class="sep">:</td><td class="val">${escapeHtml(kelasShort)}</td></tr>
           <tr><td class="lbl">Ruang</td><td class="sep">:</td><td class="val">${escapeHtml(s.ruang||'-')}</td></tr>
         </table>
       </div>
 
-      <div class="card-sign">
+      <div class="sign-box">
+        <div class="date">Moga, ${escapeHtml(date)}</div>
+        <div class="role">Kepala Sekolah,</div>
         ${ttdHtml}
         <div class="name">${escapeHtml(principalName)}</div>
         <div class="nip">NIP. ${escapeHtml(principalNip)}</div>
       </div>
-      <div class="card-date">${escapeHtml(date)}</div>
     </div>
   `;
+}
+
+/* ---- KARTU KANAN (screen) ---- */
+function renderRightCard(s){
+  const roman = romanFromKelas(s.kelas);
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+  const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
+
+  return `
+    <div class="card">
+      <div class="card-head">
+        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <div class="center">
+          <div class="t1">KARTU PESERTA</div>
+          <div class="t2">ASESMEN SUMATIF AKHIR SEMESTER</div>
+          <div class="t3">${escapeHtml(school)}</div>
+          <div class="t4">TAHUN AJARAN ${escapeHtml(year)}</div>
+        </div>
+        <div class="roman">${escapeHtml(roman)}</div>
+      </div>
+
+      <div class="sched-title">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
+      <table class="sched-table">
+        <thead>
+          <tr>
+            <th>NO</th>
+            <th>HARI, TANGGAL</th>
+            <th>WAKTU</th>
+            <th>MATA PELAJARAN</th>
+            <th>KET.</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${renderScheduleRows(false)}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ---- KARTU KIRI (print) ---- */
+function renderLeftCardPrint(s){
+  const roman = romanFromKelas(s.kelas);
+  const kelasShort = shortKelas(s.kelas);
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const ttdUrl = STATE.settings.ttdUrl || '';
+  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+  const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
+  const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
+  const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
+  const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
+
+  const ttdHtml = ttdUrl
+    ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'pttd-ph\\'></div>'"/>`
+    : `<div class="pttd-ph"></div>`;
+
+  return `
+    <div class="pcard">
+      <div class="phead">
+        <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <div class="pcenter">
+          <div class="pt1">KARTU PESERTA</div>
+          <div class="pt2">ASESMEN SUMATIF AKHIR SEMESTER</div>
+          <div class="pt3">${escapeHtml(school)}</div>
+          <div class="pt4">TAHUN AJARAN ${escapeHtml(year)}</div>
+        </div>
+        <div class="proman">${escapeHtml(roman)}</div>
+      </div>
+
+      <div class="pbio">
+        <table>
+          <tr><td class="lbl">No. Peserta</td><td class="sep">:</td><td class="val">${escapeHtml(s.noPeserta||'-')}</td></tr>
+          <tr><td class="lbl">Nama Peserta</td><td class="sep">:</td><td class="val">${escapeHtml(s.nama||'-')}</td></tr>
+          <tr><td class="lbl">NIS</td><td class="sep">:</td><td class="val">${escapeHtml(s.nis||'-')}</td></tr>
+          <tr><td class="lbl">Kelas</td><td class="sep">:</td><td class="val">${escapeHtml(kelasShort)}</td></tr>
+          <tr><td class="lbl">Ruang</td><td class="sep">:</td><td class="val">${escapeHtml(s.ruang||'-')}</td></tr>
+        </table>
+      </div>
+
+      <div class="psign">
+        <div class="pdate">Moga, ${escapeHtml(date)}</div>
+        <div class="prole">Kepala Sekolah,</div>
+        ${ttdHtml}
+        <div class="pname">${escapeHtml(principalName)}</div>
+        <div class="pnip">NIP. ${escapeHtml(principalNip)}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ---- KARTU KANAN (print) ---- */
+function renderRightCardPrint(s){
+  const roman = romanFromKelas(s.kelas);
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+  const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
+
+  return `
+    <div class="pcard">
+      <div class="phead">
+        <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <div class="pcenter">
+          <div class="pt1">KARTU PESERTA</div>
+          <div class="pt2">ASESMEN SUMATIF AKHIR SEMESTER</div>
+          <div class="pt3">${escapeHtml(school)}</div>
+          <div class="pt4">TAHUN AJARAN ${escapeHtml(year)}</div>
+        </div>
+        <div class="proman">${escapeHtml(roman)}</div>
+      </div>
+
+      <div class="pstitle">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
+      <table class="ptable">
+        <thead>
+          <tr>
+            <th>NO</th>
+            <th>HARI, TANGGAL</th>
+            <th>WAKTU</th>
+            <th>MATA PELAJARAN</th>
+            <th>KET.</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${renderScheduleRows(true)}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ---- Schedule rows builder ---- */
+function renderScheduleRows(forPrint){
+  let html = '';
+  SCHEDULE.forEach(day => {
+    const rowspan = day.sessions.length;
+    day.sessions.forEach((sess, i) => {
+      html += '<tr>';
+      if(i === 0){
+        html += `<td class="no" rowspan="${rowspan}">${escapeHtml(day.no)}</td>`;
+        html += `<td class="l hari" rowspan="${rowspan}">${escapeHtml(day.hari)}</td>`;
+      }
+      html += `<td class="c waktu">${escapeHtml(sess.waktu)}</td>`;
+      html += `<td class="l mapel">${escapeHtml(sess.mapel)}</td>`;
+      html += `<td class="c ketcol">${sess.ket ? `<span class="${forPrint?'ket':''}">${escapeHtml(sess.ket)}</span>` : ''}</td>`;
+      html += '</tr>';
+    });
+  });
+  return html;
 }
 
 /* =========================================================
@@ -895,22 +1103,20 @@ function printCards(){
   }
   const printArea = document.getElementById('printArea');
   let html = '';
-  for(let i=0; i<STATE.filtered.length; i+=CONFIG.CARDS_PER_PAGE){
-    const pageCards = STATE.filtered.slice(i, i+CONFIG.CARDS_PER_PAGE);
+  for(let i=0; i<STATE.filtered.length; i+=CONFIG.PESERTA_PER_PAGE){
+    const pagePeserta = STATE.filtered.slice(i, i+CONFIG.PESERTA_PER_PAGE);
     html += '<div class="print-page">';
-    pageCards.forEach(s=>{ html += renderCard(s, true); });
+    pagePeserta.forEach(s=>{ html += renderPesertaUnit(s, true); });
     html += '</div>';
   }
   printArea.innerHTML = html;
   showAlert({
     type:'info', title:'Siap Cetak',
-    message:`${STATE.filtered.length} kartu akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.CARDS_PER_PAGE)} halaman F4. Pilih "Save as PDF" pada dialog cetak browser, ukuran kertas Folio/F4 (215×330 mm), margin None.`,
+    message:`${STATE.filtered.length} peserta akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4. Setiap halaman berisi 4 peserta (kartu kiri = biodata, kartu kanan = jadwal). Pilih "Save as PDF", ukuran Folio/F4 (215×330 mm), margin None.`,
     confirmText:'Buka Dialog Cetak',
     cancelText:'Batal'
   }).then(ok=>{
-    if(ok){
-      setTimeout(()=>window.print(), 300);
-    }
+    if(ok) setTimeout(()=>window.print(), 300);
   });
 }
 
@@ -963,13 +1169,11 @@ function saveSettingsFromForm(){
    EVENT BINDINGS
    ========================================================= */
 document.addEventListener('DOMContentLoaded', ()=>{
-  // Enter to login
   document.getElementById('pinInput').addEventListener('keypress', e=>{
     if(e.key==='Enter') doLogin();
   });
   document.getElementById('btnLogin').addEventListener('click', doLogin);
 
-  // Header buttons
   document.getElementById('btnSettings').addEventListener('click', openSettings);
   document.getElementById('btnRefresh').addEventListener('click', async()=>{
     if(STATE.students.length>0){
@@ -988,13 +1192,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }).then(ok=>{ if(ok) doLogout(); });
   });
 
-  // Toolbar
   document.getElementById('btnLoad').addEventListener('click', loadStudents);
   document.getElementById('btnPrint').addEventListener('click', printCards);
   document.getElementById('ruangFilter').addEventListener('change', applyFilters);
   document.getElementById('searchInput').addEventListener('input', applyFilters);
 
-  // Settings modal
   document.querySelectorAll('[data-close-settings]').forEach(el=>el.addEventListener('click', closeSettings));
   document.getElementById('setTtdUrl').addEventListener('input', updateTtdPreview);
   document.getElementById('btnSaveSettings').addEventListener('click', saveSettingsFromForm);
@@ -1002,7 +1204,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(e.target.id==='settingsModal') closeSettings();
   });
 
-  // Auto-restore session
   if(sessionStorage.getItem('asas_auth')==='1'){
     STATE.authenticated = true;
     showApp();
@@ -1012,7 +1213,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 });
 
-// After print, clear print area
 window.addEventListener('afterprint', ()=>{
   document.getElementById('printArea').innerHTML = '';
 });
