@@ -252,6 +252,10 @@
     .acak-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .acak-link-btn { background: linear-gradient(135deg, #16a34a, #4ade80); color: #fff; border: none; padding: 12px 22px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; transition: transform .15s; }
     .acak-link-btn:hover { transform: translateY(-2px); }
+    /* Tombol buka link presentasi untuk proyektor (guru klik → Google Docs terbuka di tab baru) */
+    .acak-projector-link { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 14px; background: linear-gradient(135deg, #16a34a, #4ade80); color: #fff; padding: 14px 22px; border-radius: 12px; font-weight: 800; font-size: 15px; text-decoration: none; box-shadow: 0 8px 20px -6px rgba(22,163,74,.5); transition: transform .15s; }
+    .acak-projector-link:hover { transform: translateY(-2px); }
+    .acak-projector-link .apl-url { display: block; font-size: 11px; font-weight: 600; opacity: .92; word-break: break-all; line-height: 1.35; margin-top: 2px; }
 
     /* Link Stats Table */
     .link-stats-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
@@ -507,6 +511,11 @@
       <div class="ar-class" id="acakKelasLabel"></div>
       <div class="ar-task" id="acakTugas"></div>
       <div id="acakLinkInfo" style="margin-top: 10px; font-size: 13px; color: var(--muted);"></div>
+      <!-- Link presentasi yang bisa diklik guru untuk dibuka di proyektor -->
+      <a id="acakProjectorLink" class="acak-projector-link" href="#" target="_blank" rel="noopener" style="display:none;">
+        <span>📺 Buka Link Google Docs untuk Proyektor</span>
+        <span class="apl-url" id="acakProjectorUrl"></span>
+      </a>
     </div>
     <div class="acak-actions" id="acakActions" style="display:none;">
       <a id="acakLinkBtn" class="acak-link-btn" href="#" target="_blank" rel="noopener" style="display:none;" onclick="tampilkanKeSiswa(); return false;">
@@ -878,6 +887,8 @@
     var actions = document.getElementById('acakActions');
     var linkInfo = document.getElementById('acakLinkInfo');
     var linkBtn = document.getElementById('acakLinkBtn');
+    var projectorLink = document.getElementById('acakProjectorLink');
+    var projectorUrl  = document.getElementById('acakProjectorUrl');
 
     wrap.classList.add('spinning');
     icon.textContent = '🎲';
@@ -887,6 +898,9 @@
     actions.style.display = 'none';
     linkBtn.style.display = 'none';
     linkInfo.innerHTML = '';
+    projectorLink.style.display = 'none';
+    projectorLink.removeAttribute('href');
+    projectorLink.href = '#';
     modal.classList.add('show');
 
     setTimeout(function() {
@@ -906,9 +920,15 @@
         linkInfo.innerHTML = '<span style="color: var(--success); font-weight: 700;">✅ Link Google Docs tersedia</span>';
         linkBtn.href = link;
         linkBtn.style.display = 'inline-flex';
+        // Tampilkan tombol buka link untuk proyektor (guru klik → Google Docs terbuka di tab baru)
+        projectorLink.href = link;
+        projectorUrl.textContent = link.length > 60 ? link.substring(0, 57) + '...' : link;
+        projectorLink.style.display = 'flex';
       } else {
         linkInfo.innerHTML = '<span style="color: var(--accent-2); font-weight: 700;">⚠️ Belum kirim link Google Docs</span>';
         linkBtn.style.display = 'none';
+        projectorLink.style.display = 'none';
+        projectorLink.href = '#';
       }
 
       result.classList.add('show');
