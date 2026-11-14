@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Cetak Kartu Peserta ASAS · SMP Negeri 1 Moga</title>
-<link rel="icon" href="https://apxid.github.io/informatika/asa26/assets/tut.jpg" />
+<link rel="icon" href="https://yanuar-moga.github.io/assets/logo.jpg" />
 <style>
 /* =========================================================
    PALET & VARIABEL
@@ -26,6 +26,7 @@
   --putih:#ffffff;
   --merah:#dc2626;
   --hijau:#16a34a;
+  --hitam:#000000;
   --radius:14px;
   --shadow-sm:0 4px 14px rgba(15,37,87,.08);
   --shadow-md:0 10px 30px rgba(15,37,87,.12);
@@ -56,7 +57,13 @@ input,select{font-family:inherit;outline:none}
 #loginScreen::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.25) 0%,transparent 70%);bottom:-140px;left:-100px;animation:float 9s ease-in-out infinite reverse}
 .login-card{position:relative;background:var(--putih);border-radius:24px;padding:48px 40px 36px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);animation:scaleIn .55s cubic-bezier(.34,1.56,.64,1);z-index:2}
 .login-card .logo-wrap{display:flex;justify-content:center;margin-bottom:18px}
-.login-card .logo-wrap img{width:84px;height:84px;border-radius:18px;object-fit:cover;border:3px solid var(--kuning-400);box-shadow:0 6px 20px rgba(245,158,11,.35);animation:float 5s ease-in-out infinite}
+.login-card .logo-wrap img{width:96px;height:96px;object-fit:cover;animation:float 5s ease-in-out infinite}
+.btn-login{width:100%;padding:14px;background:var(--bg-grad);color:#fff;font-size:15px;font-weight:700;border-radius:12px;letter-spacing:.5px;transition:.25s;box-shadow:0 8px 20px rgba(29,78,216,.35);position:relative;overflow:hidden}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(29,78,216,.45)}
+.btn-login:active{transform:translateY(0)}
+.btn-login:disabled{opacity:.7;cursor:not-allowed}
+.login-foot{text-align:center;margin-top:22px;font-size:11px;color:var(--abu-500)}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:8px}
 .login-card h1{text-align:center;font-size:22px;font-weight:800;color:var(--biru-700);letter-spacing:-.3px;line-height:1.2}
 .login-card .subtitle{text-align:center;font-size:13px;color:var(--abu-500);margin-top:6px;margin-bottom:28px}
 .pin-input-group{position:relative;margin-bottom:18px}
@@ -66,18 +73,12 @@ input,select{font-family:inherit;outline:none}
 .pin-input{width:100%;padding:14px 14px 14px 44px;font-size:20px;letter-spacing:8px;text-align:center;font-weight:700;border:2px solid var(--abu-300);border-radius:12px;transition:.25s;background:var(--abu-50)}
 .pin-input:focus{border-color:var(--biru-500);background:#fff;box-shadow:0 0 0 4px rgba(37,99,235,.12)}
 .pin-input.error{border-color:var(--merah);animation:shake .4s}
-.btn-login{width:100%;padding:14px;background:var(--bg-grad);color:#fff;font-size:15px;font-weight:700;border-radius:12px;letter-spacing:.5px;transition:.25s;box-shadow:0 8px 20px rgba(29,78,216,.35);position:relative;overflow:hidden}
-.btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(29,78,216,.45)}
-.btn-login:active{transform:translateY(0)}
-.btn-login:disabled{opacity:.7;cursor:not-allowed}
-.login-foot{text-align:center;margin-top:22px;font-size:11px;color:var(--abu-500)}
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:8px}
 
 /* ===== APP UTAMA ===== */
 #app{min-height:100vh;display:flex;flex-direction:column;animation:fadeIn .5s}
 .app-header{background:var(--bg-grad);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-md);position:sticky;top:0;z-index:50}
 .app-header .brand{display:flex;align-items:center;gap:14px}
-.app-header .brand img{width:42px;height:42px;border-radius:10px;border:2px solid var(--kuning-400);object-fit:cover}
+.app-header .brand img{width:46px;height:46px;object-fit:cover}
 .app-header .brand .text h2{font-size:16px;font-weight:800;letter-spacing:-.2px;line-height:1.1}
 .app-header .brand .text p{font-size:11px;color:var(--kuning-300);font-weight:500;margin-top:2px}
 .header-actions{display:flex;gap:10px;align-items:center}
@@ -124,42 +125,47 @@ input,select{font-family:inherit;outline:none}
 .peserta-unit{display:grid;grid-template-columns:1fr 1fr;gap:14px;animation:slideUp .4s both}
 @media(max-width:900px){.peserta-unit{grid-template-columns:1fr}}
 
-/* ===== KARTU (on-screen preview) ===== */
-.card{background:#fff;border:2px solid var(--biru-700);border-radius:8px;padding:10px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(15,37,87,.08);font-size:10px;line-height:1.3;display:flex;flex-direction:column}
-.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:6px;padding-bottom:6px;border-bottom:2px solid var(--kuning-400)}
-.card-head .logo{width:42px;height:42px;border-radius:6px;object-fit:cover;border:1.5px solid var(--biru-700);flex-shrink:0}
+/* ===== KARTU (on-screen preview) — HITAM PUTIH ===== */
+.card{background:#fff;border:1.5px solid var(--hitam);border-radius:4px;padding:9px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.08);font-size:10px;line-height:1.3;display:flex;flex-direction:column;color:var(--hitam)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:4px;padding-bottom:4px;border-bottom:1.2px solid var(--hitam)}
+.card-head .logo{width:40px;height:40px;object-fit:cover;flex-shrink:0}
 .card-head .center{text-align:center;flex:1;line-height:1.15}
-.card-head .center .t1{font-size:11px;font-weight:900;color:var(--biru-700);letter-spacing:.3px}
-.card-head .center .t2{font-size:9px;font-weight:700;color:var(--biru-700)}
-.card-head .center .t3{font-size:9.5px;font-weight:800;color:var(--biru-700);text-transform:uppercase;margin-top:1px}
-.card-head .center .t4{font-size:8.5px;font-weight:700;color:var(--abu-500)}
-.card-head .roman{font-size:22px;font-weight:900;color:var(--biru-700);letter-spacing:1px;line-height:1;font-family:'Times New Roman',serif;flex-shrink:0;width:32px;text-align:center}
+.card-head .center .t1{font-size:11px;font-weight:900;color:var(--hitam);letter-spacing:.3px}
+.card-head .center .t2{font-size:9px;font-weight:700;color:var(--hitam)}
+.card-head .center .t3{font-size:9.5px;font-weight:800;color:var(--hitam);text-transform:uppercase;margin-top:1px}
+.card-head .center .t4{font-size:8.5px;font-weight:700;color:var(--hitam)}
+.card-head .roman{font-family:Arial,sans-serif;font-weight:bold;font-size:20px;color:var(--hitam);letter-spacing:1px;line-height:1;flex-shrink:0;width:30px;text-align:center}
 
-/* Biodata box */
-.bio-box{border:1.2px solid var(--biru-700);border-radius:4px;padding:5px 7px;margin-bottom:6px}
-.bio-box table{width:100%;border-collapse:collapse}
-.bio-box td{padding:2px 2px;font-size:9.5px;line-height:1.3;vertical-align:top}
-.bio-box td.lbl{width:74px;font-weight:700;color:var(--abu-500)}
-.bio-box td.sep{width:6px;font-weight:700;color:var(--abu-500)}
-.bio-box td.val{font-weight:700;color:var(--biru-900)}
+/* Biodata box - Times New Roman 11pt, 3 baris jarak dari header */
+.bio-box{border:1px solid var(--hitam);border-radius:2px;padding:4px 6px;margin-top:36px;margin-bottom:0;font-family:"Times New Roman",Times,serif;font-size:11pt}
+.bio-box table{width:100%;border-collapse:collapse;table-layout:fixed}
+.bio-box td{padding:1px 2px;font-size:11pt;line-height:1.2;vertical-align:top;font-family:"Times New Roman",Times,serif}
+.bio-box td.lbl{width:80px;font-weight:bold;color:var(--hitam)}
+.bio-box td.sep{width:8px;font-weight:bold;color:var(--hitam)}
+.bio-box td.val{font-weight:normal;color:var(--hitam);word-wrap:break-word;overflow-wrap:break-word;word-break:break-word}
 
-/* Signature box */
-.sign-box{border:1.2px solid var(--biru-700);border-radius:4px;padding:5px 7px;margin-top:auto;display:flex;flex-direction:column;align-items:flex-end;text-align:left}
-.sign-box .date{font-size:9.5px;color:var(--abu-700);margin-bottom:1px}
-.sign-box .role{font-size:9.5px;color:var(--abu-700);margin-bottom:2px}
-.sign-box .ttd-img{width:90px;height:34px;object-fit:contain;opacity:.95;margin:1px 0}
-.sign-box .ttd-ph{width:90px;height:24px;border-bottom:1.2px dotted var(--abu-500)}
-.sign-box .name{font-size:9.5px;font-weight:800;color:var(--abu-700);margin-top:1px}
-.sign-box .nip{font-size:8.5px;color:var(--abu-500)}
+/* Signature box - 3 baris jarak dari biodata, rata kiri di posisi kanan */
+.sign-box{margin-top:36px;margin-left:auto;width:55%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box .date{font-size:10pt;color:var(--hitam);margin-bottom:1px;text-align:left}
+.sign-box .role{font-size:10pt;color:var(--hitam);margin-bottom:2px;text-align:left}
+.sign-box .ttd-img{width:100%;max-width:130px;height:38px;object-fit:contain;opacity:.95;margin:1px 0}
+.sign-box .ttd-ph{width:100%;max-width:130px;height:26px;border-bottom:1.2px dotted var(--hitam)}
+.sign-box .name{font-size:10pt;font-weight:bold;color:var(--hitam);margin-top:1px;text-align:left}
+.sign-box .nip{font-size:9pt;color:var(--hitam);text-align:left}
 
 /* Right card - schedule */
-.sched-title{text-align:center;font-size:10px;font-weight:900;color:var(--biru-700);margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
-.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1}
-.sched-table th,.sched-table td{border:.8px solid var(--biru-700);padding:2px 3px;vertical-align:middle}
-.sched-table th{background:var(--biru-100);font-weight:800;color:var(--biru-700);text-align:center;font-size:8px}
+.sched-title{text-align:center;font-size:10px;font-weight:900;color:var(--hitam);margin-top:4px;margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
+.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1;table-layout:fixed}
+.sched-table th,.sched-table td{border:.8px solid var(--hitam);padding:2px 3px;vertical-align:middle}
+.sched-table th{background:#fff;font-weight:bold;color:var(--hitam);text-align:center;font-size:8px;padding:6px 3px;border-bottom:1.2px solid var(--hitam)}
 .sched-table td.c{text-align:center}
 .sched-table td.l{text-align:left}
-.sched-table .ket{font-size:7.5px;font-style:italic;color:var(--abu-500)}
+.sched-table td.ket{font-size:7.5px;font-style:italic;color:var(--hitam)}
+.sched-table col.c-no{width:8%}
+.sched-table col.c-hari{width:30%}
+.sched-table col.c-waktu{width:22%}
+.sched-table col.c-mapel{width:28%}
+.sched-table col.c-ket{width:12%}
 
 /* ===== PRINT ===== */
 .print-only{display:none}
@@ -185,63 +191,79 @@ input,select{font-family:inherit;outline:none}
   }
 
   .pcard{
-    border:1.5pt solid #0f2557;border-radius:4pt;
+    border:1pt solid #000;border-radius:2pt;
     padding:3pt 4pt;box-sizing:border-box;
     display:flex;flex-direction:column;
     page-break-inside:avoid;overflow:hidden;
     font-family:'Segoe UI',Arial,sans-serif;
+    color:#000;
   }
 
-  /* Header */
+  /* Header — logo tanpa kotak, romawi Arial bold hitam */
   .pcard .phead{
-    display:flex;justify-content:space-between;align-items:center;gap:3pt;
-    padding-bottom:2pt;border-bottom:1.2pt solid #f59e0b;
-    margin-bottom:2pt;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:3pt;
+    padding-bottom:2pt;border-bottom:.8pt solid #000;
+    margin-bottom:0;
   }
-  .pcard .phead .plogo{width:34pt;height:34pt;border-radius:4pt;object-fit:cover;border:1pt solid #0f2557;flex-shrink:0}
+  .pcard .phead .plogo{width:32pt;height:32pt;object-fit:cover;flex-shrink:0;border:none;border-radius:0}
   .pcard .phead .pcenter{flex:1;text-align:center;line-height:1.1}
-  .pcard .phead .pcenter .pt1{font-size:9pt;font-weight:900;color:#0f2557;letter-spacing:.2pt}
-  .pcard .phead .pcenter .pt2{font-size:7pt;font-weight:700;color:#0f2557}
-  .pcard .phead .pcenter .pt3{font-size:7.5pt;font-weight:800;color:#0f2557;text-transform:uppercase;margin-top:.5pt}
-  .pcard .phead .pcenter .pt4{font-size:6.5pt;font-weight:700;color:#6b7280}
-  .pcard .phead .proman{font-size:16pt;font-weight:900;color:#0f2557;font-family:'Times New Roman',serif;line-height:1;flex-shrink:0;width:22pt;text-align:center}
+  .pcard .phead .pcenter .pt1{font-size:9pt;font-weight:900;color:#000;letter-spacing:.2pt}
+  .pcard .phead .pcenter .pt2{font-size:7pt;font-weight:700;color:#000}
+  .pcard .phead .pcenter .pt3{font-size:7.5pt;font-weight:800;color:#000;text-transform:uppercase;margin-top:.5pt}
+  .pcard .phead .pcenter .pt4{font-size:6.5pt;font-weight:700;color:#000}
+  .pcard .phead .proman{font-family:Arial,sans-serif;font-weight:bold;font-size:14pt;color:#000;line-height:1;flex-shrink:0;width:20pt;text-align:center}
 
-  /* Biodata */
-  .pcard .pbio{border:.8pt solid #0f2557;border-radius:2pt;padding:2pt 3pt;margin-bottom:2pt}
-  .pcard .pbio table{width:100%;border-collapse:collapse}
-  .pcard .pbio td{padding:.5pt 1pt;font-size:7pt;line-height:1.2;vertical-align:top}
-  .pcard .pbio td.lbl{width:50pt;font-weight:700;color:#6b7280}
-  .pcard .pbio td.sep{width:4pt;font-weight:700;color:#6b7280}
-  .pcard .pbio td.val{font-weight:700;color:#0f2557}
+  /* Biodata — Times New Roman 11pt, 3 baris jarak dari header */
+  .pcard .pbio{
+    border:.6pt solid #000;border-radius:1pt;
+    padding:2pt 3pt;
+    margin-top:18pt;  /* ~3 baris dari header */
+    margin-bottom:0;
+    font-family:"Times New Roman",Times,serif;
+  }
+  .pcard .pbio table{width:100%;border-collapse:collapse;table-layout:fixed}
+  .pcard .pbio td{padding:.4pt 1pt;font-size:8pt;line-height:1.15;vertical-align:top;font-family:"Times New Roman",Times,serif;color:#000}
+  .pcard .pbio td.lbl{width:50pt;font-weight:bold;color:#000}
+  .pcard .pbio td.sep{width:4pt;font-weight:bold;color:#000}
+  .pcard .pbio td.val{font-weight:normal;color:#000;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word}
 
-  /* Signature */
-  .pcard .psign{border:.8pt solid #0f2557;border-radius:2pt;padding:2pt 3pt;margin-top:auto;display:flex;flex-direction:column;align-items:flex-end;text-align:left}
-  .pcard .psign .pdate{font-size:7pt;color:#374151;margin-bottom:.5pt}
-  .pcard .psign .prole{font-size:7pt;color:#374151;margin-bottom:1pt}
-  .pcard .psign .pttd-img{width:65pt;height:24pt;object-fit:contain;margin:0}
-  .pcard .psign .pttd-ph{width:65pt;height:18pt;border-bottom:.8pt dotted #6b7280}
-  .pcard .psign .pname{font-size:7pt;font-weight:800;color:#374151;margin-top:.5pt}
-  .pcard .psign .pnip{font-size:6.5pt;color:#6b7280}
+  /* Signature — 3 baris dari biodata, rata kiri di posisi kanan */
+  .pcard .psign{
+    margin-top:18pt;  /* ~3 baris dari biodata */
+    margin-left:auto;
+    width:60%;
+    border:none;padding:0;
+    display:flex;flex-direction:column;align-items:flex-start;text-align:left;
+    font-family:"Times New Roman",Times,serif;
+  }
+  .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left}
+  .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left}
+  .pcard .psign .pttd-img{width:100%;max-width:60pt;height:22pt;object-fit:contain;margin:0}
+  .pcard .psign .pttd-ph{width:100%;max-width:60pt;height:16pt;border-bottom:.6pt dotted #000}
+  .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:.5pt;text-align:left}
+  .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left}
 
-  /* Schedule */
-  .pcard .pstitle{text-align:center;font-size:7.5pt;font-weight:900;color:#0f2557;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase}
-  .pcard .ptable{width:100%;border-collapse:collapse;flex:1}
-  .pcard .ptable th,.pcard .ptable td{border:.6pt solid #0f2557;padding:.8pt 1.5pt;vertical-align:middle;font-size:6.2pt;line-height:1.1}
-  .pcard .ptable th{background:#dbeafe;font-weight:800;color:#0f2557;text-align:center;font-size:6pt}
+  /* Schedule — header row lebih tinggi, kolom fit-content */
+  .pcard .pstitle{text-align:center;font-size:7pt;font-weight:900;color:#000;margin-top:3pt;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase}
+  .pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed}
+  .pcard .ptable col.c-no{width:7%}
+  .pcard .ptable col.c-hari{width:30%}
+  .pcard .ptable col.c-waktu{width:22%}
+  .pcard .ptable col.c-mapel{width:27%}
+  .pcard .ptable col.c-ket{width:14%}
+  .pcard .ptable th,.pcard .ptable td{border:.5pt solid #000;padding:1pt 1.5pt;vertical-align:middle;font-size:6pt;line-height:1.1;color:#000}
+  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:5.8pt;padding:3.5pt 1.5pt;border-bottom:.8pt solid #000}
   .pcard .ptable td.c{text-align:center}
   .pcard .ptable td.l{text-align:left}
-  .pcard .ptable td.ket{font-size:5.8pt;font-style:italic;color:#6b7280}
-  .pcard .ptable td.no{font-weight:700;text-align:center;width:14pt}
-  .pcard .ptable td.hari{width:60pt}
-  .pcard .ptable td.waktu{width:46pt;text-align:center}
-  .pcard .ptable td.mapel{}
-  .pcard .ptable td.ketcol{width:36pt;text-align:center}
+  .pcard .ptable td.ket{font-size:5.5pt;font-style:italic;color:#000}
+  .pcard .ptable td.no{font-weight:bold;text-align:center}
 }
 
 /* ===== MODAL ===== */
 .modal-backdrop{position:fixed;inset:0;background:rgba(15,37,87,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;animation:fadeIn .25s}
 .modal-box{background:#fff;border-radius:18px;padding:0;width:100%;max-width:480px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);max-height:92vh;display:flex;flex-direction:column}
 .modal-box.lg{max-width:680px}
+.modal-box.sm{max-width:380px}
 .modal-header{padding:18px 22px;background:var(--bg-grad);color:#fff;display:flex;justify-content:space-between;align-items:center}
 .modal-header h3{font-size:16px;font-weight:800;letter-spacing:-.2px}
 .modal-header .close{background:rgba(255,255,255,.15);color:#fff;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;transition:.2s}
@@ -260,6 +282,18 @@ input,select{font-family:inherit;outline:none}
 .form-row .preview-ttd .ttd-empty{font-size:11px;color:var(--abu-500);font-style:italic}
 .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:560px){.form-grid-2{grid-template-columns:1fr}}
+
+/* About popup */
+.about-box{text-align:center;padding:8px 0}
+.about-box .about-logo{width:88px;height:88px;object-fit:cover;margin:0 auto 16px;display:block}
+.about-box h2{font-size:20px;font-weight:800;color:var(--biru-700);margin-bottom:8px}
+.about-box .info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--abu-50);border-radius:10px;margin-bottom:8px;font-size:13px}
+.about-box .info-row .lbl{font-weight:700;color:var(--abu-500)}
+.about-box .info-row .val{font-weight:600;color:var(--biru-700)}
+.about-box .link-row{margin-top:14px;padding:14px;background:var(--biru-100);border-radius:10px}
+.about-box .link-row a{color:var(--biru-600);font-weight:700;text-decoration:none;font-size:14px;word-break:break-all}
+.about-box .link-row a:hover{text-decoration:underline}
+.about-box .link-row .copy-hint{font-size:11px;color:var(--abu-500);margin-top:6px}
 
 /* ===== TOAST / ALERT ===== */
 .alert-backdrop{position:fixed;inset:0;background:rgba(15,37,87,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;animation:fadeIn .2s}
@@ -291,8 +325,10 @@ input,select{font-family:inherit;outline:none}
 .hidden{display:none!important}
 
 /* Footer */
-.app-footer{text-align:center;padding:18px;font-size:11px;color:var(--abu-500)}
+.app-footer{text-align:center;padding:18px;font-size:11px;color:var(--abu-500);display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}
 .app-footer strong{color:var(--biru-700)}
+.app-footer .about-link{color:var(--biru-600);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;background:var(--abu-100);transition:.2s}
+.app-footer .about-link:hover{background:var(--biru-100);text-decoration:underline}
 
 /* Pagination */
 .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap}
@@ -301,10 +337,6 @@ input,select{font-family:inherit;outline:none}
 .pagination button.active{background:var(--biru-600);color:#fff;border-color:var(--biru-600)}
 .pagination button:disabled{opacity:.4;cursor:not-allowed}
 .pagination .info{font-size:12px;color:var(--abu-500);margin:0 6px}
-
-/* Login help */
-.login-help{margin-top:14px;padding:10px 12px;background:var(--biru-100);border-radius:10px;font-size:11px;color:var(--biru-700);text-align:center;line-height:1.5}
-.login-help strong{display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
 
 @media(max-width:600px){
   .app-header .brand .text h2{font-size:14px}
@@ -321,7 +353,7 @@ input,select{font-family:inherit;outline:none}
 <div id="loginScreen">
   <div class="login-card">
     <div class="logo-wrap">
-      <img src="https://apxid.github.io/informatika/asa26/assets/tut.jpg" alt="Logo" />
+      <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
     </div>
     <h1>Cetak Kartu Peserta ASAS</h1>
     <p class="subtitle">SMP Negeri 1 Moga · Tahun Pelajaran 2026/2027</p>
@@ -338,11 +370,6 @@ input,select{font-family:inherit;outline:none}
       <span class="btn-label">Masuk Aplikasi</span>
     </button>
 
-    <div class="login-help">
-      <strong>Info Keamanan</strong>
-      Hanya panitia yang memiliki PIN yang dapat mengakses aplikasi ini. PIN tersimpan di sheet <b>CONFIG</b> spreadsheet.
-    </div>
-
     <p class="login-foot">© 2026 SMP Negeri 1 Moga · Sistem Cetak Kartu ASAS</p>
   </div>
 </div>
@@ -351,7 +378,7 @@ input,select{font-family:inherit;outline:none}
 <div id="app" class="hidden">
   <header class="app-header">
     <div class="brand">
-      <img src="https://apxid.github.io/informatika/asa26/assets/tut.jpg" alt="Logo" />
+      <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
       <div class="text">
         <h2>Cetak Kartu Peserta ASAS</h2>
         <p>SMP Negeri 1 Moga · TP 2026/2027</p>
@@ -443,7 +470,11 @@ input,select{font-family:inherit;outline:none}
   </main>
 
   <footer class="app-footer">
-    <strong>Sistem Cetak Kartu Peserta ASAS</strong> · SMP Negeri 1 Moga · 1 lembar F4 = 4 peserta (kiri: biodata, kanan: jadwal)
+    <span><strong>Sistem Cetak Kartu Peserta ASAS</strong> · SMP Negeri 1 Moga</span>
+    <a class="about-link" id="aboutLink" title="Tentang Aplikasi">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      About
+    </a>
   </footer>
 </div>
 
@@ -507,6 +538,38 @@ input,select{font-family:inherit;outline:none}
   </div>
 </div>
 
+<!-- ============ ABOUT MODAL ============ -->
+<div id="aboutModal" class="modal-backdrop hidden">
+  <div class="modal-box sm">
+    <div class="modal-header">
+      <h3>Tentang Aplikasi</h3>
+      <button class="close" data-close-about>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="about-box">
+        <img class="about-logo" src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <h2>Aplikasi Cetak Kartu Asas</h2>
+        <div class="info-row">
+          <span class="lbl">Developer</span>
+          <span class="val">MB</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Build</span>
+          <span class="val">14 November 2026</span>
+        </div>
+        <div class="link-row">
+          <div style="font-size:11px;color:var(--abu-500);margin-bottom:6px;text-align:left">Link:</div>
+          <a href="https://lynk.id/mb_dprint" target="_blank" rel="noopener">lynk.id/mb_dprint</a>
+          <div class="copy-hint">Klik link untuk membuka di tab baru</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" data-close-about style="width:100%">Tutup</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ ALERT CONTAINER ============ -->
 <div id="alertContainer"></div>
 
@@ -524,8 +587,10 @@ input,select{font-family:inherit;outline:none}
    KONFIGURASI
    ========================================================= */
 const CONFIG = {
+  // URL Exec Google Apps Script yang sudah di-deploy
   EXEC_URL: "https://script.google.com/macros/s/AKfycbw9PnmZ7KTAnOWAZfXAL3_T261h-xcb7jwsLBqMZmb-Ii_5LnlJp-w4s80CYxpPQI7ovA/exec",
-  LOGO_DEFAULT: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
+  LOGO_DEFAULT: "https://yanuar-moga.github.io/assets/logo.jpg",
+  LOGO_FALLBACK: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
   DEFAULT_YEAR: "2026/2027",
   DEFAULT_PRINCIPAL: "Dariah, S.Pd., M.Pd.",
@@ -536,7 +601,6 @@ const CONFIG = {
 
 /* =========================================================
    JADWAL ASESMEN SUMATIF AKHIR SEMESTER
-   Sama untuk semua peserta (dari gambar referensi)
    ========================================================= */
 const SCHEDULE = [
   { no:'1.', hari:'Senin, 7 Desember 2026', sessions:[
@@ -576,7 +640,7 @@ const STATE = {
   config: {},
   settings: loadSettings(),
   currentPage: 1,
-  perPageOnScreen: 4, // 4 peserta units per preview page
+  perPageOnScreen: 4,
 };
 
 /* =========================================================
@@ -693,29 +757,14 @@ async function doLogin(){
   btn.disabled = true;
   label.innerHTML = '<span class="spinner"></span>Memverifikasi...';
   try{
-    if(!getExecUrl() || getExecUrl().startsWith('GANTI_')){
-      if(pin === '54321'){
-        showAlert({
-          type:'warning', title:'Mode Pratinjau',
-          message:'URL Exec GAS belum diisi. Anda login dengan PIN default (54321). Beberapa fitur (memuat data dari spreadsheet) tidak akan berfungsi sampai URL exec diisi di Pengaturan.',
-          autoClose:5000
-        });
-        STATE.authenticated = true;
-        sessionStorage.setItem('asas_auth','1');
-        showApp();
-      } else {
-        throw new Error('URL Exec belum diisi & PIN salah.');
-      }
+    const res = await callGas('verifyPin', {pin:pin});
+    if(res && res.success){
+      STATE.authenticated = true;
+      sessionStorage.setItem('asas_auth','1');
+      showApp();
+      await loadConfig();
     } else {
-      const res = await callGas('verifyPin', {pin:pin});
-      if(res && res.success){
-        STATE.authenticated = true;
-        sessionStorage.setItem('asas_auth','1');
-        showApp();
-        await loadConfig();
-      } else {
-        throw new Error('PIN salah. Coba lagi.');
-      }
+      throw new Error('PIN salah. Coba lagi.');
     }
   }catch(e){
     document.getElementById('pinInput').classList.add('error');
@@ -833,7 +882,7 @@ function renderStats(){
 }
 
 /* =========================================================
-   RENDER PREVIEW (on-screen) — show peserta units
+   RENDER PREVIEW (on-screen)
    ========================================================= */
 function renderPreview(){
   const body = document.getElementById('previewBody');
@@ -856,9 +905,7 @@ function renderPreview(){
   const pageData = STATE.filtered.slice(start, end);
 
   let html = '<div class="preview-list">';
-  pageData.forEach((s,i)=>{
-    html += renderPesertaUnit(s, false);
-  });
+  pageData.forEach((s)=>{ html += renderPesertaUnit(s, false); });
   html += '</div>';
   body.innerHTML = html;
 
@@ -914,7 +961,7 @@ function renderLeftCard(s){
   return `
     <div class="card">
       <div class="card-head">
-        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
         <div class="center">
           <div class="t1">KARTU PESERTA</div>
           <div class="t2">ASESMEN SUMATIF AKHIR SEMESTER</div>
@@ -955,7 +1002,7 @@ function renderRightCard(s){
   return `
     <div class="card">
       <div class="card-head">
-        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
         <div class="center">
           <div class="t1">KARTU PESERTA</div>
           <div class="t2">ASESMEN SUMATIF AKHIR SEMESTER</div>
@@ -967,6 +1014,9 @@ function renderRightCard(s){
 
       <div class="sched-title">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
       <table class="sched-table">
+        <colgroup>
+          <col class="c-no"/><col class="c-hari"/><col class="c-waktu"/><col class="c-mapel"/><col class="c-ket"/>
+        </colgroup>
         <thead>
           <tr>
             <th>NO</th>
@@ -1003,7 +1053,7 @@ function renderLeftCardPrint(s){
   return `
     <div class="pcard">
       <div class="phead">
-        <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
         <div class="pcenter">
           <div class="pt1">KARTU PESERTA</div>
           <div class="pt2">ASESMEN SUMATIF AKHIR SEMESTER</div>
@@ -1044,7 +1094,7 @@ function renderRightCardPrint(s){
   return `
     <div class="pcard">
       <div class="phead">
-        <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
         <div class="pcenter">
           <div class="pt1">KARTU PESERTA</div>
           <div class="pt2">ASESMEN SUMATIF AKHIR SEMESTER</div>
@@ -1056,6 +1106,9 @@ function renderRightCardPrint(s){
 
       <div class="pstitle">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
       <table class="ptable">
+        <colgroup>
+          <col class="c-no"/><col class="c-hari"/><col class="c-waktu"/><col class="c-mapel"/><col class="c-ket"/>
+        </colgroup>
         <thead>
           <tr>
             <th>NO</th>
@@ -1166,6 +1219,12 @@ function saveSettingsFromForm(){
 }
 
 /* =========================================================
+   ABOUT MODAL
+   ========================================================= */
+function openAbout(){ document.getElementById('aboutModal').classList.remove('hidden'); }
+function closeAbout(){ document.getElementById('aboutModal').classList.add('hidden'); }
+
+/* =========================================================
    EVENT BINDINGS
    ========================================================= */
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -1202,6 +1261,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('btnSaveSettings').addEventListener('click', saveSettingsFromForm);
   document.getElementById('settingsModal').addEventListener('click', e=>{
     if(e.target.id==='settingsModal') closeSettings();
+  });
+
+  // About
+  document.getElementById('aboutLink').addEventListener('click', openAbout);
+  document.querySelectorAll('[data-close-about]').forEach(el=>el.addEventListener('click', closeAbout));
+  document.getElementById('aboutModal').addEventListener('click', e=>{
+    if(e.target.id==='aboutModal') closeAbout();
   });
 
   if(sessionStorage.getItem('asas_auth')==='1'){
