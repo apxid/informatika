@@ -356,6 +356,21 @@
     }
     .btn-tampilkan:hover { transform: translateY(-2px); }
     .btn-tampilkan:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* Tombol "Buka Link Dokumen" — untuk proyektor (buka link GDocs langsung di tab baru) */
+    .siswa-result .btn-buka-link {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: #fff; border: none; padding: 14px 26px;
+      border-radius: 12px; font-size: 15px; font-weight: 900;
+      cursor: pointer; box-shadow: 0 10px 22px -8px rgba(37,99,235,.6);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s, opacity .15s;
+    }
+    .btn-buka-link:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -10px rgba(37,99,235,.7); color: #fff; }
+    .btn-buka-link.disabled { opacity: .45; cursor: not-allowed; transform: none; pointer-events: none; }
+
     .siswa-result .btn-acak-lagi {
       background: rgba(255,255,255,.2); color: #fff;
       border: 1px solid rgba(255,255,255,.4);
@@ -673,6 +688,9 @@
             <button class="btn-tampilkan" id="btnTampilkan" onclick="tampilkanKeSiswa()">
               <span style="font-size: 18px;">📢</span> Tampilkan ke Siswa
             </button>
+            <a class="btn-buka-link disabled" id="btnBukaLink" href="#" target="_blank" rel="noopener" onclick="return confirmBukaLink();" title="Buka dokumen hasil pengerjaan kelompok terpilih di tab baru untuk ditampilkan via proyektor">
+              <span style="font-size: 18px;">🔗</span> Buka Link Dokumen (Proyektor)
+            </a>
             <button class="btn-acak-lagi" onclick="acakKelompokPresentation()">
               🎲 Acak Lagi
             </button>
@@ -1539,8 +1557,10 @@
 
       // Reset state tombol tampilkan/stop berdasarkan status broadcast aktif
       updateTombolTampilkanState();
+      // Update tombol "Buka Link Dokumen" dengan link kelompok terpilih
+      updateBukaLinkButtonState();
 
-      showAlertPresentasi('success', '✅ Kelompok terpilih: ' + g.namaKelompok + ' (' + g.kelas + ', ' + anggotaArr.length + ' anggota). Tekan "Tampilkan ke Siswa" untuk broadcast.');
+      showAlertPresentasi('success', '✅ Kelompok terpilih: ' + g.namaKelompok + ' (' + g.kelas + ', ' + anggotaArr.length + ' anggota). Tekan "Tampilkan ke Siswa" untuk broadcast, atau "Buka Link Dokumen" untuk menampilkan hasil kerja kelompok via proyektor.');
       result.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (err) {
       btn.disabled = false;
@@ -1552,6 +1572,35 @@
   // Backward-compat alias: fungsi lama `acakSiswaPresentation` tetap tersedia
   // (jika ada tombol/cache browser yang masih panggil versi lama)
   async function acakSiswaPresentation() { return acakKelompokPresentation(); }
+
+  /* ---- Tombol "Buka Link Dokumen" → buka link GDocs di tab baru (untuk proyektor) ----
+     Karena pakai <a target="_blank">, browser otomatis buka di tab baru.
+     Fungsi ini hanya validasi: kalau belum ada kelompok/link, batalkan navigasi
+     dan tampilkan alert. */
+  function confirmBukaLink() {
+    if (!currentPickedGroup || !currentPickedGroup.linkGDocs) {
+      showAlertPresentasi('error', '⚠️ Belum ada link dokumen untuk kelompok terpilih. Acak kelompok dulu.');
+      return false; // batalkan navigasi <a href>
+    }
+    // Link valid → biarkan browser membuka di tab baru (target="_blank")
+    return true;
+  }
+
+  /* ---- Set href & state tombol "Buka Link Dokumen" berdasarkan kelompok terpilih ---- */
+  function updateBukaLinkButtonState() {
+    const btn = document.getElementById('btnBukaLink');
+    if (!btn) return;
+    const link = currentPickedGroup && currentPickedGroup.linkGDocs ? String(currentPickedGroup.linkGDocs).trim() : '';
+    if (link) {
+      btn.href = link;
+      btn.classList.remove('disabled');
+      btn.title = 'Buka dokumen hasil pengerjaan kelompok "' + (currentPickedGroup.namaKelompok || '') + '" di tab baru untuk ditampilkan via proyektor: ' + link;
+    } else {
+      btn.href = '#';
+      btn.classList.add('disabled');
+      btn.title = 'Belum ada link dokumen untuk kelompok ini.';
+    }
+  }
 
   /* ---- Tombol "Tampilkan ke Siswa" → kirim broadcast (data kelompok) ---- */
   async function tampilkanKeSiswa() {
