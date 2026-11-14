@@ -125,42 +125,42 @@ input,select{font-family:inherit;outline:none}
 .peserta-unit{display:grid;grid-template-columns:1fr 1fr;gap:14px;animation:slideUp .4s both}
 @media(max-width:900px){.peserta-unit{grid-template-columns:1fr}}
 
-/* ===== KARTU (on-screen preview) — HITAM PUTIH ===== */
-.card{background:#fff;border:1.5px solid var(--hitam);border-radius:4px;padding:9px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.08);font-size:10px;line-height:1.3;display:flex;flex-direction:column;color:var(--hitam)}
-.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:4px;padding-bottom:4px;border-bottom:1.2px solid var(--hitam)}
-.card-head .logo{width:40px;height:40px;object-fit:cover;flex-shrink:0}
-.card-head .center{text-align:center;flex:1;line-height:1.15}
-.card-head .center .t1{font-size:11px;font-weight:900;color:var(--hitam);letter-spacing:.3px}
-.card-head .center .t2{font-size:9px;font-weight:700;color:var(--hitam)}
-.card-head .center .t3{font-size:9.5px;font-weight:800;color:var(--hitam);text-transform:uppercase;margin-top:1px}
-.card-head .center .t4{font-size:8.5px;font-weight:700;color:var(--hitam)}
-.card-head .roman{font-family:Arial,sans-serif;font-weight:bold;font-size:20px;color:var(--hitam);letter-spacing:1px;line-height:1;flex-shrink:0;width:30px;text-align:center}
+/* ===== KARTU (on-screen preview) — HITAM PUTIH, kotak tajam, Times New Roman ===== */
+.card{background:#fff;border:1.5px solid var(--hitam);border-radius:0;padding:9px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.08);font-size:10px;line-height:1.3;display:flex;flex-direction:column;color:var(--hitam);font-family:"Times New Roman",Times,serif}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px;padding-bottom:4px;border-bottom:2px solid var(--hitam)}
+.card-head .logo{width:42px;height:42px;object-fit:cover;flex-shrink:0}
+.card-head .center{text-align:center;flex:1;line-height:1.15;font-family:"Times New Roman",Times,serif}
+.card-head .center .t1{font-size:12px;font-weight:bold;color:var(--hitam);letter-spacing:.3px;font-family:"Times New Roman",Times,serif}
+.card-head .center .t2{font-size:9.5px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
+.card-head .center .t3{font-size:10px;font-weight:bold;color:var(--hitam);text-transform:uppercase;margin-top:1px;font-family:"Times New Roman",Times,serif}
+.card-head .center .t4{font-size:9px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
+.card-head .roman{font-family:Arial,sans-serif;font-weight:bold;font-size:32px;color:var(--hitam);letter-spacing:1px;line-height:1;flex-shrink:0;width:42px;text-align:center;height:42px;display:flex;align-items:center;justify-content:center}
 
-/* Biodata box - Times New Roman 11pt, 3 baris jarak dari header */
-.bio-box{border:1px solid var(--hitam);border-radius:2px;padding:4px 6px;margin-top:36px;margin-bottom:0;font-family:"Times New Roman",Times,serif;font-size:11pt}
+/* Biodata box - Times New Roman 11pt, 3 baris jarak dari header, line-height 1.3 */
+.bio-box{border:1px solid var(--hitam);border-radius:0;padding:5px 7px;margin-top:36px;margin-bottom:0;font-family:"Times New Roman",Times,serif;font-size:11pt}
 .bio-box table{width:100%;border-collapse:collapse;table-layout:fixed}
-.bio-box td{padding:1px 2px;font-size:11pt;line-height:1.2;vertical-align:top;font-family:"Times New Roman",Times,serif}
-.bio-box td.lbl{width:80px;font-weight:bold;color:var(--hitam)}
-.bio-box td.sep{width:8px;font-weight:bold;color:var(--hitam)}
-.bio-box td.val{font-weight:normal;color:var(--hitam);word-wrap:break-word;overflow-wrap:break-word;word-break:break-word}
+.bio-box td{padding:2px 3px;font-size:11pt;line-height:1.3;vertical-align:top;font-family:"Times New Roman",Times,serif}
+.bio-box td.lbl{width:80px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
+.bio-box td.sep{width:8px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
+.bio-box td.val{font-weight:normal;color:var(--hitam);word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
 
-/* Signature box - 3 baris jarak dari biodata, rata kiri di posisi kanan */
-.sign-box{margin-top:36px;margin-left:auto;width:55%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .date{font-size:10pt;color:var(--hitam);margin-bottom:1px;text-align:left}
-.sign-box .role{font-size:10pt;color:var(--hitam);margin-bottom:2px;text-align:left}
-.sign-box .ttd-img{width:100%;max-width:130px;height:38px;object-fit:contain;opacity:.95;margin:1px 0}
-.sign-box .ttd-ph{width:100%;max-width:130px;height:26px;border-bottom:1.2px dotted var(--hitam)}
-.sign-box .name{font-size:10pt;font-weight:bold;color:var(--hitam);margin-top:1px;text-align:left}
-.sign-box .nip{font-size:9pt;color:var(--hitam);text-align:left}
+/* Signature box - 3 baris dari biodata, rata kiri di posisi kanan, 4 baris jarak Kepala Sekolah ke nama, tanpa garis dotted */
+.sign-box{margin-top:36px;margin-left:auto;width:42%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box .date{font-size:11pt;color:var(--hitam);margin-bottom:1px;text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box .role{font-size:11pt;color:var(--hitam);margin-bottom:2px;text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box .ttd-img{width:100%;max-width:140px;height:42px;object-fit:contain;opacity:.95;margin:1px 0}
+.sign-box .ttd-spacer{width:100%;max-width:140px;height:48px;margin:1px 0}
+.sign-box .name{font-size:11pt;font-weight:bold;color:var(--hitam);margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box .nip{font-size:10pt;color:var(--hitam);text-align:left;font-family:"Times New Roman",Times,serif}
 
-/* Right card - schedule */
-.sched-title{text-align:center;font-size:10px;font-weight:900;color:var(--hitam);margin-top:4px;margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
-.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1;table-layout:fixed}
-.sched-table th,.sched-table td{border:.8px solid var(--hitam);padding:2px 3px;vertical-align:middle}
-.sched-table th{background:#fff;font-weight:bold;color:var(--hitam);text-align:center;font-size:8px;padding:6px 3px;border-bottom:1.2px solid var(--hitam)}
-.sched-table td.c{text-align:center}
-.sched-table td.l{text-align:left}
-.sched-table td.ket{font-size:7.5px;font-style:italic;color:var(--hitam)}
+/* Right card - schedule (Times New Roman) */
+.sched-title{text-align:center;font-size:10px;font-weight:bold;color:var(--hitam);margin-top:4px;margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
+.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif}
+.sched-table th,.sched-table td{border:.8px solid var(--hitam);padding:2px 3px;vertical-align:middle;font-family:"Times New Roman",Times,serif}
+.sched-table th{background:#fff;font-weight:bold;color:var(--hitam);text-align:center;font-size:8px;padding:8px 3px;border-bottom:1.5px solid var(--hitam);font-family:"Times New Roman",Times,serif}
+.sched-table td.c{text-align:center;font-family:"Times New Roman",Times,serif}
+.sched-table td.l{text-align:left;font-family:"Times New Roman",Times,serif}
+.sched-table td.ket{font-size:7.5px;font-style:italic;color:var(--hitam);font-family:"Times New Roman",Times,serif}
 .sched-table col.c-no{width:8%}
 .sched-table col.c-hari{width:30%}
 .sched-table col.c-waktu{width:22%}
@@ -188,75 +188,88 @@ input,select{font-family:inherit;outline:none}
     display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;
     margin-bottom:2.5mm;page-break-inside:avoid;
     min-height:0;
+    position:relative;
   }
 
   .pcard{
-    border:1pt solid #000;border-radius:2pt;
+    border:1pt solid #000;border-radius:0;
     padding:3pt 4pt;box-sizing:border-box;
     display:flex;flex-direction:column;
     page-break-inside:avoid;overflow:hidden;
-    font-family:'Segoe UI',Arial,sans-serif;
+    font-family:"Times New Roman",Times,serif;
     color:#000;
   }
 
-  /* Header — logo tanpa kotak, romawi Arial bold hitam */
+  /* Header — logo tanpa kotak, romawi Arial bold hitam setinggi logo */
   .pcard .phead{
-    display:flex;justify-content:space-between;align-items:flex-start;gap:3pt;
-    padding-bottom:2pt;border-bottom:.8pt solid #000;
+    display:flex;justify-content:space-between;align-items:center;gap:3pt;
+    padding-bottom:2pt;border-bottom:1.5pt solid #000;
     margin-bottom:0;
   }
-  .pcard .phead .plogo{width:32pt;height:32pt;object-fit:cover;flex-shrink:0;border:none;border-radius:0}
-  .pcard .phead .pcenter{flex:1;text-align:center;line-height:1.1}
-  .pcard .phead .pcenter .pt1{font-size:9pt;font-weight:900;color:#000;letter-spacing:.2pt}
-  .pcard .phead .pcenter .pt2{font-size:7pt;font-weight:700;color:#000}
-  .pcard .phead .pcenter .pt3{font-size:7.5pt;font-weight:800;color:#000;text-transform:uppercase;margin-top:.5pt}
-  .pcard .phead .pcenter .pt4{font-size:6.5pt;font-weight:700;color:#000}
-  .pcard .phead .proman{font-family:Arial,sans-serif;font-weight:bold;font-size:14pt;color:#000;line-height:1;flex-shrink:0;width:20pt;text-align:center}
+  .pcard .phead .plogo{width:34pt;height:34pt;object-fit:cover;flex-shrink:0;border:none;border-radius:0}
+  .pcard .phead .pcenter{flex:1;text-align:center;line-height:1.1;font-family:"Times New Roman",Times,serif}
+  .pcard .phead .pcenter .pt1{font-size:9pt;font-weight:bold;color:#000;letter-spacing:.2pt;font-family:"Times New Roman",Times,serif}
+  .pcard .phead .pcenter .pt2{font-size:7pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .phead .pcenter .pt3{font-size:7.5pt;font-weight:bold;color:#000;text-transform:uppercase;margin-top:.5pt;font-family:"Times New Roman",Times,serif}
+  .pcard .phead .pcenter .pt4{font-size:6.5pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .phead .proman{font-family:Arial,sans-serif;font-weight:bold;font-size:24pt;color:#000;line-height:1;flex-shrink:0;width:34pt;text-align:center;height:34pt;display:flex;align-items:center;justify-content:center}
 
-  /* Biodata — Times New Roman 11pt, 3 baris jarak dari header */
+  /* Biodata — Times New Roman, 3 baris jarak dari header, line-height 1.3 */
   .pcard .pbio{
-    border:.6pt solid #000;border-radius:1pt;
+    border:.6pt solid #000;border-radius:0;
     padding:2pt 3pt;
     margin-top:18pt;  /* ~3 baris dari header */
     margin-bottom:0;
     font-family:"Times New Roman",Times,serif;
   }
   .pcard .pbio table{width:100%;border-collapse:collapse;table-layout:fixed}
-  .pcard .pbio td{padding:.4pt 1pt;font-size:8pt;line-height:1.15;vertical-align:top;font-family:"Times New Roman",Times,serif;color:#000}
-  .pcard .pbio td.lbl{width:50pt;font-weight:bold;color:#000}
-  .pcard .pbio td.sep{width:4pt;font-weight:bold;color:#000}
-  .pcard .pbio td.val{font-weight:normal;color:#000;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word}
+  .pcard .pbio td{padding:1pt 1pt;font-size:8pt;line-height:1.3;vertical-align:top;font-family:"Times New Roman",Times,serif;color:#000}
+  .pcard .pbio td.lbl{width:50pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .pbio td.sep{width:4pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .pbio td.val{font-weight:normal;color:#000;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
 
-  /* Signature — 3 baris dari biodata, rata kiri di posisi kanan */
+  /* Signature — 3 baris dari biodata, rata kiri di posisi kanan (40%), 4 baris jarak Kepala Sekolah ke nama, tanpa dotted */
   .pcard .psign{
     margin-top:18pt;  /* ~3 baris dari biodata */
     margin-left:auto;
-    width:60%;
+    width:40%;
     border:none;padding:0;
     display:flex;flex-direction:column;align-items:flex-start;text-align:left;
     font-family:"Times New Roman",Times,serif;
   }
-  .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left}
-  .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left}
+  .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left;font-family:"Times New Roman",Times,serif}
+  .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left;font-family:"Times New Roman",Times,serif}
   .pcard .psign .pttd-img{width:100%;max-width:60pt;height:22pt;object-fit:contain;margin:0}
-  .pcard .psign .pttd-ph{width:100%;max-width:60pt;height:16pt;border-bottom:.6pt dotted #000}
-  .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:.5pt;text-align:left}
-  .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left}
+  .pcard .psign .pttd-spacer{width:100%;max-width:60pt;height:28pt;margin:0}
+  .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
+  .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif}
 
   /* Schedule — header row lebih tinggi, kolom fit-content */
-  .pcard .pstitle{text-align:center;font-size:7pt;font-weight:900;color:#000;margin-top:3pt;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase}
-  .pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed}
+  .pcard .pstitle{text-align:center;font-size:7pt;font-weight:bold;color:#000;margin-top:3pt;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif}
   .pcard .ptable col.c-no{width:7%}
   .pcard .ptable col.c-hari{width:30%}
   .pcard .ptable col.c-waktu{width:22%}
   .pcard .ptable col.c-mapel{width:27%}
   .pcard .ptable col.c-ket{width:14%}
-  .pcard .ptable th,.pcard .ptable td{border:.5pt solid #000;padding:1pt 1.5pt;vertical-align:middle;font-size:6pt;line-height:1.1;color:#000}
-  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:5.8pt;padding:3.5pt 1.5pt;border-bottom:.8pt solid #000}
-  .pcard .ptable td.c{text-align:center}
-  .pcard .ptable td.l{text-align:left}
-  .pcard .ptable td.ket{font-size:5.5pt;font-style:italic;color:#000}
-  .pcard .ptable td.no{font-weight:bold;text-align:center}
+  .pcard .ptable th,.pcard .ptable td{border:.5pt solid #000;padding:1pt 1.5pt;vertical-align:middle;font-size:6pt;line-height:1.2;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:5.8pt;padding:5pt 1.5pt;border-bottom:1pt solid #000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable td.c{text-align:center;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable td.l{text-align:left;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable td.ket{font-size:5.5pt;font-style:italic;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable td.no{font-weight:bold;text-align:center;font-family:"Times New Roman",Times,serif}
+
+  /* Garis putus-putus pembatas potong kertas
+     Setiap F4 = 4 unit peserta (1 unit = 1 baris)
+     Garis: (1) atas unit 1, (2) atas unit 2 = bawah unit 1,
+     (3) atas unit 3 = bawah unit 2, (4) atas unit 4 = bawah unit 3,
+     (5) bawah unit 4
+  */
+  .cut-line{
+    border:none;border-top:.5pt dashed #000;
+    height:0;margin:0;padding:0;
+    page-break-inside:avoid;
+  }
 }
 
 /* ===== MODAL ===== */
@@ -955,8 +968,8 @@ function renderLeftCard(s){
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
   const ttdHtml = ttdUrl
-    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'ttd-ph\\'></div>'"/>`
-    : `<div class="ttd-ph"></div>`;
+    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'ttd-spacer\\'></div>'"/>`
+    : `<div class="ttd-spacer"></div>`;
 
   return `
     <div class="card">
@@ -1047,8 +1060,8 @@ function renderLeftCardPrint(s){
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
   const ttdHtml = ttdUrl
-    ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'pttd-ph\\'></div>'"/>`
-    : `<div class="pttd-ph"></div>`;
+    ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'pttd-spacer\\'></div>'"/>`
+    : `<div class="pttd-spacer"></div>`;
 
   return `
     <div class="pcard">
@@ -1159,13 +1172,24 @@ function printCards(){
   for(let i=0; i<STATE.filtered.length; i+=CONFIG.PESERTA_PER_PAGE){
     const pagePeserta = STATE.filtered.slice(i, i+CONFIG.PESERTA_PER_PAGE);
     html += '<div class="print-page">';
-    pagePeserta.forEach(s=>{ html += renderPesertaUnit(s, true); });
+    // 5 garis putus-putus pembatas potong kertas:
+    //   (1) atas unit 1
+    //   (2) atas unit 2 = bawah unit 1
+    //   (3) atas unit 3 = bawah unit 2
+    //   (4) atas unit 4 = bawah unit 3
+    //   (5) bawah unit 4
+    html += '<hr class="cut-line"/>';  // (1) atas unit 1
+    pagePeserta.forEach((s, idx) => {
+      html += renderPesertaUnit(s, true);
+      // Setelah unit 1 → (2); setelah unit 2 → (3); setelah unit 3 → (4); setelah unit 4 → (5)
+      html += '<hr class="cut-line"/>';
+    });
     html += '</div>';
   }
   printArea.innerHTML = html;
   showAlert({
     type:'info', title:'Siap Cetak',
-    message:`${STATE.filtered.length} peserta akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4. Setiap halaman berisi 4 peserta (kartu kiri = biodata, kartu kanan = jadwal). Pilih "Save as PDF", ukuran Folio/F4 (215×330 mm), margin None.`,
+    message:`${STATE.filtered.length} peserta akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4. Setiap halaman berisi 4 peserta (kartu kiri = biodata, kartu kanan = jadwal) dengan 5 garis putus-putus pembatas potong kertas. Pilih "Save as PDF", ukuran Folio/F4 (215×330 mm), margin None.`,
     confirmText:'Buka Dialog Cetak',
     cancelText:'Batal'
   }).then(ok=>{
