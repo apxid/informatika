@@ -298,40 +298,123 @@ input,select{font-family:inherit;outline:none}
     text-align:center;color:#000;
     page-break-inside:avoid;
   }
-  /* Title: Arial Bold, sangat besar */
+  /* Title: Arial Black, sangat besar dan tebal */
   body.printing-labels .label-card .room-title{
-    font-family:Arial,sans-serif;
-    font-weight:bold;
-    font-size:60pt;color:#000;
-    margin-bottom:6mm;
+    font-family:"Arial Black",Arial,sans-serif;
+    font-weight:900;
+    font-size:96pt;color:#000;
+    margin-bottom:8mm;
     letter-spacing:2pt;
     line-height:1;
   }
-  /* Subtitle: Arial (regular) */
+  /* Subtitle: Arial Bold, lebih besar */
   body.printing-labels .label-card .room-subtitle{
     font-family:Arial,sans-serif;
-    font-weight:normal;
-    font-size:18pt;color:#000;
-    margin-bottom:10mm;
-    letter-spacing:.5pt;
+    font-weight:bold;
+    font-size:28pt;color:#000;
+    margin-bottom:14mm;
+    letter-spacing:1pt;
   }
-  /* Range info: Arial Bold, lebih kecil dari title */
+  /* Range info: Arial Bold, sangat besar supaya jelas terbaca */
   body.printing-labels .label-card .room-info{
     font-family:Arial,sans-serif;
     font-weight:bold;
-    font-size:22pt;line-height:1.6;color:#000;
-    margin-bottom:4mm;
+    font-size:36pt;line-height:1.5;color:#000;
+    margin-bottom:6mm;
   }
   body.printing-labels .label-card .room-info .kelas{
     font-family:Arial,sans-serif;
     font-weight:bold;
   }
-  /* School name: Arial italic kecil */
+  /* School name: Arial italic */
   body.printing-labels .label-card .school-name{
     font-family:Arial,sans-serif;
     font-style:italic;
-    font-size:14pt;color:#000;
-    margin-top:8mm;
+    font-size:18pt;color:#000;
+    margin-top:12mm;
+  }
+}
+
+/* ===== MEJA LABEL PRINT CSS (F4 portrait, 2 kolom × 16 baris) ===== */
+.meja-print-only{display:none}
+@media print{
+  body.printing-meja #app,
+  body.printing-meja .app-header,
+  body.printing-meja .app-main,
+  body.printing-meja .app-footer,
+  body.printing-meja #loginScreen,
+  body.printing-meja #alertContainer,
+  body.printing-meja #loadingOverlay,
+  body.printing-meja #settingsModal,
+  body.printing-meja #aboutModal,
+  body.printing-meja #printArea,
+  body.printing-meja #labelPrintArea{display:none!important}
+  body.printing-meja #mejaPrintArea{display:block!important}
+  body.printing-meja .meja-print-only{display:block}
+
+  body.printing-meja .meja-page{
+    width:215mm;height:330mm;
+    page-break-after:always;page-break-inside:avoid;
+    display:flex;flex-direction:column;
+    padding:8mm 10mm;box-sizing:border-box;
+  }
+  body.printing-meja .meja-page:last-child{page-break-after:auto}
+
+  body.printing-meja .meja-header{
+    text-align:center;
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+    color:#000;
+    margin-bottom:4mm;
+    padding-bottom:2mm;
+    border-bottom:1pt solid #000;
+  }
+  body.printing-meja .meja-header .meja-title{
+    font-size:18pt;
+    font-family:"Arial Black",Arial,sans-serif;
+    font-weight:900;
+    margin-bottom:1mm;
+  }
+  body.printing-meja .meja-header .meja-sub{
+    font-size:12pt;
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+  }
+
+  body.printing-meja .meja-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3mm;
+    flex:1;
+  }
+  body.printing-meja .meja-col{
+    display:grid;
+    grid-template-rows:repeat(16,1fr);
+    gap:2mm;
+  }
+  body.printing-meja .meja-cell{
+    border:1.5pt solid #000;
+    border-radius:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Arial Black",Arial,sans-serif;
+    font-weight:900;
+    font-size:42pt;
+    color:#000;
+    text-align:center;
+    page-break-inside:avoid;
+  }
+  body.printing-meja .meja-col-title{
+    text-align:center;
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+    font-size:11pt;
+    color:#000;
+    margin-bottom:2mm;
+    padding:1mm 0;
+    border:1pt solid #000;
+    background:#fff;
   }
 }
 
@@ -511,6 +594,10 @@ input,select{font-family:inherit;outline:none}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4v10l8 4 8-4z"/><path d="M12 22V12"/><path d="M4 7l8 5 8-5"/></svg>
           Cetak Label Ruang
         </button>
+        <button class="btn-ghost" id="btnMeja" title="Cetak No Peserta untuk Meja (F4 Portrait, 2 kolom × 16 baris)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Cetak No Meja
+        </button>
       </div>
     </div>
 
@@ -665,6 +752,9 @@ input,select{font-family:inherit;outline:none}
 
 <!-- ============ LABEL PRINT AREA ============ -->
 <div id="labelPrintArea" class="label-print-only"></div>
+
+<!-- ============ MEJA LABEL PRINT AREA ============ -->
+<div id="mejaPrintArea" class="meja-print-only"></div>
 
 <script>
 /* =========================================================
@@ -1335,6 +1425,120 @@ async function printLabels(){
 }
 
 /* =========================================================
+   PRINT NO PESERTA MEJA (1 F4 per ruang, 2 kolom × 16 baris)
+   ========================================================= */
+async function printMejaLabels(){
+  if(!getExecUrl() || getExecUrl().startsWith('GANTI_')){
+    showAlert({type:'error', title:'URL Exec Belum Diisi', message:'Buka Pengaturan dan isi URL Exec GAS terlebih dahulu.'});
+    return;
+  }
+  showLoading('Memuat data ruang untuk nomor meja...');
+  try{
+    // First get all ruang labels to know all ruang IDs
+    const labelsRes = await callGas('getRuangLabels');
+    if(!labelsRes.success) throw new Error(labelsRes.error||'Gagal memuat daftar ruang');
+    const allRuang = labelsRes.labels || [];
+    if(allRuang.length === 0){
+      showAlert({type:'warning', title:'Tidak Ada Data', message:'Data ruang ujian tidak ditemukan.'});
+      return;
+    }
+
+    showAlert({
+      type:'info', title:'Pilih Ruang',
+      message:`Tersedia ${allRuang.length} ruang (R1-R${allRuang.length}). Pilih ruang yang akan dicetak nomor meja-nya, atau pilih "Semua Ruang" untuk cetak semua.`,
+      confirmText:'Cetak Semua Ruang',
+      cancelText:'Pilih Satu Ruang'
+    }).then(async(action)=>{
+      if(action){
+        await generateMejaLabels(allRuang);
+      } else {
+        // Show prompt for single ruang
+        const ruangOpts = allRuang.map(r=>`R${r.id} (${r.namaRuang})`).join('\n');
+        const input = prompt(`Masukkan nomor ruang (1-${allRuang.length}):\n\n${ruangOpts}`, '1');
+        if(!input) return;
+        const rId = parseInt(input.replace(/[^0-9]/g, ''), 10);
+        if(!rId || rId < 1 || rId > allRuang.length){
+          showAlert({type:'error', title:'Ruang Tidak Valid', message:'Nomor ruang harus antara 1 dan '+allRuang.length});
+          return;
+        }
+        const single = allRuang.find(r=>r.id===rId);
+        if(single) await generateMejaLabels([single]);
+      }
+    });
+  }catch(e){
+    showAlert({type:'error', title:'Gagal Memuat Data', message:e.message});
+  }finally{
+    hideLoading();
+  }
+}
+
+async function generateMejaLabels(ruangList){
+  showLoading('Membuat nomor meja untuk '+ruangList.length+' ruang...');
+  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+  const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
+  let html = '';
+
+  for(let i=0; i<ruangList.length; i++){
+    const ruang = ruangList[i];
+    try{
+      const res = await callGas('getRuangStudents', {ruangId: ruang.id});
+      if(!res.success) continue;
+      const kelasAStudents = res.kelasAStudents || [];
+      const kelasBStudents = res.kelasBStudents || [];
+
+      html += `<div class="meja-page">`;
+      html += `<div class="meja-header">
+        <div class="meja-title">RUANG ${escapeHtml(String(ruang.id))} (R${escapeHtml(String(ruang.id))})</div>
+        <div class="meja-sub">NOMOR PESERTA · RUANG UJIAN ASAS · ${escapeHtml(year)}</div>
+      </div>`;
+      html += `<div class="meja-grid">`;
+      // Kolom kiri = Kelas A (16 nomor)
+      html += `<div class="meja-col">`;
+      html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasA)} (${escapeHtml(ruang.rangeA||'-')})</div>`;
+      for(let r=0; r<16; r++){
+        const s = kelasAStudents[r];
+        const no = s ? s.noPeserta : '';
+        html += `<div class="meja-cell">${escapeHtml(String(no))}</div>`;
+      }
+      html += `</div>`;
+      // Kolom kanan = Kelas B (16 nomor)
+      html += `<div class="meja-col">`;
+      html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasB)} (${escapeHtml(ruang.rangeB||'-')})</div>`;
+      for(let r=0; r<16; r++){
+        const s = kelasBStudents[r];
+        const no = s ? s.noPeserta : '';
+        html += `<div class="meja-cell">${escapeHtml(String(no))}</div>`;
+      }
+      html += `</div>`;
+      html += `</div>`;
+      html += `</div>`;
+    }catch(e){
+      // Skip this ruang on error
+    }
+  }
+
+  const mejaArea = document.getElementById('mejaPrintArea');
+  mejaArea.innerHTML = html;
+  hideLoading();
+
+  showAlert({
+    type:'info', title:'Siap Cetak No Meja',
+    message:`${ruangList.length} ruang akan dicetak dalam ${ruangList.length} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta. Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.`,
+    confirmText:'Buka Dialog Cetak',
+    cancelText:'Batal'
+  }).then(ok=>{
+    if(ok){
+      document.body.classList.add('printing-meja');
+      const style = document.createElement('style');
+      style.id = 'meja-portrait-style';
+      style.textContent = '@media print { @page { size: 215mm 330mm; margin: 0; } }';
+      document.head.appendChild(style);
+      setTimeout(()=>window.print(), 300);
+    }
+  });
+}
+
+/* =========================================================
    SETTINGS FORM
    ========================================================= */
 function applySettingsToForm(){
@@ -1415,6 +1619,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('btnLoad').addEventListener('click', loadStudents);
   document.getElementById('btnPrint').addEventListener('click', printCards);
   document.getElementById('btnLabels').addEventListener('click', printLabels);
+  document.getElementById('btnMeja').addEventListener('click', printMejaLabels);
   document.getElementById('ruangFilter').addEventListener('change', applyFilters);
   document.getElementById('searchInput').addEventListener('input', applyFilters);
 
@@ -1444,9 +1649,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
 window.addEventListener('afterprint', ()=>{
   document.getElementById('printArea').innerHTML = '';
   document.getElementById('labelPrintArea').innerHTML = '';
+  document.getElementById('mejaPrintArea').innerHTML = '';
   document.body.classList.remove('printing-labels');
+  document.body.classList.remove('printing-meja');
   const ls = document.getElementById('label-landscape-style');
   if(ls) ls.remove();
+  const ms = document.getElementById('meja-portrait-style');
+  if(ms) ms.remove();
 });
 </script>
 </body>
