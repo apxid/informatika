@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Cetak Kartu Peserta ASAS · SMP Negeri 1 Moga</title>
-<link rel="icon" href="https://apxid.github.io/informatika/asa26/assets/tut.jpg" />
+<link rel="icon" href="https://yanuar-moga.github.io/assets/logo.jpg" />
 <style>
 /* =========================================================
    PALET & VARIABEL
@@ -523,7 +523,7 @@ input,select{font-family:inherit;outline:none}
 <div id="loginScreen">
   <div class="login-card">
     <div class="logo-wrap">
-      <img src="https://apxid.github.io/informatika/asa26/assets/tut.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+      <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
     </div>
     <h1>Cetak Kartu Peserta ASAS</h1>
     <p class="subtitle">SMP Negeri 1 Moga · Tahun Pelajaran 2026/2027</p>
@@ -548,7 +548,7 @@ input,select{font-family:inherit;outline:none}
 <div id="app" class="hidden">
   <header class="app-header">
     <div class="brand">
-      <img src="https://apxid.github.io/informatika/asa26/assets/tut.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+      <img src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
       <div class="text">
         <h2>Cetak Kartu Peserta ASAS</h2>
         <p>SMP Negeri 1 Moga · TP 2026/2027</p>
@@ -726,7 +726,7 @@ input,select{font-family:inherit;outline:none}
     </div>
     <div class="modal-body">
       <div class="about-box">
-        <img class="about-logo" src="https://apxid.github.io/informatika/asa26/assets/tut.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
+        <img class="about-logo" src="https://yanuar-moga.github.io/assets/logo.jpg" alt="Logo" onerror="this.src='https://apxid.github.io/informatika/asa26/assets/tut.jpg';"/>
         <h2>Aplikasi Cetak Kartu Asas</h2>
         <div class="info-row">
           <span class="lbl">Developer</span>
@@ -773,8 +773,11 @@ input,select{font-family:inherit;outline:none}
    ========================================================= */
 const CONFIG = {
   // URL Exec Google Apps Script yang sudah di-deploy
-  EXEC_URL: "https://script.google.com/macros/s/AKfycby_R6UdZrTfPCUWmrr8h4OpzGPwGWKtlqFHyNi8H6gZv8PmV2PoSdQfuSoNFUw7g2kD/exec",
-  LOGO_DEFAULT: "https://yanuar-moga.github.io/assets/logo.jpg",
+  EXEC_URL: "https://script.google.com/macros/s/AKfycbz1xUg9AQ8Bhbk9b-Wnxq85DEirNZDQ6GTG6V5tecjoTTNUPUB6JcHtkqowrbvQLVuA/exec",
+  // Logo aplikasi (login, dashboard, about) — yanuar-moga
+  LOGO_APP: "https://yanuar-moga.github.io/assets/logo.jpg",
+  // Logo khusus di kartu peserta (kiri atas kartu) — tut.jpg
+  LOGO_CARD: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   LOGO_FALLBACK: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
   DEFAULT_YEAR: "2026/2027",
@@ -840,7 +843,7 @@ function loadSettings(){
       principalName: s.principalName || CONFIG.DEFAULT_PRINCIPAL,
       principalNip: s.principalNip || CONFIG.DEFAULT_NIP,
       date: s.date || CONFIG.DEFAULT_DATE,
-      logoUrl: s.logoUrl || CONFIG.LOGO_DEFAULT,
+      logoUrl: s.logoUrl || CONFIG.LOGO_CARD,
       ttdUrl: s.ttdUrl || '',
       execUrl: s.execUrl || CONFIG.EXEC_URL,
     };
@@ -848,7 +851,7 @@ function loadSettings(){
     return {
       school: CONFIG.DEFAULT_SCHOOL, year: CONFIG.DEFAULT_YEAR,
       principalName: CONFIG.DEFAULT_PRINCIPAL, principalNip: CONFIG.DEFAULT_NIP,
-      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_DEFAULT, ttdUrl: '', execUrl: CONFIG.EXEC_URL
+      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_CARD, ttdUrl: '', execUrl: CONFIG.EXEC_URL
     };
   }
 }
@@ -1142,7 +1145,7 @@ function renderPesertaUnit(s, forPrint){
 function renderLeftCard(s){
   const roman = romanFromKelas(s.kelas);
   const kelasShort = shortKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
   const ttdUrl = STATE.settings.ttdUrl || '';
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
@@ -1191,7 +1194,7 @@ function renderLeftCard(s){
 /* ---- KARTU KANAN (screen) ---- */
 function renderRightCard(s){
   const roman = romanFromKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
 
@@ -1234,7 +1237,7 @@ function renderRightCard(s){
 function renderLeftCardPrint(s){
   const roman = romanFromKelas(s.kelas);
   const kelasShort = shortKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
   const ttdUrl = STATE.settings.ttdUrl || '';
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
@@ -1283,7 +1286,7 @@ function renderLeftCardPrint(s){
 /* ---- KARTU KANAN (print) ---- */
 function renderRightCardPrint(s){
   const roman = romanFromKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
 
@@ -1653,7 +1656,7 @@ function saveSettingsFromForm(){
   STATE.settings.principalName = document.getElementById('setPrincipalName').value.trim() || CONFIG.DEFAULT_PRINCIPAL;
   STATE.settings.principalNip = document.getElementById('setPrincipalNip').value.trim() || CONFIG.DEFAULT_NIP;
   STATE.settings.date = document.getElementById('setDate').value.trim() || CONFIG.DEFAULT_DATE;
-  STATE.settings.logoUrl = document.getElementById('setLogoUrl').value.trim() || CONFIG.LOGO_DEFAULT;
+  STATE.settings.logoUrl = document.getElementById('setLogoUrl').value.trim() || CONFIG.LOGO_CARD;
   STATE.settings.ttdUrl = document.getElementById('setTtdUrl').value.trim();
   STATE.settings.execUrl = document.getElementById('setExecUrl').value.trim() || CONFIG.EXEC_URL;
   saveSettings();
