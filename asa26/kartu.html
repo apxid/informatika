@@ -307,17 +307,23 @@ input,select{font-family:inherit;outline:none}
     letter-spacing:2pt;
     line-height:1;
     white-space:nowrap;
+    /* Auto-fit: jika teks panjang (R10+), shrink agar fit di kotak */
+    max-width:100%;
+    overflow:hidden;
   }
-  /* Subtitle: Arial Bold, sama panjang dengan title (stretch scaleX) */
+  /* Untuk ruang 10+ (2 digit), gunakan font lebih kecil agar fit */
+  body.printing-labels .label-card .room-title.long-title{
+    font-size:72pt;
+    letter-spacing:1pt;
+  }
+  /* Subtitle: Arial Bold, ukuran natural (tidak stretched) */
   body.printing-labels .label-card .room-subtitle{
     font-family:Arial,sans-serif;
     font-weight:bold;
-    font-size:28pt;color:#000;
+    font-size:24pt;color:#000;
     margin-bottom:14mm;
-    letter-spacing:1pt;
+    letter-spacing:.5pt;
     white-space:nowrap;
-    transform:scaleX(1.42);
-    transform-origin:center;
   }
   /* Range info: Arial Bold, sangat besar supaya jelas terbaca */
   body.printing-labels .label-card .room-info{
@@ -382,13 +388,13 @@ input,select{font-family:inherit;outline:none}
   body.printing-meja .meja-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:3mm;
+    gap:0;
     flex:1;
   }
   body.printing-meja .meja-col{
     display:grid;
     grid-template-rows:repeat(16,1fr);
-    gap:2mm;
+    gap:0;
   }
   body.printing-meja .meja-cell{
     border:1.5pt solid #000;
@@ -402,6 +408,20 @@ input,select{font-family:inherit;outline:none}
     color:#000;
     text-align:center;
     page-break-inside:avoid;
+    /* Nempel dengan cell atas/bawah: hanya border top+bottom tipis, kiri/kanan sesuai kolom */
+    margin:0;
+    box-sizing:border-box;
+  }
+  /* Kolom kiri: border kanan tipis (sudah ada di cell), kolom kanan: border kiri tipis */
+  body.printing-meja .meja-col:first-child .meja-cell{
+    border-right:.75pt solid #000;
+  }
+  body.printing-meja .meja-col:last-child .meja-cell{
+    border-left:.75pt solid #000;
+  }
+  /* Hilangkan double border antar cell vertikal (atas-bawah) */
+  body.printing-meja .meja-col .meja-cell + .meja-cell{
+    border-top:0;
   }
   body.printing-meja .meja-col-title{
     text-align:center;
@@ -1387,7 +1407,7 @@ async function printLabels(){
         const kelasBInfo = lbl.kelasB ? `<div class="room-info"><span class="kelas">Kelas ${escapeHtml(lbl.kelasB)}</span> : ${escapeHtml(lbl.rangeB||'-')}</div>` : '';
         html += `
           <div class="label-card">
-            <div class="room-title">RUANG ${escapeHtml(String(lbl.id))} (R${escapeHtml(String(lbl.id))})</div>
+            <div class="room-title${Number(lbl.id)>=10?' long-title':''}">RUANG ${escapeHtml(String(lbl.id))} (R${escapeHtml(String(lbl.id))})</div>
             <div class="room-subtitle">RUANG UJIAN ASAS · ${escapeHtml(year)}</div>
             ${kelasAInfo}
             ${kelasBInfo}
@@ -1473,20 +1493,19 @@ async function generateMejaLabels(ruangList){
   showLoading('Mempersiapkan data peserta...');
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
 
-  // Gunakan STATE.students yang sudah dimuat, atau fetch all jika kosong
-  let allStudents = STATE.students;
-  if (!allStudents || allStudents.length === 0) {
-    try {
-      showLoading('Memuat data peserta dari spreadsheet...');
-      const res = await callGas('getStudents', {kelas: 'all'});
-      if (!res.success) throw new Error(res.error || 'Gagal memuat data');
-      allStudents = res.students || [];
-      STATE.students = allStudents;
-    } catch(e) {
-      hideLoading();
-      showAlert({type:'error', title:'Gagal Memuat Data', message:'Tidak dapat memuat data peserta: ' + e.message + '. Pastikan URL Exec GAS sudah benar dan data sudah diisi di spreadsheet.'});
-      return;
-    }
+  // SELALU fetch all students (kelas 7+8+9) supaya kelas A dan B terisi lengkap
+  let allStudents = [];
+  try {
+    showLoading('Memuat data semua peserta dari spreadsheet...');
+    const res = await callGas('getStudents', {kelas: 'all'});
+    if (!res.success) throw new Error(res.error || 'Gagal memuat data');
+    allStudents = res.students || [];
+    // Update STATE supaya preview juga update
+    STATE.students = allStudents;
+  } catch(e) {
+    hideLoading();
+    showAlert({type:'error', title:'Gagal Memuat Data', message:'Tidak dapat memuat data peserta: ' + e.message + '. Pastikan URL Exec GAS sudah benar dan data sudah diisi di spreadsheet.'});
+    return;
   }
 
   if (allStudents.length === 0) {
@@ -1574,13 +1593,26 @@ async function generateMejaLabels(ruangList){
     return;
   }
 
+  // Debug info: berapa peserta per kelas per ruang
+  let debugInfo = '';
+  for (let i = 0; i < ruangList.length; i++) {
+    const ruang = ruangList[i];
+    const ruangStudents = allStudents.filter(s => Number(s.ruangId) === Number(ruang.id));
+    const normK = (s) => String(s||'').replace(/KELAS\s*/i,'').replace(/\s+/g,'').trim().toUpperCase();
+    const kA = normK(ruang.kelasA);
+    const kB = normK(ruang.kelasB);
+    const aStudents = ruangStudents.filter(s => normK(s.kelasShort) === kA);
+    const bStudents = ruangStudents.filter(s => normK(s.kelasShort) === kB);
+    debugInfo += `R${ruang.id}: ${aStudents.length}+${bStudents.length} `;
+  }
+
   const mejaArea = document.getElementById('mejaPrintArea');
   mejaArea.innerHTML = html;
 
   const warnMsg = totalErrors > 0 ? ` (${totalErrors} ruang dilewati karena tidak ada data)` : '';
   showAlert({
     type: 'info', title: 'Siap Cetak No Meja',
-    message: `${totalGenerated} ruang akan dicetak dalam ${totalGenerated} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta.${warnMsg} Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.`,
+    message: `${totalGenerated} ruang akan dicetak dalam ${totalGenerated} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta.${warnMsg} Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.\n\nDebug: ${debugInfo}`,
     confirmText: 'Buka Dialog Cetak',
     cancelText: 'Batal'
   }).then(ok => {
