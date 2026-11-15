@@ -773,7 +773,7 @@ input,select{font-family:inherit;outline:none}
    ========================================================= */
 const CONFIG = {
   // URL Exec Google Apps Script yang sudah di-deploy
-  EXEC_URL: "https://script.google.com/macros/s/AKfycbxpk65oz8o9UWv7D3smIxlOvHUAjt0ZDpkkwFCOKdk9EzXkq95O1NifvzIRqVae7wA8/exec",
+  EXEC_URL: "https://script.google.com/macros/s/AKfycbzJ0A9IN7R2NdpvfNIFVv51W1E7BRQOksTFM7A5Km3cSSJRPPYEPMqu476Wcfd59BEV/exec",
   LOGO_DEFAULT: "https://yanuar-moga.github.io/assets/logo.jpg",
   LOGO_FALLBACK: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
@@ -1547,9 +1547,9 @@ async function generateMejaLabels(ruangList){
       kelasBStudents = kelasBStudents.slice(0, 16);
     }
 
-    // Sort by urut/noPeserta
-    kelasAStudents.sort((a, b) => Number(a.urut || 0) - Number(b.urut || 0));
-    kelasBStudents.sort((a, b) => Number(a.urut || 0) - Number(b.urut || 0));
+    // Sort by noPeserta (lebih reliable dari urut karena selalu unik)
+    kelasAStudents.sort((a, b) => Number(a.noPeserta || 0) - Number(b.noPeserta || 0));
+    kelasBStudents.sort((a, b) => Number(a.noPeserta || 0) - Number(b.noPeserta || 0));
 
     if (kelasAStudents.length === 0 && kelasBStudents.length === 0) {
       totalErrors++;
@@ -1596,26 +1596,58 @@ async function generateMejaLabels(ruangList){
     return;
   }
 
-  // Debug info: berapa peserta per kelas per ruang
+  // Debug info: berapa peserta per kelas per ruang + deteksi nomor hilang
   let debugInfo = '';
+  let gapWarnings = [];
   for (let i = 0; i < ruangList.length; i++) {
     const ruang = ruangList[i];
     const ruangStudents = allStudents.filter(s => Number(s.ruangId) === Number(ruang.id));
     const normK = (s) => String(s||'').replace(/KELAS\s*/i,'').replace(/\s+/g,'').trim().toUpperCase();
     const kA = normK(ruang.kelasA);
     const kB = normK(ruang.kelasB);
-    const aStudents = ruangStudents.filter(s => normK(s.kelasShort) === kA);
-    const bStudents = ruangStudents.filter(s => normK(s.kelasShort) === kB);
+    const aStudents = ruangStudents.filter(s => normK(s.kelasShort) === kA).sort((a,b) => Number(a.noPeserta||0) - Number(b.noPeserta||0));
+    const bStudents = ruangStudents.filter(s => normK(s.kelasShort) === kB).sort((a,b) => Number(a.noPeserta||0) - Number(b.noPeserta||0));
     debugInfo += `R${ruang.id}: ${aStudents.length}+${bStudents.length} `;
+    
+    // Deteksi gap: jika range ada tapi siswa kurang dari 16, tampilkan nomor yang hilang
+    if (ruang.rangeA) {
+      const range = ruang.rangeA.split(' - ');
+      if (range.length === 2) {
+        const min = parseInt(range[0].trim());
+        const max = parseInt(range[1].trim());
+        const expected = [];
+        for (let n = min; n <= max; n++) expected.push(n);
+        const actual = aStudents.map(s => Number(s.noPeserta));
+        const missing = expected.filter(n => !actual.includes(n));
+        if (missing.length > 0) {
+          gapWarnings.push(`R${ruang.id} Kelas ${ruang.kelasA}: nomor ${missing.join(', ')} tidak ada di spreadsheet`);
+        }
+      }
+    }
+    if (ruang.rangeB) {
+      const range = ruang.rangeB.split(' - ');
+      if (range.length === 2) {
+        const min = parseInt(range[0].trim());
+        const max = parseInt(range[1].trim());
+        const expected = [];
+        for (let n = min; n <= max; n++) expected.push(n);
+        const actual = bStudents.map(s => Number(s.noPeserta));
+        const missing = expected.filter(n => !actual.includes(n));
+        if (missing.length > 0) {
+          gapWarnings.push(`R${ruang.id} Kelas ${ruang.kelasB}: nomor ${missing.join(', ')} tidak ada di spreadsheet`);
+        }
+      }
+    }
   }
 
   const mejaArea = document.getElementById('mejaPrintArea');
   mejaArea.innerHTML = html;
 
   const warnMsg = totalErrors > 0 ? ` (${totalErrors} ruang dilewati karena tidak ada data)` : '';
+  const gapMsg = gapWarnings.length > 0 ? `\n\n⚠️ Nomor hilang (cek spreadsheet):\n${gapWarnings.join('\n')}` : '';
   showAlert({
     type: 'info', title: 'Siap Cetak No Meja',
-    message: `${totalGenerated} ruang akan dicetak dalam ${totalGenerated} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta.${warnMsg} Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.\n\nDebug: ${debugInfo}`,
+    message: `${totalGenerated} ruang akan dicetak dalam ${totalGenerated} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta.${warnMsg} Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.\n\nDebug: ${debugInfo}${gapMsg}`,
     confirmText: 'Buka Dialog Cetak',
     cancelText: 'Batal'
   }).then(ok => {
