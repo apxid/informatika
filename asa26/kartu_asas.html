@@ -181,10 +181,13 @@ input,select{font-family:inherit;outline:none}
    ("Kepala Sekolah," + nama): z-index teks 1, gambar 3, pointer-events none.
    Gambar TIDAK memengaruhi layout sedikit pun. Spacer tinggi TETAP,
    jadi dengan/tanpa TTD posisi nama, NIP & dasar kartu tidak bergeser.
-   width 52% = blok teks lebih ke kanan; spacer 21pt = nama+NIP naik ~2 baris;
-   gambar 122×50pt, digeser kiri (left:-46pt). */
+   width 48% = blok teks di kanan (geser 2 kolom terakhir); margin-bottom
+   18.75pt = blok turun 2 baris dari posisi sebelumnya, jarak ke kotak bio
+   ±21.6pt (slack 40.4pt — tinggi kartu tidak berubah);
+   spacer 21pt = nama+NIP rapat di bawah "Kepala Sekolah,";
+   gambar 95×49pt rasio asli 636:328. */
 .pcard .psign{
-  margin-top:auto;margin-left:auto;width:52%;
+  margin-top:auto;margin-bottom:18.75pt;margin-left:auto;width:48%;
   border:none;padding:0;position:relative;
   display:flex;flex-direction:column;align-items:flex-start;text-align:left;
 }
