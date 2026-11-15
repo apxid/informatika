@@ -145,13 +145,13 @@ input,select{font-family:inherit;outline:none}
 .bio-box td.val{font-weight:normal;color:var(--hitam);word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
 
 /* Signature box - 3 baris dari biodata, rata kiri di posisi kanan, 4 baris jarak Kepala Sekolah ke nama, tanpa garis dotted */
-.sign-box{margin-top:36px;margin-left:auto;width:50%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box{margin-top:36px;margin-left:auto;width:55%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif;position:relative}
 .sign-box .date{font-size:11pt;color:var(--hitam);margin-bottom:1px;text-align:left;font-family:"Times New Roman",Times,serif}
 .sign-box .role{font-size:11pt;color:var(--hitam);margin-bottom:2px;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .ttd-img{width:100%;max-width:180px;height:62px;object-fit:contain;opacity:.95;margin:1px 0 1px -10px}
-.sign-box .ttd-spacer{width:100%;max-width:180px;height:68px;margin:1px 0 1px -10px}
-.sign-box .name{font-size:11pt;font-weight:bold;color:var(--hitam);margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .nip{font-size:10pt;color:var(--hitam);text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box .ttd-img{width:100%;max-width:220px;height:80px;object-fit:contain;opacity:.95;margin:1px 0 1px -40px;position:absolute;top:24px;left:0;z-index:10}
+.sign-box .ttd-spacer{width:100%;max-width:220px;height:80px;margin:1px 0 1px -40px}
+.sign-box .name{font-size:11pt;font-weight:bold;color:var(--hitam);margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
+.sign-box .nip{font-size:10pt;color:var(--hitam);text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
 
 /* Right card - schedule (Times New Roman) */
 .sched-title{text-align:center;font-size:10px;font-weight:bold;color:var(--hitam);margin-top:2px;margin-bottom:2px;letter-spacing:.3px;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
@@ -232,21 +232,22 @@ input,select{font-family:inherit;outline:none}
   .pcard .pbio td.sep{width:4pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
   .pcard .pbio td.val{font-weight:normal;color:#000;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
 
-  /* Signature — lebar lebih besar supaya TTD+stempel fit, posisi agak ke kiri */
+  /* Signature — TTD besar, agak ke kiri, di layer atas (overlap text) */
   .pcard .psign{
-    margin-top:18pt;  /* ~3 baris dari biodata */
+    margin-top:18pt;
     margin-left:auto;
-    width:50%;
+    width:55%;
     border:none;padding:0;
     display:flex;flex-direction:column;align-items:flex-start;text-align:left;
     font-family:"Times New Roman",Times,serif;
+    position:relative;
   }
-  .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .psign .pttd-img{width:100%;max-width:80pt;height:32pt;object-fit:contain;margin:0 0 0 -8pt}
-  .pcard .psign .pttd-spacer{width:100%;max-width:80pt;height:32pt;margin:0 0 0 -8pt}
-  .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif}
+  .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
+  .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
+  .pcard .psign .pttd-img{width:100%;max-width:95pt;height:38pt;object-fit:contain;margin:0 0 0 -25pt;position:absolute;top:12pt;left:0;z-index:10}
+  .pcard .psign .pttd-spacer{width:100%;max-width:95pt;height:38pt;margin:0 0 0 -25pt}
+  .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
+  .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
 
   /* Schedule — tabel langsung di bawah header, fit & proporsional */
   .pcard .pstitle{text-align:center;font-size:7pt;font-weight:bold;color:#000;margin-top:2pt;margin-bottom:1pt;letter-spacing:.2pt;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
@@ -706,6 +707,16 @@ input,select{font-family:inherit;outline:none}
         </div>
       </div>
       <div class="form-row">
+        <label>Tampilkan TTD Kepala Sekolah di Kartu</label>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--biru-700)">
+            <input type="checkbox" id="setTtdShow" style="width:20px;height:20px;cursor:pointer" checked />
+            Show TTD (tampilkan tanda tangan + stempel di kartu)
+          </label>
+        </div>
+        <div style="font-size:11px;color:var(--abu-500);margin-top:4px">Jika tidak dicentang, TTD tidak akan muncul di kartu peserta (hanya ruang kosong).</div>
+      </div>
+      <div class="form-row">
         <label>URL Exec Google Apps Script <span class="hint">(link backend)</span></label>
         <input type="url" id="setExecUrl" placeholder="https://script.google.com/macros/s/.../exec" />
       </div>
@@ -847,13 +858,14 @@ function loadSettings(){
       date: s.date || CONFIG.DEFAULT_DATE,
       logoUrl: s.logoUrl || CONFIG.LOGO_CARD,
       ttdUrl: s.ttdUrl || CONFIG.DEFAULT_TTD,
+      ttdShow: s.ttdShow !== undefined ? s.ttdShow : true,
       execUrl: s.execUrl || CONFIG.EXEC_URL,
     };
   }catch(e){
     return {
       school: CONFIG.DEFAULT_SCHOOL, year: CONFIG.DEFAULT_YEAR,
       principalName: CONFIG.DEFAULT_PRINCIPAL, principalNip: CONFIG.DEFAULT_NIP,
-      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_CARD, ttdUrl: CONFIG.DEFAULT_TTD, execUrl: CONFIG.EXEC_URL
+      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_CARD, ttdUrl: CONFIG.DEFAULT_TTD, ttdShow: true, execUrl: CONFIG.EXEC_URL
     };
   }
 }
@@ -1149,13 +1161,14 @@ function renderLeftCard(s){
   const kelasShort = shortKelas(s.kelas);
   const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
   const ttdUrl = STATE.settings.ttdUrl || CONFIG.DEFAULT_TTD;
+  const ttdShow = STATE.settings.ttdShow !== false;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
   const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
   const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
-  const ttdHtml = ttdUrl
+  const ttdHtml = (ttdUrl && ttdShow)
     ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'ttd-spacer\\'></div>'"/>`
     : `<div class="ttd-spacer"></div>`;
 
@@ -1240,13 +1253,14 @@ function renderLeftCardPrint(s){
   const kelasShort = shortKelas(s.kelas);
   const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
   const ttdUrl = STATE.settings.ttdUrl || CONFIG.DEFAULT_TTD;
+  const ttdShow = STATE.settings.ttdShow !== false;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
   const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
   const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
-  const ttdHtml = ttdUrl
+  const ttdHtml = (ttdUrl && ttdShow)
     ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'pttd-spacer\\'></div>'"/>`
     : `<div class="pttd-spacer"></div>`;
 
@@ -1631,6 +1645,7 @@ function applySettingsToForm(){
   document.getElementById('setDate').value = STATE.settings.date || '';
   document.getElementById('setLogoUrl').value = STATE.settings.logoUrl || '';
   document.getElementById('setTtdUrl').value = STATE.settings.ttdUrl || '';
+  document.getElementById('setTtdShow').checked = STATE.settings.ttdShow !== false;
   document.getElementById('setExecUrl').value = STATE.settings.execUrl || '';
   updateTtdPreview();
 }
@@ -1658,6 +1673,7 @@ function saveSettingsFromForm(){
   STATE.settings.date = document.getElementById('setDate').value.trim() || CONFIG.DEFAULT_DATE;
   STATE.settings.logoUrl = document.getElementById('setLogoUrl').value.trim() || CONFIG.LOGO_CARD;
   STATE.settings.ttdUrl = document.getElementById('setTtdUrl').value.trim();
+  STATE.settings.ttdShow = document.getElementById('setTtdShow').checked;
   STATE.settings.execUrl = document.getElementById('setExecUrl').value.trim() || CONFIG.EXEC_URL;
   saveSettings();
   closeSettings();
