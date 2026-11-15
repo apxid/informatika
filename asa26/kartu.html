@@ -264,7 +264,7 @@ input,select{font-family:inherit;outline:none}
   .pcard .ptable td.no{font-weight:bold;text-align:center;font-family:"Times New Roman",Times,serif}
 }
 
-/* ===== LABEL PRINT CSS (landscape F4) ===== */
+/* ===== LABEL PRINT CSS (landscape F4, 1 ruang per halaman) ===== */
 .label-print-only{display:none}
 @media print{
   body.printing-labels #app,
@@ -283,42 +283,55 @@ input,select{font-family:inherit;outline:none}
   body.printing-labels .label-page{
     width:330mm;height:215mm;
     page-break-after:always;page-break-inside:avoid;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    grid-template-rows:repeat(4,1fr);
-    gap:3mm;
-    padding:5mm;box-sizing:border-box;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:10mm 15mm;box-sizing:border-box;
   }
   body.printing-labels .label-page:last-child{page-break-after:auto}
 
   body.printing-labels .label-card{
-    border:1.5pt solid #000;border-radius:0;
-    padding:4mm 6mm;box-sizing:border-box;
+    border:2pt solid #000;border-radius:0;
+    padding:10mm 15mm;box-sizing:border-box;
+    width:100%;height:100%;
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;
-    font-family:"Times New Roman",Times,serif;
     text-align:center;color:#000;
     page-break-inside:avoid;
   }
+  /* Title: Arial Bold, sangat besar */
   body.printing-labels .label-card .room-title{
-    font-size:22pt;font-weight:bold;color:#000;
-    margin-bottom:3mm;font-family:"Times New Roman",Times,serif;
-    letter-spacing:1pt;
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+    font-size:60pt;color:#000;
+    margin-bottom:6mm;
+    letter-spacing:2pt;
+    line-height:1;
   }
+  /* Subtitle: Arial (regular) */
   body.printing-labels .label-card .room-subtitle{
-    font-size:10pt;color:#000;margin-bottom:4mm;
-    font-family:"Times New Roman",Times,serif;
+    font-family:Arial,sans-serif;
+    font-weight:normal;
+    font-size:18pt;color:#000;
+    margin-bottom:10mm;
+    letter-spacing:.5pt;
   }
+  /* Range info: Arial Bold, lebih kecil dari title */
   body.printing-labels .label-card .room-info{
-    font-size:13pt;line-height:1.8;color:#000;
-    font-family:"Times New Roman",Times,serif;
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+    font-size:22pt;line-height:1.6;color:#000;
+    margin-bottom:4mm;
   }
   body.printing-labels .label-card .room-info .kelas{
-    font-weight:bold;font-family:"Times New Roman",Times,serif;
+    font-family:Arial,sans-serif;
+    font-weight:bold;
   }
+  /* School name: Arial italic kecil */
   body.printing-labels .label-card .school-name{
-    font-size:9pt;color:#000;margin-top:4mm;
-    font-family:"Times New Roman",Times,serif;font-style:italic;
+    font-family:Arial,sans-serif;
+    font-style:italic;
+    font-size:14pt;color:#000;
+    margin-top:8mm;
   }
 }
 
@@ -659,7 +672,7 @@ input,select{font-family:inherit;outline:none}
    ========================================================= */
 const CONFIG = {
   // URL Exec Google Apps Script yang sudah di-deploy
-  EXEC_URL: "https://script.google.com/macros/s/AKfycbw9PnmZ7KTAnOWAZfXAL3_T261h-xcb7jwsLBqMZmb-Ii_5LnlJp-w4s80CYxpPQI7ovA/exec",
+  EXEC_URL: "https://script.google.com/macros/s/AKfycbwnhiQiGYP_dDUNtNqlQM9SR3lpMuONJUbd4fHY7oTTYvzYrd6s_gbfw2ANM9bZu26l/exec",
   LOGO_DEFAULT: "https://yanuar-moga.github.io/assets/logo.jpg",
   LOGO_FALLBACK: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
@@ -1275,7 +1288,7 @@ async function printLabels(){
     }
     const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
     const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
-    const LABELS_PER_PAGE = 8; // 2 kolom × 4 baris
+    const LABELS_PER_PAGE = 1; // 1 ruang per halaman F4 landscape
 
     let html = '';
     for(let i=0; i<labels.length; i+=LABELS_PER_PAGE){
@@ -1300,7 +1313,7 @@ async function printLabels(){
 
     showAlert({
       type:'info', title:'Siap Cetak Label',
-      message:`${labels.length} label ruang akan dicetak dalam ${Math.ceil(labels.length/LABELS_PER_PAGE)} halaman F4 Landscape (330×215 mm). Pilih "Save as PDF", orientation LANDSCAPE, ukuran Folio/F4, margin None.`,
+      message:`${labels.length} label ruang akan dicetak dalam ${labels.length} halaman F4 Landscape (330×215 mm), 1 ruang per halaman. Pilih "Save as PDF", orientation LANDSCAPE, ukuran Folio/F4, margin None.`,
       confirmText:'Buka Dialog Cetak',
       cancelText:'Batal'
     }).then(ok=>{
