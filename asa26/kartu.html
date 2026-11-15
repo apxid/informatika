@@ -290,7 +290,7 @@ input,select{font-family:inherit;outline:none}
   body.printing-labels .label-page:last-child{page-break-after:auto}
 
   body.printing-labels .label-card{
-    border:2pt solid #000;border-radius:0;
+    border:2pt solid #000;border-radius:8mm;
     padding:10mm 15mm;box-sizing:border-box;
     width:100%;height:100%;
     display:flex;flex-direction:column;
@@ -1529,10 +1529,20 @@ async function generateMejaLabels(ruangList){
     let kelasAStudents = ruangStudents.filter(s => normKelas(s.kelasShort) === ruangKelasA);
     let kelasBStudents = ruangStudents.filter(s => normKelas(s.kelasShort) === ruangKelasB);
 
-    // Fallback: if no match by kelasShort, split by urut (1-16 = A, 17-32 = B)
+    // Fallback 1: if no match by kelasShort, split by urut (1-16 = A, 17-32 = B)
     if (kelasAStudents.length === 0 && kelasBStudents.length === 0 && ruangStudents.length > 0) {
       kelasAStudents = ruangStudents.filter(s => Number(s.urut) <= 16);
       kelasBStudents = ruangStudents.filter(s => Number(s.urut) > 16);
+    }
+
+    // Fallback 2: if one column empty but other has >16, distribute evenly
+    if (kelasAStudents.length > 16 && kelasBStudents.length === 0) {
+      kelasBStudents = kelasAStudents.slice(16);
+      kelasAStudents = kelasAStudents.slice(0, 16);
+    }
+    if (kelasBStudents.length > 16 && kelasAStudents.length === 0) {
+      kelasAStudents = kelasBStudents.slice(16);
+      kelasBStudents = kelasBStudents.slice(0, 16);
     }
 
     // Sort by urut/noPeserta
