@@ -148,8 +148,8 @@ input,select{font-family:inherit;outline:none}
 .sign-box{margin-top:36px;margin-left:auto;width:55%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif;position:relative}
 .sign-box .date{font-size:11pt;color:var(--hitam);margin-bottom:1px;text-align:left;font-family:"Times New Roman",Times,serif}
 .sign-box .role{font-size:11pt;color:var(--hitam);margin-bottom:2px;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .ttd-img{width:100%;max-width:220px;height:80px;object-fit:contain;opacity:.95;margin:1px 0 1px -40px;position:absolute;top:24px;left:0;z-index:10}
-.sign-box .ttd-spacer{width:100%;max-width:220px;height:80px;margin:1px 0 1px -40px}
+.sign-box .ttd-img{width:100%;max-width:260px;height:95px;object-fit:contain;opacity:.95;margin:0;position:absolute;top:24px;left:-40px;z-index:10}
+.sign-box .ttd-spacer{width:100%;height:95px;margin:0}
 .sign-box .name{font-size:11pt;font-weight:bold;color:var(--hitam);margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
 .sign-box .nip{font-size:10pt;color:var(--hitam);text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
 
@@ -244,8 +244,8 @@ input,select{font-family:inherit;outline:none}
   }
   .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
   .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
-  .pcard .psign .pttd-img{width:100%;max-width:95pt;height:38pt;object-fit:contain;margin:0 0 0 -25pt;position:absolute;top:12pt;left:0;z-index:10}
-  .pcard .psign .pttd-spacer{width:100%;max-width:95pt;height:38pt;margin:0 0 0 -25pt}
+  .pcard .psign .pttd-img{width:100%;max-width:110pt;height:44pt;object-fit:contain;margin:0;position:absolute;top:12pt;left:-25pt;z-index:10}
+  .pcard .psign .pttd-spacer{width:100%;height:44pt;margin:0}
   .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
   .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif;position:relative;z-index:1}
 
@@ -1168,9 +1168,10 @@ function renderLeftCard(s){
   const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
-  const ttdHtml = (ttdUrl && ttdShow)
-    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'ttd-spacer\\'></div>'"/>`
-    : `<div class="ttd-spacer"></div>`;
+  const ttdImgHtml = (ttdUrl && ttdShow)
+    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.style.display='none'"/>`
+    : '';
+  const ttdSpacerHtml = `<div class="ttd-spacer"></div>`;
 
   return `
     <div class="card">
@@ -1198,7 +1199,7 @@ function renderLeftCard(s){
       <div class="sign-box">
         <div class="date">Moga, ${escapeHtml(date)}</div>
         <div class="role">Kepala Sekolah,</div>
-        ${ttdHtml}
+        ${ttdSpacerHtml}${ttdImgHtml}
         <div class="name">${escapeHtml(principalName)}</div>
         <div class="nip">NIP. ${escapeHtml(principalNip)}</div>
       </div>
@@ -1260,9 +1261,10 @@ function renderLeftCardPrint(s){
   const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
-  const ttdHtml = (ttdUrl && ttdShow)
-    ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'pttd-spacer\\'></div>'"/>`
-    : `<div class="pttd-spacer"></div>`;
+  const ttdImgHtml = (ttdUrl && ttdShow)
+    ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.style.display='none'"/>`
+    : '';
+  const ttdSpacerHtml = `<div class="pttd-spacer"></div>`;
 
   return `
     <div class="pcard">
@@ -1290,7 +1292,7 @@ function renderLeftCardPrint(s){
       <div class="psign">
         <div class="pdate">Moga, ${escapeHtml(date)}</div>
         <div class="prole">Kepala Sekolah,</div>
-        ${ttdHtml}
+        ${ttdSpacerHtml}${ttdImgHtml}
         <div class="pname">${escapeHtml(principalName)}</div>
         <div class="pnip">NIP. ${escapeHtml(principalNip)}</div>
       </div>
