@@ -145,11 +145,11 @@ input,select{font-family:inherit;outline:none}
 .bio-box td.val{font-weight:normal;color:var(--hitam);word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
 
 /* Signature box - 3 baris dari biodata, rata kiri di posisi kanan, 4 baris jarak Kepala Sekolah ke nama, tanpa garis dotted */
-.sign-box{margin-top:36px;margin-left:auto;width:42%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif}
+.sign-box{margin-top:36px;margin-left:auto;width:50%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif}
 .sign-box .date{font-size:11pt;color:var(--hitam);margin-bottom:1px;text-align:left;font-family:"Times New Roman",Times,serif}
 .sign-box .role{font-size:11pt;color:var(--hitam);margin-bottom:2px;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .ttd-img{width:100%;max-width:140px;height:42px;object-fit:contain;opacity:.95;margin:1px 0}
-.sign-box .ttd-spacer{width:100%;max-width:140px;height:48px;margin:1px 0}
+.sign-box .ttd-img{width:100%;max-width:180px;height:62px;object-fit:contain;opacity:.95;margin:1px 0 1px -10px}
+.sign-box .ttd-spacer{width:100%;max-width:180px;height:68px;margin:1px 0 1px -10px}
 .sign-box .name{font-size:11pt;font-weight:bold;color:var(--hitam);margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
 .sign-box .nip{font-size:10pt;color:var(--hitam);text-align:left;font-family:"Times New Roman",Times,serif}
 
@@ -232,19 +232,19 @@ input,select{font-family:inherit;outline:none}
   .pcard .pbio td.sep{width:4pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
   .pcard .pbio td.val{font-weight:normal;color:#000;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
 
-  /* Signature — 3 baris dari biodata, rata kiri di posisi kanan (40%), 4 baris jarak Kepala Sekolah ke nama, tanpa dotted */
+  /* Signature — lebar lebih besar supaya TTD+stempel fit, posisi agak ke kiri */
   .pcard .psign{
     margin-top:18pt;  /* ~3 baris dari biodata */
     margin-left:auto;
-    width:40%;
+    width:50%;
     border:none;padding:0;
     display:flex;flex-direction:column;align-items:flex-start;text-align:left;
     font-family:"Times New Roman",Times,serif;
   }
   .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left;font-family:"Times New Roman",Times,serif}
   .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .psign .pttd-img{width:100%;max-width:60pt;height:22pt;object-fit:contain;margin:0}
-  .pcard .psign .pttd-spacer{width:100%;max-width:60pt;height:28pt;margin:0}
+  .pcard .psign .pttd-img{width:100%;max-width:80pt;height:32pt;object-fit:contain;margin:0 0 0 -8pt}
+  .pcard .psign .pttd-spacer{width:100%;max-width:80pt;height:32pt;margin:0 0 0 -8pt}
   .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
   .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif}
 
@@ -779,6 +779,8 @@ const CONFIG = {
   // Logo khusus di kartu peserta (kiri atas kartu) — tut.jpg
   LOGO_CARD: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   LOGO_FALLBACK: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
+  // Default TTD Kepala Sekolah (dariah2.png)
+  DEFAULT_TTD: "https://apxid.github.io/informatika/asa26/assets/dariah2.png",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
   DEFAULT_YEAR: "2026/2027",
   DEFAULT_PRINCIPAL: "Dariah, S.Pd., M.Pd.",
@@ -844,14 +846,14 @@ function loadSettings(){
       principalNip: s.principalNip || CONFIG.DEFAULT_NIP,
       date: s.date || CONFIG.DEFAULT_DATE,
       logoUrl: s.logoUrl || CONFIG.LOGO_CARD,
-      ttdUrl: s.ttdUrl || '',
+      ttdUrl: s.ttdUrl || CONFIG.DEFAULT_TTD,
       execUrl: s.execUrl || CONFIG.EXEC_URL,
     };
   }catch(e){
     return {
       school: CONFIG.DEFAULT_SCHOOL, year: CONFIG.DEFAULT_YEAR,
       principalName: CONFIG.DEFAULT_PRINCIPAL, principalNip: CONFIG.DEFAULT_NIP,
-      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_CARD, ttdUrl: '', execUrl: CONFIG.EXEC_URL
+      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_CARD, ttdUrl: CONFIG.DEFAULT_TTD, execUrl: CONFIG.EXEC_URL
     };
   }
 }
@@ -1146,7 +1148,7 @@ function renderLeftCard(s){
   const roman = romanFromKelas(s.kelas);
   const kelasShort = shortKelas(s.kelas);
   const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
-  const ttdUrl = STATE.settings.ttdUrl || '';
+  const ttdUrl = STATE.settings.ttdUrl || CONFIG.DEFAULT_TTD;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
   const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
@@ -1237,7 +1239,7 @@ function renderLeftCardPrint(s){
   const roman = romanFromKelas(s.kelas);
   const kelasShort = shortKelas(s.kelas);
   const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
-  const ttdUrl = STATE.settings.ttdUrl || '';
+  const ttdUrl = STATE.settings.ttdUrl || CONFIG.DEFAULT_TTD;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
   const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
