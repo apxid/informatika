@@ -154,8 +154,8 @@ input,select{font-family:inherit;outline:none}
 .sign-box .nip{font-size:10pt;color:var(--hitam);text-align:left;font-family:"Times New Roman",Times,serif}
 
 /* Right card - schedule (Times New Roman) */
-.sched-title{text-align:center;font-size:10px;font-weight:bold;color:var(--hitam);margin-top:4px;margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
-.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif}
+.sched-title{text-align:center;font-size:10px;font-weight:bold;color:var(--hitam);margin-top:2px;margin-bottom:2px;letter-spacing:.3px;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
+.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif;margin-top:2px}
 .sched-table th,.sched-table td{border:.8px solid var(--hitam);padding:2px 3px;vertical-align:middle;font-family:"Times New Roman",Times,serif}
 .sched-table th{background:#fff;font-weight:bold;color:var(--hitam);text-align:center;font-size:8px;padding:8px 3px;border-bottom:1.5px solid var(--hitam);font-family:"Times New Roman",Times,serif}
 .sched-table td.c{text-align:center;font-family:"Times New Roman",Times,serif}
@@ -248,19 +248,19 @@ input,select{font-family:inherit;outline:none}
   .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
   .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif}
 
-  /* Schedule — header row lebih tinggi, border tipis, baris pendek */
-  .pcard .pstitle{text-align:center;font-size:7pt;font-weight:bold;color:#000;margin-top:3pt;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif}
+  /* Schedule — tabel langsung di bawah header, fit & proporsional */
+  .pcard .pstitle{text-align:center;font-size:7pt;font-weight:bold;color:#000;margin-top:2pt;margin-bottom:1pt;letter-spacing:.2pt;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif;margin-top:2pt}
   .pcard .ptable col.c-no{width:7%}
   .pcard .ptable col.c-hari{width:30%}
   .pcard .ptable col.c-waktu{width:22%}
   .pcard .ptable col.c-mapel{width:27%}
   .pcard .ptable col.c-ket{width:14%}
-  .pcard .ptable th,.pcard .ptable td{border:.3pt solid #000;padding:.3pt 1pt;vertical-align:middle;font-size:6pt;line-height:1.1;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:5.8pt;padding:2pt 1pt;border-bottom:.5pt solid #000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable th,.pcard .ptable td{border:.3pt solid #000;padding:.4pt 1pt;vertical-align:middle;font-size:6.2pt;line-height:1.15;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:6pt;padding:2.5pt 1pt;border-bottom:.5pt solid #000;font-family:"Times New Roman",Times,serif}
   .pcard .ptable td.c{text-align:center;font-family:"Times New Roman",Times,serif}
   .pcard .ptable td.l{text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable td.ket{font-size:5.5pt;font-style:italic;color:#000;font-family:"Times New Roman",Times,serif}
+  .pcard .ptable td.ket{font-size:5.8pt;font-style:italic;color:#000;font-family:"Times New Roman",Times,serif}
   .pcard .ptable td.no{font-weight:bold;text-align:center;font-family:"Times New Roman",Times,serif}
 }
 
@@ -1203,7 +1203,7 @@ function renderRightCard(s){
       <div class="card-head">
         <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
         <div class="center">
-          <div class="t1">KARTU PESERTA</div>
+          <div class="t1">JADWAL MATA PELAJARAN</div>
           <div class="t2">ASESMEN SUMATIF AKHIR SEMESTER</div>
           <div class="t3">${escapeHtml(school)}</div>
           <div class="t4">TAHUN AJARAN ${escapeHtml(year)}</div>
@@ -1211,7 +1211,6 @@ function renderRightCard(s){
         <div class="roman">${escapeHtml(roman)}</div>
       </div>
 
-      <div class="sched-title">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
       <table class="sched-table">
         <colgroup>
           <col class="c-no"/><col class="c-hari"/><col class="c-waktu"/><col class="c-mapel"/><col class="c-ket"/>
@@ -1295,7 +1294,7 @@ function renderRightCardPrint(s){
       <div class="phead">
         <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
         <div class="pcenter">
-          <div class="pt1">KARTU PESERTA</div>
+          <div class="pt1">JADWAL MATA PELAJARAN</div>
           <div class="pt2">ASESMEN SUMATIF AKHIR SEMESTER</div>
           <div class="pt3">${escapeHtml(school)}</div>
           <div class="pt4">TAHUN AJARAN ${escapeHtml(year)}</div>
@@ -1303,7 +1302,6 @@ function renderRightCardPrint(s){
         <div class="proman">${escapeHtml(roman)}</div>
       </div>
 
-      <div class="pstitle">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
       <table class="ptable">
         <colgroup>
           <col class="c-no"/><col class="c-hari"/><col class="c-waktu"/><col class="c-mapel"/><col class="c-ket"/>
