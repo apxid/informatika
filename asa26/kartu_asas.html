@@ -170,13 +170,13 @@ input,select{font-family:inherit;outline:none}
 /* ===== PRINT ===== */
 .print-only{display:none}
 @media print{
-  @page{size:215mm 330mm;margin:0}
+  @page{size:210mm 330mm;margin:0}
   html,body{background:#fff!important;margin:0;padding:0}
   #app,.app-header,.app-main,.toolbar,.stats,.preview-wrap,.preview-head,.preview-list,.peserta-unit{display:none!important}
   .print-only{display:block}
 
   .print-page{
-    width:215mm;height:330mm;
+    width:210mm;height:330mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;
     padding:0;box-sizing:border-box;
@@ -281,7 +281,7 @@ input,select{font-family:inherit;outline:none}
   body.printing-labels .label-print-only{display:block}
 
   body.printing-labels .label-page{
-    width:330mm;height:215mm;
+    width:330mm;height:210mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;
@@ -357,7 +357,7 @@ input,select{font-family:inherit;outline:none}
   body.printing-meja .meja-print-only{display:block}
 
   body.printing-meja .meja-page{
-    width:215mm;height:330mm;
+    width:210mm;height:330mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;
     padding:4mm 5mm;box-sizing:border-box;
@@ -1425,7 +1425,7 @@ async function printLabels(){
         // Inject landscape @page style
         const style = document.createElement('style');
         style.id = 'label-landscape-style';
-        style.textContent = '@media print { @page { size: 330mm 215mm; margin: 0; } }';
+        style.textContent = '@media print { @page { size: 330mm 210mm; margin: 0; } }';
         document.head.appendChild(style);
         setTimeout(()=>window.print(), 300);
       }
@@ -1611,7 +1611,7 @@ async function generateMejaLabels(ruangList){
       document.body.classList.add('printing-meja');
       const style = document.createElement('style');
       style.id = 'meja-portrait-style';
-      style.textContent = '@media print { @page { size: 215mm 330mm; margin: 0; } }';
+      style.textContent = '@media print { @page { size: 210mm 330mm; margin: 0; } }';
       document.head.appendChild(style);
       setTimeout(() => window.print(), 300);
     }
