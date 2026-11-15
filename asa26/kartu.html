@@ -120,148 +120,117 @@ input,select{font-family:inherit;outline:none}
 .preview-empty .title{font-size:16px;font-weight:700;color:var(--abu-700);margin-bottom:6px}
 .preview-empty .desc{font-size:13px}
 
-/* ===== PESERTA UNIT (kiri + kanan side-by-side) ===== */
-.preview-list{display:flex;flex-direction:column;gap:22px}
-.peserta-unit{display:grid;grid-template-columns:1fr 1fr;gap:14px;animation:slideUp .4s both}
-@media(max-width:900px){.peserta-unit{grid-template-columns:1fr}}
+/* =========================================================
+   LEMBAR F4 (210×330 mm, 4 peserta/lembar) — dipakai BERSAMA
+   oleh pratinjau di layar & hasil cetak, jadi tampilannya 100% sama
+   ========================================================= */
 
-/* ===== KARTU (on-screen preview) — HITAM PUTIH, kotak tajam, Times New Roman ===== */
-.card{background:#fff;border:1.5px solid var(--hitam);border-radius:0;padding:9px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.08);font-size:10px;line-height:1.3;display:flex;flex-direction:column;color:var(--hitam);font-family:"Times New Roman",Times,serif}
-.card-head{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px;padding-bottom:4px;border-bottom:2px solid var(--hitam)}
-.card-head .logo{width:42px;height:42px;object-fit:cover;flex-shrink:0}
-.card-head .center{text-align:center;flex:1;line-height:1.15;font-family:"Times New Roman",Times,serif}
-.card-head .center .t1{font-size:12px;font-weight:bold;color:var(--hitam);letter-spacing:.3px;font-family:"Times New Roman",Times,serif}
-.card-head .center .t2{font-size:9.5px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
-.card-head .center .t3{font-size:10px;font-weight:bold;color:var(--hitam);text-transform:uppercase;margin-top:1px;font-family:"Times New Roman",Times,serif}
-.card-head .center .t4{font-size:9px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
-.card-head .roman{font-family:Arial,sans-serif;font-weight:bold;font-size:32px;color:var(--hitam);letter-spacing:1px;line-height:1;flex-shrink:0;width:42px;text-align:center;height:42px;display:flex;align-items:center;justify-content:center}
+/* ---- 1 lembar F4 ---- */
+.print-page{
+  width:210mm;height:330mm;background:#fff;
+  box-sizing:border-box;overflow:hidden;
+  display:flex;flex-direction:column;
+  font-family:"Times New Roman",Times,serif;color:#000;
+}
 
-/* Biodata box - Times New Roman 11pt, 3 baris jarak dari header, line-height 1.3 */
-.bio-box{border:1px solid var(--hitam);border-radius:0;padding:5px 7px;margin-top:36px;margin-bottom:0;font-family:"Times New Roman",Times,serif;font-size:11pt}
-.bio-box table{width:100%;border-collapse:collapse;table-layout:fixed}
-.bio-box td{padding:2px 3px;font-size:11pt;line-height:1.3;vertical-align:top;font-family:"Times New Roman",Times,serif}
-.bio-box td.lbl{width:80px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
-.bio-box td.sep{width:8px;font-weight:bold;color:var(--hitam);font-family:"Times New Roman",Times,serif}
-.bio-box td.val{font-weight:normal;color:var(--hitam);word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
+/* ---- 1 unit = 1 peserta (kartu kiri + kanan), tinggi pas 1/4 lembar ---- */
+.print-unit{
+  height:25%;min-height:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:2mm;
+  padding:2mm 4mm;box-sizing:border-box;
+  border-top:.5pt dashed #000;position:relative;
+}
+.print-unit:last-child{border-bottom:.5pt dashed #000}
 
-/* Signature box - 3 baris dari biodata, rata kiri di posisi kanan, 4 baris jarak Kepala Sekolah ke nama, tanpa garis dotted */
-.sign-box{margin-top:36px;margin-left:auto;width:42%;border:none;padding:2px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .date{font-size:11pt;color:var(--hitam);margin-bottom:1px;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .role{font-size:11pt;color:var(--hitam);margin-bottom:2px;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .ttd-img{width:100%;max-width:140px;height:42px;object-fit:contain;opacity:.95;margin:1px 0}
-.sign-box .ttd-spacer{width:100%;max-width:140px;height:48px;margin:1px 0}
-.sign-box .name{font-size:11pt;font-weight:bold;color:var(--hitam);margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
-.sign-box .nip{font-size:10pt;color:var(--hitam);text-align:left;font-family:"Times New Roman",Times,serif}
+/* ---- Kartu (hitam-putih, Times New Roman) ---- */
+.pcard{
+  border:1pt solid #000;border-radius:0;
+  padding:3pt 4pt;box-sizing:border-box;
+  min-width:0;min-height:0;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:#fff;color:#000;
+  font-size:8pt;line-height:1.25;
+  font-family:"Times New Roman",Times,serif;
+}
 
-/* Right card - schedule (Times New Roman) */
-.sched-title{text-align:center;font-size:10px;font-weight:bold;color:var(--hitam);margin-top:4px;margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
-.sched-table{width:100%;border-collapse:collapse;font-size:8.5px;line-height:1.2;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif}
-.sched-table th,.sched-table td{border:.8px solid var(--hitam);padding:2px 3px;vertical-align:middle;font-family:"Times New Roman",Times,serif}
-.sched-table th{background:#fff;font-weight:bold;color:var(--hitam);text-align:center;font-size:8px;padding:8px 3px;border-bottom:1.5px solid var(--hitam);font-family:"Times New Roman",Times,serif}
-.sched-table td.c{text-align:center;font-family:"Times New Roman",Times,serif}
-.sched-table td.l{text-align:left;font-family:"Times New Roman",Times,serif}
-.sched-table td.ket{font-size:7.5px;font-style:italic;color:var(--hitam);font-family:"Times New Roman",Times,serif}
-.sched-table col.c-no{width:8%}
-.sched-table col.c-hari{width:30%}
-.sched-table col.c-waktu{width:22%}
-.sched-table col.c-mapel{width:28%}
-.sched-table col.c-ket{width:12%}
+/* Header kartu — logo kiri, judul tengah, romawi kanan */
+.pcard .phead{
+  display:flex;justify-content:space-between;align-items:center;gap:3pt;
+  padding-bottom:1.5pt;border-bottom:1.5pt solid #000;flex:none;
+}
+.pcard .phead .plogo{width:30pt;height:30pt;object-fit:cover;flex-shrink:0;border:none;border-radius:0}
+.pcard .phead .pcenter{flex:1;min-width:0;text-align:center;line-height:1.12;font-family:"Times New Roman",Times,serif}
+.pcard .phead .pcenter .pt1{font-size:9pt;font-weight:bold;letter-spacing:.2pt}
+.pcard .phead .pcenter .pt2{font-size:7pt;font-weight:bold}
+.pcard .phead .pcenter .pt3{font-size:7.5pt;font-weight:bold;text-transform:uppercase;margin-top:.5pt}
+.pcard .phead .pcenter .pt4{font-size:6.5pt;font-weight:bold}
+.pcard .phead .proman{font-family:Arial,sans-serif;font-weight:bold;font-size:21pt;line-height:1;flex-shrink:0;width:30pt;height:30pt;display:flex;align-items:center;justify-content:center}
 
-/* ===== PRINT ===== */
+/* Biodata */
+.pcard .pbio{
+  border:.8pt solid #000;border-radius:0;
+  padding:2pt 3pt;margin-top:12pt;margin-bottom:0;flex:none;
+}
+.pcard .pbio table{width:100%;border-collapse:collapse;table-layout:fixed}
+.pcard .pbio td{padding:1pt;font-size:8pt;line-height:1.25;vertical-align:top;color:#000}
+.pcard .pbio td.lbl{width:52pt;font-weight:bold}
+.pcard .pbio td.sep{width:5pt;font-weight:bold}
+.pcard .pbio td.val{font-weight:normal;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word}
+
+/* Tanda tangan — TTD/stempel OVERLAY murni di atas layer teks
+   ("Kepala Sekolah," + nama): z-index teks 1, gambar 3, pointer-events none.
+   Gambar TIDAK memengaruhi layout sedikit pun. Spacer tinggi TETAP,
+   jadi dengan/tanpa TTD posisi nama, NIP & dasar kartu tidak bergeser.
+   width 48% = blok teks di kanan (geser 2 kolom terakhir); margin-bottom
+   18.75pt = blok turun 2 baris dari posisi sebelumnya, jarak ke kotak bio
+   ±21.6pt (slack 40.4pt — tinggi kartu tidak berubah);
+   spacer 21pt = nama+NIP rapat di bawah "Kepala Sekolah,";
+   gambar 95×49pt rasio asli 636:328. */
+.pcard .psign{
+  margin-top:auto;margin-bottom:18.75pt;margin-left:auto;width:48%;
+  border:none;padding:0;position:relative;
+  display:flex;flex-direction:column;align-items:flex-start;text-align:left;
+}
+.pcard .psign .pdate{font-size:7.5pt;margin-bottom:.5pt;text-align:left;position:relative;z-index:1}
+.pcard .psign .prole{font-size:7.5pt;margin-bottom:1pt;text-align:left;position:relative;z-index:1}
+.pcard .psign .pttd-spacer{width:100%;height:21pt;flex:none;margin:0}
+.pcard .psign .pttd-img{
+  position:absolute;top:7pt;left:-20pt;
+  width:95pt;max-width:none;height:49pt;object-fit:contain;
+  margin:0;opacity:.95;z-index:3;pointer-events:none;
+}
+.pcard .psign .pname{font-size:7.5pt;font-weight:bold;margin-top:0;text-align:left;position:relative;z-index:1}
+.pcard .psign .pnip{font-size:7pt;text-align:left;position:relative;z-index:1}
+
+/* Jadwal — tabel mengisi sisa tinggi kartu sampai dasar, sejajar dengan kartu kiri */
+.pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed;margin-top:2pt}
+.pcard .ptable col.c-no{width:7%}
+.pcard .ptable col.c-hari{width:30%}
+.pcard .ptable col.c-waktu{width:22%}
+.pcard .ptable col.c-mapel{width:27%}
+.pcard .ptable col.c-ket{width:14%}
+.pcard .ptable th,.pcard .ptable td{border:.4pt solid #000;padding:.5pt 1.5pt;vertical-align:middle;font-size:6.5pt;line-height:1.2;color:#000}
+.pcard .ptable th{background:#fff;font-weight:bold;text-align:center;font-size:6.2pt;padding:2.5pt 1pt;border-bottom:.8pt solid #000}
+.pcard .ptable td.c{text-align:center}
+.pcard .ptable td.l{text-align:left}
+.pcard .ptable td.ketcol{font-size:6pt;font-style:italic}
+.pcard .ptable td.no{font-weight:bold;text-align:center}
+
+/* ---- Pratinjau di layar: lembar F4 di-scale agar pas lebar kontainer ---- */
+.sheet-scale{width:100%;max-width:820px;margin:0 auto;position:relative}
+.sheet-scale .print-page{transform-origin:top left;box-shadow:0 8px 30px rgba(15,37,87,.18);outline:1px solid var(--abu-300)}
+
+/* ===== PRINT — hanya lembar F4 yang tampil di kertas ===== */
 .print-only{display:none}
 @media print{
-  @page{size:215mm 330mm;margin:0}
+  @page{size:210mm 330mm;margin:0}
   html,body{background:#fff!important;margin:0;padding:0}
-  #app,.app-header,.app-main,.toolbar,.stats,.preview-wrap,.preview-head,.preview-list,.peserta-unit{display:none!important}
+  #app,.app-header,.app-main,.app-footer,#loginScreen,.toolbar,.stats,.preview-wrap,.preview-head,.pagination,#alertContainer,#loadingOverlay,#settingsModal,#aboutModal{display:none!important}
   .print-only{display:block}
-
-  .print-page{
-    width:215mm;height:330mm;
-    page-break-after:always;page-break-inside:avoid;
-    display:flex;flex-direction:column;
-    padding:0;box-sizing:border-box;
-  }
+  .sheet-scale{display:none!important}
+  .print-page{page-break-after:always;page-break-inside:avoid}
   .print-page:last-child{page-break-after:auto}
-
-  .print-unit{
-    flex:1;
-    display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;
-    padding:3mm 5mm;box-sizing:border-box;
-    page-break-inside:avoid;min-height:0;
-    border-top:.5pt dashed #000;
-    position:relative;
-  }
-  .print-unit:last-child{
-    border-bottom:.5pt dashed #000;
-  }
-
-  .pcard{
-    border:1pt solid #000;border-radius:0;
-    padding:3pt 4pt;box-sizing:border-box;
-    display:flex;flex-direction:column;
-    page-break-inside:avoid;overflow:hidden;
-    font-family:"Times New Roman",Times,serif;
-    color:#000;
-  }
-
-  /* Header — logo tanpa kotak, romawi Arial bold hitam setinggi logo */
-  .pcard .phead{
-    display:flex;justify-content:space-between;align-items:center;gap:3pt;
-    padding-bottom:2pt;border-bottom:1.5pt solid #000;
-    margin-bottom:0;
-  }
-  .pcard .phead .plogo{width:34pt;height:34pt;object-fit:cover;flex-shrink:0;border:none;border-radius:0}
-  .pcard .phead .pcenter{flex:1;text-align:center;line-height:1.1;font-family:"Times New Roman",Times,serif}
-  .pcard .phead .pcenter .pt1{font-size:9pt;font-weight:bold;color:#000;letter-spacing:.2pt;font-family:"Times New Roman",Times,serif}
-  .pcard .phead .pcenter .pt2{font-size:7pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .phead .pcenter .pt3{font-size:7.5pt;font-weight:bold;color:#000;text-transform:uppercase;margin-top:.5pt;font-family:"Times New Roman",Times,serif}
-  .pcard .phead .pcenter .pt4{font-size:6.5pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .phead .proman{font-family:Arial,sans-serif;font-weight:bold;font-size:24pt;color:#000;line-height:1;flex-shrink:0;width:34pt;text-align:center;height:34pt;display:flex;align-items:center;justify-content:center}
-
-  /* Biodata — Times New Roman, 3 baris jarak dari header, line-height 1.3 */
-  .pcard .pbio{
-    border:.6pt solid #000;border-radius:0;
-    padding:2pt 3pt;
-    margin-top:18pt;  /* ~3 baris dari header */
-    margin-bottom:0;
-    font-family:"Times New Roman",Times,serif;
-  }
-  .pcard .pbio table{width:100%;border-collapse:collapse;table-layout:fixed}
-  .pcard .pbio td{padding:1pt 1pt;font-size:8pt;line-height:1.3;vertical-align:top;font-family:"Times New Roman",Times,serif;color:#000}
-  .pcard .pbio td.lbl{width:50pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .pbio td.sep{width:4pt;font-weight:bold;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .pbio td.val{font-weight:normal;color:#000;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word;font-family:"Times New Roman",Times,serif}
-
-  /* Signature — 3 baris dari biodata, rata kiri di posisi kanan (40%), 4 baris jarak Kepala Sekolah ke nama, tanpa dotted */
-  .pcard .psign{
-    margin-top:18pt;  /* ~3 baris dari biodata */
-    margin-left:auto;
-    width:40%;
-    border:none;padding:0;
-    display:flex;flex-direction:column;align-items:flex-start;text-align:left;
-    font-family:"Times New Roman",Times,serif;
-  }
-  .pcard .psign .pdate{font-size:7.5pt;color:#000;margin-bottom:.5pt;text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .psign .prole{font-size:7.5pt;color:#000;margin-bottom:1pt;text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .psign .pttd-img{width:100%;max-width:60pt;height:22pt;object-fit:contain;margin:0}
-  .pcard .psign .pttd-spacer{width:100%;max-width:60pt;height:28pt;margin:0}
-  .pcard .psign .pname{font-size:7.5pt;font-weight:bold;color:#000;margin-top:0;text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .psign .pnip{font-size:7pt;color:#000;text-align:left;font-family:"Times New Roman",Times,serif}
-
-  /* Schedule — header row lebih tinggi, border tipis, baris pendek */
-  .pcard .pstitle{text-align:center;font-size:7pt;font-weight:bold;color:#000;margin-top:3pt;margin-bottom:1.5pt;letter-spacing:.2pt;text-transform:uppercase;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable{width:100%;border-collapse:collapse;flex:1;table-layout:fixed;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable col.c-no{width:7%}
-  .pcard .ptable col.c-hari{width:30%}
-  .pcard .ptable col.c-waktu{width:22%}
-  .pcard .ptable col.c-mapel{width:27%}
-  .pcard .ptable col.c-ket{width:14%}
-  .pcard .ptable th,.pcard .ptable td{border:.3pt solid #000;padding:.3pt 1pt;vertical-align:middle;font-size:6pt;line-height:1.1;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable th{background:#fff;font-weight:bold;color:#000;text-align:center;font-size:5.8pt;padding:2pt 1pt;border-bottom:.5pt solid #000;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable td.c{text-align:center;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable td.l{text-align:left;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable td.ket{font-size:5.5pt;font-style:italic;color:#000;font-family:"Times New Roman",Times,serif}
-  .pcard .ptable td.no{font-weight:bold;text-align:center;font-family:"Times New Roman",Times,serif}
+  .print-unit{page-break-inside:avoid}
 }
 
 /* ===== LABEL PRINT CSS (landscape F4, 1 ruang per halaman) ===== */
@@ -281,7 +250,7 @@ input,select{font-family:inherit;outline:none}
   body.printing-labels .label-print-only{display:block}
 
   body.printing-labels .label-page{
-    width:330mm;height:215mm;
+    width:330mm;height:210mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;
@@ -357,7 +326,7 @@ input,select{font-family:inherit;outline:none}
   body.printing-meja .meja-print-only{display:block}
 
   body.printing-meja .meja-page{
-    width:215mm;height:330mm;
+    width:210mm;height:330mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;
     padding:4mm 5mm;box-sizing:border-box;
@@ -649,7 +618,6 @@ input,select{font-family:inherit;outline:none}
   </main>
 
   <footer class="app-footer">
-    <span><strong>Sistem Cetak Kartu Peserta ASAS</strong> · SMP Negeri 1 Moga</span>
     <a class="about-link" id="aboutLink" title="Tentang Aplikasi">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       About
@@ -704,6 +672,16 @@ input,select{font-family:inherit;outline:none}
         <div class="preview-ttd" id="ttdPreview">
           <span class="ttd-empty">Belum ada TTD. Masukkan URL gambar tanda tangan di atas.</span>
         </div>
+      </div>
+      <div class="form-row">
+        <label>Tampilkan TTD Kepala Sekolah di Kartu</label>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--biru-700)">
+            <input type="checkbox" id="setTtdShow" style="width:20px;height:20px;cursor:pointer" checked />
+            Show TTD (tampilkan tanda tangan + stempel di kartu)
+          </label>
+        </div>
+        <div style="font-size:11px;color:var(--abu-500);margin-top:4px">Jika tidak dicentang, TTD tidak akan muncul di kartu peserta (hanya ruang kosong).</div>
       </div>
       <div class="form-row">
         <label>URL Exec Google Apps Script <span class="hint">(link backend)</span></label>
@@ -773,9 +751,14 @@ input,select{font-family:inherit;outline:none}
    ========================================================= */
 const CONFIG = {
   // URL Exec Google Apps Script yang sudah di-deploy
-  EXEC_URL: "https://script.google.com/macros/s/AKfycbzJ0A9IN7R2NdpvfNIFVv51W1E7BRQOksTFM7A5Km3cSSJRPPYEPMqu476Wcfd59BEV/exec",
-  LOGO_DEFAULT: "https://yanuar-moga.github.io/assets/logo.jpg",
+  EXEC_URL: "https://script.google.com/macros/s/AKfycbz1xUg9AQ8Bhbk9b-Wnxq85DEirNZDQ6GTG6V5tecjoTTNUPUB6JcHtkqowrbvQLVuA/exec",
+  // Logo aplikasi (login, dashboard, about) — yanuar-moga
+  LOGO_APP: "https://yanuar-moga.github.io/assets/logo.jpg",
+  // Logo khusus di kartu peserta (kiri atas kartu) — tut.jpg
+  LOGO_CARD: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   LOGO_FALLBACK: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
+  // Default TTD Kepala Sekolah (dariah2.png)
+  DEFAULT_TTD: "https://apxid.github.io/informatika/asa26/assets/dariah2.png",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
   DEFAULT_YEAR: "2026/2027",
   DEFAULT_PRINCIPAL: "Dariah, S.Pd., M.Pd.",
@@ -825,7 +808,6 @@ const STATE = {
   config: {},
   settings: loadSettings(),
   currentPage: 1,
-  perPageOnScreen: 4,
 };
 
 /* =========================================================
@@ -840,15 +822,16 @@ function loadSettings(){
       principalName: s.principalName || CONFIG.DEFAULT_PRINCIPAL,
       principalNip: s.principalNip || CONFIG.DEFAULT_NIP,
       date: s.date || CONFIG.DEFAULT_DATE,
-      logoUrl: s.logoUrl || CONFIG.LOGO_DEFAULT,
-      ttdUrl: s.ttdUrl || '',
+      logoUrl: s.logoUrl || CONFIG.LOGO_CARD,
+      ttdUrl: s.ttdUrl || CONFIG.DEFAULT_TTD,
+      ttdShow: s.ttdShow !== undefined ? s.ttdShow : true,
       execUrl: s.execUrl || CONFIG.EXEC_URL,
     };
   }catch(e){
     return {
       school: CONFIG.DEFAULT_SCHOOL, year: CONFIG.DEFAULT_YEAR,
       principalName: CONFIG.DEFAULT_PRINCIPAL, principalNip: CONFIG.DEFAULT_NIP,
-      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_DEFAULT, ttdUrl: '', execUrl: CONFIG.EXEC_URL
+      date: CONFIG.DEFAULT_DATE, logoUrl: CONFIG.LOGO_CARD, ttdUrl: CONFIG.DEFAULT_TTD, ttdShow: true, execUrl: CONFIG.EXEC_URL
     };
   }
 }
@@ -1078,7 +1061,8 @@ function renderStats(){
 }
 
 /* =========================================================
-   RENDER PREVIEW (on-screen)
+   RENDER PREVIEW — lembar F4 utuh ter-scale (identik dengan hasil cetak)
+   1 halaman layar = 1 lembar F4 = 4 peserta
    ========================================================= */
 function renderPreview(){
   const body = document.getElementById('previewBody');
@@ -1094,18 +1078,18 @@ function renderPreview(){
     document.getElementById('pagination').classList.add('hidden');
     return;
   }
-  meta.textContent = `Menampilkan ${STATE.filtered.length} peserta · ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4`;
+  const totalPages = Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE);
+  meta.textContent = `Menampilkan ${STATE.filtered.length} peserta · ${totalPages} halaman F4 (4 peserta/lembar)`;
 
-  const start = (STATE.currentPage-1)*STATE.perPageOnScreen;
-  const end = Math.min(start+STATE.perPageOnScreen, STATE.filtered.length);
-  const pageData = STATE.filtered.slice(start, end);
+  const start = (STATE.currentPage-1)*CONFIG.PESERTA_PER_PAGE;
+  const pageData = STATE.filtered.slice(start, start+CONFIG.PESERTA_PER_PAGE);
 
-  let html = '<div class="preview-list">';
-  pageData.forEach((s)=>{ html += renderPesertaUnit(s, false); });
-  html += '</div>';
+  let html = '<div class="sheet-scale"><div class="print-page">';
+  pageData.forEach(s=>{ html += renderPesertaUnit(s); });
+  html += '</div></div>';
   body.innerHTML = html;
+  requestAnimationFrame(scalePreviewSheets);
 
-  const totalPages = Math.ceil(STATE.filtered.length/STATE.perPageOnScreen);
   const pag = document.getElementById('pagination');
   if(totalPages>1){
     pag.classList.remove('hidden');
@@ -1114,7 +1098,7 @@ function renderPreview(){
       phtml += `<button class="${p===STATE.currentPage?'active':''}" data-page="${p}">${p}</button>`;
     }
     phtml += `<button ${STATE.currentPage===totalPages?'disabled':''} id="nextPage">Berikutnya ›</button>`;
-    phtml += `<span class="info">Hal. ${STATE.currentPage}/${totalPages}</span>`;
+    phtml += `<span class="info">Hal. ${STATE.currentPage}/${totalPages} (F4)</span>`;
     pag.innerHTML = phtml;
     pag.querySelectorAll('button[data-page]').forEach(b=>{
       b.onclick = ()=>{ STATE.currentPage = parseInt(b.dataset.page); renderPreview(); window.scrollTo({top:document.querySelector('.preview-wrap').offsetTop-80, behavior:'smooth'}); };
@@ -1128,123 +1112,45 @@ function renderPreview(){
   }
 }
 
+/* Scale lembar F4 di pratinjau agar pas dengan lebar kontainer */
+function scalePreviewSheets(){
+  document.querySelectorAll('#previewBody .sheet-scale').forEach(w=>{
+    const page = w.querySelector('.print-page');
+    if(!page) return;
+    const s = w.clientWidth / page.offsetWidth;
+    if(s>0 && isFinite(s)){
+      page.style.transform = 'scale('+s+')';
+      w.style.height = (page.offsetHeight*s)+'px';
+    }
+  });
+}
+window.addEventListener('resize', scalePreviewSheets);
+
 /* =========================================================
    RENDER PESERTA UNIT = KARTU KIRI + KARTU KANAN
+   Markup cetak (pcard) dipakai juga untuk pratinjau di layar,
+   jadi yang terlihat = yang tercetak.
    ========================================================= */
-function renderPesertaUnit(s, forPrint){
-  if(forPrint){
-    return `<div class="print-unit">${renderLeftCardPrint(s)}${renderRightCardPrint(s)}</div>`;
-  }
-  return `<div class="peserta-unit">${renderLeftCard(s)}${renderRightCard(s)}</div>`;
-}
-
-/* ---- KARTU KIRI (screen) ---- */
-function renderLeftCard(s){
-  const roman = romanFromKelas(s.kelas);
-  const kelasShort = shortKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
-  const ttdUrl = STATE.settings.ttdUrl || '';
-  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
-  const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
-  const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
-  const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
-  const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
-
-  const ttdHtml = ttdUrl
-    ? `<img class="ttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'ttd-spacer\\'></div>'"/>`
-    : `<div class="ttd-spacer"></div>`;
-
-  return `
-    <div class="card">
-      <div class="card-head">
-        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
-        <div class="center">
-          <div class="t1">KARTU PESERTA</div>
-          <div class="t2">ASESMEN SUMATIF AKHIR SEMESTER</div>
-          <div class="t3">${escapeHtml(school)}</div>
-          <div class="t4">TAHUN AJARAN ${escapeHtml(year)}</div>
-        </div>
-        <div class="roman">${escapeHtml(roman)}</div>
-      </div>
-
-      <div class="bio-box">
-        <table>
-          <tr><td class="lbl">No. Peserta</td><td class="sep">:</td><td class="val">${escapeHtml(s.noPeserta||'-')}</td></tr>
-          <tr><td class="lbl">Nama Peserta</td><td class="sep">:</td><td class="val">${escapeHtml(s.nama||'-')}</td></tr>
-          <tr><td class="lbl">NIS</td><td class="sep">:</td><td class="val">${escapeHtml(s.nis||'-')}</td></tr>
-          <tr><td class="lbl">Kelas</td><td class="sep">:</td><td class="val">${escapeHtml(kelasShort)}</td></tr>
-          <tr><td class="lbl">Ruang</td><td class="sep">:</td><td class="val">${escapeHtml(s.ruang||'-')}</td></tr>
-        </table>
-      </div>
-
-      <div class="sign-box">
-        <div class="date">Moga, ${escapeHtml(date)}</div>
-        <div class="role">Kepala Sekolah,</div>
-        ${ttdHtml}
-        <div class="name">${escapeHtml(principalName)}</div>
-        <div class="nip">NIP. ${escapeHtml(principalNip)}</div>
-      </div>
-    </div>
-  `;
-}
-
-/* ---- KARTU KANAN (screen) ---- */
-function renderRightCard(s){
-  const roman = romanFromKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
-  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
-  const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
-
-  return `
-    <div class="card">
-      <div class="card-head">
-        <img class="logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
-        <div class="center">
-          <div class="t1">KARTU PESERTA</div>
-          <div class="t2">ASESMEN SUMATIF AKHIR SEMESTER</div>
-          <div class="t3">${escapeHtml(school)}</div>
-          <div class="t4">TAHUN AJARAN ${escapeHtml(year)}</div>
-        </div>
-        <div class="roman">${escapeHtml(roman)}</div>
-      </div>
-
-      <div class="sched-title">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
-      <table class="sched-table">
-        <colgroup>
-          <col class="c-no"/><col class="c-hari"/><col class="c-waktu"/><col class="c-mapel"/><col class="c-ket"/>
-        </colgroup>
-        <thead>
-          <tr>
-            <th>NO</th>
-            <th>HARI, TANGGAL</th>
-            <th>WAKTU</th>
-            <th>MATA PELAJARAN</th>
-            <th>KET.</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${renderScheduleRows(false)}
-        </tbody>
-      </table>
-    </div>
-  `;
+function renderPesertaUnit(s){
+  return `<div class="print-unit">${renderLeftCardPrint(s)}${renderRightCardPrint(s)}</div>`;
 }
 
 /* ---- KARTU KIRI (print) ---- */
 function renderLeftCardPrint(s){
   const roman = romanFromKelas(s.kelas);
   const kelasShort = shortKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
-  const ttdUrl = STATE.settings.ttdUrl || '';
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
+  const ttdUrl = STATE.settings.ttdUrl || CONFIG.DEFAULT_TTD;
+  const ttdShow = STATE.settings.ttdShow !== false;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
   const principalName = STATE.settings.principalName || CONFIG.DEFAULT_PRINCIPAL;
   const principalNip = STATE.settings.principalNip || CONFIG.DEFAULT_NIP;
   const date = STATE.settings.date || CONFIG.DEFAULT_DATE;
 
-  const ttdHtml = ttdUrl
-    ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.outerHTML='<div class=\\'pttd-spacer\\'></div>'"/>`
-    : `<div class="pttd-spacer"></div>`;
+  const ttdImgHtml = (ttdUrl && ttdShow)
+    ? `<img class="pttd-img" src="${escapeHtml(ttdUrl)}" alt="TTD" onerror="this.style.display='none'"/>`
+    : '';
 
   return `
     <div class="pcard">
@@ -1272,9 +1178,10 @@ function renderLeftCardPrint(s){
       <div class="psign">
         <div class="pdate">Moga, ${escapeHtml(date)}</div>
         <div class="prole">Kepala Sekolah,</div>
-        ${ttdHtml}
+        <div class="pttd-spacer"></div>
         <div class="pname">${escapeHtml(principalName)}</div>
         <div class="pnip">NIP. ${escapeHtml(principalNip)}</div>
+        ${ttdImgHtml}
       </div>
     </div>
   `;
@@ -1283,7 +1190,7 @@ function renderLeftCardPrint(s){
 /* ---- KARTU KANAN (print) ---- */
 function renderRightCardPrint(s){
   const roman = romanFromKelas(s.kelas);
-  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_DEFAULT;
+  const logoUrl = STATE.settings.logoUrl || CONFIG.LOGO_CARD;
   const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
 
@@ -1292,7 +1199,7 @@ function renderRightCardPrint(s){
       <div class="phead">
         <img class="plogo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
         <div class="pcenter">
-          <div class="pt1">KARTU PESERTA</div>
+          <div class="pt1">JADWAL MATA PELAJARAN</div>
           <div class="pt2">ASESMEN SUMATIF AKHIR SEMESTER</div>
           <div class="pt3">${escapeHtml(school)}</div>
           <div class="pt4">TAHUN AJARAN ${escapeHtml(year)}</div>
@@ -1300,7 +1207,6 @@ function renderRightCardPrint(s){
         <div class="proman">${escapeHtml(roman)}</div>
       </div>
 
-      <div class="pstitle">JADWAL ASESMEN SUMATIF AKHIR SEMESTER</div>
       <table class="ptable">
         <colgroup>
           <col class="c-no"/><col class="c-hari"/><col class="c-waktu"/><col class="c-mapel"/><col class="c-ket"/>
@@ -1315,7 +1221,7 @@ function renderRightCardPrint(s){
           </tr>
         </thead>
         <tbody>
-          ${renderScheduleRows(true)}
+          ${renderScheduleRows()}
         </tbody>
       </table>
     </div>
@@ -1323,7 +1229,7 @@ function renderRightCardPrint(s){
 }
 
 /* ---- Schedule rows builder ---- */
-function renderScheduleRows(forPrint){
+function renderScheduleRows(){
   let html = '';
   SCHEDULE.forEach(day => {
     const rowspan = day.sessions.length;
@@ -1335,7 +1241,7 @@ function renderScheduleRows(forPrint){
       }
       html += `<td class="c waktu">${escapeHtml(sess.waktu)}</td>`;
       html += `<td class="l mapel">${escapeHtml(sess.mapel)}</td>`;
-      html += `<td class="c ketcol">${sess.ket ? `<span class="${forPrint?'ket':''}">${escapeHtml(sess.ket)}</span>` : ''}</td>`;
+      html += `<td class="c ketcol">${sess.ket ? escapeHtml(sess.ket) : ''}</td>`;
       html += '</tr>';
     });
   });
@@ -1345,32 +1251,40 @@ function renderScheduleRows(forPrint){
 /* =========================================================
    PRINT / PDF
    ========================================================= */
+function buildPrintPages(){
+  let html = '';
+  for(let i=0; i<STATE.filtered.length; i+=CONFIG.PESERTA_PER_PAGE){
+    html += '<div class="print-page">';
+    // Setiap print-unit punya border-top dashed (cut line)
+    // Unit terakhir juga punya border-bottom dashed
+    // Total 5 garis putus-putus: atas unit1, antara unit1-2, antara unit2-3, antara unit3-4, bawah unit4
+    STATE.filtered.slice(i, i+CONFIG.PESERTA_PER_PAGE).forEach(s=>{ html += renderPesertaUnit(s); });
+    html += '</div>';
+  }
+  return html;
+}
 function printCards(){
   if(STATE.filtered.length === 0){
     showAlert({type:'warning', title:'Tidak Ada Kartu', message:'Tidak ada peserta untuk dicetak. Muat data terlebih dahulu.'});
     return;
   }
-  const printArea = document.getElementById('printArea');
-  let html = '';
-  for(let i=0; i<STATE.filtered.length; i+=CONFIG.PESERTA_PER_PAGE){
-    const pagePeserta = STATE.filtered.slice(i, i+CONFIG.PESERTA_PER_PAGE);
-    html += '<div class="print-page">';
-    // Setiap print-unit punya border-top dashed (cut line)
-    // Unit terakhir juga punya border-bottom dashed
-    // Total 5 garis putus-putus: atas unit1, antara unit1-2, antara unit2-3, antara unit3-4, bawah unit4
-    pagePeserta.forEach(s=>{ html += renderPesertaUnit(s, true); });
-    html += '</div>';
-  }
-  printArea.innerHTML = html;
+  document.getElementById('printArea').innerHTML = buildPrintPages();
   showAlert({
     type:'info', title:'Siap Cetak',
-    message:`${STATE.filtered.length} peserta akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4. Setiap halaman berisi 4 peserta (kartu kiri = biodata, kartu kanan = jadwal) dengan 5 garis putus-putus pembatas potong kertas. Tinggi setiap kartu sama. Pilih "Save as PDF", ukuran Folio/F4 (215×330 mm), margin None.`,
+    message:`${STATE.filtered.length} peserta akan dicetak dalam ${Math.ceil(STATE.filtered.length/CONFIG.PESERTA_PER_PAGE)} halaman F4 (210×330 mm). Setiap halaman berisi 4 peserta (kartu kiri = biodata + TTD kepala sekolah, kartu kanan = jadwal) dengan garis putus-putus pembatas potong kertas. Pilih "Save as PDF", ukuran Folio/F4 (21×33 cm), margin None, scale 100%.`,
     confirmText:'Buka Dialog Cetak',
     cancelText:'Batal'
   }).then(ok=>{
     if(ok) setTimeout(()=>window.print(), 300);
   });
 }
+/* Ctrl+P manual: jika printArea masih kosong, isi otomatis dari data ter-filter */
+window.addEventListener('beforeprint', ()=>{
+  const pa = document.getElementById('printArea');
+  if(!pa.innerHTML.trim() && STATE.filtered.length>0){
+    pa.innerHTML = buildPrintPages();
+  }
+});
 
 /* =========================================================
    PRINT LABEL RUANG (F4 Landscape)
@@ -1424,7 +1338,7 @@ async function printLabels(){
         // Inject landscape @page style
         const style = document.createElement('style');
         style.id = 'label-landscape-style';
-        style.textContent = '@media print { @page { size: 330mm 215mm; margin: 0; } }';
+        style.textContent = '@media print { @page { size: 330mm 210mm; margin: 0; } }';
         document.head.appendChild(style);
         setTimeout(()=>window.print(), 300);
       }
@@ -1488,72 +1402,71 @@ async function generateMejaLabels(ruangList){
   showLoading('Mempersiapkan data peserta...');
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
 
-  // SELALU fetch all students (kelas 7+8+9) supaya kelas A dan B terisi lengkap
-  let allStudents = [];
-  try {
-    showLoading('Memuat data semua peserta dari spreadsheet...');
-    const res = await callGas('getStudents', {kelas: 'all'});
-    if (!res.success) throw new Error(res.error || 'Gagal memuat data');
-    allStudents = res.students || [];
-    // Update STATE supaya preview juga update
-    STATE.students = allStudents;
-  } catch(e) {
-    hideLoading();
-    showAlert({type:'error', title:'Gagal Memuat Data', message:'Tidak dapat memuat data peserta: ' + e.message + '. Pastikan URL Exec GAS sudah benar dan data sudah diisi di spreadsheet.'});
-    return;
-  }
-
-  if (allStudents.length === 0) {
-    hideLoading();
-    showAlert({type:'warning', title:'Data Kosong', message:'Tidak ada data peserta di spreadsheet. Pastikan sheet KELAS7/8/9 sudah terisi.'});
-    return;
-  }
-
-  showLoading('Membuat nomor meja untuk ' + ruangList.length + ' ruang...');
-
-  // Helper: normalize kelas for comparison
-  const normKelas = (s) => String(s||'').replace(/KELAS\s*/i,'').replace(/\s+/g,'').trim().toUpperCase();
-
   let html = '';
   let totalGenerated = 0;
   let totalErrors = 0;
+  let debugInfo = '';
+  let gapWarnings = [];
 
   for (let i = 0; i < ruangList.length; i++) {
     const ruang = ruangList[i];
+    showLoading(`Memuat data Ruang ${ruang.id} (${i+1}/${ruangList.length})...`);
 
-    // Filter students by ruangId (nomor ruang)
-    const ruangStudents = allStudents.filter(s => Number(s.ruangId) === Number(ruang.id));
-
-    // Split into kelas A and kelas B based on kelasShort matching ruang.kelasA / ruang.kelasB
-    const ruangKelasA = normKelas(ruang.kelasA);
-    const ruangKelasB = normKelas(ruang.kelasB);
-
-    let kelasAStudents = ruangStudents.filter(s => normKelas(s.kelasShort) === ruangKelasA);
-    let kelasBStudents = ruangStudents.filter(s => normKelas(s.kelasShort) === ruangKelasB);
-
-    // Fallback 1: if no match by kelasShort, split by urut (1-16 = A, 17-32 = B)
-    if (kelasAStudents.length === 0 && kelasBStudents.length === 0 && ruangStudents.length > 0) {
-      kelasAStudents = ruangStudents.filter(s => Number(s.urut) <= 16);
-      kelasBStudents = ruangStudents.filter(s => Number(s.urut) > 16);
-    }
-
-    // Fallback 2: if one column empty but other has >16, distribute evenly
-    if (kelasAStudents.length > 16 && kelasBStudents.length === 0) {
-      kelasBStudents = kelasAStudents.slice(16);
-      kelasAStudents = kelasAStudents.slice(0, 16);
-    }
-    if (kelasBStudents.length > 16 && kelasAStudents.length === 0) {
-      kelasAStudents = kelasBStudents.slice(16);
-      kelasBStudents = kelasBStudents.slice(0, 16);
-    }
-
-    // Sort by noPeserta (lebih reliable dari urut karena selalu unik)
-    kelasAStudents.sort((a, b) => Number(a.noPeserta || 0) - Number(b.noPeserta || 0));
-    kelasBStudents.sort((a, b) => Number(a.noPeserta || 0) - Number(b.noPeserta || 0));
-
-    if (kelasAStudents.length === 0 && kelasBStudents.length === 0) {
+    let res;
+    try {
+      res = await callGas('getRuangStudents', {ruangId: ruang.id});
+    } catch(e) {
       totalErrors++;
+      debugInfo += `R${ruang.id}: ERROR `;
       continue;
+    }
+    if (!res || !res.success || !res.groups) {
+      totalErrors++;
+      debugInfo += `R${ruang.id}: NO-DATA `;
+      continue;
+    }
+
+    // groups = array of {kelas, range, students: [...]}
+    // Group pertama = kolom kiri, group kedua = kolom kanan
+    const groups = res.groups;
+    let leftStudents = groups[0] ? groups[0].students : [];
+    let rightStudents = groups[1] ? groups[1].students : [];
+
+    // Fallback: jika hanya 1 group dengan >16 students, split
+    if (groups.length === 1 && leftStudents.length > 16 && rightStudents.length === 0) {
+      rightStudents = leftStudents.slice(16);
+      leftStudents = leftStudents.slice(0, 16);
+    }
+
+    // Sort by noPeserta
+    leftStudents.sort((a, b) => Number(a.noPeserta || 0) - Number(b.noPeserta || 0));
+    rightStudents.sort((a, b) => Number(a.noPeserta || 0) - Number(b.noPeserta || 0));
+
+    if (leftStudents.length === 0 && rightStudents.length === 0) {
+      totalErrors++;
+      debugInfo += `R${ruang.id}: EMPTY `;
+      continue;
+    }
+
+    debugInfo += `R${ruang.id}: ${leftStudents.length}+${rightStudents.length} `;
+
+    // Gap detection
+    for (let g = 0; g < groups.length; g++) {
+      const grp = groups[g];
+      if (grp.range) {
+        const parts = grp.range.split(' - ');
+        if (parts.length === 2) {
+          const min = parseInt(parts[0].trim());
+          const max = parseInt(parts[1].trim());
+          const expected = [];
+          for (let n = min; n <= max; n++) expected.push(n);
+          const actual = grp.students.map(s => Number(s.noPeserta));
+          const missing = expected.filter(n => !actual.includes(n));
+          if (missing.length > 0) {
+            gapWarnings.push(`R${ruang.id} Kelas ${grp.kelas}: nomor ${missing.join(', ')} tidak ada di spreadsheet`);
+          }
+        }
+      }
     }
 
     html += `<div class="meja-page">`;
@@ -1563,19 +1476,19 @@ async function generateMejaLabels(ruangList){
     </div>`;
     html += `<div class="meja-grid">`;
 
-    // Kolom kiri = Kelas A (16 nomor) — tanpa col-title
+    // Kolom kiri (16 cells)
     html += `<div class="meja-col">`;
     for (let r = 0; r < 16; r++) {
-      const s = kelasAStudents[r];
+      const s = leftStudents[r];
       const no = s ? s.noPeserta : '';
       html += `<div class="meja-cell">${escapeHtml(String(no || ''))}</div>`;
     }
     html += `</div>`;
 
-    // Kolom kanan = Kelas B (16 nomor) — tanpa col-title
+    // Kolom kanan (16 cells)
     html += `<div class="meja-col">`;
     for (let r = 0; r < 16; r++) {
-      const s = kelasBStudents[r];
+      const s = rightStudents[r];
       const no = s ? s.noPeserta : '';
       html += `<div class="meja-cell">${escapeHtml(String(no || ''))}</div>`;
     }
@@ -1590,64 +1503,20 @@ async function generateMejaLabels(ruangList){
 
   if (totalGenerated === 0) {
     const errMsg = totalErrors > 0
-      ? `Tidak ada data peserta yang cocok untuk ${totalErrors} ruang. Pastikan data peserta sudah dimuat (klik "Muat Data" dengan kelas "Semua Kelas") dan kolom RANGE_A/RANGE_B di sheet RUANG_UJIAN sudah terisi.`
+      ? `Tidak ada data peserta yang cocok untuk ${totalErrors} ruang. Pastikan sheet RUANG_UJIAN sudah terisi (kolom NO, Ruang, KELAS, JUMLAH PESERTA, NOMOR PESERTA) dan data peserta di KELAS7/8/9 sudah lengkap.`
       : 'Tidak ada data peserta yang dapat ditampilkan.';
     showAlert({type:'error', title:'Data Tidak Ditemukan', message: errMsg});
     return;
   }
 
-  // Debug info: berapa peserta per kelas per ruang + deteksi nomor hilang
-  let debugInfo = '';
-  let gapWarnings = [];
-  for (let i = 0; i < ruangList.length; i++) {
-    const ruang = ruangList[i];
-    const ruangStudents = allStudents.filter(s => Number(s.ruangId) === Number(ruang.id));
-    const normK = (s) => String(s||'').replace(/KELAS\s*/i,'').replace(/\s+/g,'').trim().toUpperCase();
-    const kA = normK(ruang.kelasA);
-    const kB = normK(ruang.kelasB);
-    const aStudents = ruangStudents.filter(s => normK(s.kelasShort) === kA).sort((a,b) => Number(a.noPeserta||0) - Number(b.noPeserta||0));
-    const bStudents = ruangStudents.filter(s => normK(s.kelasShort) === kB).sort((a,b) => Number(a.noPeserta||0) - Number(b.noPeserta||0));
-    debugInfo += `R${ruang.id}: ${aStudents.length}+${bStudents.length} `;
-    
-    // Deteksi gap: jika range ada tapi siswa kurang dari 16, tampilkan nomor yang hilang
-    if (ruang.rangeA) {
-      const range = ruang.rangeA.split(' - ');
-      if (range.length === 2) {
-        const min = parseInt(range[0].trim());
-        const max = parseInt(range[1].trim());
-        const expected = [];
-        for (let n = min; n <= max; n++) expected.push(n);
-        const actual = aStudents.map(s => Number(s.noPeserta));
-        const missing = expected.filter(n => !actual.includes(n));
-        if (missing.length > 0) {
-          gapWarnings.push(`R${ruang.id} Kelas ${ruang.kelasA}: nomor ${missing.join(', ')} tidak ada di spreadsheet`);
-        }
-      }
-    }
-    if (ruang.rangeB) {
-      const range = ruang.rangeB.split(' - ');
-      if (range.length === 2) {
-        const min = parseInt(range[0].trim());
-        const max = parseInt(range[1].trim());
-        const expected = [];
-        for (let n = min; n <= max; n++) expected.push(n);
-        const actual = bStudents.map(s => Number(s.noPeserta));
-        const missing = expected.filter(n => !actual.includes(n));
-        if (missing.length > 0) {
-          gapWarnings.push(`R${ruang.id} Kelas ${ruang.kelasB}: nomor ${missing.join(', ')} tidak ada di spreadsheet`);
-        }
-      }
-    }
-  }
-
   const mejaArea = document.getElementById('mejaPrintArea');
   mejaArea.innerHTML = html;
 
-  const warnMsg = totalErrors > 0 ? ` (${totalErrors} ruang dilewati karena tidak ada data)` : '';
+  const warnMsg = totalErrors > 0 ? ` (${totalErrors} ruang dilewati)` : '';
   const gapMsg = gapWarnings.length > 0 ? `\n\n⚠️ Nomor hilang (cek spreadsheet):\n${gapWarnings.join('\n')}` : '';
   showAlert({
     type: 'info', title: 'Siap Cetak No Meja',
-    message: `${totalGenerated} ruang akan dicetak dalam ${totalGenerated} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta.${warnMsg} Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.\n\nDebug: ${debugInfo}${gapMsg}`,
+    message: `${totalGenerated} ruang akan dicetak dalam ${totalGenerated} halaman F4 Portrait (215×330 mm). Setiap halaman: 2 kolom × 16 baris = 32 nomor.${warnMsg} Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.\n\nDebug: ${debugInfo}${gapMsg}`,
     confirmText: 'Buka Dialog Cetak',
     cancelText: 'Batal'
   }).then(ok => {
@@ -1655,7 +1524,7 @@ async function generateMejaLabels(ruangList){
       document.body.classList.add('printing-meja');
       const style = document.createElement('style');
       style.id = 'meja-portrait-style';
-      style.textContent = '@media print { @page { size: 215mm 330mm; margin: 0; } }';
+      style.textContent = '@media print { @page { size: 210mm 330mm; margin: 0; } }';
       document.head.appendChild(style);
       setTimeout(() => window.print(), 300);
     }
@@ -1673,6 +1542,7 @@ function applySettingsToForm(){
   document.getElementById('setDate').value = STATE.settings.date || '';
   document.getElementById('setLogoUrl').value = STATE.settings.logoUrl || '';
   document.getElementById('setTtdUrl').value = STATE.settings.ttdUrl || '';
+  document.getElementById('setTtdShow').checked = STATE.settings.ttdShow !== false;
   document.getElementById('setExecUrl').value = STATE.settings.execUrl || '';
   updateTtdPreview();
 }
@@ -1698,8 +1568,9 @@ function saveSettingsFromForm(){
   STATE.settings.principalName = document.getElementById('setPrincipalName').value.trim() || CONFIG.DEFAULT_PRINCIPAL;
   STATE.settings.principalNip = document.getElementById('setPrincipalNip').value.trim() || CONFIG.DEFAULT_NIP;
   STATE.settings.date = document.getElementById('setDate').value.trim() || CONFIG.DEFAULT_DATE;
-  STATE.settings.logoUrl = document.getElementById('setLogoUrl').value.trim() || CONFIG.LOGO_DEFAULT;
+  STATE.settings.logoUrl = document.getElementById('setLogoUrl').value.trim() || CONFIG.LOGO_CARD;
   STATE.settings.ttdUrl = document.getElementById('setTtdUrl').value.trim();
+  STATE.settings.ttdShow = document.getElementById('setTtdShow').checked;
   STATE.settings.execUrl = document.getElementById('setExecUrl').value.trim() || CONFIG.EXEC_URL;
   saveSettings();
   closeSettings();
