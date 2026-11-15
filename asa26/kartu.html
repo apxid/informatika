@@ -867,7 +867,9 @@ async function callGas(action, params={}){
   const url = new URL(base);
   url.searchParams.set('action', action);
   for(const k in params){ if(params[k]!==undefined && params[k]!==null) url.searchParams.set(k, params[k]); }
-  const res = await fetch(url.toString(), {method:'GET', redirect:'follow'});
+  // Cache-busting: supaya tidak cache response lama
+  url.searchParams.set('_t', Date.now().toString());
+  const res = await fetch(url.toString(), {method:'GET', redirect:'follow', cache:'no-store'});
   if(!res.ok) throw new Error('HTTP '+res.status+' — gagal menghubungi server GAS.');
   const text = await res.text();
   try{ return JSON.parse(text); }
