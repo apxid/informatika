@@ -306,14 +306,18 @@ input,select{font-family:inherit;outline:none}
     margin-bottom:8mm;
     letter-spacing:2pt;
     line-height:1;
+    white-space:nowrap;
   }
-  /* Subtitle: Arial Bold, lebih besar */
+  /* Subtitle: Arial Bold, sama panjang dengan title (stretch scaleX) */
   body.printing-labels .label-card .room-subtitle{
     font-family:Arial,sans-serif;
     font-weight:bold;
     font-size:28pt;color:#000;
     margin-bottom:14mm;
     letter-spacing:1pt;
+    white-space:nowrap;
+    transform:scaleX(1.42);
+    transform-origin:center;
   }
   /* Range info: Arial Bold, sangat besar supaya jelas terbaca */
   body.printing-labels .label-card .room-info{
@@ -326,13 +330,7 @@ input,select{font-family:inherit;outline:none}
     font-family:Arial,sans-serif;
     font-weight:bold;
   }
-  /* School name: Arial italic */
-  body.printing-labels .label-card .school-name{
-    font-family:Arial,sans-serif;
-    font-style:italic;
-    font-size:18pt;color:#000;
-    margin-top:12mm;
-  }
+  /* School name: DIHAPUS */
 }
 
 /* ===== MEJA LABEL PRINT CSS (F4 portrait, 2 kolom × 16 baris) ===== */
@@ -1393,7 +1391,6 @@ async function printLabels(){
             <div class="room-subtitle">RUANG UJIAN ASAS · ${escapeHtml(year)}</div>
             ${kelasAInfo}
             ${kelasBInfo}
-            <div class="school-name">${escapeHtml(school)}</div>
           </div>`;
       });
       html += '</div>';
@@ -1473,67 +1470,127 @@ async function printMejaLabels(){
 }
 
 async function generateMejaLabels(ruangList){
-  showLoading('Membuat nomor meja untuk '+ruangList.length+' ruang...');
-  const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+  showLoading('Mempersiapkan data peserta...');
   const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
-  let html = '';
 
-  for(let i=0; i<ruangList.length; i++){
-    const ruang = ruangList[i];
-    try{
-      const res = await callGas('getRuangStudents', {ruangId: ruang.id});
-      if(!res.success) continue;
-      const kelasAStudents = res.kelasAStudents || [];
-      const kelasBStudents = res.kelasBStudents || [];
-
-      html += `<div class="meja-page">`;
-      html += `<div class="meja-header">
-        <div class="meja-title">RUANG ${escapeHtml(String(ruang.id))} (R${escapeHtml(String(ruang.id))})</div>
-        <div class="meja-sub">NOMOR PESERTA · RUANG UJIAN ASAS · ${escapeHtml(year)}</div>
-      </div>`;
-      html += `<div class="meja-grid">`;
-      // Kolom kiri = Kelas A (16 nomor)
-      html += `<div class="meja-col">`;
-      html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasA)} (${escapeHtml(ruang.rangeA||'-')})</div>`;
-      for(let r=0; r<16; r++){
-        const s = kelasAStudents[r];
-        const no = s ? s.noPeserta : '';
-        html += `<div class="meja-cell">${escapeHtml(String(no))}</div>`;
-      }
-      html += `</div>`;
-      // Kolom kanan = Kelas B (16 nomor)
-      html += `<div class="meja-col">`;
-      html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasB)} (${escapeHtml(ruang.rangeB||'-')})</div>`;
-      for(let r=0; r<16; r++){
-        const s = kelasBStudents[r];
-        const no = s ? s.noPeserta : '';
-        html += `<div class="meja-cell">${escapeHtml(String(no))}</div>`;
-      }
-      html += `</div>`;
-      html += `</div>`;
-      html += `</div>`;
-    }catch(e){
-      // Skip this ruang on error
+  // Gunakan STATE.students yang sudah dimuat, atau fetch all jika kosong
+  let allStudents = STATE.students;
+  if (!allStudents || allStudents.length === 0) {
+    try {
+      showLoading('Memuat data peserta dari spreadsheet...');
+      const res = await callGas('getStudents', {kelas: 'all'});
+      if (!res.success) throw new Error(res.error || 'Gagal memuat data');
+      allStudents = res.students || [];
+      STATE.students = allStudents;
+    } catch(e) {
+      hideLoading();
+      showAlert({type:'error', title:'Gagal Memuat Data', message:'Tidak dapat memuat data peserta: ' + e.message + '. Pastikan URL Exec GAS sudah benar dan data sudah diisi di spreadsheet.'});
+      return;
     }
+  }
+
+  if (allStudents.length === 0) {
+    hideLoading();
+    showAlert({type:'warning', title:'Data Kosong', message:'Tidak ada data peserta di spreadsheet. Pastikan sheet KELAS7/8/9 sudah terisi.'});
+    return;
+  }
+
+  showLoading('Membuat nomor meja untuk ' + ruangList.length + ' ruang...');
+
+  // Helper: normalize kelas for comparison
+  const normKelas = (s) => String(s||'').replace(/KELAS\s*/i,'').replace(/\s+/g,'').trim().toUpperCase();
+
+  let html = '';
+  let totalGenerated = 0;
+  let totalErrors = 0;
+
+  for (let i = 0; i < ruangList.length; i++) {
+    const ruang = ruangList[i];
+
+    // Filter students by ruangId (nomor ruang)
+    const ruangStudents = allStudents.filter(s => Number(s.ruangId) === Number(ruang.id));
+
+    // Split into kelas A and kelas B based on kelasShort matching ruang.kelasA / ruang.kelasB
+    const ruangKelasA = normKelas(ruang.kelasA);
+    const ruangKelasB = normKelas(ruang.kelasB);
+
+    let kelasAStudents = ruangStudents.filter(s => normKelas(s.kelasShort) === ruangKelasA);
+    let kelasBStudents = ruangStudents.filter(s => normKelas(s.kelasShort) === ruangKelasB);
+
+    // Fallback: if no match by kelasShort, split by urut (1-16 = A, 17-32 = B)
+    if (kelasAStudents.length === 0 && kelasBStudents.length === 0 && ruangStudents.length > 0) {
+      kelasAStudents = ruangStudents.filter(s => Number(s.urut) <= 16);
+      kelasBStudents = ruangStudents.filter(s => Number(s.urut) > 16);
+    }
+
+    // Sort by urut/noPeserta
+    kelasAStudents.sort((a, b) => Number(a.urut || 0) - Number(b.urut || 0));
+    kelasBStudents.sort((a, b) => Number(a.urut || 0) - Number(b.urut || 0));
+
+    if (kelasAStudents.length === 0 && kelasBStudents.length === 0) {
+      totalErrors++;
+      continue;
+    }
+
+    html += `<div class="meja-page">`;
+    html += `<div class="meja-header">
+      <div class="meja-title">RUANG ${escapeHtml(String(ruang.id))} (R${escapeHtml(String(ruang.id))})</div>
+      <div class="meja-sub">NOMOR PESERTA · RUANG UJIAN ASAS · ${escapeHtml(year)}</div>
+    </div>`;
+    html += `<div class="meja-grid">`;
+
+    // Kolom kiri = Kelas A (16 nomor)
+    html += `<div class="meja-col">`;
+    html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasA)} (${escapeHtml(ruang.rangeA || '-')})</div>`;
+    for (let r = 0; r < 16; r++) {
+      const s = kelasAStudents[r];
+      const no = s ? s.noPeserta : '';
+      html += `<div class="meja-cell">${escapeHtml(String(no || ''))}</div>`;
+    }
+    html += `</div>`;
+
+    // Kolom kanan = Kelas B (16 nomor)
+    html += `<div class="meja-col">`;
+    html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasB)} (${escapeHtml(ruang.rangeB || '-')})</div>`;
+    for (let r = 0; r < 16; r++) {
+      const s = kelasBStudents[r];
+      const no = s ? s.noPeserta : '';
+      html += `<div class="meja-cell">${escapeHtml(String(no || ''))}</div>`;
+    }
+    html += `</div>`;
+
+    html += `</div>`;
+    html += `</div>`;
+    totalGenerated++;
+  }
+
+  hideLoading();
+
+  if (totalGenerated === 0) {
+    const errMsg = totalErrors > 0
+      ? `Tidak ada data peserta yang cocok untuk ${totalErrors} ruang. Pastikan data peserta sudah dimuat (klik "Muat Data" dengan kelas "Semua Kelas") dan kolom RANGE_A/RANGE_B di sheet RUANG_UJIAN sudah terisi.`
+      : 'Tidak ada data peserta yang dapat ditampilkan.';
+    showAlert({type:'error', title:'Data Tidak Ditemukan', message: errMsg});
+    return;
   }
 
   const mejaArea = document.getElementById('mejaPrintArea');
   mejaArea.innerHTML = html;
-  hideLoading();
 
+  const warnMsg = totalErrors > 0 ? ` (${totalErrors} ruang dilewati karena tidak ada data)` : '';
   showAlert({
-    type:'info', title:'Siap Cetak No Meja',
-    message:`${ruangList.length} ruang akan dicetak dalam ${ruangList.length} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta. Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.`,
-    confirmText:'Buka Dialog Cetak',
-    cancelText:'Batal'
-  }).then(ok=>{
-    if(ok){
+    type: 'info', title: 'Siap Cetak No Meja',
+    message: `${totalGenerated} ruang akan dicetak dalam ${totalGenerated} halaman F4 Portrait (215×330 mm). Setiap halaman berisi 2 kolom × 16 baris nomor peserta.${warnMsg} Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.`,
+    confirmText: 'Buka Dialog Cetak',
+    cancelText: 'Batal'
+  }).then(ok => {
+    if (ok) {
       document.body.classList.add('printing-meja');
       const style = document.createElement('style');
       style.id = 'meja-portrait-style';
       style.textContent = '@media print { @page { size: 215mm 330mm; margin: 0; } }';
       document.head.appendChild(style);
-      setTimeout(()=>window.print(), 300);
+      setTimeout(() => window.print(), 300);
     }
   });
 }
