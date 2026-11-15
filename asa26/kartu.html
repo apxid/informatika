@@ -360,7 +360,7 @@ input,select{font-family:inherit;outline:none}
     width:215mm;height:330mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;
-    padding:8mm 10mm;box-sizing:border-box;
+    padding:4mm 5mm;box-sizing:border-box;
   }
   body.printing-meja .meja-page:last-child{page-break-after:auto}
 
@@ -369,18 +369,19 @@ input,select{font-family:inherit;outline:none}
     font-family:Arial,sans-serif;
     font-weight:bold;
     color:#000;
-    margin-bottom:4mm;
-    padding-bottom:2mm;
-    border-bottom:1pt solid #000;
+    margin-bottom:2mm;
+    padding-bottom:1mm;
+    border-bottom:.5pt solid #000;
+    flex-shrink:0;
   }
   body.printing-meja .meja-header .meja-title{
-    font-size:18pt;
+    font-size:12pt;
     font-family:"Arial Black",Arial,sans-serif;
     font-weight:900;
-    margin-bottom:1mm;
+    margin-bottom:0;
   }
   body.printing-meja .meja-header .meja-sub{
-    font-size:12pt;
+    font-size:8pt;
     font-family:Arial,sans-serif;
     font-weight:bold;
   }
@@ -390,11 +391,13 @@ input,select{font-family:inherit;outline:none}
     grid-template-columns:1fr 1fr;
     gap:0;
     flex:1;
+    min-height:0;
   }
   body.printing-meja .meja-col{
     display:grid;
     grid-template-rows:repeat(16,1fr);
     gap:0;
+    min-height:0;
   }
   body.printing-meja .meja-cell{
     border:1.5pt solid #000;
@@ -404,15 +407,16 @@ input,select{font-family:inherit;outline:none}
     justify-content:center;
     font-family:"Arial Black",Arial,sans-serif;
     font-weight:900;
-    font-size:42pt;
+    font-size:36pt;
     color:#000;
     text-align:center;
     page-break-inside:avoid;
-    /* Nempel dengan cell atas/bawah: hanya border top+bottom tipis, kiri/kanan sesuai kolom */
     margin:0;
     box-sizing:border-box;
+    min-height:0;
+    overflow:hidden;
   }
-  /* Kolom kiri: border kanan tipis (sudah ada di cell), kolom kanan: border kiri tipis */
+  /* Kolom kiri: border kanan tipis, kolom kanan: border kiri tipis */
   body.printing-meja .meja-col:first-child .meja-cell{
     border-right:.75pt solid #000;
   }
@@ -422,17 +426,6 @@ input,select{font-family:inherit;outline:none}
   /* Hilangkan double border antar cell vertikal (atas-bawah) */
   body.printing-meja .meja-col .meja-cell + .meja-cell{
     border-top:0;
-  }
-  body.printing-meja .meja-col-title{
-    text-align:center;
-    font-family:Arial,sans-serif;
-    font-weight:bold;
-    font-size:11pt;
-    color:#000;
-    margin-bottom:2mm;
-    padding:1mm 0;
-    border:1pt solid #000;
-    background:#fff;
   }
 }
 
@@ -780,7 +773,7 @@ input,select{font-family:inherit;outline:none}
    ========================================================= */
 const CONFIG = {
   // URL Exec Google Apps Script yang sudah di-deploy
-  EXEC_URL: "https://script.google.com/macros/s/AKfycbwnhiQiGYP_dDUNtNqlQM9SR3lpMuONJUbd4fHY7oTTYvzYrd6s_gbfw2ANM9bZu26l/exec",
+  EXEC_URL: "https://script.google.com/macros/s/AKfycbxpk65oz8o9UWv7D3smIxlOvHUAjt0ZDpkkwFCOKdk9EzXkq95O1NifvzIRqVae7wA8/exec",
   LOGO_DEFAULT: "https://yanuar-moga.github.io/assets/logo.jpg",
   LOGO_FALLBACK: "https://apxid.github.io/informatika/asa26/assets/tut.jpg",
   DEFAULT_SCHOOL: "SMP Negeri 1 Moga",
@@ -1558,9 +1551,8 @@ async function generateMejaLabels(ruangList){
     </div>`;
     html += `<div class="meja-grid">`;
 
-    // Kolom kiri = Kelas A (16 nomor)
+    // Kolom kiri = Kelas A (16 nomor) — tanpa col-title
     html += `<div class="meja-col">`;
-    html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasA)} (${escapeHtml(ruang.rangeA || '-')})</div>`;
     for (let r = 0; r < 16; r++) {
       const s = kelasAStudents[r];
       const no = s ? s.noPeserta : '';
@@ -1568,9 +1560,8 @@ async function generateMejaLabels(ruangList){
     }
     html += `</div>`;
 
-    // Kolom kanan = Kelas B (16 nomor)
+    // Kolom kanan = Kelas B (16 nomor) — tanpa col-title
     html += `<div class="meja-col">`;
-    html += `<div class="meja-col-title">Kelas ${escapeHtml(ruang.kelasB)} (${escapeHtml(ruang.rangeB || '-')})</div>`;
     for (let r = 0; r < 16; r++) {
       const s = kelasBStudents[r];
       const no = s ? s.noPeserta : '';
