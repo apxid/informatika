@@ -461,15 +461,17 @@
 
   /* CORRECT ANSWER MARKER - Valentino Rossi #46 style */
   .option.correct-shown {
-    background: linear-gradient(135deg, var(--rossi-green), var(--kuning-osis-300));
-    border: 4px solid var(--merah);
-    box-shadow: 0 0 0 4px var(--rossi-green), 0 0 20px var(--rossi-green);
-    animation: rossiReveal 0.8s var(--transition);
-    position: relative;
+    background: linear-gradient(135deg, var(--rossi-green), var(--kuning-osis-300)) !important;
+    border: 4px solid var(--merah) !important;
+    box-shadow: 0 0 0 4px var(--rossi-green), 0 0 20px var(--rossi-green) !important;
+    animation: rossiReveal 0.8s var(--transition) !important;
+    position: relative !important;
+    transform: scale(1.02) !important;
+    z-index: 5;
   }
   .option.correct-shown .letter {
-    background: var(--merah);
-    color: var(--putih);
+    background: var(--merah) !important;
+    color: var(--putih) !important;
   }
   .option.correct-shown::after {
     content: '\2713';
@@ -807,7 +809,7 @@
     <img src="https://yanuar-moga.github.io/guruwali/assets/logo.png" alt="Logo SMP Negeri 1 Moga" class="school-logo-img" onerror="this.style.display='none'; document.querySelector('.school-logo-fallback').style.display='flex';" />
     <div class="school-logo school-logo-fallback" style="display:none;">SMP</div>
     <h1>SMP Negeri 1 Moga</h1>
-    <p class="subtitle">Asesmen Sumatif Akhir Semester<br>Informatika - Kelas IX</p>
+    <p class="subtitle">Asesmen Sumatif Akhir Semester</p>
 
     <div class="form-group">
       <label for="studentName">Nama Lengkap</label>
@@ -826,10 +828,6 @@
       MASUK UJIAN
     </button>
     <div class="error-msg" id="pinError"></div>
-
-    <p style="margin-top:18px; font-size:11px; color:var(--abu-700);">
-      Tahun Ajaran 2026/2027 &middot; Selasa, 9 Desember 2026
-    </p>
   </div>
 </section>
 
@@ -1007,6 +1005,7 @@ let state = {
   isLocked: false,
   isFullscreen: false,
   lockScreenEnabled: true, // default ON, di-toggle via guru.html
+  lockStatusKnown: false,  // FALSE sampai polling pertama dapat response dari backend
   answers: {}, // { 'pg-1': 'A', 'pgk-1': ['A','B','C'], 'bs-1-P1': 'B', ... }
   validatedAnswers: {}, // jawaban yang sudah divalidasi guru
   submitted: false
@@ -1163,11 +1162,39 @@ const QUESTIONS = {
 window.addEventListener('DOMContentLoaded', () => {
   buildParticles();
   renderQuestions();
-  setupAntiCheat();
-  setupKeyboardShortcuts();
-  // Coba restore sesi sebelumnya (jika ada)
-  restoreSession();
+  // FETCH LOCK STATUS DARI BACKEND SEBELUM anti-cheat aktif
+  // Ini mencegah lock false-positive saat reload (jika guru sudah nonaktifkan)
+  fetchLockStatusImmediately().then(() => {
+    setupAntiCheat();
+    setupKeyboardShortcuts();
+    restoreSession();
+  });
 });
+
+async function fetchLockStatusImmediately() {
+  try {
+    const resp = await gasGet({ action: 'getLockScreenStatus' });
+    if (resp.dev) {
+      // DEV mode - anggap default true
+      state.lockScreenEnabled = true;
+      state.lockStatusKnown = true;
+      return;
+    }
+    if (resp.ok && typeof resp.data !== 'undefined') {
+      state.lockScreenEnabled = (resp.data === true || String(resp.data).toUpperCase() === 'TRUE');
+      state.lockStatusKnown = true;
+      console.log('[lock] Initial status fetched:', state.lockScreenEnabled);
+    } else {
+      // Backend error - assume default true (lebih aman)
+      state.lockScreenEnabled = true;
+      state.lockStatusKnown = true;
+    }
+  } catch (e) {
+    console.error('[lock] fetchLockStatusImmediately error:', e);
+    state.lockScreenEnabled = true;
+    state.lockStatusKnown = true;
+  }
+}
 
 function buildParticles() {
   const container = document.getElementById('particles');
@@ -1336,15 +1363,76 @@ function setupAutoSave() {
 }
 
 function logoutStudent() {
-  localStorage.removeItem(SESSION_KEY);
-  location.reload();
+  // Hentikan semua interval
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  if (state.lockInterval) clearInterval(state.lockInterval);
+  if (pollInterval) clearInterval(pollInterval);
+  if (fastPollInterval) clearInterval(fastPollInterval);
+  // Reset state KE KOSONG
+  state.student = { name: '', class: '', pin: '', id: '' };
+  state.currentLayer = 'layer-pin';
+  state.startedAt = null;
+  state.remainingSec = state.durationSec;
+  state.answers = {};
+  state.submitted = false;
+  state.violationCount = 0;
+  state.isLocked = false;
+  state.validatedAnswers = {};
+  // Reset lock state (status akan di-fetch ulang saat init)
+  state.lockScreenEnabled = true;
+  state.lockStatusKnown = false;
+  // Hapus semua marker & selected di UI
+  document.querySelectorAll('.option.selected, .option.correct-shown').forEach(o => {
+    o.classList.remove('selected');
+    o.classList.remove('correct-shown');
+  });
+  document.querySelectorAll('.bs-checkbox.checked, .bs-checkbox.bs-correct-shown').forEach(c => {
+    c.classList.remove('checked');
+    c.classList.remove('bs-correct-shown');
+    c.textContent = c.dataset.val === 'B' ? '\u2610 B' : '\u2610 S';
+  });
+  // Reset timer display
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('examTimer' + i);
+    if (el) {
+      el.textContent = '90:00';
+      el.classList.remove('warning','danger');
+    }
+  }
+  // Reset form input
+  document.getElementById('studentName').value = '';
+  document.getElementById('studentClass').value = '';
+  document.getElementById('pinInput').value = '';
+  // HAPUS localStorage - PASTI bersih
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    // Double-clear untuk jaga-jaga
+    localStorage.setItem(SESSION_KEY, '');
+    localStorage.removeItem(SESSION_KEY);
+  } catch(e) { console.error('clear localStorage failed:', e); }
+  // Pindah ke layer-pin TANPA saveSession
+  const cur = document.querySelector('.layer.active');
+  if (cur) cur.classList.remove('active');
+  document.getElementById('layer-pin').classList.add('active');
+  state.currentLayer = 'layer-pin';
+  // Tutup modal
+  closeModal();
+  // Exit fullscreen kalau ada
+  if (document.exitFullscreen && document.fullscreenElement) {
+    document.exitFullscreen().catch(()=>{});
+  }
+  // Focus ke input nama
+  setTimeout(() => {
+    document.getElementById('studentName').focus();
+    showToast('success', 'Anda telah keluar dari sesi ujian.');
+  }, 200);
 }
 
 function confirmLogout() {
   showModal(`
     <h3>Konfirmasi Keluar</h3>
     <p>Sesi ujian akan diakhiri dan Anda akan kembali ke halaman login.<br>
-       <strong>Jawaban yang sudah dijawab tetap tersimpan</strong> (auto-save aktif).<br>
+       <strong>Jawaban yang sudah dijawab tetap tersimpan</strong> di backend (auto-save aktif).<br>
        Lanjutkan keluar?</p>
     <div class="modal-buttons">
       <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
@@ -1536,16 +1624,26 @@ function selectBS(qid, stmt, val, el) {
    ========================================================= */
 function applyCorrectMarker(qid) {
   const correct = state.validatedAnswers[qid];
-  if (!correct) return;
+  if (!correct) {
+    console.log('[marker] skip', qid, '- no validation');
+    return;
+  }
+  console.log('[marker] applying', qid, '->', correct);
 
   if (qid.startsWith('pg-')) {
     // PG: single letter e.g. "B"
+    // HAPUS dulu semua marker di soal ini (jaga-jaga jawaban berubah)
     document.querySelectorAll(`.option[data-qid="${qid}"]`).forEach(opt => {
       opt.classList.remove('correct-shown');
-      if (opt.dataset.letter === correct) {
-        opt.classList.add('correct-shown');
-      }
     });
+    // Tambah marker ke option yang benar
+    const correctOpt = document.querySelector(`.option[data-qid="${qid}"][data-letter="${correct}"]`);
+    if (correctOpt) {
+      correctOpt.classList.add('correct-shown');
+      console.log('[marker] pg', qid, 'letter', correct, 'MARKED');
+    } else {
+      console.warn('[marker] pg', qid, 'option', correct, 'NOT FOUND in DOM');
+    }
   } else if (qid.startsWith('pgk-')) {
     // PGK: JSON array e.g. ["A","B","C"]
     let arr = [];
@@ -1556,19 +1654,22 @@ function applyCorrectMarker(qid) {
         opt.classList.add('correct-shown');
       }
     });
+    console.log('[marker] pgk', qid, 'letters', arr, 'MARKED');
   } else if (qid.startsWith('bs-')) {
     // BS: JSON object e.g. {"P1":"B","P2":"S","P3":"B"}
     let obj = {};
     try { obj = JSON.parse(correct); } catch (e) { obj = {}; }
+    document.querySelectorAll(`.bs-checkbox[data-qid="${qid}"]`).forEach(cb => {
+      cb.classList.remove('bs-correct-shown');
+    });
     Object.keys(obj).forEach(stmt => {
       const val = obj[stmt];
-      document.querySelectorAll(`.bs-checkbox[data-qid="${qid}"][data-stmt="${stmt}"]`).forEach(cb => {
-        cb.classList.remove('bs-correct-shown');
-        if (cb.dataset.val === val) {
-          cb.classList.add('bs-correct-shown');
-        }
-      });
+      const cb = document.querySelector(`.bs-checkbox[data-qid="${qid}"][data-stmt="${stmt}"][data-val="${val}"]`);
+      if (cb) {
+        cb.classList.add('bs-correct-shown');
+      }
     });
+    console.log('[marker] bs', qid, obj, 'MARKED');
   }
 }
 
@@ -1764,9 +1865,15 @@ function isOnQuestionLayer() {
 }
 
 function triggerLock() {
+  // Jika status lock belum diketahui (polling belum selesai), jangan kunci
+  // Ini mencegah lock false-positive saat page baru di-load/reload
+  if (!state.lockStatusKnown) {
+    console.log('[lock] Status belum diketahui, skip lock (page load protection)');
+    return;
+  }
   // Jika guru menonaktifkan lock screen via guru.html, skip
   if (!state.lockScreenEnabled) {
-    console.log('Lock screen dinonaktifkan oleh guru, skip');
+    console.log('[lock] Lock screen dinonaktifkan oleh guru, skip');
     return;
   }
   if (state.isLocked) return;
@@ -1791,6 +1898,16 @@ function triggerLock() {
       unlockScreen();
     }
   }, 1000);
+}
+
+// Unlock otomatis saat guru menonaktifkan lock screen di tengah-tengah
+function unlockScreenEarly() {
+  if (!state.isLocked) return;
+  if (state.lockInterval) clearInterval(state.lockInterval);
+  state.isLocked = false;
+  document.getElementById('lock-screen').classList.remove('show');
+  showToast('success', 'Guru telah menonaktifkan kunci layar. Anda bebas melanjutkan.');
+  console.log('[lock] Early unlock - guru disabled lock screen');
 }
 
 function updateLockDisplay(sec) {
@@ -1834,11 +1951,19 @@ function setupKeyboardShortcuts() {
    + Lock screen status (toggle from guru.html)
    ========================================================= */
 let pollInterval = null;
+let fastPollInterval = null;  // polling lebih cepat saat sedang TERKUNCI
+
 function startValidationPolling() {
-  // IMMEDIATE first poll - jangan tunggu 3 detik
+  // IMMEDIATE first poll - jangan tunggu 2 detik
   pollValidatedAnswers();
   // Selanjutnya poll tiap 2 detik (lebih responsif)
   pollInterval = setInterval(pollValidatedAnswers, 2000);
+  // Fast poll saat TERKUNCI - cek tiap 1 detik agar cepat tahu kalau guru unlock
+  fastPollInterval = setInterval(() => {
+    if (state.isLocked) {
+      pollValidatedAnswers();
+    }
+  }, 1000);
 }
 
 async function pollValidatedAnswers() {
@@ -1860,9 +1985,22 @@ async function pollValidatedAnswers() {
     // Re-apply ALL markers (catch any that missed - misal option belum ada di DOM saat poll pertama)
     Object.keys(state.validatedAnswers).forEach(qid => applyCorrectMarker(qid));
   }
-  // Update lock screen status dari backend
+  // Update lock screen status dari backend (lebih responsif)
   if (resp.ok && typeof resp.lockScreenEnabled !== 'undefined') {
-    state.lockScreenEnabled = resp.lockScreenEnabled;
+    const newStatus = resp.lockScreenEnabled;
+    state.lockStatusKnown = true;
+    if (state.lockScreenEnabled !== newStatus) {
+      console.log('[lock] Status berubah:', state.lockScreenEnabled, '->', newStatus);
+      state.lockScreenEnabled = newStatus;
+      // Jika guru menonaktifkan lock screen saat siswa sedang TERKUNCI, langsung unlock!
+      if (!newStatus && state.isLocked) {
+        unlockScreenEarly();
+      }
+      // Jika guru mengaktifkan kembali lock screen, beri tahu siswa
+      if (newStatus && !state.isLocked) {
+        showToast('info', 'Guru telah mengaktifkan kembali kunci layar anti-cheat.');
+      }
+    }
   }
 }
 
