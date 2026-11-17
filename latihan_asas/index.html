@@ -297,6 +297,21 @@
     align-items: center;
     gap: 16px;
   }
+  .logout-mini {
+    background: rgba(255,255,255,0.15);
+    color: var(--putih);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Poppins',sans-serif;
+  }
+  .logout-mini:hover {
+    background: var(--merah);
+    border-color: var(--merah);
+  }
   .timer-box {
     background: var(--kuning-osis-500);
     color: var(--biru-smp-900);
@@ -829,6 +844,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer1">90:00</div>
+      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress"></div>
@@ -850,6 +866,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer2">90:00</div>
+      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress2"></div>
@@ -871,6 +888,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer3">90:00</div>
+      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress3"></div>
@@ -892,6 +910,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer4">90:00</div>
+      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress4"></div>
@@ -913,6 +932,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer5">90:00</div>
+      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress5"></div>
@@ -986,6 +1006,7 @@ let state = {
   violationCount: 0,
   isLocked: false,
   isFullscreen: false,
+  lockScreenEnabled: true, // default ON, di-toggle via guru.html
   answers: {}, // { 'pg-1': 'A', 'pgk-1': ['A','B','C'], 'bs-1-P1': 'B', ... }
   validatedAnswers: {}, // jawaban yang sudah divalidasi guru
   submitted: false
@@ -1144,8 +1165,8 @@ window.addEventListener('DOMContentLoaded', () => {
   renderQuestions();
   setupAntiCheat();
   setupKeyboardShortcuts();
-  // Auto-focus on PIN
-  document.getElementById('studentName').focus();
+  // Coba restore sesi sebelumnya (jika ada)
+  restoreSession();
 });
 
 function buildParticles() {
@@ -1162,6 +1183,174 @@ function buildParticles() {
     if (Math.random() > 0.5) p.style.background = 'rgba(37,99,235,0.4)';
     container.appendChild(p);
   }
+}
+
+/* =========================================================
+   SESSION PERSISTENCE - reload tidak auto-logout
+   ========================================================= */
+const SESSION_KEY = 'examApp_studentSession';
+
+function saveSession() {
+  try {
+    const session = {
+      student: state.student,
+      currentLayer: state.currentLayer,
+      startedAt: state.startedAt,
+      durationSec: state.durationSec,
+      answers: state.answers,
+      submitted: state.submitted,
+      violationCount: state.violationCount,
+      savedAt: Date.now()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  } catch (e) {
+    console.error('Save session failed:', e);
+  }
+}
+
+function restoreSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) {
+      document.getElementById('studentName').focus();
+      return;
+    }
+    const session = JSON.parse(raw);
+    if (!session.student || !session.student.id) {
+      document.getElementById('studentName').focus();
+      return;
+    }
+    // Verifikasi ke backend: apakah studentId sudah submit?
+    verifySessionAlive(session);
+  } catch (e) {
+    console.error('Restore session failed:', e);
+    document.getElementById('studentName').focus();
+  }
+}
+
+async function verifySessionAlive(session) {
+  // Cek apakah studentId masih valid (belum submit)
+  const resp = await gasGet({
+    action: 'checkStudentStatus',
+    studentId: session.student.id
+  });
+  if (resp.dev) {
+    // DEV mode - langsung restore tanpa verifikasi backend
+    doRestoreSession(session, false);
+    return;
+  }
+  if (resp.ok && resp.data) {
+    if (resp.data.submitted) {
+      // Sudah submit - jangan restore, biarkan login ulang
+      showToast('info', 'Sesi sebelumnya sudah submit. Silakan login kembali.');
+      localStorage.removeItem(SESSION_KEY);
+      document.getElementById('studentName').focus();
+      return;
+    }
+    doRestoreSession(session, resp.data.submitted || false);
+  } else {
+    // Backend error - tetap restore (offline-first)
+    doRestoreSession(session, session.submitted || false);
+  }
+}
+
+function doRestoreSession(session, alreadySubmitted) {
+  // Restore state
+  state.student = session.student;
+  state.answers = session.answers || {};
+  state.violationCount = session.violationCount || 0;
+  state.submitted = alreadySubmitted;
+  
+  // Update student info display
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('hdrStudent' + i);
+    if (el) el.textContent = state.student.name + ' \u00b7 ' + state.student.class;
+  }
+  
+  // Restore timer - hitung ulang remaining dari startedAt
+  state.startedAt = session.startedAt || Date.now();
+  state.durationSec = session.durationSec || (90 * 60);
+  const elapsed = Math.floor((Date.now() - state.startedAt) / 1000);
+  state.remainingSec = Math.max(0, state.durationSec - elapsed);
+  
+  // Restore selected answers di UI
+  Object.keys(state.answers).forEach(qid => {
+    restoreAnswerUI(qid, state.answers[qid]);
+  });
+  
+  // Pindah ke layer terakhir (atau layer-done jika sudah submit)
+  if (state.submitted || state.remainingSec <= 0) {
+    state.submitted = true;
+    goToLayer('layer-done');
+    document.getElementById('doneStatus').textContent = 'TERKIRIM';
+  } else {
+    goToLayer(session.currentLayer || 'layer-q1');
+    // Mulai timer ulang
+    startExamTimer();
+  }
+  
+  // Start polling (selalu, bahkan setelah submit - untuk pembahasan)
+  startValidationPolling();
+  
+  // Auto-save setiap jawaban berubah + layer berubah
+  setupAutoSave();
+  
+  showToast('success', 'Sesi dipulihkan. Selamat datang kembali, ' + state.student.name + '!');
+}
+
+function restoreAnswerUI(qid, value) {
+  if (qid.startsWith('pg-')) {
+    // PG: single letter
+    const opt = document.querySelector(`.option[data-qid="${qid}"][data-letter="${value}"]`);
+    if (opt) opt.classList.add('selected');
+  } else if (qid.startsWith('pgk-')) {
+    // PGK: array of letters (JSON string)
+    let arr = [];
+    try { arr = JSON.parse(value); } catch(e) { return; }
+    arr.forEach(letter => {
+      const opt = document.querySelector(`.option[data-qid="${qid}"][data-letter="${letter}"]`);
+      if (opt) opt.classList.add('selected');
+    });
+  } else if (qid.includes('-P')) {
+    // BS: bs-X-PY = B/S
+    const match = qid.match(/^(bs-\d+)-(P\d+)$/);
+    if (!match) return;
+    const groupId = match[1], stmt = match[2];
+    document.querySelectorAll(`.bs-checkbox[data-qid="${groupId}"][data-stmt="${stmt}"]`).forEach(cb => {
+      cb.classList.remove('checked');
+      cb.textContent = cb.dataset.val === 'B' ? '\u2610 B' : '\u2610 S';
+    });
+    const sel = document.querySelector(`.bs-checkbox[data-qid="${groupId}"][data-stmt="${stmt}"][data-val="${value}"]`);
+    if (sel) {
+      sel.classList.add('checked');
+      sel.textContent = (value === 'B' ? '\u2713 B' : '\u2713 S');
+    }
+  }
+}
+
+function setupAutoSave() {
+  // Save ke localStorage tiap 5 detik + saat jawaban berubah
+  setInterval(saveSession, 5000);
+  // Save saat tab akan ditutup
+  window.addEventListener('beforeunload', saveSession);
+}
+
+function logoutStudent() {
+  localStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+function confirmLogout() {
+  showModal(`
+    <h3>Konfirmasi Keluar</h3>
+    <p>Sesi ujian akan diakhiri dan Anda akan kembali ke halaman login.<br>
+       <strong>Jawaban yang sudah dijawab tetap tersimpan</strong> (auto-save aktif).<br>
+       Lanjutkan keluar?</p>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+      <button class="btn btn-danger" onclick="logoutStudent()">Ya, Keluar</button>
+    </div>
+  `);
 }
 
 /* =========================================================
@@ -1310,6 +1499,7 @@ function selectPG(qid, letter, el) {
   el.classList.add('selected');
   applyCorrectMarker(qid);
   saveAnswer(qid, letter);
+  saveSession();
 }
 
 function togglePGK(qid, letter, el) {
@@ -1324,6 +1514,7 @@ function togglePGK(qid, letter, el) {
   }
   applyCorrectMarker(qid);
   saveAnswer(qid, JSON.stringify(state.answers[qid]));
+  saveSession();
 }
 
 function selectBS(qid, stmt, val, el) {
@@ -1337,6 +1528,7 @@ function selectBS(qid, stmt, val, el) {
   el.classList.add('checked');
   el.textContent = (val === 'B' ? '\u2713 B' : '\u2713 S');
   saveAnswer(`${qid}-${stmt}`, val);
+  saveSession();
 }
 
 /* =========================================================
@@ -1390,8 +1582,15 @@ async function gasGet(params) {
   }
   const url = new URL(GAS_URL);
   Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+  // Cache-busting: hindari browser caching response GAS
+  url.searchParams.set('_t', String(Date.now()));
   try {
-    const r = await fetch(url.toString(), { method: 'GET', redirect: 'follow' });
+    const r = await fetch(url.toString(), {
+      method: 'GET',
+      redirect: 'follow',
+      cache: 'no-store'
+      // Catatan: jangan set header Cache-Control - akan memicu CORS preflight
+    });
     return await r.json();
   } catch (e) {
     console.error('GAS GET error:', e);
@@ -1404,11 +1603,12 @@ async function gasPost(payload) {
     return { ok: true, dev: true };
   }
   try {
-    const r = await fetch(GAS_URL, {
+    const r = await fetch(GAS_URL + '?_t=' + Date.now(), {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      redirect: 'follow'
+      redirect: 'follow',
+      cache: 'no-store'
     });
     return await r.json();
   } catch (e) {
@@ -1471,8 +1671,12 @@ function enterExam() {
   startExamTimer();
   // Start polling for validated answers
   startValidationPolling();
+  // Auto-save session
+  setupAutoSave();
   // Move to first question layer
   goToLayer('layer-q1');
+  // Save session pertama kali
+  saveSession();
 }
 
 function requestFullscreen() {
@@ -1492,6 +1696,10 @@ function goToLayer(id) {
   next.classList.add('active');
   state.currentLayer = id;
   next.scrollTop = 0;
+  // Re-apply markers setiap pindah layer (catch markers yang miss)
+  Object.keys(state.validatedAnswers).forEach(qid => applyCorrectMarker(qid));
+  // Save session
+  saveSession();
 }
 
 /* =========================================================
@@ -1556,9 +1764,16 @@ function isOnQuestionLayer() {
 }
 
 function triggerLock() {
+  // Jika guru menonaktifkan lock screen via guru.html, skip
+  if (!state.lockScreenEnabled) {
+    console.log('Lock screen dinonaktifkan oleh guru, skip');
+    return;
+  }
   if (state.isLocked) return;
   state.isLocked = true;
   state.violationCount++;
+  // Catat pelanggaran ke backend
+  gasPost({ action:'registerViolation', studentId: state.student.id });
   const lock = document.getElementById('lock-screen');
   lock.classList.add('show');
   document.getElementById('lockCount').textContent = 'Pelanggaran ke-' + state.violationCount;
@@ -1616,26 +1831,39 @@ function setupKeyboardShortcuts() {
 
 /* =========================================================
    POLLING FOR VALIDATED ANSWERS (from guru.html)
+   + Lock screen status (toggle from guru.html)
    ========================================================= */
 let pollInterval = null;
 function startValidationPolling() {
-  pollInterval = setInterval(async () => {
-    const resp = await gasGet({ action: 'getValidatedAnswers' });
-    if (resp.dev) return;
-    if (resp.ok && resp.data) {
-      let changed = false;
-      Object.keys(resp.data).forEach(qid => {
-        if (state.validatedAnswers[qid] !== resp.data[qid]) {
-          state.validatedAnswers[qid] = resp.data[qid];
-          applyCorrectMarker(qid);
-          changed = true;
-        }
-      });
-      if (changed) {
-        showToast('success','Guru telah membahas & memvalidasi jawaban. Perhatikan tanda lingkaran merah-hijau.');
+  // IMMEDIATE first poll - jangan tunggu 3 detik
+  pollValidatedAnswers();
+  // Selanjutnya poll tiap 2 detik (lebih responsif)
+  pollInterval = setInterval(pollValidatedAnswers, 2000);
+}
+
+async function pollValidatedAnswers() {
+  const resp = await gasGet({ action: 'getValidatedAnswers' });
+  if (resp.dev) return;
+  if (resp.ok && resp.data) {
+    // Update validated answers
+    let changed = false;
+    Object.keys(resp.data).forEach(qid => {
+      if (state.validatedAnswers[qid] !== resp.data[qid]) {
+        state.validatedAnswers[qid] = resp.data[qid];
+        applyCorrectMarker(qid);
+        changed = true;
       }
+    });
+    if (changed) {
+      showToast('success','Guru telah membahas & memvalidasi jawaban. Perhatikan tanda lingkaran merah-hijau.');
     }
-  }, 3000);
+    // Re-apply ALL markers (catch any that missed - misal option belum ada di DOM saat poll pertama)
+    Object.keys(state.validatedAnswers).forEach(qid => applyCorrectMarker(qid));
+  }
+  // Update lock screen status dari backend
+  if (resp.ok && typeof resp.lockScreenEnabled !== 'undefined') {
+    state.lockScreenEnabled = resp.lockScreenEnabled;
+  }
 }
 
 /* =========================================================
