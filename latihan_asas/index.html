@@ -146,6 +146,17 @@
     box-shadow: 0 8px 20px rgba(30,64,175,0.4);
     animation: pulse 2.5s ease-in-out infinite;
   }
+  .school-logo-img {
+    width: 90px;
+    height: auto;
+    max-height: 110px;
+    margin: 0 auto 16px;
+    display: block;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(30,64,175,0.3);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
   @keyframes pulse {
     0%, 100% { transform: scale(1); box-shadow: 0 8px 20px rgba(30,64,175,0.4); }
     50% { transform: scale(1.05); box-shadow: 0 12px 30px rgba(30,64,175,0.6); }
@@ -778,7 +789,8 @@
      ==================================================== -->
 <section id="layer-pin" class="layer active">
   <div class="pin-card">
-    <div class="school-logo">SMP</div>
+    <img src="https://yanuar-moga.github.io/guruwali/assets/logo.png" alt="Logo SMP Negeri 1 Moga" class="school-logo-img" onerror="this.style.display='none'; document.querySelector('.school-logo-fallback').style.display='flex';" />
+    <div class="school-logo school-logo-fallback" style="display:none;">SMP</div>
     <h1>SMP Negeri 1 Moga</h1>
     <p class="subtitle">Asesmen Sumatif Akhir Semester<br>Informatika - Kelas IX</p>
 
@@ -923,8 +935,12 @@
       <div class="label">Status Pengumpulan</div>
       <div class="value" id="doneStatus">TERKIRIM</div>
     </div>
+    <button class="btn btn-secondary" onclick="lihatPembahasan()" style="margin-bottom:14px;">
+      &#9678; Lihat Pembahasan Guru
+    </button>
     <p style="font-size:12px;color:var(--abu-700);">
-      Anda dapat menutup halaman ini. Terima kasih telah mengikuti ujian dengan jujur.
+      Anda dapat menutup halaman ini. Terima kasih telah mengikuti ujian dengan jujur.<br>
+      <em>Catatan: bila guru sedang membahas soal, klik "Lihat Pembahasan" untuk melihat jawaban benar ditandai otomatis.</em>
     </p>
   </div>
 </section>
@@ -950,10 +966,11 @@
 
 <script>
 /* =========================================================
-   KONFIGURASI - GANTI URL INI DENGAN URL WEB APP ANDA
+   KONFIGURASI - URL EXEC GOOGLE APPS SCRIPT & SPREADSHEET ID
    ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbz3dYb6Bd-MduXjQQivzB7eKdgXeUwHOJ-B9w3gt5pQskNQKFLEvx45-AfqWY-cs09F/exec'; // <-- GANTI dengan URL /exec dari Google Apps Script
-const SPREADSHEET_ID = '1-T_rx9Drl-otZpsP_UCpw6hU5Ls7HVqrCiHtwIo3JzI'; // <-- opsional, untuk debug
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbz3dYb6Bd-MduXjQQivzB7eKdgXeUwHOJ-B9w3gt5pQskNQKFLEvx45-AfqWY-cs09F/exec';
+const SPREADSHEET_ID = '1-T_rx9Drl-otZpsP_UCpw6hU5Ls7HVqrCiHtwIo3JzI';
+const SCHOOL_LOGO_URL = 'https://yanuar-moga.github.io/guruwali/assets/logo.png';
 
 /* =========================================================
    STATE GLOBAL
@@ -1533,6 +1550,8 @@ function setupAntiCheat() {
 }
 
 function isOnQuestionLayer() {
+  // Anti-cheat hanya aktif saat ujian belum disubmit
+  if (state.submitted) return false;
   return ['layer-q1','layer-q2','layer-q3','layer-pgk','layer-bs'].includes(state.currentLayer);
 }
 
@@ -1654,7 +1673,8 @@ async function submitExam(autoSubmit) {
   if (state.submitted) return;
   state.submitted = true;
   clearInterval(state.timerInterval);
-  clearInterval(pollInterval);
+  // NOTE: pollInterval TIDAK di-clear agar siswa tetap menerima
+  // validasi guru saat sesi pembahasan (real-time marker Rossi #46).
 
   // Final submit to backend
   const payload = {
@@ -1674,6 +1694,23 @@ async function submitExam(autoSubmit) {
     document.getElementById('doneStatus').textContent = 'WAKTU HABIS';
     document.getElementById('doneSummary').textContent = 'Waktu ujian telah berakhir. Jawaban otomatis terkirim.';
   }
+  // Show score from backend if available
+  if (resp && resp.ok && resp.data && typeof resp.data.score !== 'undefined') {
+    document.getElementById('doneStatus').textContent = String(resp.data.score);
+    document.querySelector('.done-card .score-display .label').textContent = 'Skor Anda';
+  }
+}
+
+/* =========================================================
+   LIHAT PEMBAHASAN - siswa lihat jawaban benar dari guru
+   ========================================================= */
+function lihatPembahasan() {
+  // Pindah ke layer soal pertama, disable anti-cheat (ujiannya sudah selesai)
+  state.submitted = true;
+  goToLayer('layer-q1');
+  showToast('success','Mode Pembahasan. Jawaban benar dari guru akan ditandai otomatis (lingkaran merah + hijau Rossi #46).');
+  // Force re-apply all current validated markers
+  Object.keys(state.validatedAnswers).forEach(qid => applyCorrectMarker(qid));
 }
 
 /* =========================================================
