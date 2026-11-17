@@ -571,6 +571,76 @@
     border: 2px solid var(--merah);
     border-radius: 50%;
   }
+
+  /* LOCK SCREEN TOGGLE */
+  .lock-toggle-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--biru-smp-50), var(--kuning-osis-100));
+    border-radius: 14px;
+    border: 2px solid var(--biru-smp-300);
+    max-width: 600px;
+    transition: all 0.3s;
+  }
+  .lock-toggle-card.disabled {
+    background: linear-gradient(135deg, #fee2e2, #fef9c3);
+    border-color: var(--merah);
+  }
+  .lock-toggle-info { flex: 1; }
+  .lock-toggle-title {
+    color: var(--biru-smp-900);
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lock-toggle-desc {
+    color: var(--abu-700);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* TOGGLE SWITCH */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .switch input { display: none; }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: var(--abu-300, #d1d5db);
+    border-radius: 32px;
+    transition: 0.4s var(--transition);
+  }
+  .slider::before {
+    content: '';
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    left: 4px;
+    bottom: 4px;
+    background: var(--putih);
+    border-radius: 50%;
+    transition: 0.4s var(--transition);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  input:checked + .slider {
+    background: linear-gradient(135deg, var(--biru-smp-700), var(--biru-smp-500));
+  }
+  input:checked + .slider::before {
+    transform: translateX(28px);
+    background: var(--kuning-osis-400);
+  }
 </style>
 </head>
 <body>
@@ -655,32 +725,52 @@
           Klik <strong>Refresh</strong> untuk memuat ulang data. Skor dihitung otomatis berdasarkan kunci jawaban yang divalidasi.
         </p>
         <button class="btn btn-blue" onclick="loadResults()" style="margin-bottom:14px;">
-          \u21bb Refresh Data Siswa
+          ↻ Refresh Data Siswa
         </button>
         <div id="resultsTableContainer"></div>
       </div>
       <!-- Settings Panel -->
       <div class="tab-panel" id="panel-settings">
         <h3 style="color:var(--biru-smp-900);margin-bottom:12px;">Pengaturan &amp; Aksi</h3>
-        <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
+
+        <!-- LOCK SCREEN TOGGLE -->
+        <div class="lock-toggle-card" id="lockToggleCard">
+          <div class="lock-toggle-info">
+            <div class="lock-toggle-title">
+              <span style="font-size:20px;">🔒</span>
+              Kunci Layar Anti-Cheat (di index.html siswa)
+            </div>
+            <div class="lock-toggle-desc" id="lockToggleDesc">
+              Saat AKTIF: siswa yang keluar tab/klik kanan akan dikunci 5 menit.<br>
+              Saat NONAKTIF: pelanggaran tetap tercatat, tapi tidak ada kunci layar.
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="lockScreenCheckbox" checked onchange="toggleLockScreen()">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;margin-top:18px;">
           <button class="btn btn-yellow" onclick="bulkValidate('all')">
-            \u2713 Validasi Semua Jawaban (Pakai Kunci Default)
+            ✓ Validasi Semua Jawaban (Pakai Kunci Default)
           </button>
           <button class="btn btn-blue" onclick="clearAllValidation()">
-            \u2717 Hapus Semua Validasi (Reset Tampilan Siswa)
+            ✗ Hapus Semua Validasi (Reset Tampilan Siswa)
           </button>
           <button class="btn btn-green" onclick="exportCSV()">
-            \u2193 Export Hasil Siswa ke CSV
+            ↓ Export Hasil Siswa ke CSV
           </button>
           <button class="btn btn-primary" onclick="logoutGuru()">
-            \u2192 Logout
+            → Logout
           </button>
         </div>
         <div style="margin-top:24px;padding:16px;background:var(--biru-smp-50);border-radius:10px;font-size:13px;color:var(--abu-700);line-height:1.6;">
           <strong style="color:var(--biru-smp-900);">Cara pakai:</strong><br>
           1. Pilih tab soal (PG / PGK / BS).<br>
           2. Klik huruf (A/B/C/D) untuk memilih jawaban yang benar.<br>
-          3. Klik tombol <em>"Valid &amp; Tampilkan"</em>. Jawaban akan otomatis muncul di halaman siswa dengan <span class="rossi-preview"><span class="rossi-preview-dot"></span>lingkaran merah + warna hijau Valentino Rossi #46</span>.
+          3. Klik tombol <em>"Valid &amp; Tampilkan"</em>. Jawaban akan otomatis muncul di halaman siswa dengan <span class="rossi-preview"><span class="rossi-preview-dot"></span>lingkaran merah + warna hijau Valentino Rossi #46</span>.<br>
+          4. Toggle <strong>Kunci Layar</strong> di atas untuk mengaktifkan/menonaktifkan anti-cheat di sisi siswa.
         </div>
       </div>
 
@@ -709,7 +799,8 @@ const SCHOOL_LOGO_URL = 'https://yanuar-moga.github.io/guruwali/assets/logo.png'
 let state = {
   guru: { name: '', pin: '' },
   validated: {}, // { 'pg-1':'B', 'pgk-1':['A','B','C'], 'bs-1-P1':'B', ... }
-  results: []
+  results: [],
+  lockScreenEnabled: true // status lock screen di index.html (di-toggle guru)
 };
 
 /* =========================================================
@@ -863,8 +954,12 @@ async function gasGet(params) {
   }
   const url = new URL(GAS_URL);
   Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+  url.searchParams.set('_t', String(Date.now()));
   try {
-    const r = await fetch(url.toString(), { method:'GET', redirect:'follow' });
+    const r = await fetch(url.toString(), {
+      method:'GET', redirect:'follow',
+      cache:'no-store'
+    });
     return await r.json();
   } catch(e) {
     return { ok:false, error:String(e) };
@@ -875,16 +970,78 @@ async function gasPost(payload) {
     return { ok:true, dev:true };
   }
   try {
-    const r = await fetch(GAS_URL, {
+    const r = await fetch(GAS_URL + '?_t=' + Date.now(), {
       method:'POST',
       body: JSON.stringify(payload),
       headers: { 'Content-Type':'text/plain;charset=utf-8' },
-      redirect:'follow'
+      redirect:'follow',
+      cache:'no-store'
     });
     return await r.json();
   } catch(e) {
     return { ok:false, error:String(e) };
   }
+}
+
+/* =========================================================
+   SESSION PERSISTENCE - reload tidak auto-logout
+   ========================================================= */
+const GURU_SESSION_KEY = 'examApp_guruSession';
+
+function saveGuruSession() {
+  try {
+    localStorage.setItem(GURU_SESSION_KEY, JSON.stringify({
+      guru: state.guru,
+      savedAt: Date.now()
+    }));
+  } catch(e) { console.error('Save guru session:', e); }
+}
+
+function restoreGuruSession() {
+  try {
+    const raw = localStorage.getItem(GURU_SESSION_KEY);
+    if (!raw) {
+      document.getElementById('guruName').focus();
+      return false;
+    }
+    const session = JSON.parse(raw);
+    if (!session.guru || !session.guru.pin) {
+      document.getElementById('guruName').focus();
+      return false;
+    }
+    // Verify with backend
+    return verifyGuruSession(session);
+  } catch(e) {
+    document.getElementById('guruName').focus();
+    return false;
+  }
+}
+
+async function verifyGuruSession(session) {
+  const resp = await gasGet({
+    action:'guruLogin',
+    pin: session.guru.pin,
+    name: session.guru.name
+  });
+  if (resp.dev) {
+    state.guru = session.guru;
+    enterDashboard();
+    return true;
+  }
+  if (resp.ok && resp.data && resp.data.valid) {
+    state.guru = session.guru;
+    enterDashboard();
+    return true;
+  } else {
+    // Session invalid - clear
+    localStorage.removeItem(GURU_SESSION_KEY);
+    document.getElementById('guruName').focus();
+    return false;
+  }
+}
+
+function clearGuruSession() {
+  localStorage.removeItem(GURU_SESSION_KEY);
 }
 
 /* =========================================================
@@ -913,12 +1070,14 @@ async function loginGuru() {
     state.guru = { name, pin };
     showToast('warning','Mode DEV aktif (URL GAS belum diisi). Dashboard dapat dijelajahi tanpa backend.');
     enterDashboard();
+    saveGuruSession();
     return;
   }
   if (resp.ok && resp.data && resp.data.valid) {
     state.guru = { name, pin };
     showToast('success','Login berhasil. Selamat datang, ' + name + '!');
     enterDashboard();
+    saveGuruSession();
   } else {
     errEl.textContent = resp.error ? ('Error: ' + resp.error) : 'PIN guru tidak valid.';
   }
@@ -930,8 +1089,62 @@ function enterDashboard() {
   document.getElementById('guruInfo').textContent = 'Guru: ' + state.guru.name;
   renderAllPanels();
   loadValidated();
+  loadLockScreenStatus();
   // Start polling for student submissions (every 10s)
   setInterval(() => { if (state.guru.pin) loadStudentCount(); }, 10000);
+}
+
+/* =========================================================
+   LOCK SCREEN TOGGLE - kontrol anti-cheat di index.html siswa
+   ========================================================= */
+async function loadLockScreenStatus() {
+  const resp = await gasGet({ action:'getLockScreenStatus' });
+  if (resp.dev) {
+    document.getElementById('lockScreenCheckbox').checked = state.lockScreenEnabled;
+    updateLockToggleVisual();
+    return;
+  }
+  if (resp.ok && typeof resp.data !== 'undefined') {
+    state.lockScreenEnabled = (resp.data === true || String(resp.data).toUpperCase() === 'TRUE');
+    document.getElementById('lockScreenCheckbox').checked = state.lockScreenEnabled;
+    updateLockToggleVisual();
+  }
+}
+
+function updateLockToggleVisual() {
+  const card = document.getElementById('lockToggleCard');
+  const cb = document.getElementById('lockScreenCheckbox');
+  if (state.lockScreenEnabled) {
+    card.classList.remove('disabled');
+  } else {
+    card.classList.add('disabled');
+  }
+}
+
+async function toggleLockScreen() {
+  const cb = document.getElementById('lockScreenCheckbox');
+  const newVal = cb.checked;
+  showToast('warning', newVal ? 'Mengaktifkan kunci layar...' : 'Menonaktifkan kunci layar...');
+  const resp = await gasPost({
+    action: 'setLockScreen',
+    guruPin: state.guru.pin,
+    enabled: newVal
+  });
+  if (resp.dev) {
+    state.lockScreenEnabled = newVal;
+    updateLockToggleVisual();
+    showToast('success', '[DEV] Kunci layar ' + (newVal ? 'AKTIF' : 'NONAKTIF') + '. Perubahan tidak tersimpan ke backend.');
+    return;
+  }
+  if (resp.ok) {
+    state.lockScreenEnabled = newVal;
+    updateLockToggleVisual();
+    showToast('success', 'Kunci layar ' + (newVal ? 'AKTIF' : 'NONAKTIF') + ' di semua siswa. Maksimal 2 detik untuk sinkron.');
+  } else {
+    // Revert checkbox
+    cb.checked = !newVal;
+    showToast('danger', 'Gagal mengubah status kunci layar: ' + (resp.error || 'unknown'));
+  }
 }
 
 function logoutGuru() {
@@ -947,11 +1160,13 @@ function logoutGuru() {
 function doLogout() {
   state.guru = { name:'', pin:'' };
   state.validated = {};
+  clearGuruSession();
   closeModal();
   document.getElementById('dashboard').classList.remove('show');
   document.getElementById('loginLayer').style.display = 'block';
   document.getElementById('guruName').value = '';
   document.getElementById('guruPin').value = '';
+  showToast('info','Anda telah keluar dari dashboard guru.');
 }
 
 /* =========================================================
@@ -1477,7 +1692,8 @@ document.getElementById('guruPin').addEventListener('keydown', (e) => {
 
 // Init
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('guruName').focus();
+  // Coba restore sesi guru sebelumnya (reload tidak auto-logout)
+  restoreGuruSession();
 });
 </script>
 </body>
