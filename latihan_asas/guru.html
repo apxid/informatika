@@ -651,16 +651,14 @@
     <img src="https://yanuar-moga.github.io/guruwali/assets/logo.png" alt="Logo" class="guru-logo-img" onerror="this.style.display='none'; document.querySelector('.guru-avatar').style.display='flex';" />
     <div class="guru-avatar" style="display:none;">G</div>
     <h1>Portal Guru</h1>
-    <p class="subtitle">Pembahasan &amp; Validasi Jawaban<br>Informatika Kelas IX</p>
+    <p class="subtitle">Pembahasan &amp; Validasi Jawaban</p>
 
     <div class="form-group">
-      <label for="guruName">Nama Guru</label>
-      <input type="text" id="guruName" placeholder="Masukkan nama guru" autocomplete="off" />
-    </div>
-    <div class="form-group">
       <label for="guruPin">PIN Guru</label>
-      <input type="password" id="guruPin" class="pin-input" maxlength="6" placeholder="------" autocomplete="off" />
+      <input type="password" id="guruPin" class="pin-input" maxlength="6" placeholder="------" autocomplete="off" autofocus />
     </div>
+    <!-- Hidden field - default name "Guru", akan diisi otomatis saat login -->
+    <input type="hidden" id="guruName" value="Guru" />
 
     <button class="btn btn-primary btn-block" id="btnLogin" onclick="loginGuru()">
       MASUK DASHBOARD
@@ -1001,18 +999,18 @@ function restoreGuruSession() {
   try {
     const raw = localStorage.getItem(GURU_SESSION_KEY);
     if (!raw) {
-      document.getElementById('guruName').focus();
+      document.getElementById('guruPin').focus();
       return false;
     }
     const session = JSON.parse(raw);
     if (!session.guru || !session.guru.pin) {
-      document.getElementById('guruName').focus();
+      document.getElementById('guruPin').focus();
       return false;
     }
     // Verify with backend
     return verifyGuruSession(session);
   } catch(e) {
-    document.getElementById('guruName').focus();
+    document.getElementById('guruPin').focus();
     return false;
   }
 }
@@ -1021,7 +1019,7 @@ async function verifyGuruSession(session) {
   const resp = await gasGet({
     action:'guruLogin',
     pin: session.guru.pin,
-    name: session.guru.name
+    name: session.guru.name || 'Guru'
   });
   if (resp.dev) {
     state.guru = session.guru;
@@ -1035,7 +1033,7 @@ async function verifyGuruSession(session) {
   } else {
     // Session invalid - clear
     localStorage.removeItem(GURU_SESSION_KEY);
-    document.getElementById('guruName').focus();
+    document.getElementById('guruPin').focus();
     return false;
   }
 }
@@ -1048,13 +1046,15 @@ function clearGuruSession() {
    LOGIN
    ========================================================= */
 async function loginGuru() {
-  const name = document.getElementById('guruName').value.trim();
+  // Default name "Guru" - bisa diubah dari hidden field kalau perlu
+  const name = (document.getElementById('guruName').value || 'Guru').trim();
   const pin = document.getElementById('guruPin').value.trim();
   const errEl = document.getElementById('loginError');
   errEl.textContent = '';
 
-  if (!name || !pin) {
-    errEl.textContent = 'Mohon isi nama dan PIN guru.';
+  if (!pin) {
+    errEl.textContent = 'Mohon isi PIN guru.';
+    document.getElementById('guruPin').focus();
     return;
   }
   const btn = document.getElementById('btnLogin');
@@ -1075,11 +1075,12 @@ async function loginGuru() {
   }
   if (resp.ok && resp.data && resp.data.valid) {
     state.guru = { name, pin };
-    showToast('success','Login berhasil. Selamat datang, ' + name + '!');
+    showToast('success','Login berhasil. Selamat datang, Guru!');
     enterDashboard();
     saveGuruSession();
   } else {
     errEl.textContent = resp.error ? ('Error: ' + resp.error) : 'PIN guru tidak valid.';
+    document.getElementById('guruPin').focus();
   }
 }
 
@@ -1164,9 +1165,10 @@ function doLogout() {
   closeModal();
   document.getElementById('dashboard').classList.remove('show');
   document.getElementById('loginLayer').style.display = 'block';
-  document.getElementById('guruName').value = '';
   document.getElementById('guruPin').value = '';
+  // guruName tetap "Guru" (default) - tidak perlu di-clear
   showToast('info','Anda telah keluar dari dashboard guru.');
+  setTimeout(() => document.getElementById('guruPin').focus(), 200);
 }
 
 /* =========================================================
