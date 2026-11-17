@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guru - Pembahasan &amp; Validasi Jawaban</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --biru-smp-900: #0c2461;
+    --biru-smp-700: #1e40af;
+    --biru-smp-500: #2563eb;
+    --biru-smp-300: #93c5fd;
+    --biru-smp-50:  #eff6ff;
+    --kuning-osis-500: #fbbf24;
+    --kuning-osis-400: #fcd34d;
+    --kuning-osis-300: #fde68a;
+    --kuning-osis-100: #fef9c3;
+    --rossi-green: #ccff00;
+    --rossi-yellow: #f7d000;
+    --merah: #dc2626;
+    --hijau: #16a34a;
+    --putih: #ffffff;
+    --abu-50: #f9fafb;
+    --abu-100: #f3f4f6;
+    --abu-200: #e5e7eb;
+    --abu-700: #374151;
+    --abu-900: #111827;
+    --shadow-lg: 0 20px 60px rgba(12,36,97,0.25);
+    --shadow-md: 0 8px 25px rgba(12,36,97,0.15);
+    --shadow-sm: 0 2px 8px rgba(12,36,97,0.1);
+    --transition: cubic-bezier(0.4,0,0.2,1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { font-family:'Poppins',sans-serif; }
+  body {
+    background: linear-gradient(135deg, var(--biru-smp-900), var(--biru-smp-700));
+    min-height: 100vh;
+    color: var(--abu-900);
+    padding: 20px;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(251,191,36,0.15) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(204,255,0,0.08) 0%, transparent 40%);
+    z-index: 0;
+    animation: bgFloat 20s ease-in-out infinite;
+  }
+  @keyframes bgFloat {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(2%, -2%); }
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ LOGIN LAYER ============ */
+  .guru-login {
+    background: var(--putih);
+    border-radius: 24px;
+    padding: 48px 40px;
+    max-width: 480px;
+    margin: 80px auto 0;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    border-top: 6px solid var(--merah);
+    border-bottom: 6px solid var(--biru-smp-700);
+    position: relative;
+    overflow: hidden;
+  }
+  .guru-login::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(220,38,38,0.06), transparent, rgba(30,64,175,0.06), transparent);
+    animation: rotateBg 25s linear infinite;
+    z-index: 0;
+  }
+  .guru-login > * { position: relative; z-index: 1; }
+  @keyframes rotateBg { to { transform: rotate(360deg); } }
+
+  .guru-avatar {
+    width: 84px; height: 84px;
+    background: linear-gradient(135deg, var(--merah), #b91c1c);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--putih);
+    font-size: 38px;
+    font-weight: 900;
+    box-shadow: 0 10px 25px rgba(220,38,38,0.4);
+    animation: avatarPulse 2.5s ease-in-out infinite;
+  }
+  .guru-logo-img {
+    width: 100px;
+    height: auto;
+    max-height: 120px;
+    margin: 0 auto 16px;
+    display: block;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(220,38,38,0.3);
+    animation: avatarPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes avatarPulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  .guru-login h1 {
+    color: var(--biru-smp-900);
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .guru-login .subtitle {
+    color: var(--abu-700);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .form-group { margin-bottom: 14px; text-align: left; }
+  .form-group label {
+    display: block;
+    color: var(--biru-smp-700);
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--abu-200);
+    border-radius: 10px;
+    font-family: 'Poppins',sans-serif;
+    font-size: 15px;
+    background: var(--abu-50);
+    transition: all 0.3s;
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--merah);
+    background: var(--putih);
+    box-shadow: 0 0 0 4px rgba(220,38,38,0.15);
+  }
+  .pin-input {
+    text-align: center;
+    letter-spacing: 6px;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Orbitron',monospace;
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Poppins',sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s var(--transition);
+    position: relative;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--merah), #b91c1c);
+    color: var(--putih);
+    box-shadow: 0 6px 18px rgba(220,38,38,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(220,38,38,0.55); }
+  .btn-blue {
+    background: linear-gradient(135deg, var(--biru-smp-700), var(--biru-smp-900));
+    color: var(--putih);
+    box-shadow: 0 6px 18px rgba(30,64,175,0.4);
+  }
+  .btn-blue:hover { transform: translateY(-2px); }
+  .btn-yellow {
+    background: var(--kuning-osis-500);
+    color: var(--biru-smp-900);
+    box-shadow: 0 6px 18px rgba(251,191,36,0.4);
+  }
+  .btn-yellow:hover { background: var(--kuning-osis-400); transform: translateY(-2px); }
+  .btn-green {
+    background: linear-gradient(135deg, var(--rossi-green), var(--kuning-osis-400));
+    color: var(--biru-smp-900);
+    border: 3px solid var(--merah);
+    box-shadow: 0 6px 18px rgba(204,255,0,0.5);
+    font-weight: 800;
+  }
+  .btn-green:hover { transform: translateY(-2px) scale(1.02); }
+  .btn-green:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-block { display: block; width: 100%; }
+  .error-msg {
+    color: var(--merah);
+    font-size: 13px;
+    margin-top: 8px;
+    min-height: 18px;
+    font-weight: 500;
+  }
+
+  /* ============ DASHBOARD ============ */
+  .dashboard { display: none; animation: fadeIn 0.5s; }
+  .dashboard.show { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .dash-header {
+    background: var(--putih);
+    border-radius: 16px;
+    padding: 18px 24px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 4px solid var(--merah);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .dash-header .title {
+    color: var(--biru-smp-900);
+    font-size: 22px;
+    font-weight: 800;
+  }
+  .dash-header .subtitle {
+    color: var(--abu-700);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    background: var(--abu-50);
+    border-radius: 12px;
+    padding: 10px 18px;
+    text-align: center;
+    border: 2px solid var(--abu-200);
+    min-width: 100px;
+  }
+  .stat-card .label {
+    color: var(--abu-700);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .stat-card .value {
+    color: var(--biru-smp-900);
+    font-size: 24px;
+    font-weight: 800;
+    font-family: 'Orbitron',monospace;
+    margin-top: 2px;
+  }
+  .stat-card.highlight { background: var(--kuning-osis-100); border-color: var(--kuning-osis-500); }
+  .stat-card.success { background: #d1fae5; border-color: var(--hijau); }
+
+  /* ============ TABS ============ */
+  .tabs {
+    background: var(--putih);
+    border-radius: 14px 14px 0 0;
+    display: flex;
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+  }
+  .tab {
+    padding: 14px 24px;
+    cursor: pointer;
+    color: var(--abu-700);
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 4px solid transparent;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--biru-smp-700); background: var(--biru-smp-50); }
+  .tab.active {
+    color: var(--biru-smp-900);
+    border-bottom-color: var(--merah);
+    background: var(--biru-smp-50);
+  }
+
+  .tab-content {
+    background: var(--putih);
+    border-radius: 0 0 14px 14px;
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 18px;
+  }
+  .tab-panel { display: none; animation: panelIn 0.4s; }
+  .tab-panel.active { display: block; }
+  @keyframes panelIn { from { opacity:0; transform: translateY(10px);} to { opacity:1; transform: translateY(0);} }
+
+  /* ============ QUESTION CARD (GURU) ============ */
+  .guru-question {
+    background: var(--abu-50);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    border-left: 5px solid var(--biru-smp-500);
+    transition: all 0.3s;
+  }
+  .guru-question:hover {
+    box-shadow: var(--shadow-sm);
+    border-left-color: var(--merah);
+  }
+  .guru-question.validated {
+    border-left-color: var(--hijau);
+    background: #f0fdf4;
+  }
+  .gq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .gq-num {
+    background: var(--biru-smp-700);
+    color: var(--putih);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .guru-question.validated .gq-num { background: var(--hijau); }
+  .gq-status {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .status-pending { background: var(--kuning-osis-300); color: var(--abu-900); }
+  .status-validated { background: var(--hijau); color: var(--putih); }
+
+  .gq-text {
+    color: var(--abu-900);
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .gq-stimulus {
+    background: var(--biru-smp-50);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--abu-700);
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+
+  .gq-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .gq-options.single { grid-template-columns: 1fr; }
+  .gq-option {
+    background: var(--putih);
+    border: 2px solid var(--abu-200);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .gq-option:hover {
+    border-color: var(--biru-smp-300);
+    background: var(--biru-smp-50);
+  }
+  .gq-option.selected {
+    border-color: var(--merah);
+    background: var(--kuning-osis-100);
+    box-shadow: 0 4px 10px rgba(220,38,38,0.15);
+  }
+  .gq-option.validated {
+    border: 3px solid var(--merah);
+    background: linear-gradient(135deg, var(--rossi-green), var(--kuning-osis-300));
+    box-shadow: 0 0 12px var(--rossi-green);
+  }
+  .gq-option .letter {
+    width: 24px; height: 24px;
+    background: var(--biru-smp-700);
+    color: var(--putih);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .gq-option.selected .letter { background: var(--merah); }
+  .gq-option.validated .letter { background: var(--merah); }
+
+  .gq-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* ============ BS TABLE ============ */
+  .gq-bs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .gq-bs-table th, .gq-bs-table td {
+    border: 1px solid var(--abu-200);
+    padding: 6px 10px;
+    text-align: left;
+  }
+  .gq-bs-table th { background: var(--biru-smp-700); color: var(--putih); text-align: center; }
+  .gq-bs-table .stmt-key {
+    background: var(--abu-50);
+    font-weight: 600;
+    text-align: center;
+    width: 50px;
+  }
+  .gq-bs-table .bs-choice {
+    cursor: pointer;
+    text-align: center;
+    width: 60px;
+    transition: background 0.2s;
+  }
+  .gq-bs-table .bs-choice:hover { background: var(--biru-smp-50); }
+  .gq-bs-table .bs-choice.selected {
+    background: var(--kuning-osis-300);
+    color: var(--biru-smp-900);
+    font-weight: 700;
+  }
+  .gq-bs-table .bs-choice.validated {
+    background: var(--rossi-green);
+    color: var(--biru-smp-900);
+    font-weight: 700;
+    border: 2px solid var(--merah);
+  }
+
+  /* ============ TOAST ============ */
+  .toast-container {
+    position: fixed; top: 20px; right: 20px;
+    z-index: 10000;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .toast {
+    background: var(--putih);
+    padding: 14px 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    border-left: 5px solid var(--biru-smp-700);
+    min-width: 280px; max-width: 380px;
+    animation: toastIn 0.4s var(--transition);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .toast.success { border-left-color: var(--hijau); }
+  .toast.warning { border-left-color: var(--kuning-osis-500); }
+  .toast.danger { border-left-color: var(--merah); }
+  .toast .icon { font-size: 24px; }
+  .toast .msg { font-size: 13px; color: var(--abu-900); flex: 1; }
+  @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast.hide { animation: toastOut 0.4s var(--transition) forwards; }
+  @keyframes toastOut { to { transform: translateX(120%); opacity: 0; } }
+
+  /* ============ MODAL ============ */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(12,36,97,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 9998;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; animation: fadeIn 0.3s; }
+  .modal {
+    background: var(--putih);
+    border-radius: 18px;
+    padding: 32px;
+    max-width: 460px;
+    width: 92%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: modalIn 0.5s var(--transition);
+    border-top: 6px solid var(--kuning-osis-500);
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.85) translateY(20px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .modal h3 { color: var(--biru-smp-900); font-size: 22px; margin-bottom: 12px; }
+  .modal p { color: var(--abu-700); margin-bottom: 22px; line-height: 1.6; }
+  .modal-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* ============ STUDENT RESULTS TABLE ============ */
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .results-table th, .results-table td {
+    border: 1px solid var(--abu-200);
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .results-table th {
+    background: var(--biru-smp-700);
+    color: var(--putih);
+    font-weight: 600;
+  }
+  .results-table tbody tr:nth-child(even) { background: var(--abu-50); }
+  .results-table tbody tr:hover { background: var(--biru-smp-50); }
+  .score-pill {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .score-pill.high { background: #d1fae5; color: var(--hijau); }
+  .score-pill.mid { background: var(--kuning-osis-300); color: var(--abu-900); }
+  .score-pill.low { background: #fecaca; color: var(--merah); }
+
+  .spinner {
+    width: 28px; height: 28px;
+    border: 3px solid var(--abu-200);
+    border-top-color: var(--merah);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--abu-100); }
+  ::-webkit-scrollbar-thumb { background: var(--biru-smp-300); border-radius: 6px; }
+
+  /* Rossi preview badge */
+  .rossi-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, var(--rossi-green), var(--kuning-osis-300));
+    border: 3px solid var(--merah);
+    border-radius: 24px;
+    color: var(--biru-smp-900);
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .rossi-preview-dot {
+    width: 18px; height: 18px;
+    background: var(--rossi-green);
+    border: 2px solid var(--merah);
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- =============== LOGIN LAYER =============== -->
+  <div class="guru-login" id="loginLayer">
+    <img src="https://yanuar-moga.github.io/guruwali/assets/logo.png" alt="Logo" class="guru-logo-img" onerror="this.style.display='none'; document.querySelector('.guru-avatar').style.display='flex';" />
+    <div class="guru-avatar" style="display:none;">G</div>
+    <h1>Portal Guru</h1>
+    <p class="subtitle">Pembahasan &amp; Validasi Jawaban<br>Informatika Kelas IX</p>
+
+    <div class="form-group">
+      <label for="guruName">Nama Guru</label>
+      <input type="text" id="guruName" placeholder="Masukkan nama guru" autocomplete="off" />
+    </div>
+    <div class="form-group">
+      <label for="guruPin">PIN Guru</label>
+      <input type="password" id="guruPin" class="pin-input" maxlength="6" placeholder="------" autocomplete="off" />
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btnLogin" onclick="loginGuru()">
+      MASUK DASHBOARD
+    </button>
+    <div class="error-msg" id="loginError"></div>
+
+    <p style="margin-top:18px;font-size:11px;color:var(--abu-700);">
+      Hanya untuk guru. Siswa harap ke halaman ujian.
+    </p>
+  </div>
+
+  <!-- =============== DASHBOARD =============== -->
+  <div class="dashboard" id="dashboard">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div>
+        <div class="title">Dashboard Pembahasan</div>
+        <div class="subtitle" id="guruInfo">Guru: - </div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="label">Total Soal</div>
+          <div class="value" id="totalSoal">30</div>
+        </div>
+        <div class="stat-card highlight">
+          <div class="label">Divalidasi</div>
+          <div class="value" id="totalValidated">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Siswa Submit</div>
+          <div class="value" id="totalSubmit">0</div>
+        </div>
+        <div class="stat-card success">
+          <div class="label">Rata-rata</div>
+          <div class="value" id="avgScore">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('pg', this)">A. Pilihan Ganda (1-15)</div>
+      <div class="tab" onclick="switchTab('pgk', this)">B. PG Kompleks (1-10)</div>
+      <div class="tab" onclick="switchTab('bs', this)">C. Benar/Salah</div>
+      <div class="tab" onclick="switchTab('results', this)">Hasil Siswa</div>
+      <div class="tab" onclick="switchTab('settings', this)">Pengaturan</div>
+    </div>
+
+    <div class="tab-content">
+
+      <!-- PG Panel -->
+      <div class="tab-panel active" id="panel-pg"></div>
+      <!-- PGK Panel -->
+      <div class="tab-panel" id="panel-pgk"></div>
+      <!-- BS Panel -->
+      <div class="tab-panel" id="panel-bs"></div>
+      <!-- Results Panel -->
+      <div class="tab-panel" id="panel-results">
+        <h3 style="color:var(--biru-smp-900);margin-bottom:12px;">Hasil Pengumpulan Siswa</h3>
+        <p style="color:var(--abu-700);font-size:13px;margin-bottom:14px;">
+          Klik <strong>Refresh</strong> untuk memuat ulang data. Skor dihitung otomatis berdasarkan kunci jawaban yang divalidasi.
+        </p>
+        <button class="btn btn-blue" onclick="loadResults()" style="margin-bottom:14px;">
+          \u21bb Refresh Data Siswa
+        </button>
+        <div id="resultsTableContainer"></div>
+      </div>
+      <!-- Settings Panel -->
+      <div class="tab-panel" id="panel-settings">
+        <h3 style="color:var(--biru-smp-900);margin-bottom:12px;">Pengaturan &amp; Aksi</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
+          <button class="btn btn-yellow" onclick="bulkValidate('all')">
+            \u2713 Validasi Semua Jawaban (Pakai Kunci Default)
+          </button>
+          <button class="btn btn-blue" onclick="clearAllValidation()">
+            \u2717 Hapus Semua Validasi (Reset Tampilan Siswa)
+          </button>
+          <button class="btn btn-green" onclick="exportCSV()">
+            \u2193 Export Hasil Siswa ke CSV
+          </button>
+          <button class="btn btn-primary" onclick="logoutGuru()">
+            \u2192 Logout
+          </button>
+        </div>
+        <div style="margin-top:24px;padding:16px;background:var(--biru-smp-50);border-radius:10px;font-size:13px;color:var(--abu-700);line-height:1.6;">
+          <strong style="color:var(--biru-smp-900);">Cara pakai:</strong><br>
+          1. Pilih tab soal (PG / PGK / BS).<br>
+          2. Klik huruf (A/B/C/D) untuk memilih jawaban yang benar.<br>
+          3. Klik tombol <em>"Valid &amp; Tampilkan"</em>. Jawaban akan otomatis muncul di halaman siswa dengan <span class="rossi-preview"><span class="rossi-preview-dot"></span>lingkaran merah + warna hijau Valentino Rossi #46</span>.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+/* =========================================================
+   KONFIGURASI - URL EXEC GOOGLE APPS SCRIPT
+   ========================================================= */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbz3dYb6Bd-MduXjQQivzB7eKdgXeUwHOJ-B9w3gt5pQskNQKFLEvx45-AfqWY-cs09F/exec';
+const SCHOOL_LOGO_URL = 'https://yanuar-moga.github.io/guruwali/assets/logo.png';
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let state = {
+  guru: { name: '', pin: '' },
+  validated: {}, // { 'pg-1':'B', 'pgk-1':['A','B','C'], 'bs-1-P1':'B', ... }
+  results: []
+};
+
+/* =========================================================
+   QUESTION DATA (mirror of index.html)
+   ========================================================= */
+const QUESTIONS = {
+  pg: [
+    { id:'pg-1', bab:1, q:'Saat Gemini AI atau ChatGPT merespons pertanyaan pengguna dengan jawaban yang menyerupai jawaban manusia, elemen Informatika yang paling tampak digunakan adalah ....',
+      opts:['Algoritma pengurutan data','Kecerdasan artifisial (AI)','Perangkat keluaran (output)','Penyimpanan eksternal'], defaultAns:'B' },
+    { id:'pg-2', bab:1, q:'Untuk membangun aplikasi YouTube atau Spotify agar memiliki fitur pemutaran video/audio yang dapat digunakan pengguna, elemen Informatika yang paling berkaitan adalah ....',
+      opts:['Pemrograman','Kabel jaringan','Printer','Mouse dan keyboard'], defaultAns:'A' },
+    { id:'pg-3', bab:1, q:'Saat siswa memutuskan aplikasi mana yang akan digunakan untuk keperluan tertentu, mengelola, serta bertanggung jawab atas penggunaannya, unsur sistem komputer yang berperan adalah ....',
+      opts:['Brainware (pengguna)','Hardware (perangkat keras)','Storage device (penyimpanan)','Sistem operasi'], defaultAns:'A' },
+    { id:'pg-4', bab:2, q:'Pada struktur data tree, simpul yang berada di posisi paling atas dan menjadi induk dari semua simpul lainnya disebut ....',
+      opts:['Leaf node','Edge','Root','Subtree'], defaultAns:'C' },
+    { id:'pg-5', bab:2, q:'Dalam struktur data tree atau graph, istilah edge menggambarkan ....',
+      opts:['Data yang disimpan dalam memori','Hubungan atau garis penghubung antarnode','Simpul yang tidak memiliki anak','Simpul yang berada paling atas'], defaultAns:'B' },
+    { id:'pg-6', bab:2, q:'Berdasarkan konsep struktur data, pernyataan yang membedakan graph dengan tree adalah ....',
+      opts:['Tree memiliki satu root dan tidak memiliki siklus, sedangkan graph dapat memiliki siklus dan beberapa jalur.',
+            'Graph hanya boleh memiliki satu jalur penghubung antarnode.',
+            'Tree selalu memiliki siklus yang menghubungkan semua simpul.',
+            'Graph tidak boleh memiliki edge antarnode.'], defaultAns:'A' },
+    { id:'pg-7', bab:3, q:'Sistem pintu otomatis terbuka jika PIN benar ATAU sidik jari terdaftar. Jika PIN salah dan sidik jari tidak terdaftar, kondisi pintu adalah?',
+      opts:['Pintu terbuka','Pintu tertutup','Pintu rusak','Pintu error'], defaultAns:'B' },
+    { id:'pg-8', bab:3, q:'Bentuk penulisan algoritma MULAI\u2192INPUT\u2192IF/ELSE\u2192ENDIF\u2192SELESAI disebut ....',
+      opts:['Algoritma deskriptif','Pseudocode','Flowchart','Diagram jaringan'], defaultAns:'B' },
+    { id:'pg-9', bab:3, q:'Pasangan aplikasi dan kegunaan yang tepat adalah ....',
+      opts:['CapCut untuk menyunting video; Blogger untuk menerbitkan artikel',
+            'Audacity untuk membuat tabel; Google Sheets untuk membuat video',
+            'Canva untuk mengolah angka; Google Docs untuk membuat podcast',
+            'AudioMass untuk membuat desain; CapCut untuk mengolah angka'], defaultAns:'A' },
+    { id:'pg-10', bab:4, q:'Komponen perangkat lunak (software) yang mengatur kerja seluruh perangkat dan menjembatani pengguna dengan perangkat keras adalah ....',
+      opts:['Keyboard','Sistem operasi (Windows/Linux)','Monitor','Prosesor/CPU'], defaultAns:'B' },
+    { id:'pg-11', bab:4, q:'Microsoft Word, Google Docs, atau LibreOffice Writer termasuk kategori software ....',
+      opts:['Sistem operasi','Aplikasi pengolah kata','Perangkat input','Perangkat jaringan'], defaultAns:'B' },
+    { id:'pg-12', bab:4, q:'Dalam sistem komputer, unsur yang merencanakan, mengoperasikan, dan bertanggung jawab atas penggunaan komputer disebut ....',
+      opts:['Prosesor','SSD','Brainware (pengguna)','Sistem operasi'], defaultAns:'C' },
+    { id:'pg-13', bab:5, q:'Perangkat lunak (software) yang berperan sebagai peramban/web browser untuk mengakses situs web adalah ....',
+      opts:['Mozilla Firefox / Google Chrome','Switch','Kabel Ethernet','Prosesor'], defaultAns:'A' },
+    { id:'pg-14', bab:5, q:'Layanan yang membantu menerjemahkan nama domain menjadi alamat IP adalah ....',
+      opts:['DNS','HTTP','CPU','SSD'], defaultAns:'A' },
+    { id:'pg-15', bab:5, q:'Tindakan yang mencerminkan brainware yang beretika dan aman dalam penggunaan teknologi digital adalah ....',
+      opts:['Membagikan kata sandi ke teman agar mudah diingat',
+            'Mengunduh file dari sumber tidak dikenal tanpa memeriksa',
+            'Menggunakan kata sandi unik untuk tiap akun dan memverifikasi sumber tautan sebelum membuka',
+            'Mengabaikan pembaruan keamanan sistem operasi'], defaultAns:'C' }
+  ],
+  pgk: [
+    { id:'pgk-1', stim:'Pengguna memanfaatkan YouTube, Spotify, Gemini AI, dan WhatsApp.',
+      q:'Pernyataan yang tepat tentang penerapan elemen Informatika pada aplikasi tersebut adalah ....',
+      opts:['Pemrograman digunakan untuk membangun fungsi dan fitur aplikasi.',
+            'Kecerdasan artifisial dapat dimanfaatkan pada Gemini AI untuk merespons pengguna.',
+            'Jaringan komputer memungkinkan pertukaran data melalui internet.',
+            'Semua aplikasi tersebut hanya dapat bekerja tanpa perangkat keras.'],
+      defaultAns:['A','B','C'] },
+    { id:'pgk-2', q:'Pernyataan yang tepat tentang contoh penggunaan aplikasi sehari-hari adalah ....',
+      opts:['YouTube dapat memanfaatkan jaringan internet untuk streaming video.',
+            'WhatsApp dapat memanfaatkan jaringan untuk mengirim pesan.',
+            'Spotify dapat menyimpan daftar putar yang dipersonalisasi berdasarkan preferensi pengguna.',
+            'Bukalapak hanya berfungsi sebagai aplikasi hiburan.'],
+      defaultAns:['A','B','C'] },
+    { id:'pgk-3', stim:'Graph hubungan lokasi: huruf=node, garis=edge.',
+      q:'Berdasarkan ilustrasi dan konsep struktur data, pernyataan yang benar adalah ....',
+      opts:['Node atau vertex menggambarkan titik/objek dalam graph.',
+            'Edge menggambarkan hubungan antarnode.',
+            'Pada tree, root adalah simpul utama atau akar.',
+            'Tree harus selalu memiliki banyak siklus antarnode.'],
+      defaultAns:['A','B','C'] },
+    { id:'pgk-4', q:'Pernyataan yang benar mengenai tree dan graph adalah ....',
+      opts:['Tree memiliki struktur bertingkat dengan hubungan parent-child.',
+            'Graph dapat memiliki lebih dari satu jalur untuk mencapai node tertentu.',
+            'Leaf node adalah simpul yang tidak mempunyai child.',
+            'Graph tidak boleh memiliki edge antarnode.'],
+      defaultAns:['A','B','C'] },
+    { id:'pgk-5', stim:'Sistem lampu lalu lintas pintu masuk dan sistem keamanan rumah menggunakan operator logika: AND, OR, NOT, XOR.',
+      q:'Pernyataan yang benar mengenai operator logika tersebut adalah ....',
+      opts:['AND bernilai BENAR jika kedua kondisi bernilai BENAR.',
+            'OR bernilai BENAR jika minimal satu kondisi bernilai BENAR.',
+            'NOT membalik nilai suatu kondisi.',
+            'XOR bernilai BENAR jika kedua kondisi memiliki nilai yang berbeda.'],
+      defaultAns:['A','B','C','D'] },
+    { id:'pgk-6', stim:'Kelompok kelas IX merancang podcast dan vlog dengan Canva, Audacity/AudioMass, Google Docs, Blogger.',
+      q:'Pernyataan yang tepat tentang aplikasi dan konten digital adalah ....',
+      opts:['Canva dapat digunakan untuk membuat desain visual.',
+            'Audacity atau AudioMass dapat digunakan untuk mengolah audio.',
+            'Blog umumnya berisi tulisan/artikel, sedangkan vlog berupa video.',
+            'KISS dalam penyajian konten berarti Keep It Short and Simple.'],
+      defaultAns:['A','B','C','D'] },
+    { id:'pgk-7', stim:'Sistem komputer: hardware, software, brainware.',
+      q:'Pernyataan yang benar mengenai komponen sistem komputer adalah ....',
+      opts:['Sistem operasi (Windows/Linux) merupakan software yang mengatur kerja perangkat.',
+            'Microsoft Word dan Google Docs termasuk software aplikasi.',
+            'Pengguna komputer (siswa/guru) termasuk brainware.',
+            'SSD termasuk perangkat input yang memasukkan data.'],
+      defaultAns:['A','B','C'] },
+    { id:'pgk-8', q:'Pernyataan yang tepat mengenai hardware, software, dan brainware adalah ....',
+      opts:['Hardware merupakan komponen fisik komputer yang dapat disentuh.',
+            'Software merupakan instruksi/program yang dijalankan komputer.',
+            'Brainware adalah manusia yang menggunakan atau mengelola komputer.',
+            'Windows merupakan perangkat keras yang dipasang pada motherboard.'],
+      defaultAns:['A','B','C'] },
+    { id:'pgk-9', stim:'Komputer sekolah terhubung via NIC + kabel Ethernet. Switch LAN, router antarjaringan, browser ke server, HTTP/HTTPS, TCP/IP, DNS.',
+      q:'Pernyataan yang benar mengenai perangkat dan layanan jaringan adalah ....',
+      opts:['NIC memungkinkan komputer terhubung ke jaringan.',
+            'Switch menghubungkan perangkat dalam satu jaringan lokal (LAN).',
+            'Router dapat menghubungkan jaringan yang berbeda, termasuk internet.',
+            'Browser web (Chrome/Firefox) termasuk perangkat keras jaringan.'],
+      defaultAns:['A','B','C'] },
+    { id:'pgk-10', q:'Pernyataan yang benar mengenai protokol dan cara kerja internet adalah ....',
+      opts:['IP berkaitan dengan pengalamatan perangkat dalam jaringan.',
+            'TCP membantu mengatur pengiriman data agar andal.',
+            'HTTPS menggunakan enkripsi untuk melindungi komunikasi web.',
+            'DNS termasuk perangkat keras yang dipasang di dalam CPU.'],
+      defaultAns:['A','B','C'] }
+  ],
+  bs: [
+    { id:'bs-1', stim:'Bukalapak, YouTube, Spotify - aplikasi digital.',
+      stmts:['Pemrograman dan algoritma dapat menjadi bagian dari proses kerja aplikasi digital.',
+             'Brainware tidak diperlukan karena aplikasi digital dapat bekerja sepenuhnya tanpa pengguna.',
+             'Kecerdasan artifisial dapat dimanfaatkan untuk memberikan rekomendasi konten.'],
+      defaultAns:['B','S','B'] },
+    { id:'bs-2', stim:'Struktur data tree vs graph.',
+      stmts:['Root adalah simpul akar atau titik awal pada struktur tree.',
+             'Leaf node adalah simpul yang masih mempunyai banyak child node.',
+             'Graph dapat memiliki beberapa jalur dan siklus antarnode.'],
+      defaultAns:['B','S','B'] },
+    { id:'bs-3', stim:'Podcast & blog.',
+      stmts:['Algoritma deskriptif dapat ditulis sebagai urutan instruksi menggunakan bahasa sehari-hari.',
+             'Pseudocode harus selalu mengikuti aturan sintaks bahasa pemrograman tertentu agar dapat langsung dijalankan komputer.',
+             'Blog berisi tulisan/artikel dan podcast berisi audio, keduanya termasuk bentuk konten digital.'],
+      defaultAns:['B','S','B'] },
+    { id:'bs-4', stim:'Sistem komputer: hardware, software, brainware.',
+      stmts:['Keyboard dan mouse termasuk perangkat input (hardware).',
+             'Sistem operasi Windows dan Linux termasuk perangkat output.',
+             'Siswa yang menggunakan komputer untuk mengerjakan tugas termasuk brainware.'],
+      defaultAns:['B','S','B'] },
+    { id:'bs-5', stim:'Siswa mengakses situs pembelajaran internet.',
+      stmts:['Router dapat menghubungkan jaringan lokal dengan jaringan lain, termasuk internet.',
+             'DNS membantu menerjemahkan nama domain menjadi alamat IP.',
+             'Browser Chrome/Firefox termasuk perangkat keras jaringan yang dipasang di dalam komputer.'],
+      defaultAns:['B','B','S'] }
+  ]
+};
+
+/* =========================================================
+   BACKEND
+   ========================================================= */
+async function gasGet(params) {
+  if (GAS_URL === 'PASTE_YOUR_GAS_WEB_APP_URL_HERE') {
+    return { ok:true, dev:true, data:null };
+  }
+  const url = new URL(GAS_URL);
+  Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+  try {
+    const r = await fetch(url.toString(), { method:'GET', redirect:'follow' });
+    return await r.json();
+  } catch(e) {
+    return { ok:false, error:String(e) };
+  }
+}
+async function gasPost(payload) {
+  if (GAS_URL === 'PASTE_YOUR_GAS_WEB_APP_URL_HERE') {
+    return { ok:true, dev:true };
+  }
+  try {
+    const r = await fetch(GAS_URL, {
+      method:'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type':'text/plain;charset=utf-8' },
+      redirect:'follow'
+    });
+    return await r.json();
+  } catch(e) {
+    return { ok:false, error:String(e) };
+  }
+}
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+async function loginGuru() {
+  const name = document.getElementById('guruName').value.trim();
+  const pin = document.getElementById('guruPin').value.trim();
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+
+  if (!name || !pin) {
+    errEl.textContent = 'Mohon isi nama dan PIN guru.';
+    return;
+  }
+  const btn = document.getElementById('btnLogin');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Memverifikasi...';
+
+  const resp = await gasGet({ action:'guruLogin', pin:pin, name:name });
+
+  btn.disabled = false;
+  btn.innerHTML = 'MASUK DASHBOARD';
+
+  if (resp.dev) {
+    state.guru = { name, pin };
+    showToast('warning','Mode DEV aktif (URL GAS belum diisi). Dashboard dapat dijelajahi tanpa backend.');
+    enterDashboard();
+    return;
+  }
+  if (resp.ok && resp.data && resp.data.valid) {
+    state.guru = { name, pin };
+    showToast('success','Login berhasil. Selamat datang, ' + name + '!');
+    enterDashboard();
+  } else {
+    errEl.textContent = resp.error ? ('Error: ' + resp.error) : 'PIN guru tidak valid.';
+  }
+}
+
+function enterDashboard() {
+  document.getElementById('loginLayer').style.display = 'none';
+  document.getElementById('dashboard').classList.add('show');
+  document.getElementById('guruInfo').textContent = 'Guru: ' + state.guru.name;
+  renderAllPanels();
+  loadValidated();
+  // Start polling for student submissions (every 10s)
+  setInterval(() => { if (state.guru.pin) loadStudentCount(); }, 10000);
+}
+
+function logoutGuru() {
+  showModal(`
+    <h3>Konfirmasi Logout</h3>
+    <p>Apakah Anda yakin ingin keluar dari dashboard guru?</p>
+    <div class="modal-buttons">
+      <button class="btn btn-blue" onclick="closeModal()">Batal</button>
+      <button class="btn btn-primary" onclick="doLogout()">Ya, Logout</button>
+    </div>
+  `);
+}
+function doLogout() {
+  state.guru = { name:'', pin:'' };
+  state.validated = {};
+  closeModal();
+  document.getElementById('dashboard').classList.remove('show');
+  document.getElementById('loginLayer').style.display = 'block';
+  document.getElementById('guruName').value = '';
+  document.getElementById('guruPin').value = '';
+}
+
+/* =========================================================
+   RENDER PANELS
+   ========================================================= */
+function renderAllPanels() {
+  // PG
+  let html = '<div style="font-size:13px;color:var(--abu-700);margin-bottom:14px;line-height:1.6;">' +
+             'Klik huruf <strong>(A/B/C/D)</strong> untuk memilih jawaban benar, lalu klik <strong>Valid &amp; Tampilkan</strong>. ' +
+             'Jawaban akan langsung muncul di layar siswa dengan tanda <span class="rossi-preview"><span class="rossi-preview-dot"></span>lingkaran merah + hijau Rossi</span>.</div>';
+  QUESTIONS.pg.forEach((q, i) => {
+    html += renderGuruPG(i, q);
+  });
+  document.getElementById('panel-pg').innerHTML = html;
+
+  // PGK
+  html = '<div style="font-size:13px;color:var(--abu-700);margin-bottom:14px;line-height:1.6;">' +
+         'Pilihan Ganda Kompleks - jawaban benar bisa lebih dari satu. Klik semua huruf yang benar, lalu <strong>Valid &amp; Tampilkan</strong>.</div>';
+  QUESTIONS.pgk.forEach((q, i) => {
+    html += renderGuruPGK(i, q);
+  });
+  document.getElementById('panel-pgk').innerHTML = html;
+
+  // BS
+  html = '<div style="font-size:13px;color:var(--abu-700);margin-bottom:14px;line-height:1.6;">' +
+         'Benar/Salah - klik B atau S untuk tiap pernyataan (P1, P2, P3), lalu <strong>Valid &amp; Tampilkan</strong>.</div>';
+  QUESTIONS.bs.forEach((g, i) => {
+    html += renderGuruBS(i, g);
+  });
+  document.getElementById('panel-bs').innerHTML = html;
+}
+
+function renderGuruPG(idx, q) {
+  const num = idx + 1;
+  return `
+    <div class="guru-question" id="gq-${q.id}">
+      <div class="gq-header">
+        <div class="gq-num">Soal ${num}</div>
+        <div class="gq-status status-pending" id="status-${q.id}">Belum divalidasi</div>
+      </div>
+      <div class="gq-text">${q.q}</div>
+      <div class="gq-options">
+        ${q.opts.map((o, i) => `
+          <div class="gq-option" data-qid="${q.id}" data-letter="${String.fromCharCode(65+i)}" onclick="selectGuruPG('${q.id}','${String.fromCharCode(65+i)}',this)">
+            <div class="letter">${String.fromCharCode(65+i)}</div>
+            <div>${o}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="gq-actions">
+        <button class="btn btn-green" onclick="validatePG('${q.id}')" data-validate="${q.id}">
+          \u2713 Valid &amp; Tampilkan
+        </button>
+        <button class="btn btn-blue" onclick="quickFillPG('${q.id}','${q.defaultAns}')">
+          \u21bb Pakai Kunci Default (${q.defaultAns})
+        </button>
+        <button class="btn btn-yellow" onclick="clearValidation('${q.id}')">
+          \u2717 Hapus
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderGuruPGK(idx, q) {
+  const num = idx + 1;
+  let stimHtml = q.stim ? `<div class="gq-stimulus">${q.stim}</div>` : '';
+  return `
+    <div class="guru-question" id="gq-${q.id}">
+      <div class="gq-header">
+        <div class="gq-num">PGK ${num}</div>
+        <div class="gq-status status-pending" id="status-${q.id}">Belum divalidasi</div>
+      </div>
+      ${stimHtml}
+      <div class="gq-text">${q.q}</div>
+      <div class="gq-options single">
+        ${q.opts.map((o, i) => `
+          <div class="gq-option" data-qid="${q.id}" data-letter="${String.fromCharCode(65+i)}" onclick="toggleGuruPGK('${q.id}','${String.fromCharCode(65+i)}',this)">
+            <div class="letter">${String.fromCharCode(65+i)}</div>
+            <div>${o}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="gq-actions">
+        <button class="btn btn-green" onclick="validatePGK('${q.id}')">
+          \u2713 Valid &amp; Tampilkan
+        </button>
+        <button class="btn btn-blue" onclick="quickFillPGK('${q.id}', ${JSON.stringify(q.defaultAns).replace(/"/g,'&quot;')})">
+          \u21bb Pakai Kunci Default (${q.defaultAns.join(',')})
+        </button>
+        <button class="btn btn-yellow" onclick="clearValidation('${q.id}')">
+          \u2717 Hapus
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderGuruBS(idx, g) {
+  const num = idx + 1;
+  return `
+    <div class="guru-question" id="gq-${g.id}">
+      <div class="gq-header">
+        <div class="gq-num">BS Stimulus ${num}</div>
+        <div class="gq-status status-pending" id="status-${g.id}">Belum divalidasi</div>
+      </div>
+      <div class="gq-stimulus">${g.stim}</div>
+      <table class="gq-bs-table" data-qid="${g.id}">
+        <thead><tr><th>No.</th><th>Pernyataan</th><th>B</th><th>S</th></tr></thead>
+        <tbody>
+          ${g.stmts.map((s, i) => `
+            <tr>
+              <td class="stmt-key">P${i+1}</td>
+              <td>${s}</td>
+              <td class="bs-choice" data-qid="${g.id}" data-stmt="P${i+1}" data-val="B" onclick="selectGuruBS('${g.id}','P${i+1}','B',this)">B</td>
+              <td class="bs-choice" data-qid="${g.id}" data-stmt="P${i+1}" data-val="S" onclick="selectGuruBS('${g.id}','P${i+1}','S',this)">S</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <div class="gq-actions">
+        <button class="btn btn-green" onclick="validateBS('${g.id}')">
+          \u2713 Valid &amp; Tampilkan
+        </button>
+        <button class="btn btn-blue" onclick="quickFillBS('${g.id}', ${JSON.stringify(g.defaultAns).replace(/"/g,'&quot;')})">
+          \u21bb Pakai Kunci Default (${g.defaultAns.join(',')})
+        </button>
+        <button class="btn btn-yellow" onclick="clearValidation('${g.id}')">
+          \u2717 Hapus
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   GURU SELECTION
+   ========================================================= */
+function selectGuruPG(qid, letter, el) {
+  document.querySelectorAll(`.gq-option[data-qid="${qid}"]`).forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleGuruPGK(qid, letter, el) {
+  el.classList.toggle('selected');
+}
+
+function selectGuruBS(qid, stmt, val, el) {
+  // remove other in same row
+  const row = el.parentElement;
+  row.querySelectorAll('.bs-choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* =========================================================
+   QUICK FILL (default answer)
+   ========================================================= */
+function quickFillPG(qid, ans) {
+  document.querySelectorAll(`.gq-option[data-qid="${qid}"]`).forEach(o => {
+    o.classList.remove('selected');
+    if (o.dataset.letter === ans) o.classList.add('selected');
+  });
+}
+function quickFillPGK(qid, ansArr) {
+  document.querySelectorAll(`.gq-option[data-qid="${qid}"]`).forEach(o => {
+    o.classList.remove('selected');
+    if (ansArr.includes(o.dataset.letter)) o.classList.add('selected');
+  });
+}
+function quickFillBS(qid, ansArr) {
+  // ansArr = ['B','S','B'] for P1,P2,P3
+  ['P1','P2','P3'].forEach((stmt, i) => {
+    const val = ansArr[i];
+    document.querySelectorAll(`.bs-choice[data-qid="${qid}"][data-stmt="${stmt}"]`).forEach(c => {
+      c.classList.remove('selected');
+      if (c.dataset.val === val) c.classList.add('selected');
+    });
+  });
+}
+
+/* =========================================================
+   VALIDATE & SEND TO BACKEND
+   ========================================================= */
+async function validatePG(qid) {
+  const sel = document.querySelector(`.gq-option[data-qid="${qid}"].selected`);
+  if (!sel) {
+    showToast('warning','Pilih dulu jawaban yang benar untuk soal ' + qid);
+    return;
+  }
+  const letter = sel.dataset.letter;
+  await sendValidation(qid, letter);
+}
+async function validatePGK(qid) {
+  const sels = document.querySelectorAll(`.gq-option[data-qid="${qid}"].selected`);
+  if (sels.length === 0) {
+    showToast('warning','Pilih minimal satu jawaban benar untuk ' + qid);
+    return;
+  }
+  const letters = Array.from(sels).map(s => s.dataset.letter).sort();
+  await sendValidation(qid, JSON.stringify(letters));
+}
+async function validateBS(qid) {
+  const selected = {};
+  ['P1','P2','P3'].forEach(stmt => {
+    const sel = document.querySelector(`.bs-choice[data-qid="${qid}"][data-stmt="${stmt}"].selected`);
+    if (sel) selected[stmt] = sel.dataset.val;
+  });
+  if (Object.keys(selected).length < 3) {
+    showToast('warning','Lengkapi semua pernyataan (P1, P2, P3) untuk ' + qid);
+    return;
+  }
+  await sendValidation(qid, JSON.stringify(selected));
+}
+
+async function sendValidation(qid, answer) {
+  // For PGK/BS, the answer is a JSON string; index.html will parse it
+  // For PG it's a single letter
+  // To make index.html apply correct marker, we send the answer (single letter for PG, JSON for PGK)
+  // index.html's applyCorrectMarker expects a single letter for PG. For PGK/BS we need different handling.
+  // Simplification: store as-is. index.html will parse based on qid prefix.
+
+  const resp = await gasPost({
+    action: 'validateAnswer',
+    guruPin: state.guru.pin,
+    qid: qid,
+    answer: answer
+  });
+
+  if (resp.dev) {
+    state.validated[qid] = answer;
+    applyValidationVisual(qid, answer);
+    showToast('success','[DEV] Validasi tersimpan. Di production, jawaban akan otomatis muncul di layar siswa.');
+    updateStats();
+    return;
+  }
+  if (resp.ok) {
+    state.validated[qid] = answer;
+    applyValidationVisual(qid, answer);
+    showToast('success','Jawaban tervalidasi &amp; ditampilkan ke siswa!');
+    updateStats();
+  } else {
+    showToast('danger','Gagal menyimpan validasi: ' + (resp.error || 'unknown'));
+  }
+}
+
+function applyValidationVisual(qid, answer) {
+  // Mark question card as validated
+  const card = document.getElementById('gq-' + qid);
+  if (card) card.classList.add('validated');
+  const status = document.getElementById('status-' + qid);
+  if (status) {
+    status.textContent = 'Tervalidasi: ' + (answer.length > 20 ? answer.substring(0,20)+'...' : answer);
+    status.classList.remove('status-pending');
+    status.classList.add('status-validated');
+  }
+  // Mark option(s)
+  if (qid.startsWith('pg-')) {
+    document.querySelectorAll(`.gq-option[data-qid="${qid}"]`).forEach(o => {
+      o.classList.remove('validated');
+      if (o.dataset.letter === answer) o.classList.add('validated');
+    });
+  } else if (qid.startsWith('pgk-')) {
+    let arr;
+    try { arr = JSON.parse(answer); } catch(e) { arr = []; }
+    document.querySelectorAll(`.gq-option[data-qid="${qid}"]`).forEach(o => {
+      o.classList.remove('validated');
+      if (arr.includes(o.dataset.letter)) o.classList.add('validated');
+    });
+  } else if (qid.startsWith('bs-')) {
+    let obj;
+    try { obj = JSON.parse(answer); } catch(e) { obj = {}; }
+    Object.keys(obj).forEach(stmt => {
+      const val = obj[stmt];
+      document.querySelectorAll(`.bs-choice[data-qid="${qid}"][data-stmt="${stmt}"]`).forEach(c => {
+        c.classList.remove('validated');
+        if (c.dataset.val === val) c.classList.add('validated');
+      });
+    });
+  }
+}
+
+async function clearValidation(qid) {
+  const resp = await gasPost({
+    action: 'clearValidation',
+    guruPin: state.guru.pin,
+    qid: qid
+  });
+  if (resp.dev || resp.ok) {
+    delete state.validated[qid];
+    const card = document.getElementById('gq-' + qid);
+    if (card) card.classList.remove('validated');
+    const status = document.getElementById('status-' + qid);
+    if (status) {
+      status.textContent = 'Belum divalidasi';
+      status.classList.remove('status-validated');
+      status.classList.add('status-pending');
+    }
+    document.querySelectorAll(`[data-qid="${qid}"]`).forEach(o => o.classList.remove('validated'));
+    showToast('warning','Validasi dihapus untuk ' + qid);
+    updateStats();
+  }
+}
+
+async function clearAllValidation() {
+  showModal(`
+    <h3>Hapus Semua Validasi?</h3>
+    <p>Semua jawaban yang sudah divalidasi akan dihapus dari tampilan siswa. Tindakan ini tidak dapat dibatalkan.</p>
+    <div class="modal-buttons">
+      <button class="btn btn-blue" onclick="closeModal()">Batal</button>
+      <button class="btn btn-primary" onclick="doClearAll()">Ya, Hapus Semua</button>
+    </div>
+  `);
+}
+async function doClearAll() {
+  closeModal();
+  const resp = await gasPost({ action:'clearAllValidation', guruPin: state.guru.pin });
+  if (resp.dev || resp.ok) {
+    state.validated = {};
+    renderAllPanels();
+    showToast('warning','Semua validasi telah direset.');
+    updateStats();
+  }
+}
+
+async function bulkValidate(scope) {
+  // Use default answers for all questions
+  showModal(`
+    <h3>Validasi Massal</h3>
+    <p>Akan memvalidasi <strong>SEMUA</strong> soal menggunakan kunci jawaban default. Lanjutkan?</p>
+    <div class="modal-buttons">
+      <button class="btn btn-blue" onclick="closeModal()">Batal</button>
+      <button class="btn btn-green" onclick="doBulkValidate()">Ya, Validasi Semua</button>
+    </div>
+  `);
+}
+async function doBulkValidate() {
+  closeModal();
+  // PG
+  for (const q of QUESTIONS.pg) {
+    await sendValidation(q.id, q.defaultAns);
+  }
+  // PGK
+  for (const q of QUESTIONS.pgk) {
+    await sendValidation(q.id, JSON.stringify(q.defaultAns));
+  }
+  // BS
+  for (const g of QUESTIONS.bs) {
+    const obj = {};
+    ['P1','P2','P3'].forEach((s,i) => obj[s] = g.defaultAns[i]);
+    await sendValidation(g.id, JSON.stringify(obj));
+  }
+  showToast('success','Semua soal tervalidasi dengan kunci default.');
+}
+
+/* =========================================================
+   LOAD VALIDATED (sync from backend)
+   ========================================================= */
+async function loadValidated() {
+  const resp = await gasGet({ action:'getValidatedAnswers' });
+  if (resp.dev) {
+    updateStats();
+    return;
+  }
+  if (resp.ok && resp.data) {
+    state.validated = resp.data || {};
+    Object.keys(state.validated).forEach(qid => {
+      applyValidationVisual(qid, state.validated[qid]);
+    });
+    updateStats();
+  }
+}
+
+async function loadStudentCount() {
+  const resp = await gasGet({ action:'getStudentStats' });
+  if (resp.dev) return;
+  if (resp.ok && resp.data) {
+    document.getElementById('totalSubmit').textContent = resp.data.submitted || 0;
+    document.getElementById('avgScore').textContent = resp.data.avgScore || '-';
+  }
+}
+
+/* =========================================================
+   RESULTS TAB
+   ========================================================= */
+async function loadResults() {
+  const resp = await gasGet({ action:'getAllStudentResults' });
+  if (resp.dev) {
+    document.getElementById('resultsTableContainer').innerHTML = '<p style="color:var(--abu-700);font-style:italic;">Mode DEV - tidak ada data siswa.</p>';
+    return;
+  }
+  if (resp.ok && resp.data) {
+    state.results = resp.data;
+    renderResultsTable();
+  } else {
+    showToast('danger','Gagal memuat data: ' + (resp.error || 'unknown'));
+  }
+}
+
+function renderResultsTable() {
+  if (state.results.length === 0) {
+    document.getElementById('resultsTableContainer').innerHTML = '<p style="color:var(--abu-700);font-style:italic;">Belum ada siswa yang submit.</p>';
+    return;
+  }
+  let html = `
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nama</th>
+          <th>Kelas</th>
+          <th>Waktu Submit</th>
+          <th>Pelanggaran</th>
+          <th>Skor</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${state.results.map((s, i) => `
+          <tr>
+            <td>${i+1}</td>
+            <td>${s.name}</td>
+            <td>${s.class}</td>
+            <td>${s.finishedAt || '-'}</td>
+            <td>${s.violations || 0}</td>
+            <td><span class="score-pill ${scoreClass(s.score)}">${s.score ?? '-'}</span></td>
+            <td>${s.autoSubmit ? 'Auto' : 'Manual'}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  document.getElementById('resultsTableContainer').innerHTML = html;
+}
+
+function scoreClass(s) {
+  if (s == null) return 'mid';
+  if (s >= 75) return 'high';
+  if (s >= 50) return 'mid';
+  return 'low';
+}
+
+/* =========================================================
+   EXPORT CSV
+   ========================================================= */
+async function exportCSV() {
+  if (state.results.length === 0) {
+    await loadResults();
+  }
+  if (state.results.length === 0) {
+    showToast('warning','Belum ada data untuk diekspor.');
+    return;
+  }
+  const headers = ['No','Nama','Kelas','Waktu Submit','Pelanggaran','Skor','Status'];
+  const rows = state.results.map((s, i) => [
+    i+1, '"' + (s.name||'').replace(/"/g,'""') + '"',
+    '"' + (s.class||'').replace(/"/g,'""') + '"',
+    '"' + (s.finishedAt||'') + '"',
+    s.violations || 0,
+    s.score ?? '-',
+    s.autoSubmit ? 'Auto' : 'Manual'
+  ]);
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'hasil_ujian_informatika_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('success','CSV berhasil diekspor!');
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'results') loadResults();
+}
+
+/* =========================================================
+   STATS UPDATE
+   ========================================================= */
+function updateStats() {
+  document.getElementById('totalValidated').textContent = Object.keys(state.validated).length;
+  const total = QUESTIONS.pg.length + QUESTIONS.pgk.length + QUESTIONS.bs.length;
+  document.getElementById('totalSoal').textContent = total;
+}
+
+/* =========================================================
+   TOAST / MODAL
+   ========================================================= */
+function showToast(type, message) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  const icons = { success:'\u2713', warning:'\u26a0', danger:'\u2717' };
+  t.innerHTML = `<div class="icon">${icons[type]||'\u2139'}</div><div class="msg">${message}</div>`;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.classList.add('hide');
+    setTimeout(() => t.remove(), 400);
+  }, 3500);
+}
+function showModal(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modalOverlay') closeModal();
+});
+
+// Enter key on PIN
+document.getElementById('guruPin').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') loginGuru();
+});
+
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('guruName').focus();
+});
+</script>
+</body>
+</html>
