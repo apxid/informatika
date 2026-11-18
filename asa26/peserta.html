@@ -1132,14 +1132,16 @@ function renderPeserta(data){
   const wrap = document.getElementById('pesertaResult');
   let html = '';
   data.rooms.forEach(room => {
+    const rNo = 'R' + room.id + ' (RUANG ' + room.nama + ')';
     html += `<h4 style="margin-top:18px; color:var(--c-primary);">&#128209; ${room.nama} <span style="font-size:13px; color:var(--c-text-soft); font-weight:normal;">(${room.peserta.length} peserta)</span></h4>`;
     html += `<div class="table-wrap"><table class="data-table"><thead><tr>
-      <th>NO</th><th>NOMOR PESERTA</th><th>NAMA PESERTA</th><th>KELAS</th><th>L/P</th>
+      <th>NO</th><th>NOMOR PESERTA</th><th>NAMA PESERTA</th><th>KELAS</th><th>L/P</th><th>RUANG</th><th>R NO</th>
     </tr></thead><tbody>`;
     room.peserta.forEach(p => {
       html += `<tr>
         <td>${p.no}</td><td><b>${p.nomorPeserta}</b></td><td>${p.nama}</td>
         <td><span class="badge badge-${String(p.kelas).replace(/\D/g,'')}">${p.kelas}</span></td><td>${p.lp}</td>
+        <td>${room.nama}</td><td><b>${rNo}</b></td>
       </tr>`;
     });
     html += `</tbody></table></div>`;
@@ -1149,10 +1151,13 @@ function renderPeserta(data){
 
 function exportPesertaXlsx(){
   if (!STATE.pesertaData){ toast('Generate dulu.', 'warn'); return; }
-  const aoa = [['NO','NOMOR PESERTA','NAMA PESERTA','KELAS','L/P','RUANG']];
+  const aoa = [['NO','NOMOR PESERTA','NAMA PESERTA','KELAS','L/P','RUANG','R NO']];
   let no = 1;
   STATE.pesertaData.rooms.forEach(room => {
-    room.peserta.forEach(p => { aoa.push([no++, p.nomorPeserta, p.nama, p.kelas, p.lp, room.nama]); });
+    const rNo = 'R' + room.id + ' (RUANG ' + room.nama + ')';
+    room.peserta.forEach(p => {
+      aoa.push([no++, p.nomorPeserta, p.nama, p.kelas, p.lp, room.nama, rNo]);
+    });
   });
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Daftar Peserta');
