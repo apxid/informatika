@@ -455,6 +455,7 @@ tbody tr:hover{background:var(--gold-l);}
     <div class="tab" data-tab="token" onclick="switchTab('token')">🎫 TOKEN</div>
     <div class="tab" data-tab="siswa" onclick="switchTab('siswa')">👥 SISWA</div>
     <div class="tab" data-tab="hasil" onclick="switchTab('hasil')">🏆 HASIL</div>
+    <div class="tab" data-tab="leaderboard" onclick="switchTab('leaderboard')">🏅 LEADERBOARD</div>
     <div class="tab" data-tab="kuesioner" onclick="switchTab('kuesioner')">📋 KUESIONER</div>
     <div class="tab" data-tab="konfig" onclick="switchTab('konfig')">⚙️ KONFIG</div>
   </div>
@@ -579,6 +580,23 @@ tbody tr:hover{background:var(--gold-l);}
         <table>
           <thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Posisi</th><th>Benar</th><th>Salah</th><th>Waktu</th><th>Status</th></tr></thead>
           <tbody id="tbl-hasil"><tr><td colspan="8" class="empty-msg">Belum ada hasil</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: LEADERBOARD -->
+  <div id="tab-leaderboard" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <h2>🏅 LEADERBOARD — PERINGKAT SISWA</h2>
+      <p style="margin-bottom:14px; color:var(--wood-l); font-size:13px;">
+        Siswa diurutkan berdasarkan: jawaban benar terbanyak → salah paling sedikit → waktu tercepat.
+        🥇 Emas | 🥈 Perak | 🥉 Perunggu
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Medal</th><th>Nama</th><th>Kelas</th><th>Benar</th><th>Salah</th><th>Waktu</th><th>Status</th></tr></thead>
+          <tbody id="tbl-leaderboard"><tr><td colspan="8" class="empty-msg">Memuat leaderboard...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -817,6 +835,17 @@ function mockApi(p){
           if (p.pass !== 'admin123'){ resolve({status:'error', message:'Akses ditolak'}); break; }
           resolve({status:'ok', ...state.data});
           break;
+        case 'getLeaderboard':
+          // Mock leaderboard data
+          resolve({status:'ok', leaderboard: [
+            {rank:1, nama:'Siti Aminah', kelas:'9A', benar:25, salah:0, waktu:180, medal:'gold', status:'menang'},
+            {rank:2, nama:'Budi Santoso', kelas:'9A', benar:22, salah:1, waktu:210, medal:'silver', status:'menang'},
+            {rank:3, nama:'Dewi Lestari', kelas:'9B', benar:20, salah:2, waktu:195, medal:'bronze', status:'menang'},
+            {rank:4, nama:'Ahmad Fauzi', kelas:'9A', benar:18, salah:3, waktu:240, medal:'', status:'selesai'},
+            {rank:5, nama:'Rina Wijaya', kelas:'9C', benar:15, salah:2, waktu:220, medal:'', status:'selesai'},
+            {rank:6, nama:'Andi Pratama', kelas:'9B', benar:12, salah:3, waktu:180, medal:'', status:'gagal'},
+          ]});
+          break;
         default:
           resolve({status:'error', message:'Unknown'});
       }
@@ -871,6 +900,7 @@ function switchTab(name){
   $('tab-'+name).style.display = 'block';
   if (name === 'kontrol') refreshGameStatus();
   if (name === 'konfig') loadConfig();
+  if (name === 'leaderboard') loadLeaderboard();
 }
 
 /* ============================================================
@@ -1033,6 +1063,34 @@ async function changePassword(){
     setTimeout(()=> loadConfig(), 500);
   } else {
     toast(res.message || 'Gagal ganti password','error');
+  }
+}
+
+/* ============================================================
+   LEADERBOARD
+   ============================================================ */
+async function loadLeaderboard(){
+  const res = await api({action:'getLeaderboard', pass: state.pass});
+  const tbody = $('tbl-leaderboard');
+  if (res.status === 'ok' && res.leaderboard && res.leaderboard.length){
+    const medals = {gold:'🥇', silver:'🥈', bronze:'🥉'};
+    const medalColors = {gold:'#FFD700', silver:'#C0C0C0', bronze:'#CD7F32'};
+    tbody.innerHTML = res.leaderboard.map(p => {
+      const medal = medals[p.medal] || '';
+      const rankColor = medalColors[p.medal] || 'transparent';
+      return `<tr style="background:${p.medal ? 'rgba(255,215,0,' + (p.medal==='gold'?'0.15':p.medal==='silver'?'0.1':'0.08') + ')' : ''};">
+        <td><b style="color:${rankColor !== 'transparent' ? rankColor : 'inherit'};">#${p.rank}</b></td>
+        <td style="font-size:18px;">${medal}</td>
+        <td><b>${escapeHtml(p.nama)}</b></td>
+        <td>${escapeHtml(p.kelas)}</td>
+        <td style="color:#1FA336; font-weight:900;">${p.benar}</td>
+        <td style="color:#C4202C; font-weight:900;">${p.salah}</td>
+        <td><b>${p.waktu}s</b></td>
+        <td><span class="badge ${p.status}">${p.status}</span></td>
+      </tr>`;
+    }).join('');
+  } else {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-msg">Belum ada data leaderboard</td></tr>';
   }
 }
 
