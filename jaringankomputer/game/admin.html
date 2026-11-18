@@ -252,6 +252,13 @@ body.projector-mode .token-display-big{
 }
 body.projector-mode .token-meta-big{font-size:20px;}
 body.projector-mode .coc-btn{font-size:20px; padding:16px 30px;}
+body.projector-mode .token-panel > div:first-child[style*="text-align:center"],
+body.projector-mode .token-panel > div[style*="text-align:center"]{
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:100; width:90%;
+}
+body.projector-mode .token-panel > div[style*="text-align:center"] .coc-btn{
+  font-size:22px; padding:18px 40px;
+}
 body.projector-mode #btn-projector{
   position:fixed; top:20px; right:20px; z-index:100;
 }
@@ -529,7 +536,13 @@ tbody tr:hover{background:var(--gold-l);}
       <p style="margin-bottom:14px; color:var(--wood-l); font-size:13px;">
         Token berbeda untuk meja kiri &amp; kanan. Tampilan besar agar siswa jelas melihat dari proyektor.
       </p>
-      <div class="token-grid token-grid-big">
+      <div style="margin-top:14px; text-align:center;">
+        <button class="coc-btn green" style="width:100%; max-width:400px;" onclick="generateAllTokens()">🎲 GENERATE SEMUA TOKEN (KIRI + KANAN)</button>
+      </div>
+      <div style="margin-top:10px; text-align:center; font-size:12px; color:var(--wood-l);">
+        💡 Klik token untuk copy · Tekan <b>MODE PROYEKTOR</b> untuk fullscreen · Atau generate per meja di bawah
+      </div>
+      <div class="token-grid token-grid-big" style="margin-top:14px;">
         <div class="token-card kiri">
           <div class="token-posisi-label">🪑 MEJA KIRI</div>
           <div class="token-display-big empty" id="token-kiri-display" onclick="copyToken('kiri')">BELUM DI-GENERATE</div>
@@ -542,9 +555,6 @@ tbody tr:hover{background:var(--gold-l);}
           <div class="token-meta-big" id="token-kanan-meta">Klik tombol di bawah untuk generate</div>
           <button class="coc-btn blue" style="margin-top:14px; width:100%;" onclick="generateToken('kanan')">🎲 GENERATE TOKEN KANAN</button>
         </div>
-      </div>
-      <div style="margin-top:14px; text-align:center; font-size:12px; color:var(--wood-l);">
-        💡 Klik token untuk copy ke clipboard · Tekan tombol <b>MODE PROYEKTOR</b> untuk tampilan fullscreen
       </div>
     </div>
 
@@ -875,6 +885,8 @@ async function adminLogin(){
   hideLoading();
   if (valid){
     state.pass = pass;
+    // Save admin session for reload persistence
+    try { sessionStorage.setItem('adminSession', JSON.stringify({pass: pass, loggedIn: true})); } catch(e){}
     $('screen-login').classList.remove('active');
     $('screen-dashboard').classList.add('active');
     toast('Login berhasil','success');
@@ -886,9 +898,28 @@ async function adminLogin(){
 
 function logout(){
   state.pass = null;
+  // Clear admin session
+  try { sessionStorage.removeItem('adminSession'); } catch(e){}
   $('admin-pass').value = '';
   $('screen-dashboard').classList.remove('active');
   $('screen-login').classList.add('active');
+}
+
+/* ===== Restore admin session on page load (survive reload) ===== */
+function restoreAdminSession(){
+  try {
+    const raw = sessionStorage.getItem('adminSession');
+    if (!raw) return false;
+    const session = JSON.parse(raw);
+    if (session.loggedIn && session.pass){
+      state.pass = session.pass;
+      $('screen-login').classList.remove('active');
+      $('screen-dashboard').classList.add('active');
+      refreshAll();
+      return true;
+    }
+  } catch(e){}
+  return false;
 }
 
 /* ============================================================
@@ -920,6 +951,41 @@ async function generateToken(posisi){
   } else {
     toast(res.message || 'Gagal generate token','error');
   }
+}
+
+/* Generate BOTH tokens (kiri + kanan) at once */
+async function generateAllTokens(){
+  showLoading('GENERATE SEMUA TOKEN...');
+  // Generate kiri first
+  const resKiri = await api({action:'generateToken', posisi:'kiri', pass: state.pass});
+  // Then kanan
+  const resKanan = await api({action:'generateToken', posisi:'kanan', pass: state.pass});
+  hideLoading();
+  
+  let success = 0;
+  if (resKiri.status === 'ok'){
+    const display = $('token-kiri-display');
+    display.textContent = resKiri.token;
+    display.classList.remove('empty');
+    $('token-kiri-meta').textContent = 'Dibuat: ' + (resKiri.dibuat || '-') + ' WIB · Klik token untuk copy';
+    success++;
+  }
+  if (resKanan.status === 'ok'){
+    const display = $('token-kanan-display');
+    display.textContent = resKanan.token;
+    display.classList.remove('empty');
+    $('token-kanan-meta').textContent = 'Dibuat: ' + (resKanan.dibuat || '-') + ' WIB · Klik token untuk copy';
+    success++;
+  }
+  
+  if (success === 2){
+    toast('Semua token berhasil dibuat!', 'success');
+  } else if (success === 1){
+    toast('1 token berhasil, 1 gagal', 'error');
+  } else {
+    toast('Gagal generate token', 'error');
+  }
+  refreshAll();
 }
 
 /* ============================================================
@@ -1208,6 +1274,11 @@ if (USE_MOCK){
     {no:2,nama:'Ahmad Fauzi',kelas:'9A',app:4,soal:3,seru:4,tampilan:5,saran:'Bagus, tapi soal terlalu mudah.'},
   ];
 }
+
+// Restore admin session on page load (survive reload)
+window.addEventListener('load', ()=>{
+  restoreAdminSession();
+});
 </script>
 </body>
 </html>
