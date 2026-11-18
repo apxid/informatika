@@ -1151,18 +1151,37 @@ function renderPeserta(data){
 
 function exportPesertaXlsx(){
   if (!STATE.pesertaData){ toast('Generate dulu.', 'warn'); return; }
-  const aoa = [['NO','NOMOR PESERTA','NAMA PESERTA','KELAS','L/P','RUANG','R NO']];
-  let no = 1;
+  const wb = XLSX.utils.book_new();
+
+  // Buat 1 sheet per ruang, nama sheet = R1, R2, R3, ..., R27
   STATE.pesertaData.rooms.forEach(room => {
+    const sheetName = 'R' + room.id;
+    const aoa = [];
+    // Header
+    aoa.push(['NO', 'NOMOR PESERTA', 'NAMA PESERTA', 'KELAS', 'L/P', 'RUANG', 'R NO']);
+    // Data
+    let no = 1;
     const rNo = 'R' + room.id + ' (RUANG ' + room.nama + ')';
     room.peserta.forEach(p => {
       aoa.push([no++, p.nomorPeserta, p.nama, p.kelas, p.lp, room.nama, rNo]);
     });
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
   });
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Daftar Peserta');
+
+  // Tambahan: sheet REKAP (semua ruang dalam 1 sheet)
+  const rekapAoa = [['NO', 'NOMOR PESERTA', 'NAMA PESERTA', 'KELAS', 'L/P', 'RUANG', 'R NO']];
+  let rekapNo = 1;
+  STATE.pesertaData.rooms.forEach(room => {
+    const rNo = 'R' + room.id + ' (RUANG ' + room.nama + ')';
+    room.peserta.forEach(p => {
+      rekapAoa.push([rekapNo++, p.nomorPeserta, p.nama, p.kelas, p.lp, room.nama, rNo]);
+    });
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rekapAoa), 'REKAP');
+
   XLSX.writeFile(wb, 'Daftar_Peserta_Per_Ruang.xlsx');
-  toast('Excel terdownload.', 'success');
+  toast(`Excel terdownload: ${STATE.pesertaData.rooms.length} sheet (R1-R${STATE.pesertaData.rooms.length}) + REKAP.`, 'success');
 }
 
 async function savePesertaToServer(){
