@@ -1593,6 +1593,7 @@ const state = {
   plane: null, clouds: [], animId: null,
   answered: false,
   stoppedHandled: false,
+  isRestoring: false,
   kuesionerRatings: { app:0, soal:0, seru:0, tampilan:0 }
 };
 
@@ -1614,6 +1615,7 @@ function showLayer(id){
    STATE PERSISTENCE (survive page reload)
    ============================================================ */
 function saveState(){
+  if (state.isRestoring) return; // Don't save during restoration
   try {
     const st = {
       layer: document.querySelector('.layer.active')?.id || 'layer-welcome',
@@ -1635,6 +1637,8 @@ function clearState(){
 }
 
 function restoreState(){
+  state.isRestoring = true; // Prevent saveState during restoration
+  let result = false;
   try {
     const raw = sessionStorage.getItem('gameState');
     if (!raw) { showLayer('layer-welcome'); return false; }
@@ -1683,32 +1687,35 @@ function restoreState(){
       // Restore fuel display
       updateFuel();
       toast('Game dilanjutkan','');
-      return true;
+      result = true;
     } else if (st.layer === 'layer-win' || st.layer === 'layer-lose'){
       // Can't fully restore win/lose without re-submitting; go to players layer
       showLayer('layer-players');
       refreshPlayers();
       toast('Sesi selesai. Masukkan token untuk main lagi','');
-      return true;
+      result = true;
     } else if (st.layer === 'layer-players'){
       showLayer('layer-players');
       refreshPlayers();
-      return true;
+      result = true;
     } else if (st.layer === 'layer-howto'){
       showLayer('layer-howto');
-      return true;
+      result = true;
     } else if (st.layer === 'layer-login'){
       showLayer('layer-login');
-      return true;
+      result = true;
     } else {
       showLayer('layer-welcome');
-      return false;
+      result = false;
     }
   } catch(e){
     console.warn('Restore state error:', e);
     showLayer('layer-welcome');
-    return false;
+    result = false;
+  } finally {
+    state.isRestoring = false; // Re-enable saveState
   }
+  return result;
 }
 function tryFullscreen(){
   const el = document.documentElement;
