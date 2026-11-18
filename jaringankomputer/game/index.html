@@ -777,7 +777,15 @@ body{
 .touch-right-btn:active, .touch-right-btn.pressed{
   background:#1565C0;
 }
-/* Fire/Laser: RED with "OK" text */
+/* Down: BLUE (same as left/right) */
+.touch-down-btn{
+  background:#1E88E5;
+  font-size:16px;
+  font-weight:900;
+}
+.touch-down-btn:active, .touch-down-btn.pressed{
+  background:#1565C0;
+}
 .touch-fire-btn{
   background:#E53935;
   font-size:18px;
@@ -1250,7 +1258,7 @@ body{
       </div>
       <div class="howto-step">
         <div class="step-num">⬆</div>
-        <div class="step-text">Tekan <b>tombol panah ↑</b> untuk <b>maju &amp; menabrak</b> jawaban! Pesawat melaju ke depan dan bisa menabrak gate jawaban yang disejajarkan.</div>
+        <div class="step-text">Tekan <b>UP</b> untuk pesawat <b>naik</b>, <b>DN</b> untuk <b>turun</b>. Tekan <b>UP 2x cepat</b> (double-tap) untuk <b>maju</b> &amp; menembus gate!</div>
       </div>
       <div class="howto-step">
         <div class="step-num">␣</div>
@@ -1355,7 +1363,9 @@ body{
     <!-- Controls hint -->
     <div class="controls-hint">
       <span class="key-hint">⬅</span> <span class="key-hint">➡</span> GERAK · 
-      <span class="key-hint">⬆</span> MAJU NABRAK · 
+      <span class="key-hint">⬆</span> NAIK · 
+      <span class="key-hint">⬇</span> TURUN · 
+      <span class="key-hint">⬆⬆</span> MAJU · 
       <span class="key-hint">SPASI</span> TEMBAK · 
       <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()" title="Aktif/Matikan suara">🔊</button>
     </div>
@@ -1368,6 +1378,7 @@ body{
           <button class="touch-btn touch-left-btn" id="btn-touch-left">L</button>
           <button class="touch-btn touch-right-btn" id="btn-touch-right">R</button>
         </div>
+        <button class="touch-btn touch-down-btn" id="btn-touch-down">DN</button>
         <button class="touch-btn touch-fire-btn" id="btn-touch-fire">OK</button>
       </div>
     </div>
@@ -1594,6 +1605,9 @@ const state = {
   answered: false,
   stoppedHandled: false,
   isRestoring: false,
+  lastUpTime: 0,
+  lastDownTime: 0,
+  forwardBoostTime: 0,
   kuesionerRatings: { app:0, soal:0, seru:0, tampilan:0 }
 };
 
@@ -2301,10 +2315,9 @@ function updateGhostPlanes(positions){
 function createGhostPlane(color, nama){
   const g = new THREE.Group();
   const mat = new THREE.MeshPhongMaterial({
-    color: color, transparent: true, opacity: 0.5,
-    specular: 0x333333, shininess: 40
+    color: color, specular: 0x888888, shininess: 50
   });
-  // Simple fuselage
+  // Fuselage
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 2.5, 8), mat);
   body.rotation.x = Math.PI/2;
   g.add(body);
@@ -2315,28 +2328,49 @@ function createGhostPlane(color, nama){
   const fin = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.4, 0.3), mat);
   fin.position.set(0, 0.25, 1);
   g.add(fin);
-  // Name label (sprite)
-  const sprite = makeNameSprite(nama, color);
-  sprite.scale.set(4, 1, 1);
-  sprite.position.y = 2.5;
+  // Nose
+  const nose = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 8), mat);
+  nose.position.set(0, 0, -1.5);
+  nose.rotation.x = -Math.PI/2;
+  g.add(nose);
+  // Name plate (game style: text + triangle pointer)
+  const sprite = makeNamePlate(nama, color);
+  sprite.scale.set(4, 1.5, 1);
+  sprite.position.y = 2.8;
   g.add(sprite);
   return g;
 }
 
-function makeNameSprite(nama, color){
+function makeNamePlate(nama, color){
   const canvas = document.createElement('canvas');
-  canvas.width = 256; canvas.height = 64;
+  canvas.width = 256; canvas.height = 96;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = 'rgba(26,17,8,0.8)';
-  ctx.fillRect(0, 0, 256, 64);
-  ctx.strokeStyle = '#' + color.toString(16).padStart(6,'0');
-  ctx.lineWidth = 3;
-  ctx.strokeRect(2, 2, 252, 60);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 28px Arial';
+  const hexColor = '#' + color.toString(16).padStart(6,'0');
+  
+  // Name text (no box, just text with outline)
+  ctx.font = 'bold 30px Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(nama.substring(0, 12), 128, 34);
+  // Black outline
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = 5;
+  ctx.strokeText(nama.substring(0, 12), 128, 28);
+  // White fill
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(nama.substring(0, 12), 128, 28);
+  
+  // Triangle pointer (downward, colored)
+  ctx.fillStyle = hexColor;
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(108, 55);
+  ctx.lineTo(148, 55);
+  ctx.lineTo(128, 80);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  
   const tex = new THREE.CanvasTexture(canvas);
   return new THREE.Sprite(new THREE.SpriteMaterial({map: tex, depthTest: false}));
 }
@@ -2866,6 +2900,7 @@ function init3D(){
   state.planeData = {
     x: 0, targetX: 0,
     z: 0, targetZ: 0,
+    y: 0, targetY: 0,
     bank: 0, targetBank: 0,
     pitch: 0,
     laserCooldown: 0,
@@ -2878,7 +2913,7 @@ function init3D(){
   state.scene.add(state.gatesGroup);
 
   // Keyboard controls
-  state.keys = { left:false, right:false, up:false, space:false };
+  state.keys = { left:false, right:false, up:false, down:false, forward:false, space:false };
   setupKeyboard();
 
   animate3D();
@@ -3911,11 +3946,13 @@ function spawnAnswerGates(q){
     state.gates.push(gate);
   });
 
-  // Reset plane position to center & base Z
+  // Reset plane position to center & base Z & altitude
   state.planeData.x = 0;
   state.planeData.targetX = 0;
   state.planeData.z = 0;
   state.planeData.targetZ = 0;
+  state.planeData.y = 0;
+  state.planeData.targetY = 0;
   state.planeData.bank = 0;
   state.planeData.targetBank = 0;
   state.planeData.collisionCooldown = 0;
@@ -3994,7 +4031,29 @@ function setupKeyboard(){
       } else if (e.code === 'ArrowRight' || e.code === 'KeyD'){
         state.keys.right = true; e.preventDefault();
       } else if (e.code === 'ArrowUp' || e.code === 'KeyW'){
-        state.keys.up = true; e.preventDefault();
+        e.preventDefault();
+        if (!state.keys.up){ // only on first press (not repeat)
+          // Double-tap detection for forward boost
+          const now = Date.now();
+          if (now - state.lastUpTime < 500){
+            // Double-tap! Trigger forward
+            state.keys.forward = true;
+            state.forwardBoostTime = now + 1200; // boost for 1.2s
+          }
+          state.lastUpTime = now;
+        }
+        state.keys.up = true; // altitude up
+      } else if (e.code === 'ArrowDown' || e.code === 'KeyS'){
+        e.preventDefault();
+        if (!state.keys.down){
+          const now = Date.now();
+          if (now - state.lastDownTime < 500){
+            state.keys.forward = true;
+            state.forwardBoostTime = now + 1200;
+          }
+          state.lastDownTime = now;
+        }
+        state.keys.down = true; // altitude down
       } else if (e.code === 'Space'){
         e.preventDefault();
         if (!state.keys.space){
@@ -4006,6 +4065,7 @@ function setupKeyboard(){
       if (e.code === 'ArrowLeft' || e.code === 'KeyA') state.keys.left = false;
       else if (e.code === 'ArrowRight' || e.code === 'KeyD') state.keys.right = false;
       else if (e.code === 'ArrowUp' || e.code === 'KeyW') state.keys.up = false;
+      else if (e.code === 'ArrowDown' || e.code === 'KeyS') state.keys.down = false;
       else if (e.code === 'Space') state.keys.space = false;
     }
   };
@@ -4028,17 +4088,28 @@ function setupTouchControls(){
   const btnMap = [
     { id:'btn-touch-left',  key:'left' },
     { id:'btn-touch-right', key:'right' },
-    { id:'btn-touch-up',    key:'up' },
+    { id:'btn-touch-up',    key:'up', doubleTap:true },
+    { id:'btn-touch-down',  key:'down', doubleTap:true },
     { id:'btn-touch-fire',  key:'space', fire:true }
   ];
 
-  btnMap.forEach(({id, key, fire}) => {
+  btnMap.forEach(({id, key, fire, doubleTap}) => {
     const btn = $(id);
     if (!btn) return;
     const press = (e) => {
       e.preventDefault();
       btn.classList.add('pressed');
       if (state.keys){
+        // For up/down: check double-tap
+        if (doubleTap && !state.keys[key]){
+          const now = Date.now();
+          const lastTimeKey = key === 'up' ? 'lastUpTime' : 'lastDownTime';
+          if (now - state[lastTimeKey] < 500){
+            state.keys.forward = true;
+            state.forwardBoostTime = now + 1200;
+          }
+          state[lastTimeKey] = now;
+        }
         state.keys[key] = true;
         if (fire && !state._firePressed){
           state._firePressed = true;
@@ -4243,8 +4314,8 @@ function animate3D(){
   if (state.ground){
     state.ground.position.z = (t * 12) % 10;
   }
-  // Runway stripes scroll (faster when pressing up)
-  const stripeSpeed = (state.keys && state.keys.up) ? 3.5 : 1.2;
+  // Runway stripes scroll (faster when forward boosting)
+  const stripeSpeed = (state.keys && state.keys.forward) ? 3.5 : 1.2;
   if (state.runwayStripes){
     state.runwayStripes.forEach((s) => {
       s.position.z += stripeSpeed;
@@ -4374,7 +4445,13 @@ function animate3D(){
   // Plane controls
   const pd = state.planeData;
   const moveSpeed = 0.35;
-  const forwardSpeed = 1.2;
+  const altSpeed = 0.35;
+  
+  // Check if forward boost has expired
+  if (state.keys.forward && Date.now() > state.forwardBoostTime){
+    state.keys.forward = false;
+  }
+  
   if (state.keys.left){
     pd.targetX = Math.max(pd.targetX - moveSpeed, -10);
     pd.targetBank = 0.6;
@@ -4384,34 +4461,43 @@ function animate3D(){
   } else {
     pd.targetBank = 0;
   }
-  // Forward movement (Arrow Up) - plane flies toward gates
-  if (state.keys.up && !state.answered){
-    pd.targetZ = Math.max(pd.targetZ - forwardSpeed, -32);
-    pd.pitch = -0.15; // nose down dive toward target
+  // UP = altitude up, DOWN = altitude down
+  if (state.keys.up){
+    pd.targetY = Math.min(pd.targetY + altSpeed, 6);
+    pd.pitch = 0.12;
+  } else if (state.keys.down){
+    pd.targetY = Math.max(pd.targetY - altSpeed, -3);
+    pd.pitch = -0.12;
+  }
+  // Forward movement (triggered by double-tap UP or DOWN)
+  if (state.keys.forward && !state.answered){
+    pd.targetZ = Math.max(pd.targetZ - 1.2, -32);
+    pd.pitch = -0.15;
   } else {
-    // Return to base Z=0 when not pressing up (after answer resets)
     pd.targetZ = Math.min(pd.targetZ + 0.5, 0);
-    pd.pitch = -0.04 + (pd.z < -1 ? 0.1 : 0); // level out, slight climb when returning
   }
   // Smooth lerp
   pd.x += (pd.targetX - pd.x) * 0.12;
   pd.z += (pd.targetZ - pd.z) * 0.10;
+  pd.y += (pd.targetY - pd.y) * 0.12;
   pd.bank += (pd.targetBank - pd.bank) * 0.18;
-  pd.pitch += (-0.04 - pd.pitch) * 0.05;
+  // Pitch: lerp toward target based on input
+  const targetPitch = state.keys.forward ? -0.15 : (state.keys.up ? 0.12 : (state.keys.down ? -0.12 : -0.04));
+  pd.pitch += (targetPitch - pd.pitch) * 0.1;
 
   // Apply to plane model
   if (state.plane){
     state.plane.position.x = pd.x;
-    state.plane.position.y = Math.sin(t*1.8) * 0.25;
+    state.plane.position.y = pd.y + Math.sin(t*1.8) * 0.15; // altitude + bob
     state.plane.position.z = pd.z;
     state.plane.rotation.z = pd.bank;
     state.plane.rotation.x = pd.pitch;
     state.plane.rotation.y = -pd.bank * 0.35; // yaw into bank
   }
 
-  // Propeller spin (faster when accelerating)
+  // Propeller spin (faster when forward boosting)
   if (state.prop){
-    state.prop.rotation.z = t * (state.keys.up ? 65 : 45);
+    state.prop.rotation.z = t * (state.keys.forward ? 65 : 45);
   }
 
   // Gates: floating bob + slow spin
@@ -4427,7 +4513,8 @@ function animate3D(){
       if (g.userData.hit) return;
       const dz = Math.abs(pd.z - g.position.z);
       const dx = Math.abs(pd.x - g.userData.baseX);
-      if (dz < 5.0 && dx < 4.0){
+      const dy = Math.abs(pd.y - (g.position.y || 2)); // check altitude vs gate height
+      if (dz < 5.0 && dx < 4.0 && dy < 4.0){
         collideGate(g);
       }
     });
