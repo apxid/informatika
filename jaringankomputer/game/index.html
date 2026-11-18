@@ -255,6 +255,39 @@ body{
   from{transform:translateY(20px); opacity:0;}
   to{transform:translateY(0); opacity:1;}
 }
+
+/* Leaderboard preview */
+.leaderboard-preview{
+  position:relative; z-index:3; width:min(440px,92vw);
+  margin-top:18px;
+  background:rgba(26,17,8,.8); border:3px solid var(--gold-d);
+  border-radius:14px; padding:12px 16px;
+  backdrop-filter:blur(6px);
+  box-shadow: var(--shadow), 0 0 20px rgba(255,210,74,.2);
+  animation:badgeFadeIn .5s ease .5s both;
+}
+.lb-header{
+  text-align:center; color:var(--gold); font-weight:900; font-size:16px;
+  margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,.5);
+  letter-spacing:1px;
+}
+.lb-list{display:flex; flex-direction:column; gap:4px;}
+.lb-row{
+  display:flex; align-items:center; gap:10px;
+  padding:6px 10px; border-radius:8px;
+  background:rgba(255,255,255,.08);
+  transition:background .15s;
+}
+.lb-row:hover{background:rgba(255,255,255,.15);}
+.lb-row.gold{background:linear-gradient(90deg, rgba(255,215,0,.25), rgba(255,215,0,.05));}
+.lb-row.silver{background:linear-gradient(90deg, rgba(192,192,192,.2), rgba(192,192,192,.05));}
+.lb-row.bronze{background:linear-gradient(90deg, rgba(205,127,50,.2), rgba(205,127,50,.05));}
+.lb-medal{font-size:18px; flex-shrink:0; width:24px; text-align:center;}
+.lb-rank{color:var(--gold-l); font-weight:900; font-size:13px; min-width:20px;}
+.lb-name{color:#fff; font-weight:700; font-size:13px; flex:1;}
+.lb-name .lb-class{color:var(--cream); font-size:10px; opacity:.7;}
+.lb-score{color:var(--gold); font-weight:900; font-size:14px;}
+.lb-empty{text-align:center; color:var(--cream); font-size:12px; padding:10px; opacity:.6;}
 .about-link{
   color:var(--gold-l); text-decoration:none; cursor:pointer;
   border-bottom:1px dashed var(--gold-d); padding-bottom:1px;
@@ -1096,6 +1129,14 @@ body{
     <div class="feature-badge">✈️ Pesawat Pilot</div>
     <div class="feature-badge">📚 25 Soal</div>
     <div class="feature-badge">🏆 Papan Peringkat</div>
+  </div>
+
+  <!-- Leaderboard preview -->
+  <div class="leaderboard-preview" id="leaderboard-preview">
+    <div class="lb-header">🏆 LEADERBOARD</div>
+    <div class="lb-list" id="lb-list">
+      <div class="lb-empty">Memuat peringkat...</div>
+    </div>
   </div>
 
   <div class="welcome-footer">
@@ -2049,6 +2090,15 @@ function mockApi(p){
             {nama:'Andi', kelas:'9B', waktu:78, benar:10, salah:1},
           ]});
           break;
+        case 'getLeaderboard':
+          resolve({status:'ok', leaderboard: [
+            {rank:1, nama:'Siti Aminah', kelas:'9A', benar:25, salah:0, waktu:180, medal:'gold', status:'menang'},
+            {rank:2, nama:'Budi Santoso', kelas:'9A', benar:22, salah:1, waktu:210, medal:'silver', status:'menang'},
+            {rank:3, nama:'Dewi Lestari', kelas:'9B', benar:20, salah:2, waktu:195, medal:'bronze', status:'menang'},
+            {rank:4, nama:'Ahmad Fauzi', kelas:'9A', benar:18, salah:3, waktu:240, medal:'', status:'selesai'},
+            {rank:5, nama:'Rina Wijaya', kelas:'9C', benar:15, salah:2, waktu:220, medal:'', status:'selesai'},
+          ]});
+          break;
         case 'submitKuesioner':
           resolve({status:'ok'});
           break;
@@ -2203,7 +2253,7 @@ function escapeHtml(s){ return String(s||'').replace(/[<>&"]/g, c => ({'<':'&lt;
    FLOW: TOKEN
    ============================================================ */
 async function validateToken(){
-  const token = $('inp-token').value.trim();
+  const token = $('inp-token').value.trim().toUpperCase();
   if (!token){ toast('Masukkan token','error'); return; }
   showLoading('MEMVALIDASI TOKEN...');
   const res = await api({action:'validateToken', token, posisi: state.siswa.posisi});
@@ -4368,6 +4418,30 @@ function showPopupInfo(){ showPopup('popup-info'); }
 
 function showAbout(){ showPopup('popup-about'); }
 
+/* ===== LEADERBOARD (welcome page preview) ===== */
+async function loadLeaderboard(){
+  try {
+    const res = await api({action:'getLeaderboard'});
+    const list = $('lb-list');
+    if (res.status === 'ok' && res.leaderboard && res.leaderboard.length){
+      const medals = {gold:'🥇', silver:'🥈', bronze:'🥉'};
+      list.innerHTML = res.leaderboard.slice(0, 5).map(p => {
+        const medalClass = p.medal || '';
+        const medalIcon = medals[p.medal] || '';
+        return `<div class="lb-row ${medalClass}">
+          <span class="lb-medal">${medalIcon || (p.rank + '.')}</span>
+          <span class="lb-name">${escapeHtml(p.nama)} <span class="lb-class">${p.kelas}</span></span>
+          <span class="lb-score">${p.benar}✓</span>
+        </div>`;
+      }).join('');
+    } else {
+      list.innerHTML = '<div class="lb-empty">Belum ada peringkat. Mainkan game!</div>';
+    }
+  } catch(e){
+    $('lb-list').innerHTML = '<div class="lb-empty">Belum ada peringkat.</div>';
+  }
+}
+
 /* ============================================================
    KUESIONER STAR RATING
    ============================================================ */
@@ -4392,6 +4466,8 @@ window.addEventListener('load', ()=>{
     // No saved state, show welcome
     showLayer('layer-welcome');
   }
+  // Load leaderboard preview on welcome page
+  loadLeaderboard();
 });
 </script>
 
