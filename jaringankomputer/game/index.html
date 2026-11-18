@@ -2110,7 +2110,7 @@ function mockApi(p){
           try {
             const raw = localStorage.getItem('playerPositions') || '{}';
             const pos = JSON.parse(raw);
-            pos[p.nama] = {nama:p.nama, x:p.x, z:p.z, bank:p.bank, token:p.token, time:Date.now()};
+            pos[p.nama] = {nama:p.nama, x:p.x, z:p.z, bank:p.bank, token:p.token, status:p.status||'aktif', time:Date.now()};
             localStorage.setItem('playerPositions', JSON.stringify(pos));
           } catch(e){}
           resolve({status:'ok'});
@@ -2123,22 +2123,28 @@ function mockApi(p){
             const now = Date.now();
             const result = [];
             for (const key in pos) {
-              const p = pos[key];
-              if (p.token === p.token && (now - p.time) < 15000 && p.nama !== p.nama) {
-                result.push(p);
+              const pp = pos[key];
+              if (pp.token === (p.token||'').toUpperCase() && (now - pp.time) < 15000 && pp.nama !== p.nama) {
+                result.push(pp);
               }
             }
-            // If no real players, generate mock ghosts
-            if (result.length === 0 && Math.random() < 0.7) {
-              const mockNames = ['Ghost Pilot', 'Siswa 2', 'Siswa 3'];
-              for (let i = 0; i < 2; i++) {
-                result.push({
-                  nama: mockNames[i],
-                  x: (Math.random()-0.5)*16,
-                  z: -10 - Math.random()*30,
-                  bank: (Math.random()-0.5)*0.5,
-                  token: p.token
-                });
+            // If no real players, generate colorful mock ghosts
+            if (result.length === 0 && Math.random() < 0.8) {
+              const mockPlayers = [
+                {nama:'Andi', x:5, z:-15, bank:0.3, status:'aktif'},
+                {nama:'Siti', x:-3, z:-20, bank:-0.2, status:'aktif'},
+                {nama:'Budi', x:8, z:-10, bank:0.1, status:'aktif'},
+                {nama:'Dewi', x:-6, z:-25, bank:-0.4, status:'aktif'},
+              ];
+              // Pick 2-3 random players
+              const count = 2 + Math.floor(Math.random()*2);
+              for (let i = 0; i < count; i++) {
+                const mp = mockPlayers[i % mockPlayers.length];
+                result.push({...mp, token:(p.token||'').toUpperCase()});
+              }
+              // Occasionally have one player fail
+              if (Math.random() < 0.15 && result.length > 0) {
+                result[0].status = 'gagal';
               }
             }
             resolve({status:'ok', positions: result});
@@ -2255,13 +2261,20 @@ function stopPositionSync(){
 
 async function sendMyPosition(){
   if (!state.plane || !state.planeData) return;
+  // Determine player status
+  let status = 'aktif';
+  if (state.answered) status = 'answered';
+  if (state.salah >= state.maxSalah) status = 'gagal';
+  if (state.curIdx >= state.soalList.length) status = 'menang';
+  
   await api({
     action:'updatePosition',
     nama: state.siswa.nama,
     token: state.token,
     x: state.planeData.x,
     z: state.planeData.z,
-    bank: state.planeData.bank
+    bank: state.planeData.bank,
+    status: status
   });
 }
 
@@ -2279,29 +2292,54 @@ async function pollGhostPlanes(){
 
 function updateGhostPlanes(positions){
   if (!state.ghostPlanes) state.ghostPlanes = [];
-  const ghostColors = [0x4FC3F7, 0x81C784, 0xBA68C8, 0xFFD54F, 0x4DB6AC, 0xF06292];
   
-  // Remove ghosts not in new list
+  // Vibrant, varied colors for each player
+  const vibrantColors = [
+    0xE53935, // red
+    0x1E88E5, // blue
+    0xFDD835, // yellow
+    0x43A047, // green
+    0xFB8C00, // orange
+    0x8E24AA, // purple
+    0x00ACC1, // cyan
+    0xD81B60, // pink
+    0x6D4C41, // brown
+    0x3949AB, // indigo
+  ];
+  
+  // Assign color based on name hash (consistent per player)
+  function getColorForName(nama){
+    let hash = 0;
+    for (let i = 0; i < nama.length; i++) hash = nama.charCodeAt(i) + ((hash << 5) - hash);
+    return vibrantColors[Math.abs(hash) % vibrantColors.length];
+  }
+  
+  // Remove ghosts not in new list (but keep falling/exploding ones)
   const newNames = positions.map(p => p.nama);
   for (let i = state.ghostPlanes.length - 1; i >= 0; i--){
-    if (newNames.indexOf(state.ghostPlanes[i].nama) === -1){
-      state.scene.remove(state.ghostPlanes[i].mesh);
+    const g = state.ghostPlanes[i];
+    if (g.isFalling) continue; // keep falling ghosts until explosion done
+    if (newNames.indexOf(g.nama) === -1){
+      state.scene.remove(g.mesh);
       state.ghostPlanes.splice(i, 1);
     }
   }
   
   // Update or create ghosts
-  positions.forEach((p, idx) => {
+  positions.forEach(p => {
     let ghost = state.ghostPlanes.find(g => g.nama === p.nama);
     if (!ghost){
-      // Create new ghost plane
-      const mesh = createGhostPlane(ghostColors[idx % ghostColors.length], p.nama);
+      const color = getColorForName(p.nama);
+      const mesh = createGhostPlane(color, p.nama);
       state.scene.add(mesh);
       ghost = {
         nama: p.nama,
         mesh: mesh,
+        color: color,
         curX: p.x, curZ: p.z, curBank: p.bank || 0,
-        targetX: p.x, targetZ: p.z, targetBank: p.bank || 0
+        targetX: p.x, targetZ: p.z, targetBank: p.bank || 0,
+        isFalling: false,
+        status: p.status || 'aktif'
       };
       state.ghostPlanes.push(ghost);
     }
@@ -2309,6 +2347,17 @@ function updateGhostPlanes(positions){
     ghost.targetX = p.x;
     ghost.targetZ = p.z;
     ghost.targetBank = p.bank || 0;
+    ghost.status = p.status || 'aktif';
+    
+    // Check if player just failed — trigger fall + explosion
+    if (p.status === 'gagal' && !ghost.isFalling){
+      ghost.isFalling = true;
+      ghost.fallTime = 0;
+      // Spawn explosion at current position
+      if (state.explosionParticles !== undefined){
+        explodeGate(ghost.mesh.position.clone(), ghost.color);
+      }
+    }
   });
 }
 
@@ -4537,24 +4586,43 @@ function animate3D(){
   // Laser cooldown
   if (pd.laserCooldown > 0) pd.laserCooldown--;
 
-  // ===== GHOST PLANES (other players — smooth lerp toward target) =====
+  // ===== GHOST PLANES (other players — smooth lerp + fall animation) =====
   if (state.ghostPlanes && state.ghostPlanes.length > 0){
-    state.ghostPlanes.forEach(ghost => {
-      // Lerp current position toward target
-      ghost.curX += (ghost.targetX - ghost.curX) * 0.05;
-      ghost.curZ += (ghost.targetZ - ghost.curZ) * 0.05;
-      ghost.curBank += (ghost.targetBank - ghost.curBank) * 0.08;
-      // Apply to mesh
-      if (ghost.mesh){
-        ghost.mesh.position.x = ghost.curX;
-        ghost.mesh.position.y = Math.sin(t*2 + ghost.curX) * 0.2;
-        ghost.mesh.position.z = ghost.curZ;
-        ghost.mesh.rotation.z = ghost.curBank;
-        ghost.mesh.rotation.y = -ghost.curBank * 0.35;
-        // Spin propeller effect (subtle rotation)
-        ghost.mesh.rotation.x = -0.04;
+    for (let gi = state.ghostPlanes.length - 1; gi >= 0; gi--){
+      const ghost = state.ghostPlanes[gi];
+      if (ghost.isFalling){
+        // Falling animation: spin + fall down + fade
+        ghost.fallTime++;
+        ghost.mesh.position.y -= 0.3;
+        ghost.mesh.rotation.z += 0.15;
+        ghost.mesh.rotation.x += 0.1;
+        // Fade out
+        ghost.mesh.children.forEach(child => {
+          if (child.material){
+            child.material.transparent = true;
+            child.material.opacity = Math.max(0, 1 - ghost.fallTime / 40);
+          }
+        });
+        // Remove when fully faded or below ground
+        if (ghost.fallTime > 50 || ghost.mesh.position.y < -12){
+          state.scene.remove(ghost.mesh);
+          state.ghostPlanes.splice(gi, 1);
+        }
+      } else {
+        // Normal: lerp toward target position
+        ghost.curX += (ghost.targetX - ghost.curX) * 0.05;
+        ghost.curZ += (ghost.targetZ - ghost.curZ) * 0.05;
+        ghost.curBank += (ghost.targetBank - ghost.curBank) * 0.08;
+        if (ghost.mesh){
+          ghost.mesh.position.x = ghost.curX;
+          ghost.mesh.position.y = Math.sin(t*2 + ghost.curX) * 0.2;
+          ghost.mesh.position.z = ghost.curZ;
+          ghost.mesh.rotation.z = ghost.curBank;
+          ghost.mesh.rotation.y = -ghost.curBank * 0.35;
+          ghost.mesh.rotation.x = -0.04;
+        }
       }
-    });
+    }
   }
 
   // ===== EXPLOSION PARTICLES + SMOKE + BROCHURES (gravity/fade/remove) =====
