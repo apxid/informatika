@@ -303,10 +303,12 @@
       aspect-ratio:3/4;border-radius:14px;overflow:hidden;position:relative;
       background:linear-gradient(160deg,#1e3a8a,#3b82f6 50%,#1e3a8a);
       box-shadow:0 20px 40px rgba(0,0,0,.6),0 0 30px rgba(0,212,255,.4);
-      display:grid;place-items:center;text-align:center;padding:24px;
+      display:grid;place-items:center;text-align:center;padding:0;
       border:1px solid var(--border-strong);
     }
-    .ebook-cover::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(251,191,36,.5),transparent 60%)}
+    .ebook-cover img{width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;transition:transform .5s}
+    .ebook-cover:hover img{transform:scale(1.04)}
+    .ebook-cover::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(251,191,36,.25),transparent 60%);z-index:2;pointer-events:none;mix-blend-mode:overlay}
     .ebook-cover .title{position:relative;font-family:'Space Grotesk';font-weight:800;font-size:24px;line-height:1.2;color:#fff;text-shadow:0 0 20px rgba(251,191,36,.6)}
     .ebook-cover .sub{position:relative;color:#dbeafe;font-size:12.5px;margin-top:8px;font-weight:600}
     .ebook-cover .tag{position:relative;margin-top:14px;display:inline-block;padding:5px 12px;border-radius:999px;background:rgba(251,191,36,.3);color:#fef3c7;font-size:11px;font-weight:700;letter-spacing:1.5px;border:1px solid rgba(251,191,36,.5)}
@@ -893,8 +895,9 @@
           </div>
         </div>
         <div class="callout yellow">
-          <h4>💡 Analogi Sederhana</h4>
-          <p>Bayangkan AI seperti anak kecil yang baru belajar. Awalnya ia tidak tahu apa-apa. Lalu ia melihat gambar kucing berkali-kali (<strong>data</strong>). Lama-lama otaknya (<strong>algoritma</strong>) bisa mengenali: "Oh, ini kucing!" Saat ditunjuk gambar baru, ia bisa menebak. Itulah cara AI belajar — dari contoh, bukan dari aturan yang ditulis satu per satu.</p>
+          <h4>💡 Analogi Gampang: AI itu kayak temen lo yang paling rajin baca buku</h4>
+          <p>Pernah punya temen yang tiap hari baca buku, dan kalau ditanya apapun dia bisa jawab? Itulah AI. Bedanya, AI "baca" jutaan buku dalam <strong>1 detik</strong>. Makanya AI kelihatan pintar banget — padahal aslinya dia cuma <strong>niru pola</strong> dari yang pernah dia lihat.</p>
+          <p style="margin-top:10px"><strong>Contoh nyata:</strong> Kalau lo pernah ketik "lagu" di YouTube, terus muncul rekomendasi lagu-lagu yang mirip sama yang sering lo denger — itu AI yang lagi <em>baca kebiasaan lo</em>, lalu nebak "yang ini pasti lo suka".</p>
         </div>
       </div>
     </section>
@@ -939,11 +942,16 @@
         <div class="callout">
           <h4>⚙️ Komponen Utama AI</h4>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:10px">
-            <div><strong style="color:var(--primary)">• Data</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Bahan bakar AI. Tanpa data, AI tidak bisa belajar.</p></div>
-            <div><strong style="color:var(--primary)">• Algoritma</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Resep cara memproses data menjadi pengetahuan.</p></div>
-            <div><strong style="color:var(--primary)">• Komputasi</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Tenaga komputer untuk menjalankan proses.</p></div>
-            <div><strong style="color:var(--primary)">• Model</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Hasil akhir berupa "otak" yang bisa dipakai ulang.</p></div>
+            <div><strong style="color:var(--primary)">• Data</strong><p style="font-size:14px;color:var(--text-dim);margin-top:2px">Bahan bakar AI. Tanpa data, AI gapapa kerja.</p></div>
+            <div><strong style="color:var(--primary)">• Algoritma</strong><p style="font-size:14px;color:var(--text-dim);margin-top:2px">Resep cara memproses data jadi pengetahuan.</p></div>
+            <div><strong style="color:var(--primary)">• Komputasi</strong><p style="font-size:14px;color:var(--text-dim);margin-top:2px">Tenaga komputer buat jalanin proses.</p></div>
+            <div><strong style="color:var(--primary)">• Model</strong><p style="font-size:14px;color:var(--text-dim);margin-top:2px">Hasil akhirnya — "otak" yang bisa dipakai ulang.</p></div>
           </div>
+        </div>
+        <div class="callout yellow">
+          <h4>💡 Analogi: Belajar naik sepeda</h4>
+          <p>Inget pertama kali belajar naik sepeda? Lo jatuh berkali-kali dulu. Tapi lama-lama, tubuh lo <strong>simpen pola</strong> — kapan harus pedal, kapan harus balance. Nah, AI belajarnya sama persis: dikasih data berkali-kali, jatuh-bangun (alias salah-tebak), sampe akhirnya bisa. Bedanya, AI bisa latihan <strong>jutaan kali dalam 1 menit</strong>. Makanya cepet banget pinter.</p>
+          <p style="margin-top:10px"><strong>Contoh nyata:</strong> ChatGPT itu "latihan"-nya baca seluruh artikel Wikipedia + jutaan buku + miliaran percakapan internet. Bayangin lo baca semua itu sendiri butuh berapa abad. AI? Sekali sore kelar.</p>
         </div>
       </div>
     </section>
@@ -959,6 +967,11 @@
           <div class="card blue"><div class="ic">💼</div><h3>Masa Depan Pekerjaan</h3><p>Sebagian besar pekerjaan masa depan akan melibatkan AI — dokter, insinyur, guru, bahkan seniman. Yang menguasai AI akan unggul; yang tidak, akan tertinggal.</p></div>
           <div class="card yellow"><div class="ic">🛡️</div><h3>Menghindari Penyalahgunaan</h3><p>AI bisa dipakai untuk hal baik maupun buruk: hoaks, deepfake, penipuan. Dengan memahami AI, kamu bisa melindungi diri dan keluarga dari bahayanya.</p></div>
           <div class="card yellow"><div class="ic">🚀</div><h3>Peluang Berkreasi</h3><p>AI adalah alat canggih untuk menuangkan ide. Kamu bisa membuat gambar, cerita, musik, hingga program sendiri — bahkan sebelum lulus SMP!</p></div>
+        </div>
+        <div class="callout yellow">
+          <h4>💡 Analogi: TikTok &amp; fyp lo</h4>
+          <p>Pernah kepikiran kenapa fyp TikTok lo isinya beda sama fyp temen lo? Itu karena AI TikTok lagi <strong>amat-amati lo</strong> — video mana yang lo tonton lama, mana yang lo skip, mana yang lo like. Dari situ AI bikin <em>profil</em> unik buat lo. Gimana, keren kan? Tapi sekalian agak ngeri juga ya — AI kenal lo lebih baik dari yang lo kira.</p>
+          <p style="margin-top:10px"><strong>Makanya harus ngerti AI:</strong> kalau lo gak paham cara kerjanya, lo cuma jadi <em>"bahan domba digital"</em> yang diatur sama algoritma. Kalau paham, lo yang ngatur AI bukan AI yang ngatur lo. 😎</p>
         </div>
       </div>
     </section>
@@ -1000,6 +1013,11 @@
           <div class="card yellow"><div class="ic">🤝</div><h3>Bisa Berbagi ke Keluarga</h3><p>Orang tua dan adik belum tentu paham AI. Kamu bisa jadi "guru AI" pertama di rumah — ajak mereka pakai dengan aman.</p></div>
           <div class="card yellow"><div class="ic">🏆</div><h3>Buka Peluang Prestasi</h3><p>Banyak lomba, beasiswa, dan program khusus AI untuk siswa. Siapa tahu, prestasi besarmu dimulai dari sini!</p></div>
         </div>
+        <div class="callout yellow">
+          <h4>💡 Analogi: Generasi nonton TV vs generasi bikin konten</h4>
+          <p>Zaman bokap-nyokap lo, TV cuma bisa ditonton — mereka jadi <em>penonton</em>. Sekarang, lo bisa bikin video 15 detik dan ditonton ribuan orang di TikTok. AI itu tahap selanjutnya: lo bukan cuma pengguna AI, lo bisa <strong>bikin AI-nya sendiri</strong> nanti. Tapi gak akan kebayang kalau dari sekarang gak mulai kenalan.</p>
+          <p style="margin-top:10px"><strong>Pesan buat siswa SMPN 1 Moga:</strong> lo lahir di generasi yang paling beruntung — gak perlu nunggu kuliah buat kenal AI. Sekarang. Gratis. Tinggal mau belajar atau gak. 😎</p>
+        </div>
       </div>
     </section>
 
@@ -1011,7 +1029,10 @@
         <p class="slide-lead">Buku digital gratis dari Bapak Yanuar — berisi panduan praktis bagaimana cara berbicara dengan AI agar hasilnya akurat dan bermanfaat. Baca dulu sebelum mengerjakan tugas poster!</p>
         <div class="ebook-card">
           <div class="ebook-cover">
-            <div>
+            <img src="https://apxid.github.io/informatika/ai/assets/ebook.png"
+                 alt="Sampul E-Book: Ngobrol yang Benar sama AI"
+                 onerror="this.style.display='none';this.parentElement.querySelector('.cover-fallback').style.display='flex';" />
+            <div class="cover-fallback" style="display:none;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:24px">
               <div class="title">Ngobrol yang Benar sama AI</div>
               <div class="sub">Pandai Prompt, Bijak Berinteraksi</div>
               <div class="tag">E-BOOK GRATIS</div>
@@ -1027,12 +1048,12 @@
               <li>Etika &amp; keamanan saat berinteraksi dengan AI</li>
               <li>Praktik langsung dengan Canva AI</li>
             </ul>
-            <div class="token-box">
+            <div class="token-box" id="tokenBox" title="Klik untuk salin token" style="cursor:pointer">
               <div>
-                <small>Token Download</small>
-                <code>FREEBOOKAI</code>
+                <small>Token Download  <span style="color:var(--accent-2);font-weight:600">(klik untuk salin)</span></small>
+                <code id="tokenCode">FREEBOOKAI</code>
               </div>
-              <small style="max-width:180px;text-align:right">Salin token ini, paste di halaman download</small>
+              <small id="tokenHint" style="max-width:180px;text-align:right">Salin token, paste di halaman download</small>
             </div>
             <a class="btn-yellow" href="https://yanuar-moga.github.io/download/" target="_blank" rel="noopener">⬇️ Download E-Book Gratis</a>
           </div>
@@ -1281,6 +1302,49 @@
     if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ') {e.preventDefault();nextSlide();}
     if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prevSlide();}
   });
+
+  // ============ TOKEN CLICK-TO-COPY ============
+  const tokenBox=document.getElementById('tokenBox');
+  const tokenCode=document.getElementById('tokenCode');
+  const tokenHint=document.getElementById('tokenHint');
+  if(tokenBox){
+    tokenBox.addEventListener('click',async()=>{
+      const token=tokenCode.textContent.trim();
+      const originalHint=tokenHint.innerHTML;
+      try{
+        // Modern clipboard API
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          await navigator.clipboard.writeText(token);
+        }else{
+          // Fallback: temp input + execCommand
+          const tmp=document.createElement('textarea');
+          tmp.value=token;
+          tmp.style.position='fixed';tmp.style.opacity='0';
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          document.body.removeChild(tmp);
+        }
+        // Visual feedback
+        tokenHint.innerHTML='✅ <b style="color:#6ee7b7">Token tersalin!</b>';
+        tokenBox.style.borderColor='var(--green-glow)';
+        tokenBox.style.boxShadow='0 0 16px rgba(52,211,153,.4),inset 0 0 12px rgba(0,0,0,.3)';
+        tokenCode.style.color='var(--green-glow)';
+        tokenCode.style.textShadow='0 0 12px rgba(52,211,153,.6)';
+        setTimeout(()=>{
+          tokenHint.innerHTML=originalHint;
+          tokenBox.style.borderColor='';
+          tokenBox.style.boxShadow='';
+          tokenCode.style.color='';
+          tokenCode.style.textShadow='';
+        },2500);
+      }catch(err){
+        // Fallback: beri tahu user untuk salin manual
+        tokenHint.innerHTML='Gagal salin otomatis. Salin manual: <b>'+token+'</b>';
+        setTimeout(()=>{tokenHint.innerHTML=originalHint;},3500);
+      }
+    });
+  }
 
   // ============ FORM UPLOAD ============
   const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbxJMwC3N6qtugZWZyONFepmfz6jyG-e-Nxe_j3xTttmOvUD8Rm--fb8jDmkiu4ucHrvng/exec";
