@@ -257,6 +257,13 @@
     .acak-projector-link:hover { transform: translateY(-2px); }
     .acak-projector-link .apl-url { display: block; font-size: 11px; font-weight: 600; opacity: .92; word-break: break-all; line-height: 1.35; margin-top: 2px; }
 
+    /* Progress indikator urutan materi pada Acak Presentasi */
+    .acak-progress { margin-top: 10px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.95); background: rgba(0,0,0,.22); padding: 8px 14px; border-radius: 10px; display: inline-block; line-height: 1.5; }
+    .acak-progress .ap-next { color: #fef9c3; font-weight: 800; }
+    .acak-progress .ap-muted { opacity: .8; font-weight: 600; }
+    .acak-reset-btn { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.45); padding: 12px 18px; border-radius: 8px; font-family: inherit; font-weight: 700; font-size: 13px; cursor: pointer; transition: background .15s; }
+    .acak-reset-btn:hover { background: rgba(255,255,255,.30); }
+
     /* Link Stats Table */
     .link-stats-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
     .link-stats-card .ls-header { background: linear-gradient(135deg, #0d9488, #14b8a6); color: #fff; padding: 16px 22px; }
@@ -388,14 +395,18 @@
     <div class="card-header" style="background: linear-gradient(135deg, var(--accent), var(--accent-2));">
       <div>
         <h2>🎲 Acak Presentasi Siswa</h2>
-        <p class="sub">Pilih kelas lalu klik untuk mengundi siswa yang presentasi</p>
+        <p class="sub">Pilih kelas lalu klik untuk mengundi siswa — <strong>materi dijaga urut</strong>, tidak akan ada materi sama dalam satu putaran</p>
+        <div id="acakProgress" class="acak-progress">Memuat urutan materi…</div>
       </div>
       <div class="filter-group">
-        <select id="acakKelas" style="background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: #fff; border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 14px; font-weight: 700;">
+        <select id="acakKelas" onchange="updateAcakProgress()" style="background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: #fff; border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 14px; font-weight: 700;">
           <option value="" style="color:#000">Semua Kelas</option>
         </select>
         <button class="btn btn-primary" onclick="startAcakPresentasi()" style="font-size: 16px; padding: 12px 24px;">
           🎲 Acak Siswa Presentasi
+        </button>
+        <button class="acak-reset-btn" onclick="resetAcakUrutan()" title="Mulai putaran baru dari materi pertama">
+          🔄 Reset Putaran
         </button>
       </div>
     </div>
@@ -559,6 +570,30 @@
   let allPenugasan = [];
   let allSiswa = [];
 
+  // Urutan canonical materi (8 topik LKPD). Diisi dari getTopics API saat refreshAll().
+  let allTopics = [];
+  // Fallback jika getTopics gagal — HARUS sama dengan urutan TOPICS di kode.gs
+  const ACAK_TOPIC_ORDER_FALLBACK = [
+    'KONSEP JARINGAN',
+    'PERANGKAT KERAS JARINGAN',
+    'PERANGKAT LUNAK JARINGAN',
+    'INTERNET & MANFAATNYA',
+    'BAGAIMANA INTERNET BEKERJA',
+    'TCP, IP, & DNS',
+    'HTTP & HTTPS',
+    'ETIKA DIGITAL & KEAMANAN DATA'
+  ];
+
+  /*
+   * State acak presentasi PER KELAS.
+   *   { topicIndex, pickedNames }
+   *   topicIndex  → posisi materi berikutnya dalam urutan ACAK_TOPIC_ORDER
+   *   pickedNames → nama siswa (lowercase) yang sudah terundi sejak cycle dimulai.
+   *                 Di-reset otomatis saat semua kandidat habis, ATAU saat guru klik Reset Putaran.
+   * Key '__ALL__' dipakai untuk acak lintas-kelas.
+   */
+  let acakRoundState = {};
+
   /* ============ INIT ============ */
   (function init() {
     document.getElementById('linkSheet').href = SPREADSHEET_URL;
@@ -689,9 +724,95 @@
   });
 
   async function refreshAll() {
+    await loadTopics();
     await loadPenugasan();
     await loadKelasFilter();
     await loadSiswa();
+  }
+
+  /* ============ ACAK: HELPERS URUTAN MATERI ============ */
+  // Ambil urutan materi: dari allTopics (hasil getTopics) atau fallback hardcoded
+  function getTopicOrder() {
+    if (allTopics && allTopics.length > 0) {
+      var list = allTopics.map(function (t) { return String(t.title || '').trim(); }).filter(Boolean);
+      if (list.length > 0) return list;
+    }
+    return ACAK_TOPIC_ORDER_FALLBACK.slice();
+  }
+
+  // State acak untuk kelas tertentu (atau '__ALL__' jika kelas kosong = semua kelas)
+  function getAcakState(kelas) {
+    var key = kelas || '__ALL__';
+    if (!acakRoundState[key]) {
+      acakRoundState[key] = { topicIndex: 0, pickedNames: [] };
+    }
+    return acakRoundState[key];
+  }
+
+  // Reset manual state acak untuk kelas yang sedang dipilih di dropdown
+  function resetAcakUrutan() {
+    var kelas = document.getElementById('acakKelas').value;
+    var key = kelas || '__ALL__';
+    delete acakRoundState[key];
+    updateAcakProgress();
+    showAlert('success', '✅ Putaran acak direset. Acak berikutnya mulai dari materi pertama (KONSEP JARINGAN).');
+  }
+
+  // Update tampilan progress di bawah header Acak Presentasi
+  function updateAcakProgress() {
+    var el = document.getElementById('acakProgress');
+    if (!el) return;
+    var kelas = document.getElementById('acakKelas').value;
+    var order = getTopicOrder();
+    if (!order.length) { el.textContent = 'Memuat urutan materi…'; return; }
+    var state = getAcakState(kelas);
+    var nextTopic = order[state.topicIndex % order.length];
+    el.innerHTML =
+      '<span class="ap-muted">Materi berikutnya:</span> <span class="ap-next">' + escapeHtml(nextTopic) + '</span>' +
+      ' <span class="ap-muted">• Sudah terundi sejak reset:</span> ' + state.pickedNames.length + ' siswa' +
+      ' <span class="ap-muted">• ' + order.length + ' materi per putaran</span>';
+  }
+
+  /*
+   * Pick siswa untuk materi berikutnya dalam urutan.
+   * Logika:
+   *   1. Mulai dari state.topicIndex, cari materi pertama yang punya kandidat
+   *      (siswa dengan materi itu & belum ada di pickedNames).
+   *   2. Jika ketemu → pilih random siswa dari kandidat itu, advance topicIndex ke materi setelahnya.
+   *   3. Jika semua materi habis kandidatnya → reset pickedNames+topicIndex, coba ulang.
+   *   4. Jika tetap tidak ada → return null (caller fallback ke random pick).
+   */
+  function pickNextAcak(candidates, state, order) {
+    for (var i = 0; i < order.length; i++) {
+      var idx = (state.topicIndex + i) % order.length;
+      var topicTitle = order[idx];
+      var topicCandidates = candidates.filter(function (k) {
+        return String(k['Tugas'] || '').trim() === topicTitle
+          && state.pickedNames.indexOf(String(k['Nama'] || '').trim().toLowerCase()) < 0;
+      });
+      if (topicCandidates.length > 0) {
+        var picked = topicCandidates[Math.floor(Math.random() * topicCandidates.length)];
+        state.pickedNames.push(String(picked['Nama'] || '').trim().toLowerCase());
+        state.topicIndex = (idx + 1) % order.length;
+        return { picked: picked, topicUsed: topicTitle };
+      }
+    }
+    // Semua materi habis → reset cycle
+    state.pickedNames = [];
+    state.topicIndex = 0;
+    for (var j = 0; j < order.length; j++) {
+      var topicTitle2 = order[j];
+      var topicCandidates2 = candidates.filter(function (k) {
+        return String(k['Tugas'] || '').trim() === topicTitle2;
+      });
+      if (topicCandidates2.length > 0) {
+        var picked2 = topicCandidates2[Math.floor(Math.random() * topicCandidates2.length)];
+        state.pickedNames.push(String(picked2['Nama'] || '').trim().toLowerCase());
+        state.topicIndex = (j + 1) % order.length;
+        return { picked: picked2, topicUsed: topicTitle2 };
+      }
+    }
+    return null;
   }
 
   /* ============ API CALL HELPER (fetch cross-origin) ============ */
@@ -744,6 +865,22 @@
   }
 
   /* ============ KELOMPOK ============ */
+  // Ambil urutan materi canonical dari backend (TOPICS di kode.gs).
+  // Dipakai untuk menjaga urutan materi pada Acak Presentasi.
+  // Jika gagal, getTopicOrder() akan pakai ACAK_TOPIC_ORDER_FALLBACK.
+  async function loadTopics() {
+    try {
+      const res = await callAPI('getTopics');
+      if (res.success && Array.isArray(res.data)) {
+        allTopics = res.data;
+      }
+    } catch (err) {
+      // Abaikan — fallback hardcoded akan dipakai
+      console.warn('loadTopics gagal, pakai fallback:', err && err.message);
+    }
+    updateAcakProgress();
+  }
+
   async function loadPenugasan() {
     try {
       const res = await callAPI('getPenugasan');
@@ -904,8 +1041,20 @@
     modal.classList.add('show');
 
     setTimeout(function() {
-      acakPicked = candidates[Math.floor(Math.random() * candidates.length)];
-      var picked = acakPicked;
+      // === PICK SESUAI URUTAN MATERI ===
+      // Materi dijaga urut (KONSEP JARINGAN → PERANGKAT KERAS → ... → ETIKA DIGITAL).
+      // Dalam satu putaran (8 materi), tidak akan ada materi yang muncul dua kali.
+      var order = getTopicOrder();
+      var state = getAcakState(acakKelasVal);
+      var pickResult = pickNextAcak(candidates, state, order);
+      var picked;
+      if (pickResult) {
+        picked = pickResult.picked;
+      } else {
+        // Tidak ada siswa dengan materi yang cocok dengan urutan → fallback random murni
+        picked = candidates[Math.floor(Math.random() * candidates.length)];
+      }
+      acakPicked = picked;
       wrap.classList.remove('spinning');
       icon.textContent = '🎤';
       title.textContent = 'Siswa Terpilih!';
@@ -933,6 +1082,8 @@
 
       result.classList.add('show');
       actions.style.display = 'flex';
+      // Update indikator progress urutan materi
+      updateAcakProgress();
     }, 2000);
   }
 
