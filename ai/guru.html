@@ -474,7 +474,15 @@
       fd.append('action','login');
       fd.append('pin',pin);
       const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:fd});
-      const data=await res.json();
+      // Cek apakah response adalah JSON atau HTML (halaman login Google)
+      const contentType=res.headers.get('content-type')||'';
+      if(contentType.indexOf('text/html')!==-1){
+        // Apps Script belum di-deploy sebagai "Anyone" — balasannya halaman login
+        throw new Error("DEPLOY_ACCESS_DENIED");
+      }
+      let data;
+      try{ data=await res.json(); }
+      catch(jsonErr){ throw new Error("DEPLOY_INVALID"); }
       if(data.success){
         sessionStorage.setItem(SESSION_KEY,'1');
         showDashboard();
@@ -484,8 +492,26 @@
         loginErr.style.display='block';
       }
     }catch(err){
-      loginErr.textContent='Gagal terhubung ke server: '+err.message;
+      const msg=err.message||'';
+      if(msg==='Failed to fetch'||msg==='NetworkError when attempting to fetch resource.'){
+        loginErr.innerHTML=`<b>Gagal terhubung ke server.</b><br><br>
+          <b>Kemungkinan penyebab:</b><br>
+          1. Apps Script belum di-deploy ulang setelah SPREADSHEET_ID diisi. <b>Deploy ulang</b> (Deploy > Manage deployments > Edit > Version: New version > Deploy).<br>
+          2. Saat deploy, <b>"Who has access"</b> masih "Only myself". Ubah jadi <b>"Anyone"</b>.<br>
+          3. Internet mati / URL salah.<br><br>
+          <b>Setelah re-deploy, refresh halaman ini lalu coba login lagi.</b>`;
+      }else if(msg==='DEPLOY_ACCESS_DENIED'){
+        loginErr.innerHTML=`<b>Apps Script belum diizinkan untuk publik.</b><br><br>
+          Buka <a href="https://script.google.com" target="_blank" style="color:#fca5a5;text-decoration:underline">script.google.com</a> > buka project > <b>Deploy > Manage deployments</b> > klik icon edit > ubah <b>"Who has access"</b> jadi <b>"Anyone"</b> > klik <b>Deploy</b>. Setelah itu refresh halaman ini.`;
+      }else if(msg==='DEPLOY_INVALID'){
+        loginErr.innerHTML=`<b>Respon server tidak valid.</b><br><br>
+          Kemungkinan Apps Script error saat dijalankan. Buka <a href="https://script.google.com" target="_blank" style="color:#fca5a5;text-decoration:underline">script.google.com</a> > project > klik <b>My Executions</b> untuk lihat error log.<br>
+          Pastikan juga sudah run <b>setupSpreadsheet()</b> sekali dari editor.`;
+      }else{
+        loginErr.innerHTML=`<b>Gagal:</b> ${msg}<br><br>Periksa koneksi internet & URL Apps Script.`;
+      }
       loginErr.style.display='block';
+      shakePin();
     }
   });
 
@@ -496,11 +522,15 @@
       const fd=new FormData();
       fd.append('action','getData');
       const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:fd});
+      const contentType=res.headers.get('content-type')||'';
+      if(contentType.indexOf('text/html')!==-1){
+        throw new Error("Apps Script belum di-deploy dengan akses 'Anyone'. Buka script.google.com > Deploy > Manage deployments > ubah 'Who has access' jadi 'Anyone' > Deploy ulang.");
+      }
       const data=await res.json();
       if(data.success){allData=data;renderTable();renderStats();}
       else tableContent.innerHTML=`<div class="empty-row"><span class="em">⚠️</span><p>${data.message||'Gagal memuat data.'}</p></div>`;
     }catch(err){
-      tableContent.innerHTML=`<div class="empty-row"><span class="em">⚠️</span><p>Gagal terhubung: ${err.message}</p></div>`;
+      tableContent.innerHTML=`<div class="empty-row"><span class="em">⚠️</span><p>Gagal terhubung: ${err.message}</p><p style="margin-top:14px;font-size:13px"><b>Tip:</b> Pastikan Apps Script sudah di-deploy ulang dengan setting "Who has access: Anyone".</p></div>`;
     }
   }
 
