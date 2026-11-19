@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Guru - Pantau Pengumpulan Poster AI | SMP Negeri 1 Moga</title>
+  <meta name="description" content="Panel guru untuk memantau pengumpulan tugas poster Etika & Keamanan Digital dari siswa SMP Negeri 1 Moga." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍🏫</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --white:#ffffff;
+      --bg:#f8fafc;
+      --bg-soft:#eff6ff;
+      --bg-yellow:#fffbeb;
+      --card:#ffffff;
+      --primary:#1e40af;        /* Biru SMP */
+      --primary-2:#2563eb;
+      --primary-light:#3b82f6;
+      --primary-dark:#1e3a8a;
+      --accent:#f59e0b;         /* Kuning OSIS */
+      --accent-2:#fbbf24;
+      --accent-dark:#d97706;
+      --green:#059669;
+      --red:#dc2626;
+      --yellow:#f59e0b;
+      --text:#0f172a;
+      --text-dim:#475569;
+      --text-soft:#64748b;
+      --border:#e2e8f0;
+      --border-strong:#cbd5e1;
+      --shadow:0 10px 30px rgba(30,58,138,.08);
+      --shadow-lg:0 20px 50px rgba(30,58,138,.12);
+      --radius:18px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);line-height:1.6;min-height:100vh;
+    }
+    h1,h2,h3,h4{font-family:'Space Grotesk','Plus Jakarta Sans',sans-serif;line-height:1.2;letter-spacing:-.5px}
+    a{color:inherit;text-decoration:none}
+    .container{width:min(1280px,94%);margin:0 auto}
+
+    /* LOGIN */
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;
+      background:radial-gradient(circle at 20% 20%,rgba(30,64,175,.08),transparent 50%),
+                 radial-gradient(circle at 80% 80%,rgba(245,158,11,.1),transparent 50%),
+                 var(--bg);
+    }
+    .login-card{
+      width:100%;max-width:400px;background:#fff;
+      border:1px solid var(--border);border-radius:24px;padding:36px;box-shadow:var(--shadow-lg);
+    }
+    .login-logo{
+      width:64px;height:64px;border-radius:18px;margin:0 auto 18px;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      display:grid;place-items:center;font-size:32px;
+      box-shadow:0 10px 30px rgba(30,64,175,.25);
+    }
+    .login-card h1{font-size:22px;text-align:center;margin-bottom:6px;color:var(--text)}
+    .login-card p.sub{text-align:center;color:var(--text-dim);font-size:13.5px;margin-bottom:24px}
+    .pin-label{display:block;font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text);text-align:center}
+
+    /* PIN INPUT */
+    .pin-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:18px}
+    .pin-input{
+      width:48px;height:60px;text-align:center;font-size:28px;font-weight:700;font-family:'Space Grotesk';
+      border:2px solid var(--border-strong);border-radius:12px;background:var(--bg);
+      color:var(--primary);transition:.2s;
+    }
+    .pin-input:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(30,64,175,.15)}
+    .pin-input.filled{border-color:var(--primary);background:var(--bg-soft)}
+    .pin-input.error{border-color:var(--red);background:#fef2f2;animation:shake .4s}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+    .login-card button{
+      width:100%;padding:13px;border:0;border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-light));
+      color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:.25s;
+    }
+    .login-card button:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(30,64,175,.35)}
+    .login-err{
+      margin-top:14px;padding:10px 12px;border-radius:10px;font-size:13px;
+      background:#fef2f2;border:1px solid #fecaca;color:#991b1b;display:none;text-align:center;
+    }
+
+    /* DASHBOARD */
+    .dashboard{display:none}
+    .topbar{
+      position:sticky;top:0;z-index:30;backdrop-filter:blur(10px);
+      background:rgba(255,255,255,.92);border-bottom:1px solid var(--border);
+    }
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-logo{
+      width:42px;height:42px;border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      display:grid;place-items:center;font-size:22px;
+      box-shadow:0 6px 18px rgba(30,64,175,.25);
+    }
+    .brand-text b{display:block;font-size:14px;color:var(--text)}
+    .brand-text span{font-size:11px;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase}
+    .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn-sm{
+      background:#fff;border:1px solid var(--border-strong);color:var(--text);
+      padding:9px 14px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+      display:inline-flex;align-items:center;gap:6px;
+    }
+    .btn-sm:hover{border-color:var(--primary);color:var(--primary);box-shadow:var(--shadow)}
+    .btn-sm.danger{color:var(--red);border-color:#fecaca}
+    .btn-sm.danger:hover{background:#fef2f2;border-color:var(--red)}
+    .btn-sm.primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));border:0;color:#fff}
+    .btn-sm.primary:hover{box-shadow:0 8px 22px rgba(30,64,175,.3)}
+
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:30px 0}
+    .stat-card{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;
+      position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,.04);
+    }
+    .stat-card .ic{position:absolute;right:-10px;top:-10px;font-size:60px;opacity:.1}
+    .stat-card .label{font-size:12.5px;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase;font-weight:600}
+    .stat-card .num{font-family:'Space Grotesk';font-size:34px;font-weight:700;margin-top:6px}
+    .stat-card .delta{font-size:12px;margin-top:4px;color:var(--text-soft)}
+    .stat-card.total .num{color:var(--primary)}
+    .stat-card.done .num{color:var(--green)}
+    .stat-card.pending .num{color:var(--accent-dark)}
+    .stat-card.percent .num{color:var(--accent-dark)}
+
+    /* TOOLBAR */
+    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+    .toolbar h2{font-size:20px;color:var(--text)}
+    .filters{display:flex;gap:10px;flex-wrap:wrap}
+    .filters select,.filters input{
+      background:#fff;border:1px solid var(--border-strong);color:var(--text);
+      padding:9px 12px;border-radius:10px;font-size:13.5px;font-family:inherit;
+    }
+    .filters input{min-width:200px}
+    .filters select:focus,.filters input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,64,175,.12)}
+
+    /* TABLE */
+    .table-wrap{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      overflow:hidden;box-shadow:var(--shadow);
+    }
+    .table-scroll{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:13.5px}
+    thead th{
+      background:var(--bg-soft);color:var(--primary-dark);text-align:left;padding:14px 16px;
+      font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase;
+      border-bottom:2px solid var(--border);white-space:nowrap;
+    }
+    tbody td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+    tbody tr:last-child td{border-bottom:0}
+    tbody tr:hover{background:var(--bg-soft)}
+    .td-status{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:11.5px;font-weight:700}
+    .td-status.done{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+    .td-status.pending{background:var(--bg-yellow);color:var(--accent-dark);border:1px solid #fde68a}
+    .td-status.late{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+    .td-status .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+    .thumb{
+      width:50px;height:50px;border-radius:8px;object-fit:cover;
+      border:1px solid var(--border);cursor:pointer;transition:.2s;background:var(--bg-soft);
+    }
+    .thumb:hover{transform:scale(1.1);border-color:var(--primary);box-shadow:var(--shadow)}
+    .thumb-empty{
+      width:50px;height:50px;border-radius:8px;border:1px dashed var(--border-strong);
+      display:grid;place-items:center;color:var(--text-soft);font-size:18px;background:var(--bg-soft);
+    }
+    .action-link{
+      color:var(--primary);font-weight:600;font-size:12.5px;
+      display:inline-flex;align-items:center;gap:4px;cursor:pointer;background:none;border:0;
+    }
+    .action-link:hover{text-decoration:underline}
+    .prompt-text{
+      max-width:280px;font-size:12px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      cursor:pointer;
+    }
+    .prompt-text:hover{color:var(--primary)}
+    .empty-row{text-align:center;padding:60px 20px;color:var(--text-soft)}
+    .empty-row .em{font-size:50px;display:block;margin-bottom:14px;opacity:.5}
+    .spinner-big{
+      width:34px;height:34px;border:3px solid var(--border-strong);border-top-color:var(--primary);
+      border-radius:50%;margin:50px auto;animation:rot 1s linear infinite;
+    }
+    @keyframes rot{to{transform:rotate(360deg)}}
+
+    /* MODAL */
+    .modal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+    .modal.open{display:flex}
+    .modal-card{
+      background:#fff;border:1px solid var(--border);border-radius:18px;
+      max-width:760px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;box-shadow:var(--shadow-lg);
+    }
+    .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .modal-head h3{font-size:18px;color:var(--text)}
+    .modal-close{background:var(--bg-soft);border:0;color:var(--text);font-size:18px;cursor:pointer;width:32px;height:32px;border-radius:8px;line-height:1;display:grid;place-items:center}
+    .modal-close:hover{background:var(--border)}
+    .modal-body{display:grid;gap:14px}
+    .modal-poster{width:100%;border-radius:12px;background:var(--bg-soft);border:1px solid var(--border)}
+    .modal-info{font-size:13.5px}
+    .modal-info .row{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)}
+    .modal-info .row:last-child{border-bottom:0}
+    .modal-info .label{color:var(--text-soft);font-size:12.5px}
+    .modal-info .val{color:var(--text);font-weight:500;word-break:break-word}
+    .modal-info .val.prompt-box{
+      background:var(--bg-yellow);border:1px dashed var(--accent);border-radius:10px;
+      padding:10px 12px;font-style:italic;color:var(--accent-dark);
+    }
+
+    /* TABS */
+    .tabs{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:12px;margin-bottom:18px;width:fit-content;border:1px solid var(--border)}
+    .tab{
+      padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;
+      color:var(--text-dim);transition:.2s;border:0;background:none;font-family:inherit;
+    }
+    .tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;box-shadow:0 4px 12px rgba(30,64,175,.25)}
+    .tab-count{display:inline-block;margin-left:6px;background:rgba(255,255,255,.25);padding:1px 8px;border-radius:999px;font-size:11px}
+    .tab:not(.active) .tab-count{background:var(--bg-soft);color:var(--text-soft)}
+
+    .roster-empty{padding:50px 20px;text-align:center;color:var(--text-soft)}
+    .roster-empty .em{font-size:50px;display:block;margin-bottom:14px;opacity:.5}
+
+    footer{padding:30px 0;text-align:center;color:var(--text-soft);font-size:12.5px;border-top:1px solid var(--border);margin-top:40px}
+
+    @media (max-width:900px){
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .toolbar{flex-direction:column;align-items:stretch}
+      .filters{flex-direction:column}
+      .filters input,.filters select{width:100%}
+      .pin-input{width:42px;height:54px;font-size:24px}
+    }
+    @media (max-width:600px){
+      .top-actions .btn-sm span.label{display:none}
+      .modal-info .row{grid-template-columns:1fr;gap:2px}
+      .pin-input{width:38px;height:48px;font-size:20px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">🔐</div>
+    <h1>Panel Guru</h1>
+    <p class="sub">Pantau Pengumpulan Poster AI — SMP Negeri 1 Moga</p>
+    <form id="loginForm" autocomplete="off">
+      <label class="pin-label" for="pin1">Masukkan PIN Guru (6 digit)</label>
+      <div class="pin-inputs" id="pinInputs">
+        <input class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="pin1" autofocus />
+        <input class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="pin2" />
+        <input class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="pin3" />
+        <input class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="pin4" />
+        <input class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="pin5" />
+        <input class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="pin6" />
+      </div>
+      <button type="submit">Masuk</button>
+      <div class="login-err" id="loginErr">PIN salah. Coba lagi.</div>
+      <p style="text-align:center;margin-top:18px"><a href="index.html" style="color:var(--text-soft);font-size:12.5px">← Kembali ke halaman siswa</a></p>
+    </form>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="dashboard" id="dashboard">
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">👨‍🏫</div>
+        <div class="brand-text"><b>Panel Guru</b><span>SMP Negeri 1 Moga</span></div>
+      </div>
+      <div class="top-actions">
+        <button class="btn-sm" id="refreshBtn">🔄 <span class="label">Refresh</span></button>
+        <button class="btn-sm" id="exportBtn">📥 <span class="label">Export CSV</span></button>
+        <button class="btn-sm danger" id="logoutBtn">🚪 <span class="label">Keluar</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding:24px 0 60px">
+    <div class="stats-grid">
+      <div class="stat-card total"><span class="ic">👥</span><div class="label">Total Siswa</div><div class="num" id="statTotal">0</div><div class="delta">Terdaftar di Template.xls</div></div>
+      <div class="stat-card done"><span class="ic">✅</span><div class="label">Sudah Unggah</div><div class="num" id="statDone">0</div><div class="delta">Poster diterima</div></div>
+      <div class="stat-card pending"><span class="ic">⏳</span><div class="label">Belum Unggah</div><div class="num" id="statPending">0</div><div class="delta">Perlu diingatkan</div></div>
+      <div class="stat-card percent"><span class="ic">📊</span><div class="label">Persentase</div><div class="num" id="statPercent">0%</div><div class="delta">Tingkat penyelesaian</div></div>
+    </div>
+
+    <div class="toolbar">
+      <h2>📋 Daftar Pengumpulan Poster</h2>
+      <div class="filters">
+        <select id="filterStatus">
+          <option value="">Semua Status</option>
+          <option value="done">✅ Sudah Unggah</option>
+          <option value="pending">⏳ Belum Unggah</option>
+        </select>
+        <select id="filterKelas">
+          <option value="">Semua Kelas</option>
+          <option value="7A">7A</option><option value="7B">7B</option><option value="7C">7C</option><option value="7D">7D</option>
+          <option value="8A">8A</option><option value="8B">8B</option><option value="8C">8C</option><option value="8D">8D</option>
+          <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option>
+        </select>
+        <input type="search" id="searchInput" placeholder="🔍 Cari nama siswa..." />
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="submissions">📤 Sudah Mengumpulkan <span class="tab-count" id="cntDone">0</span></button>
+      <button class="tab" data-tab="pending">⏳ Belum Mengumpulkan <span class="tab-count" id="cntPending">0</span></button>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <div id="tableContent"><div class="spinner-big"></div></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2024 SMP Negeri 1 Moga • Panel Guru Media Pembelajaran AI • Data tersimpan di Google Spreadsheet &amp; Drive
+  </footer>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>📄 Detail Pengumpulan</h3>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbxJMwC3N6qtugZWZyONFepmfz6jyG-e-Nxe_j3xTttmOvUD8Rm--fb8jDmkiu4ucHrvng/exec";
+  const SESSION_KEY="ai_guru_session";
+
+  const loginWrap=document.getElementById('loginWrap');
+  const dashboard=document.getElementById('dashboard');
+  const loginForm=document.getElementById('loginForm');
+  const loginErr=document.getElementById('loginErr');
+  const pinInputs=[1,2,3,4,5,6].map(i=>document.getElementById('pin'+i));
+  const refreshBtn=document.getElementById('refreshBtn');
+  const exportBtn=document.getElementById('exportBtn');
+  const logoutBtn=document.getElementById('logoutBtn');
+  const modal=document.getElementById('modal');
+  const modalBody=document.getElementById('modalBody');
+  const modalClose=document.getElementById('modalClose');
+  const tableContent=document.getElementById('tableContent');
+  const searchInput=document.getElementById('searchInput');
+  const filterStatus=document.getElementById('filterStatus');
+  const filterKelas=document.getElementById('filterKelas');
+
+  let allData={submissions:[], roster:[]};
+  let activeTab='submissions';
+
+  // ===== PIN INPUT BEHAVIOR =====
+  pinInputs.forEach((inp,idx)=>{
+    inp.addEventListener('input',(e)=>{
+      const v=e.target.value.replace(/\D/g,'');
+      e.target.value=v;
+      if(v){
+        inp.classList.add('filled');
+        if(idx<5) pinInputs[idx+1].focus();
+        else loginForm.requestSubmit();
+      }else{
+        inp.classList.remove('filled');
+      }
+    });
+    inp.addEventListener('keydown',(e)=>{
+      if(e.key==='Backspace' && !inp.value && idx>0){
+        pinInputs[idx-1].focus();
+        pinInputs[idx-1].value='';
+        pinInputs[idx-1].classList.remove('filled');
+        e.preventDefault();
+      }
+      if(e.key==='ArrowLeft' && idx>0) pinInputs[idx-1].focus();
+      if(e.key==='ArrowRight' && idx<5) pinInputs[idx+1].focus();
+    });
+    inp.addEventListener('paste',(e)=>{
+      e.preventDefault();
+      const txt=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      [...txt].forEach((c,i)=>{ if(pinInputs[i]){pinInputs[i].value=c;pinInputs[i].classList.add('filled');} });
+      if(txt.length===6) loginForm.requestSubmit();
+      else if(pinInputs[txt.length]) pinInputs[txt.length].focus();
+    });
+  });
+
+  function getPin(){return pinInputs.map(i=>i.value).join('');}
+  function clearPin(){pinInputs.forEach(i=>{i.value='';i.classList.remove('filled','error');});pinInputs[0].focus();}
+  function shakePin(){pinInputs.forEach(i=>i.classList.add('error'));setTimeout(()=>pinInputs.forEach(i=>i.classList.remove('error')),500);}
+
+  function checkSession(){
+    if(sessionStorage.getItem(SESSION_KEY)==='1') showDashboard();
+  }
+  function showDashboard(){loginWrap.style.display='none';dashboard.style.display='block';loadData();}
+  function hideDashboard(){dashboard.style.display='none';loginWrap.style.display='grid';sessionStorage.removeItem(SESSION_KEY);clearPin();}
+
+  // ===== LOGIN =====
+  loginForm.addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    loginErr.style.display='none';
+    const pin=getPin();
+    if(pin.length!==6){shakePin();loginErr.textContent='PIN harus 6 digit.';loginErr.style.display='block';return;}
+    if(!APPS_SCRIPT_URL||APPS_SCRIPT_URL==="PASTE_APPS_SCRIPT_URL_DISINI"){
+      loginErr.textContent="APPS_SCRIPT_URL belum diisi. Deploy Kode.gs dulu.";
+      loginErr.style.display='block';return;
+    }
+    try{
+      const fd=new FormData();
+      fd.append('action','login');
+      fd.append('pin',pin);
+      const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:fd});
+      const data=await res.json();
+      if(data.success){
+        sessionStorage.setItem(SESSION_KEY,'1');
+        showDashboard();
+      }else{
+        shakePin();
+        loginErr.textContent=data.message||'PIN salah.';
+        loginErr.style.display='block';
+      }
+    }catch(err){
+      loginErr.textContent='Gagal terhubung ke server: '+err.message;
+      loginErr.style.display='block';
+    }
+  });
+
+  // ===== LOAD DATA =====
+  async function loadData(){
+    tableContent.innerHTML='<div class="spinner-big"></div>';
+    try{
+      const fd=new FormData();
+      fd.append('action','getData');
+      const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:fd});
+      const data=await res.json();
+      if(data.success){allData=data;renderTable();renderStats();}
+      else tableContent.innerHTML=`<div class="empty-row"><span class="em">⚠️</span><p>${data.message||'Gagal memuat data.'}</p></div>`;
+    }catch(err){
+      tableContent.innerHTML=`<div class="empty-row"><span class="em">⚠️</span><p>Gagal terhubung: ${err.message}</p></div>`;
+    }
+  }
+
+  function renderStats(){
+    const total=allData.roster.length||allData.submissions.length;
+    const done=allData.submissions.length;
+    const pending=Math.max(0,total-done);
+    const pct=total>0?Math.round(done/total*100):0;
+    document.getElementById('statTotal').textContent=total;
+    document.getElementById('statDone').textContent=done;
+    document.getElementById('statPending').textContent=pending;
+    document.getElementById('statPercent').textContent=pct+'%';
+    document.getElementById('cntDone').textContent=done;
+    document.getElementById('cntPending').textContent=pending;
+  }
+
+  function renderTable(){
+    const q=searchInput.value.toLowerCase().trim();
+    const fk=filterKelas.value;
+
+    if(activeTab==='submissions'){
+      let rows=allData.submissions.filter(s=>{
+        if(fk && s.kelas!==fk) return false;
+        if(q && !(s.nama||'').toLowerCase().includes(q) && !(s.nis||'').toLowerCase().includes(q)) return false;
+        return true;
+      });
+      if(rows.length===0){
+        tableContent.innerHTML=`<div class="empty-row"><span class="em">📭</span><p>Belum ada siswa yang mengumpulkan poster.</p></div>`;
+        return;
+      }
+      let html=`<table><thead><tr>
+        <th>Thumb</th><th>Nama</th><th>Kelas</th><th>NIS</th>
+        <th>Pesan Poster</th><th>Prompt AI</th><th>Waktu</th><th>Status</th><th>Aksi</th>
+      </tr></thead><tbody>`;
+      rows.forEach(r=>{
+        const waktu=r.waktu?new Date(r.waktu).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'}):'-';
+        const msg=(r.pesan||'').length>50?(r.pesan||'').slice(0,50)+'...':(r.pesan||'-');
+        const prompt=(r.prompt||'').length>50?(r.prompt||'').slice(0,50)+'...':(r.prompt||'-');
+        html+=`<tr>
+          <td><img class="thumb" src="${r.fileUrl||''}" alt="poster" data-id="${r.id}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"/><div class="thumb-empty" style="display:none">🖼️</div></td>
+          <td><b>${esc(r.nama)}</b></td>
+          <td>${esc(r.kelas)}</td>
+          <td>${esc(r.nis||'-')}</td>
+          <td><div class="prompt-text" title="${esc(r.pesan)}">${esc(msg)}</div></td>
+          <td><div class="prompt-text" title="${esc(r.prompt)}">${esc(prompt)}</div></td>
+          <td>${waktu}</td>
+          <td><span class="td-status done"><span class="dot"></span>Sudah</span></td>
+          <td><button class="action-link" data-view="${r.id}">👁️ Detail</button></td>
+        </tr>`;
+      });
+      html+='</tbody></table>';
+      tableContent.innerHTML=html;
+      tableContent.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',()=>openModal(el.getAttribute('data-view'))));
+      tableContent.querySelectorAll('.thumb[data-id]').forEach(el=>el.addEventListener('click',()=>openModal(el.getAttribute('data-id'))));
+    }else{
+      if(!allData.roster||allData.roster.length===0){
+        tableContent.innerHTML=`<div class="roster-empty"><span class="em">📋</span><p>Belum ada daftar siswa (roster).<br>Upload <b>Template.xls</b> ke spreadsheet yang terhubung ke Kode.gs.<br><br><small>Sheet bernama <code>Daftar_Siswa</code> dengan kolom: Nama | Kelas | NIS</small></p></div>`;
+        return;
+      }
+      const submittedNames=new Set(allData.submissions.map(s=>(s.nama||'').toLowerCase().trim()));
+      let pending=allData.roster.filter(s=>{
+        if(submittedNames.has((s.nama||'').toLowerCase().trim())) return false;
+        if(fk && s.kelas!==fk) return false;
+        if(q && !(s.nama||'').toLowerCase().includes(q)) return false;
+        return true;
+      });
+      if(pending.length===0){
+        tableContent.innerHTML=`<div class="empty-row"><span class="em">🎉</span><p>Semua siswa sudah mengumpulkan poster. Mantap!</p></div>`;
+        return;
+      }
+      let html=`<table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>NIS</th><th>Status</th></tr></thead><tbody>`;
+      pending.forEach((r,i)=>{
+        html+=`<tr><td>${i+1}</td><td><b>${esc(r.nama)}</b></td><td>${esc(r.kelas)}</td><td>${esc(r.nis||'-')}</td>
+          <td><span class="td-status pending"><span class="dot"></span>Belum Unggah</span></td></tr>`;
+      });
+      html+='</tbody></table>';
+      tableContent.innerHTML=html;
+    }
+  }
+
+  function openModal(id){
+    const r=allData.submissions.find(s=>String(s.id)===String(id));
+    if(!r) return;
+    const waktu=r.waktu?new Date(r.waktu).toLocaleString('id-ID',{dateStyle:'full',timeStyle:'short'}):'-';
+    modalBody.innerHTML=`
+      <img class="modal-poster" src="${r.fileUrl||''}" alt="Poster ${esc(r.nama)}" onerror="this.style.display='none'"/>
+      <div class="modal-info">
+        <div class="row"><div class="label">Nama Lengkap</div><div class="val">${esc(r.nama)}</div></div>
+        <div class="row"><div class="label">Kelas</div><div class="val">${esc(r.kelas)}</div></div>
+        <div class="row"><div class="label">NIS/NISN</div><div class="val">${esc(r.nis||'-')}</div></div>
+        <div class="row"><div class="label">Waktu Unggah</div><div class="val">${waktu}</div></div>
+        <div class="row"><div class="label">Status</div><div class="val"><span class="td-status done"><span class="dot"></span>Sudah Mengumpulkan</span></div></div>
+        <div class="row"><div class="label">Pesan dalam Poster</div><div class="val">${esc(r.pesan||'-')}</div></div>
+        <div class="row"><div class="label">Prompt AI</div><div class="val prompt-box">${esc(r.prompt||'-')}</div></div>
+        <div class="row"><div class="label">File ID (Drive)</div><div class="val"><code style="font-size:11.5px;color:var(--primary)">${esc(r.fileId||'-')}</code></div></div>
+        <div class="row"><div class="label">Unduh</div><div class="val"><a class="action-link" href="${r.fileUrl||'#'}" target="_blank" rel="noopener" style="text-decoration:underline">⬇️ Buka di Google Drive</a></div></div>
+      </div>`;
+    modal.classList.add('open');
+  }
+  modalClose.addEventListener('click',()=>modal.classList.remove('open'));
+  modal.addEventListener('click',(e)=>{if(e.target===modal) modal.classList.remove('open');});
+
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      activeTab=t.getAttribute('data-tab');
+      renderTable();
+    });
+  });
+
+  [searchInput,filterStatus,filterKelas].forEach(el=>el.addEventListener('input',renderTable));
+  refreshBtn.addEventListener('click',loadData);
+  logoutBtn.addEventListener('click',hideDashboard);
+  exportBtn.addEventListener('click',()=>{
+    if(!allData.submissions||allData.submissions.length===0){alert('Belum ada data untuk diexport.');return;}
+    const headers=['Nama','Kelas','NIS','Pesan','Prompt','Waktu','File URL','File ID'];
+    const rows=allData.submissions.map(r=>[r.nama,r.kelas,r.nis||'',r.pesan||'',r.prompt||'',r.waktu||'',r.fileUrl||'',r.fileId||'']);
+    const csv=[headers,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='pengumpulan_poster_ai_'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();
+  });
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);}
+  checkSession();
+</script>
+
+</body>
+</html>
