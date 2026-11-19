@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Pembelajaran Interaktif - Artificial Intelligence | SMP Negeri 1 Moga</title>
+  <meta name="description" content="Media pembelajaran interaktif slide-by-slide tentang Artificial Intelligence untuk siswa SMP Negeri 1 Moga." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --white:#ffffff;
+      --bg:#ffffff;
+      --bg-soft:#f8fafc;
+      --bg-blue:#eff6ff;
+      --bg-yellow:#fffbeb;
+      --primary:#1e40af;      /* Biru SMP */
+      --primary-2:#2563eb;
+      --primary-light:#3b82f6;
+      --primary-dark:#1e3a8a;
+      --accent:#f59e0b;       /* Kuning OSIS */
+      --accent-2:#fbbf24;
+      --accent-dark:#d97706;
+      --pink:#ec4899;
+      --green:#059669;
+      --text:#0f172a;
+      --text-dim:#475569;
+      --text-soft:#64748b;
+      --border:#e2e8f0;
+      --border-strong:#cbd5e1;
+      --shadow:0 10px 30px rgba(30,58,138,.08);
+      --shadow-lg:0 20px 50px rgba(30,58,138,.12);
+      --radius:18px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      overflow:hidden;
+    }
+    h1,h2,h3,h4{font-family:'Space Grotesk','Plus Jakarta Sans',sans-serif;line-height:1.2;letter-spacing:-.5px}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    button{font-family:inherit}
+
+    /* ============ APP SHELL ============ */
+    .app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+    /* TOP BAR */
+    .topbar{
+      flex:0 0 auto;background:#fff;border-bottom:1px solid var(--border);
+      padding:12px 0;z-index:20;
+    }
+    .topbar-inner{
+      width:min(1280px,94%);margin:0 auto;
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-logo{
+      width:42px;height:42px;border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      display:grid;place-items:center;font-size:22px;
+      box-shadow:0 6px 18px rgba(30,64,175,.25);
+    }
+    .brand-text b{display:block;font-size:14px;color:var(--text)}
+    .brand-text span{font-size:11px;color:var(--text-soft);letter-spacing:.5px;text-transform:uppercase}
+    .top-meta{font-size:12px;color:var(--text-soft);text-align:right}
+    .top-meta b{color:var(--primary);font-size:13px}
+
+    /* PROGRESS */
+    .progress-wrap{
+      flex:0 0 auto;background:#fff;padding:14px 0 10px;border-bottom:1px solid var(--border);
+    }
+    .progress-inner{width:min(1280px,94%);margin:0 auto;display:flex;align-items:center;gap:14px}
+    .progress-bar{flex:1;height:10px;background:var(--bg-blue);border-radius:999px;overflow:hidden;position:relative}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:999px;transition:width .5s cubic-bezier(.2,.8,.2,1);position:relative}
+    .progress-fill::after{content:"";position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+    .progress-text{font-size:12.5px;font-weight:600;color:var(--text);white-space:nowrap}
+    .progress-text b{color:var(--primary);font-family:'Space Grotesk'}
+
+    /* DOTS NAV */
+    .dots{flex:0 0 auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px 0;background:var(--bg-soft);border-bottom:1px solid var(--border)}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--border-strong);cursor:pointer;transition:.25s;border:0;padding:0}
+    .dot:hover{background:var(--primary-light)}
+    .dot.active{background:var(--primary);transform:scale(1.3)}
+    .dot.done{background:var(--accent)}
+
+    /* MAIN CONTENT - slides */
+    .stage{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;scroll-behavior:smooth}
+    .stage::-webkit-scrollbar{width:8px}
+    .stage::-webkit-scrollbar-track{background:var(--bg-soft)}
+    .stage::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:999px}
+    .slide{
+      min-height:100%;display:none;flex-direction:column;
+      padding:36px 0 80px;animation:fadeIn .5s ease;
+    }
+    .slide.active{display:flex}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .slide-inner{width:min(1080px,92%);margin:0 auto;flex:1}
+
+    .slide-tag{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;
+      background:var(--bg-blue);color:var(--primary);
+      border:1px solid #bfdbfe;letter-spacing:1px;text-transform:uppercase;
+    }
+    .slide-tag.yellow{background:var(--bg-yellow);color:var(--accent-dark);border-color:#fde68a}
+    .slide-title{font-size:clamp(26px,3.6vw,40px);margin:14px 0 8px;color:var(--text)}
+    .slide-lead{color:var(--text-dim);font-size:16px;max-width:760px;margin-bottom:30px}
+
+    /* GRID CARDS */
+    .grid{display:grid;gap:18px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .grid.cols-4{grid-template-columns:repeat(4,1fr)}
+    .card{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      padding:22px;transition:.25s;position:relative;overflow:hidden;
+      box-shadow:0 1px 3px rgba(15,23,42,.04);
+    }
+    .card:hover{transform:translateY(-3px);border-color:var(--primary-light);box-shadow:var(--shadow-lg)}
+    .card .ic{
+      width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:22px;
+      background:linear-gradient(135deg,var(--bg-blue),var(--bg-yellow));
+      border:1px solid var(--border);margin-bottom:14px;
+    }
+    .card.blue .ic{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
+    .card.yellow .ic{background:linear-gradient(135deg,#fef3c7,#fde68a)}
+    .card h3{font-size:17px;margin-bottom:6px;color:var(--text)}
+    .card p{color:var(--text-dim);font-size:13.5px}
+
+    /* CALLOUT */
+    .callout{
+      margin-top:22px;padding:22px;border-radius:14px;
+      background:var(--bg-blue);border-left:4px solid var(--primary);
+    }
+    .callout.yellow{background:var(--bg-yellow);border-left-color:var(--accent)}
+    .callout h4{font-size:16px;margin-bottom:8px;color:var(--primary)}
+    .callout.yellow h4{color:var(--accent-dark)}
+    .callout p{color:var(--text-dim);font-size:14.5px}
+    .callout strong{color:var(--text)}
+
+    /* TIMELINE */
+    .timeline{position:relative;max-width:880px;padding:10px 0}
+    .timeline::before{content:"";position:absolute;left:18px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--primary),var(--accent));border-radius:2px}
+    .tl-item{position:relative;padding-left:54px;margin-bottom:22px}
+    .tl-item::before{
+      content:"";position:absolute;left:9px;top:8px;width:20px;height:20px;border-radius:50%;
+      background:#fff;border:3px solid var(--primary);box-shadow:0 0 0 4px rgba(30,64,175,.15);z-index:1;
+    }
+    .tl-item .yr{font-family:'Space Grotesk';font-size:13px;color:var(--accent-dark);font-weight:700;letter-spacing:1px}
+    .tl-item h4{font-size:16px;margin:4px 0 6px;color:var(--text)}
+    .tl-item p{color:var(--text-dim);font-size:13.5px}
+
+    /* DIAGRAM */
+    .diagram{
+      display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:14px;align-items:stretch;
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      padding:24px;box-shadow:var(--shadow);
+    }
+    .diagram .node{padding:18px;border-radius:14px;text-align:center;border:2px solid var(--border);background:var(--bg-soft)}
+    .diagram .node h5{font-size:14px;margin-bottom:6px;color:var(--text)}
+    .diagram .node p{font-size:12px;color:var(--text-dim)}
+    .diagram .node.input{border-color:var(--primary-light);background:var(--bg-blue)}
+    .diagram .node.process{border-color:var(--primary);background:linear-gradient(180deg,#dbeafe,var(--bg-blue))}
+    .diagram .node.output{border-color:var(--accent);background:var(--bg-yellow)}
+    .diagram .arrow{font-size:22px;color:var(--text-soft);display:grid;place-items:center}
+
+    /* STEPS */
+    .steps{counter-reset:step;display:grid;gap:14px;grid-template-columns:repeat(4,1fr)}
+    .step{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      padding:20px;counter-increment:step;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:.25s;
+    }
+    .step:hover{border-color:var(--primary-light);box-shadow:var(--shadow)}
+    .step::before{
+      content:counter(step,decimal-leading-zero);
+      font-family:'Space Grotesk';font-size:30px;font-weight:700;color:var(--primary);
+      line-height:1;display:block;margin-bottom:8px;
+    }
+    .step h4{font-size:15px;margin-bottom:6px;color:var(--text)}
+    .step p{color:var(--text-dim);font-size:13px}
+
+    /* CAP GRID */
+    .cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .cap{padding:18px;border-radius:14px;background:#fff;border:1px solid var(--border);transition:.25s}
+    .cap:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow)}
+    .cap .em{font-size:26px;display:block;margin-bottom:8px}
+    .cap h4{font-size:14px;margin-bottom:4px;color:var(--text)}
+    .cap p{font-size:12.5px;color:var(--text-dim)}
+
+    /* EBOOK */
+    .ebook-card{
+      background:linear-gradient(135deg,var(--bg-blue),var(--bg-yellow));
+      border:1px solid var(--border);border-radius:24px;padding:34px;
+      display:grid;grid-template-columns:.9fr 1.2fr;gap:30px;align-items:center;
+      box-shadow:var(--shadow-lg);
+    }
+    .ebook-cover{
+      aspect-ratio:3/4;border-radius:14px;overflow:hidden;position:relative;
+      background:linear-gradient(160deg,var(--primary-dark),var(--primary) 60%,var(--primary-dark));
+      box-shadow:0 20px 40px rgba(30,64,175,.3);
+      display:grid;place-items:center;text-align:center;padding:24px;
+    }
+    .ebook-cover::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(251,191,36,.4),transparent 60%)}
+    .ebook-cover .title{position:relative;font-family:'Space Grotesk';font-weight:800;font-size:24px;line-height:1.2;color:#fff}
+    .ebook-cover .sub{position:relative;color:#dbeafe;font-size:12.5px;margin-top:8px;font-weight:600}
+    .ebook-cover .tag{position:relative;margin-top:14px;display:inline-block;padding:5px 12px;border-radius:999px;background:rgba(251,191,36,.3);color:#fef3c7;font-size:11px;font-weight:700;letter-spacing:1px}
+    .ebook-info h3{font-size:24px;margin-bottom:10px;color:var(--text)}
+    .ebook-info p{color:var(--text-dim);font-size:14.5px;margin-bottom:16px}
+    .ebook-info ul{list-style:none;margin-bottom:20px}
+    .ebook-info li{padding:7px 0 7px 28px;position:relative;color:var(--text);font-size:13.5px;border-bottom:1px dashed var(--border)}
+    .ebook-info li::before{content:"✓";position:absolute;left:0;top:7px;width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:700}
+    .token-box{
+      background:#fff;border:2px dashed var(--accent);border-radius:12px;
+      padding:12px 16px;margin-bottom:16px;font-family:'Space Grotesk';
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .token-box code{color:var(--accent-dark);font-weight:700;font-size:18px;letter-spacing:2px}
+    .token-box small{color:var(--text-soft);font-size:11px;font-family:'Plus Jakarta Sans'}
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--primary),var(--primary-light));
+      color:#fff;padding:13px 24px;border-radius:13px;font-weight:700;font-size:14.5px;
+      box-shadow:0 8px 22px rgba(30,64,175,.3);transition:.25s;border:0;cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(30,64,175,.4)}
+    .btn-yellow{
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:#fff;padding:13px 24px;border-radius:13px;font-weight:700;font-size:14.5px;
+      box-shadow:0 8px 22px rgba(245,158,11,.35);transition:.25s;border:0;cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+    }
+    .btn-yellow:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(245,158,11,.45)}
+
+    /* CANVA STEPS */
+    .canva-steps{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
+    .canva-step{
+      background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+      padding:20px;transition:.25s;box-shadow:0 1px 3px rgba(15,23,42,.04);
+    }
+    .canva-step:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow)}
+    .canva-step .num{
+      width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;
+      font-weight:700;font-family:'Space Grotesk';margin-bottom:12px;
+    }
+    .canva-step h4{font-size:14.5px;margin-bottom:6px;color:var(--text)}
+    .canva-step p{color:var(--text-dim);font-size:13px}
+    .canva-step .hint{
+      margin-top:10px;padding:9px 11px;border-radius:9px;font-size:11.5px;
+      background:var(--bg-yellow);border:1px solid #fde68a;color:var(--accent-dark);
+    }
+    .canva-step a{color:var(--primary);font-weight:600}
+
+    /* PROMPT COMPARE */
+    .prompt-compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
+    .prompt-box{padding:18px;border-radius:14px;border:2px solid}
+    .prompt-box.bad{background:#fef2f2;border-color:#fecaca}
+    .prompt-box.good{background:#ecfdf5;border-color:#a7f3d0}
+    .prompt-box h5{font-size:14px;margin-bottom:10px}
+    .prompt-box.bad h5{color:#dc2626}
+    .prompt-box.good h5{color:#059669}
+    .prompt-box p{font-size:13px;font-style:italic;color:var(--text-dim);margin-top:6px}
+    .prompt-box .ex{margin-top:8px;font-size:12.5px;color:var(--text-soft)}
+
+    /* TASK */
+    .task-wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:start}
+    .checklist{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+    .checklist h3{font-size:18px;margin-bottom:4px;color:var(--text)}
+    .checklist .sub{color:var(--text-dim);font-size:13px;margin-bottom:16px}
+    .check-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--border);align-items:flex-start}
+    .check-item:last-child{border-bottom:0}
+    .check-item .box{
+      width:24px;height:24px;border-radius:8px;background:var(--primary);color:#fff;flex-shrink:0;
+      display:grid;place-items:center;font-size:12px;font-weight:700;
+    }
+    .check-item .ci-body b{font-size:14px;display:block;color:var(--text)}
+    .check-item .ci-body p{font-size:12.5px;color:var(--text-dim);margin-top:2px}
+    .check-item .ci-body a{color:var(--primary);font-weight:600}
+
+    /* FORM */
+    .form-card{
+      background:#fff;border:2px solid var(--primary-light);border-radius:20px;padding:28px;
+      box-shadow:var(--shadow-lg);position:sticky;top:14px;
+    }
+    .form-card h3{font-size:20px;margin-bottom:4px;color:var(--text)}
+    .form-card .sub{color:var(--text-dim);font-size:13px;margin-bottom:18px}
+    .form-group{margin-bottom:14px}
+    .form-group label{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px;color:var(--text)}
+    .form-group label .req{color:#dc2626}
+    .form-group input,.form-group select,.form-group textarea{
+      width:100%;background:var(--bg-soft);border:1px solid var(--border-strong);
+      color:var(--text);padding:10px 12px;border-radius:10px;font-size:13.5px;font-family:inherit;transition:.2s;
+    }
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+      outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(30,64,175,.12);
+    }
+    .form-group textarea{resize:vertical;min-height:70px}
+    .form-group .hint{font-size:11px;color:var(--text-soft);margin-top:4px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .file-drop{
+      border:2px dashed var(--primary-light);border-radius:12px;padding:16px;
+      text-align:center;cursor:pointer;transition:.25s;background:var(--bg-blue);
+    }
+    .file-drop:hover{border-color:var(--primary);background:#dbeafe}
+    .file-drop .em{font-size:26px;display:block;margin-bottom:4px}
+    .file-drop p{font-size:12.5px;color:var(--text-dim)}
+    .file-drop input{display:none}
+    .file-name{font-size:11.5px;color:var(--green);margin-top:4px;word-break:break-all;font-weight:600}
+    .submit-btn{
+      width:100%;padding:13px;border:0;border-radius:13px;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      color:#fff;font-weight:700;font-size:14.5px;cursor:pointer;
+      box-shadow:0 10px 26px rgba(30,64,175,.3);transition:.25s;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    .submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(30,64,175,.4)}
+    .submit-btn:disabled{opacity:.6;cursor:wait;transform:none}
+    .form-msg{margin-top:12px;padding:11px;border-radius:10px;font-size:13px;display:none}
+    .form-msg.success{background:#d1fae5;border:1px solid #6ee7b7;color:#065f46;display:block}
+    .form-msg.error{background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;display:block}
+    .form-msg.info{background:#dbeafe;border:1px solid #93c5fd;color:#1e40af;display:block}
+    .form-msg .spinner{
+      width:14px;height:14px;border:2px solid rgba(0,0,0,.2);border-top-color:var(--primary);
+      border-radius:50%;display:inline-block;animation:rot 1s linear infinite;margin-right:8px;vertical-align:-2px;
+    }
+    @keyframes rot{to{transform:rotate(360deg)}}
+
+    /* HERO WELCOME */
+    .hero-welcome{
+      flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+      padding:20px;
+    }
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;
+      background:var(--bg-yellow);color:var(--accent-dark);
+      border:1px solid #fde68a;letter-spacing:.5px;
+      margin-bottom:24px;
+    }
+    .hero-welcome h1{
+      font-size:clamp(34px,5vw,56px);font-weight:800;margin-bottom:14px;
+      background:linear-gradient(120deg,var(--primary),var(--primary-light) 50%,var(--accent-dark));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .hero-welcome p{font-size:17px;color:var(--text-dim);max-width:620px;margin-bottom:32px}
+    .hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+    .hero-features{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:46px;max-width:780px;width:100%}
+    .hero-feature{padding:18px 12px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--border)}
+    .hero-feature .em{font-size:30px;display:block;margin-bottom:6px}
+    .hero-feature b{font-size:22px;font-family:'Space Grotesk';color:var(--primary);display:block}
+    .hero-feature span{font-size:11.5px;color:var(--text-soft);letter-spacing:.3px}
+
+    /* NAV BUTTONS */
+    .nav-bottom{
+      flex:0 0 auto;background:#fff;border-top:1px solid var(--border);
+      padding:14px 0;z-index:20;
+    }
+    .nav-bottom-inner{
+      width:min(1280px,94%);margin:0 auto;
+      display:flex;justify-content:space-between;align-items:center;gap:14px;
+    }
+    .nav-btn{
+      padding:11px 20px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;
+      display:inline-flex;align-items:center;gap:8px;transition:.2s;border:1px solid var(--border);
+      background:#fff;color:var(--text);
+    }
+    .nav-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+    .nav-btn:disabled{opacity:.4;cursor:not-allowed}
+    .nav-btn.next{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:0}
+    .nav-btn.next:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 20px rgba(30,64,175,.3)}
+    .nav-btn.last{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:0}
+    .nav-position{font-size:13px;color:var(--text-soft);font-weight:600}
+    .nav-position b{color:var(--primary);font-family:'Space Grotesk';font-size:15px}
+
+    /* TOC OVERVIEW (slide 0) */
+    .toc{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:880px;margin:30px auto 0}
+    .toc-item{
+      display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;
+      background:#fff;border:1px solid var(--border);cursor:pointer;transition:.25s;text-align:left;
+    }
+    .toc-item:hover{border-color:var(--primary);transform:translateX(4px);box-shadow:var(--shadow)}
+    .toc-item .num{
+      width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));
+      color:#fff;display:grid;place-items:center;font-weight:700;font-family:'Space Grotesk';flex-shrink:0;
+    }
+    .toc-item.yellow .num{background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+    .toc-item .ti-body b{font-size:14px;color:var(--text);display:block}
+    .toc-item .ti-body span{font-size:12px;color:var(--text-soft)}
+
+    /* RESPONSIVE */
+    @media (max-width:980px){
+      .grid.cols-3,.grid.cols-4,.cap-grid,.canva-steps,.steps,.toc,.hero-features{grid-template-columns:repeat(2,1fr)}
+      .diagram{grid-template-columns:1fr;gap:8px}
+      .diagram .arrow{transform:rotate(90deg);margin:0 auto}
+      .ebook-card,.task-wrap{grid-template-columns:1fr}
+      .form-card{position:static}
+      .prompt-compare{grid-template-columns:1fr}
+    }
+    @media (max-width:620px){
+      .grid.cols-3,.grid.cols-4,.cap-grid,.canva-steps,.steps,.toc,.hero-features,.form-row{grid-template-columns:1fr}
+      .nav-btn span.lbl{display:none}
+      .top-meta{display:none}
+      .slide{padding:24px 0 60px}
+      .hero-features{gap:10px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ TOP BAR ============ -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">🤖</div>
+        <div class="brand-text">
+          <b>AI Learning</b>
+          <span>SMP Negeri 1 Moga</span>
+        </div>
+      </div>
+      <div class="top-meta">
+        Media Pembelajaran Interaktif<br>
+        <b>Etika &amp; Keamanan Digital</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PROGRESS ============ -->
+  <div class="progress-wrap">
+    <div class="progress-inner">
+      <div class="progress-text"><b id="curStep">1</b> / <span id="totalStep">10</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+      <div class="progress-text" id="curTitle">Pendahuluan</div>
+    </div>
+  </div>
+
+  <!-- DOTS -->
+  <div class="dots" id="dots"></div>
+
+  <!-- ============ STAGE / SLIDES ============ -->
+  <div class="stage" id="stage">
+
+    <!-- ============ SLIDE 0: WELCOME ============ -->
+    <section class="slide" data-title="Pendahuluan">
+      <div class="slide-inner">
+        <div class="hero-welcome">
+          <span class="hero-badge">📚 Media Pembelajaran Interaktif • Kelas Teknologi</span>
+          <h1>Memahami Artificial Intelligence dari Nol</h1>
+          <p>Selamat datang di petualangan belajar AI! Klik tombol <b>Mulai Belajar</b> di bawah, lalu ikuti materi <b>satu per satu</b>. Setiap halaman fokus ke satu topik — biar kamu benar-benar paham sebelum lanjut.</p>
+          <div class="hero-actions">
+            <button class="btn-yellow" onclick="goTo(1)">🚀 Mulai Belajar</button>
+            <button class="btn-primary" onclick="goTo(9)">📋 Lihat Tugas</button>
+          </div>
+          <div class="hero-features">
+            <div class="hero-feature"><span class="em">📖</span><b>6</b><span>Materi Inti</span></div>
+            <div class="hero-feature"><span class="em">📕</span><b>1</b><span>E-Book Gratis</span></div>
+            <div class="hero-feature"><span class="em">🎨</span><b>9</b><span>Langkah Canva AI</span></div>
+            <div class="hero-feature"><span class="em">📝</span><b>1</b><span>Tugas Poster</span></div>
+          </div>
+        </div>
+        <div class="toc">
+          <button class="toc-item" onclick="goTo(1)"><div class="num">1</div><div class="ti-body"><b>Apa itu AI?</b><span>Pemahaman dasar</span></div></button>
+          <button class="toc-item" onclick="goTo(2)"><div class="num">2</div><div class="ti-body"><b>Asal Usul AI</b><span>Sejarah 1950 - sekarang</span></div></button>
+          <button class="toc-item" onclick="goTo(3)"><div class="num">3</div><div class="ti-body"><b>Cara Kerja AI</b><span>4 tahap proses</span></div></button>
+          <button class="toc-item" onclick="goTo(4)"><div class="num">4</div><div class="ti-body"><b>Kenapa Harus Ngerti AI?</b><span>Alasan penting</span></div></button>
+          <button class="toc-item" onclick="goTo(5)"><div class="num">5</div><div class="ti-body"><b>Apa yang Bisa AI?</b><span>12 contoh kemampuan</span></div></button>
+          <button class="toc-item" onclick="goTo(6)"><div class="num">6</div><div class="ti-body"><b>Kenapa Siswa Kenal AI?</b><span>Untuk generasi muda</span></div></button>
+          <button class="toc-item yellow" onclick="goTo(7)"><div class="num">7</div><div class="ti-body"><b>E-Book Gratis</b><span>Ngobrol yang Benar sama AI</span></div></button>
+          <button class="toc-item yellow" onclick="goTo(8)"><div class="num">8</div><div class="ti-body"><b>Tutorial Canva AI</b><span>9 langkah praktik</span></div></button>
+          <button class="toc-item yellow" onclick="goTo(9)"><div class="num">9</div><div class="ti-body"><b>Tugas Poster</b><span>Upload karyamu</span></div></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 1: APA ITU AI ============ -->
+    <section class="slide" data-title="Apa itu AI?">
+      <div class="slide-inner">
+        <span class="slide-tag">Materi 01</span>
+        <h2 class="slide-title">Apa itu Artificial Intelligence?</h2>
+        <p class="slide-lead">AI adalah kecerdasan buatan yang membuat mesin dapat berpikir, belajar, dan membuat keputusan layaknya manusia — namun dengan kecepatan dan kapasitas jauh melampaui kita.</p>
+        <div class="grid cols-3">
+          <div class="card blue">
+            <div class="ic">🧠</div>
+            <h3>Bisa Berpikir</h3>
+            <p>AI memproses informasi, mengenali pola, dan mengambil keputusan berdasarkan data yang dipelajari — bukan diprogram secara kaku langkah demi langkah.</p>
+          </div>
+          <div class="card blue">
+            <div class="ic">📚</div>
+            <h3>Bisa Belajar</h3>
+            <p>Semakin banyak data diberikan, semakin pintar AI. Inilah yang disebut <i>Machine Learning</i> — belajar dari pengalaman, mirip otak manusia.</p>
+          </div>
+          <div class="card blue">
+            <div class="ic">🎯</div>
+            <h3>Berespons</h3>
+            <p>Dari asisten suara, rekomendasi video, hingga mobil swakemudi — AI menghasilkan jawaban, gambar, teks, atau aksi nyata di dunia.</p>
+          </div>
+        </div>
+        <div class="callout yellow">
+          <h4>💡 Analogi Sederhana</h4>
+          <p>Bayangkan AI seperti anak kecil yang baru belajar. Awalnya ia tidak tahu apa-apa. Lalu ia melihat gambar kucing berkali-kali (<strong>data</strong>). Lama-lama otaknya (<strong>algoritma</strong>) bisa mengenali: "Oh, ini kucing!" Saat ditunjuk gambar baru, ia bisa menebak. Itulah cara AI belajar — dari contoh, bukan dari aturan yang ditulis satu per satu.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 2: ASAL USUL AI ============ -->
+    <section class="slide" data-title="Asal Usul AI">
+      <div class="slide-inner">
+        <span class="slide-tag">Materi 02</span>
+        <h2 class="slide-title">Asal Usul AI</h2>
+        <p class="slide-lead">Gagasan tentang mesin cerdas sudah muncul sejak puluhan tahun yang lalu. Mari telusuri perjalanan AI dari mimpi menjadi kenyataan.</p>
+        <div class="timeline">
+          <div class="tl-item"><div class="yr">1950</div><h4>Alan Turing &amp; "Tes Turing"</h4><p>Ilmuwan Inggris Alan Turing mengusulkan pertanyaan: "Bisakah mesin berpikir?" Ia merancang Tes Turing — jika manusia tidak bisa membedakan jawaban mesin dan manusia, maka mesin itu "cerdas".</p></div>
+          <div class="tl-item"><div class="yr">1956</div><h4>Lahirnya Istilah "AI" di Dartmouth</h4><p>John McCarthy dan rekan-rekan menyelenggarakan konferensi di Dartmouth College, AS. Di sinilah istilah <i>Artificial Intelligence</i> pertama kali dipakai sebagai bidang ilmu.</p></div>
+          <div class="tl-item"><div class="yr">1960-an</div><h4>ELIZA — Chatbot Pertama</h4><p>Joseph Weizenbaum membuat ELIZA, program yang bisa "mengobrol" seperti psikolog. Sederhana, tetapi membuktikan komputer bisa mensimulasikan percakapan manusia.</p></div>
+          <div class="tl-item"><div class="yr">1997</div><h4>Deep Blue Kalahkan Kasparov</h4><p>Komputer catur IBM Deep Blue mengalahkan Juara Dunia Garry Kasparov. Momen bersejarah yang menunjukkan AI bisa mengalahkan manusia di bidang strategi.</p></div>
+          <div class="tl-item"><div class="yr">2012</div><h4>Era Deep Learning</h4><p>Jaringan saraf tiruan berlapis banyak (<i>Deep Learning</i>) mulai mengubah segalanya. AI bisa mengenali gambar kucing dari video YouTube — tonggak lahirnya AI modern.</p></div>
+          <div class="tl-item"><div class="yr">2022</div><h4>ChatGPT &amp; Era AI Generatif</h4><p>OpenAI meluncurkan ChatGPT. Dunia langsung gempar — untuk pertama kalinya, AI bisa mengobral halus, menulis esai, kode, dan puisi seperti manusia. AI resmi masuk ke hidup sehari-hari.</p></div>
+          <div class="tl-item"><div class="yr">2024 - Sekarang</div><h4>AI di Mana-Mana</h4><p>AI kini ada di HP, kulkas, mobil, hingga kelas. Generasi baru tumbuh bersama AI — termasuk kamu, siswa SMP Negeri 1 Moga!</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 3: CARA KERJA AI ============ -->
+    <section class="slide" data-title="Cara Kerja AI">
+      <div class="slide-inner">
+        <span class="slide-tag">Materi 03</span>
+        <h2 class="slide-title">Cara Kerja AI</h2>
+        <p class="slide-lead">Secara sederhana, AI bekerja dalam 4 tahap utama: menerima data, belajar pola, membuat keputusan, dan memberi hasil. Mirip cara kamu belajar, tapi jauh lebih cepat!</p>
+        <div class="diagram">
+          <div class="node input"><h5>📥 INPUT</h5><p>Data masuk: teks, gambar, suara, angka</p></div>
+          <div class="arrow">→</div>
+          <div class="node process"><h5>🧠 PROSES</h5><p>Algoritma memproses data &amp; mencari pola</p></div>
+          <div class="arrow">→</div>
+          <div class="node output"><h5>🎯 OUTPUT</h5><p>Hasil: jawaban, prediksi, gambar, keputusan</p></div>
+        </div>
+        <div class="steps" style="margin-top:24px">
+          <div class="step"><h4>1. Mengumpulkan Data</h4><p>AI butuh banyak contoh. Misal untuk mengenali kucing, AI diberi ribuan foto kucing dari berbagai sudut.</p></div>
+          <div class="step"><h4>2. Belajar Pola</h4><p>Algoritma menemukan pola: kucing punya telinga lancip, kumis, bentuk mata tertentu, dll.</p></div>
+          <div class="step"><h4>3. Membuat Model</h4><p>Hasil belajar disimpan dalam "model" — semacam otak digital yang siap memutuskan.</p></div>
+          <div class="step"><h4>4. Memberi Jawaban</h4><p>Saat diberi data baru, AI menggunakan modelnya untuk memprediksi atau menghasilkan sesuatu.</p></div>
+        </div>
+        <div class="callout">
+          <h4>⚙️ Komponen Utama AI</h4>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:10px">
+            <div><strong style="color:var(--primary)">• Data</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Bahan bakar AI. Tanpa data, AI tidak bisa belajar.</p></div>
+            <div><strong style="color:var(--primary)">• Algoritma</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Resep cara memproses data menjadi pengetahuan.</p></div>
+            <div><strong style="color:var(--primary)">• Komputasi</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Tenaga komputer untuk menjalankan proses.</p></div>
+            <div><strong style="color:var(--primary)">• Model</strong><p style="font-size:13px;color:var(--text-dim);margin-top:2px">Hasil akhir berupa "otak" yang bisa dipakai ulang.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 4: KENAPA HARUS NGERTI AI ============ -->
+    <section class="slide" data-title="Kenapa Harus Ngerti AI?">
+      <div class="slide-inner">
+        <span class="slide-tag">Materi 04</span>
+        <h2 class="slide-title">Kenapa Harus Ngerti AI?</h2>
+        <p class="slide-lead">AI bukan lagi masa depan — ia sudah ada di sini. Memahaminya kini menjadi keterampilan hidup, sama seperti membaca dan menulis.</p>
+        <div class="grid cols-2">
+          <div class="card blue"><div class="ic">🌍</div><h3>AI Ada di Sekitar Kita</h3><p>Dari rekomendasi video YouTube, filter kamera HP, asisten suara Google, hingga aplikasi belajar — semuanya memakai AI. Kalau tidak paham, kita hanya jadi pengguna pasif yang tidak tahu cara kerjanya.</p></div>
+          <div class="card blue"><div class="ic">💼</div><h3>Masa Depan Pekerjaan</h3><p>Sebagian besar pekerjaan masa depan akan melibatkan AI — dokter, insinyur, guru, bahkan seniman. Yang menguasai AI akan unggul; yang tidak, akan tertinggal.</p></div>
+          <div class="card yellow"><div class="ic">🛡️</div><h3>Menghindari Penyalahgunaan</h3><p>AI bisa dipakai untuk hal baik maupun buruk: hoaks, deepfake, penipuan. Dengan memahami AI, kamu bisa melindungi diri dan keluarga dari bahayanya.</p></div>
+          <div class="card yellow"><div class="ic">🚀</div><h3>Peluang Berkreasi</h3><p>AI adalah alat canggih untuk menuangkan ide. Kamu bisa membuat gambar, cerita, musik, hingga program sendiri — bahkan sebelum lulus SMP!</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 5: KEMAMPUAN AI ============ -->
+    <section class="slide" data-title="Kemampuan AI">
+      <div class="slide-inner">
+        <span class="slide-tag">Materi 05</span>
+        <h2 class="slide-title">Apa yang Bisa Dilakukan AI?</h2>
+        <p class="slide-lead">Kemampuan AI sangat luas. Berikut contoh-contoh nyata yang mungkin sudah kamu pakai tanpa sadar!</p>
+        <div class="cap-grid">
+          <div class="cap"><span class="em">💬</span><h4>Ngobrol</h4><p>ChatGPT, Gemini bisa menjawab pertanyaan apa saja dengan gaya natural.</p></div>
+          <div class="cap"><span class="em">🎨</span><h4>Membuat Gambar</h4><p>AI menghasilkan ilustrasi, foto, hingga poster dari deskripsi teks.</p></div>
+          <div class="cap"><span class="em">📝</span><h4>Menulis</h4><p>Esai, puisi, cerita, surat, kode program — AI bisa bantu menulis semua.</p></div>
+          <div class="cap"><span class="em">🎵</span><h4>Membuat Musik</h4><p>Suno, Udio bisa menciptakan lagu lengkap dengan vokal dari teks.</p></div>
+          <div class="cap"><span class="em">🎬</span><h4>Membuat Video</h4><p>AI bisa membuat video pendek, mengedit, hingga menukar wajah (deepfake).</p></div>
+          <div class="cap"><span class="em">🗣️</span><h4>Memahami Suara</h4><p>Mengubah suara jadi teks, atau sebaliknya — seperti Google Assistant.</p></div>
+          <div class="cap"><span class="em">🌐</span><h4>Terjemahan</h4><p>Menerjemahkan bahasa secara real-time, lebih halus dari kamus tradisional.</p></div>
+          <div class="cap"><span class="em">🔍</span><h4>Mencari Info</h4><p>AI bisa menelusuri jutaan halaman dan merangkum jawaban dalam hitungan detik.</p></div>
+          <div class="cap"><span class="em">🩺</span><h4>Bantu Medis</h4><p>Mendeteksi penyakit dari rontgen, memprediksi risiko, bantu diagnosis dokter.</p></div>
+          <div class="cap"><span class="em">🚗</span><h4>Mobil Swakemudi</h4><p>AI mengendalikan mobil, drone, robot — bisa melihat, memutuskan, bertindak.</p></div>
+          <div class="cap"><span class="em">🎮</span><h4>Bermain Game</h4><p>AI bisa menjadi lawan tangguh catur, Go, hingga game e-sport modern.</p></div>
+          <div class="cap"><span class="em">🌱</span><h4>Jaga Lingkungan</h4><p>Memprediksi cuaca, memantau hutan, menghemat energi — AI bantu selamatkan bumi.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 6: KENAPA SISWA ============ -->
+    <section class="slide" data-title="Siswa & AI">
+      <div class="slide-inner">
+        <span class="slide-tag">Materi 06</span>
+        <h2 class="slide-title">Kenapa Siswa Harus Mengenal AI?</h2>
+        <p class="slide-lead">Khusus untuk kalian, generasi muda SMP Negeri 1 Moga — mengenal AI sekarang adalah investasi untuk masa depanmu sendiri.</p>
+        <div class="grid cols-3">
+          <div class="card blue"><div class="ic">🧭</div><h3>Siap Hadapi Dunia Digital</h3><p>Setelah lulus nanti, dunia kerja dan kuliah akan penuh AI. Mulai sekarang, kamu sudah punya bekal untuk tidak kaget.</p></div>
+          <div class="card blue"><div class="ic">🧠</div><h3>Latih Berpikir Kritis</h3><p>Belajar AI mengajarkan logika, sebab-akibat, dan pemecahan masalah — keterampilan penting untuk semua pelajaran.</p></div>
+          <div class="card blue"><div class="ic">✨</div><h3>Bangun Kreativitas</h3><p>AI bukan pesaing, tapi alat. Kamu bisa membuat karya yang sebelumnya tidak mungkin — gambar, cerita, bahkan aplikasi.</p></div>
+          <div class="card yellow"><div class="ic">🛡️</div><h3>Jadi Pengguna Bijak</h3><p>Tidak semua konten AI itu benar. Dengan mengenal AI, kamu bisa memilah mana yang boleh dipercaya, mana yang hoaks.</p></div>
+          <div class="card yellow"><div class="ic">🤝</div><h3>Bisa Berbagi ke Keluarga</h3><p>Orang tua dan adik belum tentu paham AI. Kamu bisa jadi "guru AI" pertama di rumah — ajak mereka pakai dengan aman.</p></div>
+          <div class="card yellow"><div class="ic">🏆</div><h3>Buka Peluang Prestasi</h3><p>Banyak lomba, beasiswa, dan program khusus AI untuk siswa. Siapa tahu, prestasi besarmu dimulai dari sini!</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 7: E-BOOK ============ -->
+    <section class="slide" data-title="E-Book Gratis">
+      <div class="slide-inner">
+        <span class="slide-tag yellow">Bahan Pendamping</span>
+        <h2 class="slide-title">📖 E-Book Gratis: "Ngobrol yang Benar sama AI"</h2>
+        <p class="slide-lead">Buku digital gratis dari Bapak Yanuar — berisi panduan praktis bagaimana cara berbicara dengan AI agar hasilnya akurat dan bermanfaat. Baca dulu sebelum mengerjakan tugas poster!</p>
+        <div class="ebook-card">
+          <div class="ebook-cover">
+            <div>
+              <div class="title">Ngobrol yang Benar sama AI</div>
+              <div class="sub">Pandai Prompt, Bijak Berinteraksi</div>
+              <div class="tag">E-BOOK GRATIS</div>
+            </div>
+          </div>
+          <div class="ebook-info">
+            <h3>Apa yang akan kamu pelajari?</h3>
+            <p>Buku ini ringkas, padat, dan langsung bisa dipraktikkan. Cocok untuk pemula yang baru kenal AI.</p>
+            <ul>
+              <li>Apa itu prompt dan kenapa penting?</li>
+              <li>5 rumus prompt yang membuat AI paham maksudmu</li>
+              <li>Contoh prompt baik vs prompt buruk</li>
+              <li>Etika &amp; keamanan saat berinteraksi dengan AI</li>
+              <li>Praktik langsung dengan Canva AI</li>
+            </ul>
+            <div class="token-box">
+              <div>
+                <small>Token Download</small>
+                <code>FREEBOOKAI</code>
+              </div>
+              <small style="max-width:180px;text-align:right">Salin token ini, paste di halaman download</small>
+            </div>
+            <a class="btn-yellow" href="https://yanuar-moga.github.io/download/" target="_blank" rel="noopener">⬇️ Download E-Book Gratis</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 8: CANVA TUTORIAL ============ -->
+    <section class="slide" data-title="Tutorial Canva AI">
+      <div class="slide-inner">
+        <span class="slide-tag yellow">Tutorial Praktik</span>
+        <h2 class="slide-title">Membuat Poster dengan Canva AI</h2>
+        <p class="slide-lead">Setelah membaca e-book dan memahami cara membuat prompt, saatnya praktik! Ikuti langkah-langkah berikut untuk membuat poster digital bertema <b>Etika &amp; Keamanan Digital</b> menggunakan Canva AI.</p>
+        <div class="canva-steps">
+          <div class="canva-step"><div class="num">1</div><h4>Buka Canva &amp; Login</h4><p>Buka <a href="https://www.canva.com" target="_blank" rel="noopener">canva.com</a>. Login dengan akun Google. Pilih <b>"Create a design"</b> → <b>"Poster (portrait)"</b> ukuran 18×24 in.</p></div>
+          <div class="canva-step"><div class="num">2</div><h4>Pilih "Magic Studio"</h4><p>Di sidebar kiri, cari menu <b>"Apps"</b> → <b>"Magic Studio"</b>. Di sana ada fitur Canva AI: Magic Design, Magic Media, Magic Write, dan Magic Edit.</p></div>
+          <div class="canva-step"><div class="num">3</div><h4>Buat Prompt Gambar</h4><p>Klik <b>"Magic Media"</b> → tab <b>Text to Image</b>. Tulis prompt hasil karyamu sendiri. Contoh: <i>"Poster edukasi etika digital, siswa SMP pakai HP, simbol perisai, warna biru dan kuning, gaya flat modern."</i></p><div class="hint">💡 Buat prompt sendiri — jangan asal salin!</div></div>
+          <div class="canva-step"><div class="num">4</div><h4>Generate &amp; Pilih Gambar</h4><p>Klik <b>"Generate image"</b>. Canva AI akan membuat 4 pilihan gambar. Pilih yang paling sesuai dengan ide kamu. Klik untuk menambahkannya ke kanvas.</p></div>
+          <div class="canva-step"><div class="num">5</div><h4>Ambil Logo Sekolah</h4><p>Buka website resmi <a href="https://smpn1moga.sch.id" target="_blank" rel="noopener">smpn1moga.sch.id</a>. Klik kanan pada logo → <b>"Save image as..."</b>. Di Canva, klik <b>"Uploads"</b> → upload logo tadi.</p><div class="hint">💡 Logo ditempatkan di pojok atas poster.</div></div>
+          <div class="canva-step"><div class="num">6</div><h4>Upload Foto Peserta</h4><p>Upload foto dirimu melalui menu <b>Uploads</b>. Tempatkan foto di pojok — misal kanan bawah. Beri bingkai lingkaran agar rapi.</p></div>
+          <div class="canva-step"><div class="num">7</div><h4>Tambahkan Teks</h4><p>Pakai <b>"Magic Write"</b> untuk membantu menyusun pesan, atau ketik manual. Wajib cantumkan: <b>Judul poster</b>, <b>Nama lengkap</b>, <b>Kelas</b>, dan <b>Pesan singkat</b>.</p></div>
+          <div class="canva-step"><div class="num">8</div><h4>Atur Tata Letak</h4><p>Pastikan semua elemen tidak tumpang tindih. Gunakan menu <b>"Align"</b> untuk merapikan. Periksa: logo ✓, foto ✓, nama ✓, kelas ✓, pesan ✓, gambar AI ✓.</p></div>
+          <div class="canva-step"><div class="num">9</div><h4>Download Hasil</h4><p>Klik <b>"Share"</b> → <b>"Download"</b> → Pilih format <b>PNG</b> atau <b>JPG</b> → <b>"Download"</b>. Simpan file di komputer/HP-mu.</p><div class="hint">💡 Maksimal 5 MB, resolusi min. 1000×1400 piksel.</div></div>
+        </div>
+        <div class="prompt-compare">
+          <div class="prompt-box bad">
+            <h5>❌ Prompt Kurang Baik</h5>
+            <p>"gambar anak pakai hp"</p>
+            <div class="ex">→ AI akan bingung, hasilnya acak, tidak sesuai keinginan.</div>
+          </div>
+          <div class="prompt-box good">
+            <h5>✅ Prompt Baik</h5>
+            <p>"Ilustrasi flat modern seorang siswa SMP memakai seragam merah putih berdiri tegak memegang ponsel, di sekelilingnya simbol perisai biru melindungi dari tanda seru merah, latar belakang gradien biru muda, gaya poster edukasi, ada ruang kosong di atas untuk judul dan di bawah untuk nama"</p>
+            <div class="ex">→ Detail, jelas, ada gaya, warna, dan komposisi — AI akan mengerti!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SLIDE 9: TUGAS POSTER ============ -->
+    <section class="slide" data-title="Tugas Poster">
+      <div class="slide-inner">
+        <span class="slide-tag yellow">📋 Tugas Akhir</span>
+        <h2 class="slide-title">Tugas: Poster Etika &amp; Keamanan Digital</h2>
+        <p class="slide-lead">Saatnya tunjukkan pemahamanmu! Buat poster digital bertema <b>Etika dan Keamanan Digital</b> menggunakan Canva AI, lalu unggah hasilnya di bawah ini.</p>
+
+        <div class="task-wrap">
+          <div class="checklist">
+            <h3>✅ Ketentuan Tugas</h3>
+            <p class="sub">Pastikan poster kamu memenuhi semua syarat berikut sebelum diunggah.</p>
+            <div class="check-item"><div class="box">1</div><div class="ci-body"><b>Tema: Etika &amp; Keamanan Digital</b><p>Poster berisi pesan tentang cara bijak menggunakan internet, media sosial, atau AI.</p></div></div>
+            <div class="check-item"><div class="box">2</div><div class="ci-body"><b>Menggunakan Canva AI</b><p>Buat gambar dengan fitur <i>Magic Media (Text to Image)</i>. Tulis prompt sendiri.</p></div></div>
+            <div class="check-item"><div class="box">3</div><div class="ci-body"><b>Logo SMP Negeri 1 Moga</b><p>Ambil logo dari website resmi sekolah: <a href="https://smpn1moga.sch.id" target="_blank" rel="noopener">smpn1moga.sch.id</a>. Letakkan di pojok atas poster.</p></div></div>
+            <div class="check-item"><div class="box">4</div><div class="ci-body"><b>Nama Lengkap Peserta</b><p>Tuliskan nama lengkapmu di poster.</p></div></div>
+            <div class="check-item"><div class="box">5</div><div class="ci-body"><b>Kelas</b><p>Cantumkan kelas (misal 7A, 8B, 9C).</p></div></div>
+            <div class="check-item"><div class="box">6</div><div class="ci-body"><b>Pesan Singkat</b><p>Minimal 1 kalimat pesan tentang etika/keamanan digital. Contoh: <i>"Berbagi dengan bijak, jangan menyebarkan hoaks!"</i></p></div></div>
+            <div class="check-item"><div class="box">7</div><div class="ci-body"><b>Foto Peserta</b><p>Tempel foto dirimu (foto formal). Letakkan rapi di pojok poster.</p></div></div>
+            <div class="check-item"><div class="box">8</div><div class="ci-body"><b>Format File &amp; Ukuran</b><p>Unduh sebagai <b>PNG</b> atau <b>JPG</b>. Ukuran maksimal <b>5 MB</b>. Resolusi minimal 1000×1400 piksel.</p></div></div>
+            <div class="callout yellow" style="margin-top:16px">
+              <h4>📌 Tujuan Pembelajaran</h4>
+              <p>Setelah tugas ini, siswa diharapkan: (1) memahami konsep dasar AI, (2) mampu menulis prompt yang baik, (3) menguasai Canva AI sebagai alat berkarya, (4) menyadari pentingnya etika dan keamanan digital.</p>
+            </div>
+            <div style="margin-top:14px;font-size:11.5px;color:var(--text-soft);padding:10px 12px;background:var(--bg-soft);border-radius:8px;border:1px dashed var(--border-strong)">
+              📁 Poster tersimpan otomatis di Google Drive guru (Folder ID: <code style="color:var(--primary)">1rjSqV5obnDJYU0UJP7UzmdxfCULB91kF</code>)
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h3>📤 Unggah Poster</h3>
+            <p class="sub">Lengkapi data dan unggah file poster kamu.</p>
+            <form id="uploadForm" enctype="multipart/form-data">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Nama Lengkap <span class="req">*</span></label>
+                  <input type="text" name="nama" id="nama" placeholder="Contoh: Andi Pratama" required />
+                </div>
+                <div class="form-group">
+                  <label>Kelas <span class="req">*</span></label>
+                  <select name="kelas" id="kelas" required>
+                    <option value="">-- Pilih --</option>
+                    <option value="7A">7A</option><option value="7B">7B</option><option value="7C">7C</option><option value="7D">7D</option>
+                    <option value="8A">8A</option><option value="8B">8B</option><option value="8C">8C</option><option value="8D">8D</option>
+                    <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>NIS / NISN <span style="color:var(--text-soft);font-weight:400">(opsional)</span></label>
+                <input type="text" name="nis" id="nis" placeholder="Nomor Induk Siswa" />
+              </div>
+              <div class="form-group">
+                <label>Pesan dalam Poster <span class="req">*</span></label>
+                <textarea name="pesan" id="pesan" placeholder="Tulis pesan yang kamu tampilkan di poster..." required></textarea>
+                <div class="hint">Minimal 1 kalimat pesan tentang etika/keamanan digital.</div>
+              </div>
+              <div class="form-group">
+                <label>Prompt AI yang Kamu Buat <span class="req">*</span></label>
+                <textarea name="prompt" id="prompt" placeholder="Tulis prompt teks-ke-gambar yang kamu pakai di Canva AI..." required></textarea>
+                <div class="hint">Bagian ini dinilai — tulis prompt asli buatanmu sendiri.</div>
+              </div>
+              <div class="form-group">
+                <label>File Poster <span class="req">*</span></label>
+                <label class="file-drop" for="filePoster">
+                  <span class="em">🖼️</span>
+                  <p><b>Klik untuk pilih file</b> atau seret ke sini</p>
+                  <p style="font-size:11px;margin-top:3px">PNG / JPG • Maks 5 MB</p>
+                  <input type="file" name="filePoster" id="filePoster" accept="image/png,image/jpeg" required />
+                  <div class="file-name" id="fileName"></div>
+                </label>
+              </div>
+              <button type="submit" class="submit-btn" id="submitBtn"><span>🚀 Unggah Poster</span></button>
+              <div class="form-msg" id="formMsg"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============ NAV BOTTOM ============ -->
+  <div class="nav-bottom">
+    <div class="nav-bottom-inner">
+      <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← <span class="lbl">Sebelumnya</span></button>
+      <div class="nav-position"><b id="navPos">1</b> dari <span id="navTotal">10</span> • <span id="navTitle">Pendahuluan</span></div>
+      <button class="nav-btn next" id="nextBtn" onclick="nextSlide()"><span class="lbl">Selanjutnya</span> →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ============ SLIDE NAVIGATION ============
+  const slides=document.querySelectorAll('.slide');
+  const totalSlides=slides.length;
+  let current=0;
+
+  // Build dots
+  const dotsWrap=document.getElementById('dots');
+  slides.forEach((s,i)=>{
+    const d=document.createElement('button');
+    d.className='dot'+(i===0?' active':'');
+    d.title=s.getAttribute('data-title')||('Slide '+(i+1));
+    d.onclick=()=>goTo(i);
+    dotsWrap.appendChild(d);
+  });
+  const dots=document.querySelectorAll('.dot');
+
+  document.getElementById('totalStep').textContent=totalSlides;
+  document.getElementById('navTotal').textContent=totalSlides;
+
+  function goTo(idx){
+    if(idx<0||idx>=totalSlides) return;
+    slides[current].classList.remove('active');
+    current=idx;
+    slides[current].classList.add('active');
+    updateUI();
+    document.getElementById('stage').scrollTo({top:0,behavior:'smooth'});
+  }
+  function nextSlide(){ if(current<totalSlides-1) goTo(current+1); }
+  function prevSlide(){ if(current>0) goTo(current-1); }
+
+  function updateUI(){
+    dots.forEach((d,i)=>{
+      d.classList.remove('active','done');
+      if(i===current) d.classList.add('active');
+      else if(i<current) d.classList.add('done');
+    });
+    const pct=Math.round(((current+1)/totalSlides)*100);
+    document.getElementById('progressFill').style.width=pct+'%';
+    document.getElementById('curStep').textContent=current+1;
+    const title=slides[current].getAttribute('data-title')||'';
+    document.getElementById('curTitle').textContent=title;
+    document.getElementById('navPos').textContent=current+1;
+    document.getElementById('navTitle').textContent=title;
+    document.getElementById('prevBtn').disabled=(current===0);
+    const nextBtn=document.getElementById('nextBtn');
+    if(current===totalSlides-1){
+      nextBtn.innerHTML='✅ <span class="lbl">Selesai</span>';
+      nextBtn.classList.remove('next');nextBtn.classList.add('last');
+    }else{
+      nextBtn.innerHTML='<span class="lbl">Selanjutnya</span> →';
+      nextBtn.classList.remove('last');nextBtn.classList.add('next');
+    }
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown',(e)=>{
+    if(e.target.matches('input,textarea,select')) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ') {e.preventDefault();nextSlide();}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prevSlide();}
+  });
+
+  // ============ FORM UPLOAD ============
+  const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbxJMwC3N6qtugZWZyONFepmfz6jyG-e-Nxe_j3xTttmOvUD8Rm--fb8jDmkiu4ucHrvng/exec";
+  const fileInput=document.getElementById('filePoster');
+  const fileName=document.getElementById('fileName');
+  fileInput.addEventListener('change',()=>{
+    if(fileInput.files.length){
+      const f=fileInput.files[0];
+      const sizeMB=(f.size/1024/1024).toFixed(2);
+      if(f.size>5*1024*1024){
+        fileName.innerHTML=`⚠️ <b>${f.name}</b> (${sizeMB} MB) — File melebihi 5 MB!`;
+        fileName.style.color='#dc2626';
+        fileInput.value='';
+      }else{
+        fileName.innerHTML=`✓ <b>${f.name}</b> (${sizeMB} MB)`;
+        fileName.style.color='#059669';
+      }
+    }else{fileName.innerHTML='';}
+  });
+
+  const form=document.getElementById('uploadForm');
+  const submitBtn=document.getElementById('submitBtn');
+  const msg=document.getElementById('formMsg');
+  form.addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    msg.className='form-msg info';
+    msg.innerHTML='<span class="spinner"></span> Mengunggah poster, mohon tunggu...';
+    submitBtn.disabled=true;
+    try{
+      if(!APPS_SCRIPT_URL||APPS_SCRIPT_URL==="PASTE_APPS_SCRIPT_URL_DISINI"){
+        throw new Error("APPS_SCRIPT_URL belum diisi. Lihat komentar di dalam index.html. Guru perlu deploy Kode.gs terlebih dahulu.");
+      }
+      const formData=new FormData(form);
+      formData.append('action','uploadPoster');
+      const res=await fetch(APPS_SCRIPT_URL,{method:'POST',body:formData});
+      const data=await res.json();
+      if(data.success){
+        msg.className='form-msg success';
+        msg.innerHTML=`✅ <b>Berhasil!</b> ${data.message||'Poster kamu sudah terunggah.'}<br><br>Poster tersimpan di Google Drive guru. Kamu bisa menutup halaman ini atau unggah lagi jika perlu.`;
+        form.reset();
+        fileName.innerHTML='';
+      }else{
+        throw new Error(data.message||'Gagal mengunggah.');
+      }
+    }catch(err){
+      msg.className='form-msg error';
+      msg.innerHTML=`❌ <b>Gagal:</b> ${err.message}<br><br><small>Jika error berlanjut, hubungi guru atau periksa koneksi internet.</small>`;
+    }finally{
+      submitBtn.disabled=false;
+    }
+  });
+
+  // Init
+  slides[0].classList.add('active');
+  updateUI();
+</script>
+
+</body>
+</html>
