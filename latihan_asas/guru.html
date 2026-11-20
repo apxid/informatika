@@ -798,6 +798,7 @@ let state = {
   guru: { name: '', pin: '' },
   validated: {}, // { 'pg-1':'B', 'pgk-1':['A','B','C'], 'bs-1-P1':'B', ... }
   results: [],
+  totalValidated: 0, // jumlah soal yang sudah divalidasi guru
   lockScreenEnabled: true // status lock screen di index.html (di-toggle guru)
 };
 
@@ -1561,7 +1562,16 @@ async function loadResults() {
   }
   if (resp.ok && resp.data) {
     state.results = resp.data;
+    state.totalValidated = resp.totalValidated || 0;
     renderResultsTable();
+    // Update stats
+    const submittedList = resp.data.filter(s => s.submitted);
+    document.getElementById('totalSubmit').textContent = submittedList.length;
+    const withScore = submittedList.filter(s => s.score != null && s.score !== '-');
+    if (withScore.length > 0) {
+      const avg = Math.round(withScore.reduce((a,s) => a + Number(s.score), 0) / withScore.length);
+      document.getElementById('avgScore').textContent = avg;
+    }
   } else {
     showToast('danger','Gagal memuat data: ' + (resp.error || 'unknown'));
   }
@@ -1569,38 +1579,59 @@ async function loadResults() {
 
 function renderResultsTable() {
   if (state.results.length === 0) {
-    document.getElementById('resultsTableContainer').innerHTML = '<p style="color:var(--abu-700);font-style:italic;">Belum ada siswa yang submit.</p>';
+    document.getElementById('resultsTableContainer').innerHTML = `
+      <div style="padding:40px;text-align:center;color:var(--abu-700);">
+        <div style="font-size:48px;margin-bottom:10px;">📭</div>
+        <p>Belum ada siswa yang terdaftar/login.</p>
+        <p style="font-size:12px;margin-top:8px;">Siswa akan muncul di sini setelah login ke index.html</p>
+      </div>`;
     return;
   }
   let html = `
+    <div style="margin-bottom:12px;padding:10px 14px;background:var(--biru-smp-50);border-radius:8px;font-size:12px;color:var(--abu-700);">
+      💡 <strong>Info:</strong> Skor dihitung <strong>dinamis</strong> dari sheet ANSWERS vs VALIDATION.
+      ${state.totalValidated ? 'Soal tervalidasi: ' + state.totalValidated + ' item.' : 'Belum ada jawaban divalidasi guru - skor akan terhitung setelah validasi.'}
+    </div>
     <table class="results-table">
       <thead>
         <tr>
           <th>#</th>
           <th>Nama</th>
           <th>Kelas</th>
-          <th>Waktu Submit</th>
-          <th>Pelanggaran</th>
+          <th>Dijawab</th>
+          <th>Benar</th>
           <th>Skor</th>
+          <th>Pelanggaran</th>
           <th>Status</th>
+          <th>Waktu Submit</th>
         </tr>
       </thead>
       <tbody>
         ${state.results.map((s, i) => `
           <tr>
             <td>${i+1}</td>
-            <td>${s.name}</td>
+            <td><strong>${s.name}</strong></td>
             <td>${s.class}</td>
-            <td>${s.finishedAt || '-'}</td>
-            <td>${s.violations || 0}</td>
+            <td>${s.answeredCount || 0} / 30</td>
+            <td>${s.correctCount || 0}</td>
             <td><span class="score-pill ${scoreClass(s.score)}">${s.score ?? '-'}</span></td>
-            <td>${s.autoSubmit ? 'Auto' : 'Manual'}</td>
+            <td>${s.violations || 0}</td>
+            <td>${s.submitted ? '✓ Submit' : '⏳ Proses'}</td>
+            <td style="font-size:11px;">${s.finishedAt !== 'Belum submit' ? formatTime(s.finishedAt) : '-'}</td>
           </tr>
         `).join('')}
       </tbody>
     </table>
   `;
   document.getElementById('resultsTableContainer').innerHTML = html;
+}
+
+function formatTime(iso) {
+  if (!iso || iso === '-') return '-';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+  } catch(e) { return iso; }
 }
 
 function scoreClass(s) {
@@ -1621,14 +1652,18 @@ async function exportCSV() {
     showToast('warning','Belum ada data untuk diekspor.');
     return;
   }
-  const headers = ['No','Nama','Kelas','Waktu Submit','Pelanggaran','Skor','Status'];
+  const headers = ['No','Nama','Kelas','Dijawab','Benar','Total Tervalidasi','Skor','Pelanggaran','Status','Waktu Submit'];
   const rows = state.results.map((s, i) => [
-    i+1, '"' + (s.name||'').replace(/"/g,'""') + '"',
+    i+1,
+    '"' + (s.name||'').replace(/"/g,'""') + '"',
     '"' + (s.class||'').replace(/"/g,'""') + '"',
-    '"' + (s.finishedAt||'') + '"',
-    s.violations || 0,
+    (s.answeredCount || 0) + '/30',
+    s.correctCount || 0,
+    s.totalValidated || 0,
     s.score ?? '-',
-    s.autoSubmit ? 'Auto' : 'Manual'
+    s.violations || 0,
+    s.submitted ? 'Submitted' : 'Belum Submit',
+    '"' + (s.finishedAt || '-') + '"'
   ]);
   const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
   const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8' });
