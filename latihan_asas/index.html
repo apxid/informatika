@@ -1784,7 +1784,13 @@ async function verifyPin() {
     showToast('success', 'PIN valid. Selamat mengerjakan!');
     enterExam();
   } else {
-    errEl.textContent = (resp.error) ? 'Koneksi gagal: ' + resp.error : 'PIN tidak valid atau sudah digunakan.';
+    // Pesan error lebih informatif
+    const reason = resp.data && resp.data.reason ? resp.data.reason : 'PIN tidak valid';
+    if (reason.includes('tidak terdaftar')) {
+      errEl.textContent = 'PIN tidak terdaftar di server. Pastikan PIN benar, atau hubungi guru.';
+    } else {
+      errEl.textContent = reason;
+    }
   }
 }
 
