@@ -312,6 +312,30 @@
     background: var(--merah);
     border-color: var(--merah);
   }
+  /* Save indicator (browser cache) */
+  .save-indicator {
+    background: rgba(34, 197, 94, 0.2);
+    color: #d1fae5;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .save-indicator .dot {
+    width: 8px; height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #22c55e;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
   .timer-box {
     background: var(--kuning-osis-500);
     color: var(--biru-smp-900);
@@ -842,7 +866,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer1">90:00</div>
-      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
+      <span class="save-indicator" id="saveIndicator"><span class="dot"></span><span id="saveText">Tersimpan</span></span><button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress"></div>
@@ -864,7 +888,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer2">90:00</div>
-      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
+      <span class="save-indicator" id="saveIndicator"><span class="dot"></span><span id="saveText">Tersimpan</span></span><button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress2"></div>
@@ -886,7 +910,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer3">90:00</div>
-      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
+      <span class="save-indicator" id="saveIndicator"><span class="dot"></span><span id="saveText">Tersimpan</span></span><button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress3"></div>
@@ -908,7 +932,7 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer4">90:00</div>
-      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
+      <span class="save-indicator" id="saveIndicator"><span class="dot"></span><span id="saveText">Tersimpan</span></span><button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress4"></div>
@@ -930,14 +954,14 @@
     </div>
     <div class="right">
       <div class="timer-box" id="examTimer5">90:00</div>
-      <button class="logout-mini" onclick="confirmLogout()">Keluar</button>
+      <span class="save-indicator" id="saveIndicator"><span class="dot"></span><span id="saveText">Tersimpan</span></span><button class="logout-mini" onclick="confirmLogout()">Keluar</button>
     </div>
   </div>
   <div class="layer-indicator" id="layerProgress5"></div>
   <div class="questions-container" id="questionsBS"></div>
   <div class="nav-buttons">
     <button class="btn btn-secondary" onclick="goToLayer('layer-pgk')">&larr; Sebelumnya</button>
-    <button class="btn btn-danger" onclick="confirmSubmit()">SELESAIKAN UJIAN &check;</button>
+    <button class="btn btn-danger" onclick="confirmSubmit()">✓ KIRIM JAWABAN</button>
   </div>
 </section>
 
@@ -1579,6 +1603,10 @@ function buildLayerIndicators() {
 
 /* =========================================================
    ANSWER SELECTION
+   Penting: jawaban HANYA disimpan di localStorage (cache browser)
+   selama ujian. TIDAK ada request ke backend per jawaban.
+   SEMUA jawaban dikirim sekaligus saat siswa klik "Kirim Jawaban".
+   Ini menghindari data collision saat 32 siswa ujian bersamaan.
    ========================================================= */
 function selectPG(qid, letter, el) {
   // single-select
@@ -1586,8 +1614,8 @@ function selectPG(qid, letter, el) {
   document.querySelectorAll(`.option[data-qid="${qid}"]`).forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
   applyCorrectMarker(qid);
-  saveAnswer(qid, letter);
-  saveSession();
+  saveSession();  // SIMPAN KE LOCALSTORAGE SAJA
+  updateSaveIndicator();
 }
 
 function togglePGK(qid, letter, el) {
@@ -1601,8 +1629,8 @@ function togglePGK(qid, letter, el) {
     el.classList.add('selected');
   }
   applyCorrectMarker(qid);
-  saveAnswer(qid, JSON.stringify(state.answers[qid]));
-  saveSession();
+  saveSession();  // SIMPAN KE LOCALSTORAGE SAJA
+  updateSaveIndicator();
 }
 
 function selectBS(qid, stmt, val, el) {
@@ -1614,9 +1642,9 @@ function selectBS(qid, stmt, val, el) {
     c.textContent = c.dataset.val === 'B' ? '☐ B' : '☐ S';
   });
   el.classList.add('checked');
-  el.textContent = (val === 'B' ? '\u2713 B' : '\u2713 S');
-  saveAnswer(`${qid}-${stmt}`, val);
-  saveSession();
+  el.textContent = (val === 'B' ? '✓ B' : '✓ S');
+  saveSession();  // SIMPAN KE LOCALSTORAGE SAJA
+  updateSaveIndicator();
 }
 
 /* =========================================================
@@ -2007,13 +2035,27 @@ async function pollValidatedAnswers() {
 /* =========================================================
    SAVE ANSWER
    ========================================================= */
+// Catatan: saveAnswer tidak lagi dipanggil per jawaban
+// Jawaban hanya disimpan di localStorage (saveSession)
+// Bulk submit dilakukan saat siswa klik "Kirim Jawaban"
 async function saveAnswer(qid, value) {
-  if (state.submitted) return;
-  await gasPost({
-    action: 'saveAnswer',
-    studentId: state.student.id,
-    qid: qid,
-    answer: value
+  // Disabled - tidak ada save per jawaban untuk menghindari collision
+  return;
+}
+
+// Update indikator "Tersimpan di browser"
+function updateSaveIndicator() {
+  const answered = Object.keys(state.answers).length;
+  const total = 15 + 10 + 15; // PG + PGK + BS items
+  const saveText = document.getElementById('saveText');
+  if (saveText) {
+    saveText.textContent = `Browser: ${answered}/${total}`;
+  }
+  // Brief animation when answer is saved
+  const indicators = document.querySelectorAll('.save-indicator');
+  indicators.forEach(ind => {
+    ind.style.transform = 'scale(1.05)';
+    setTimeout(() => { ind.style.transform = 'scale(1)'; }, 200);
   });
 }
 
@@ -2024,12 +2066,13 @@ function confirmSubmit() {
   const total = 15 + 10 + 15; // PG + PGK + BS
   const answered = Object.keys(state.answers).length;
   showModal(`
-    <h3>Konfirmasi Selesai</h3>
+    <h3>Konfirmasi Kirim Jawaban</h3>
     <p>Anda telah menjawab <strong>${answered}</strong> dari <strong>${total}</strong> item.<br>
-       Apakah Anda yakin ingin mengakhiri ujian? Jawaban tidak dapat diubah setelah dikirim.</p>
+       Semua jawaban akan dikirim <strong>sekaligus</strong> ke server untuk diproses.<br>
+       <span style="color:var(--merah);font-weight:600;">Jawaban tidak dapat diubah setelah dikirim.</span></p>
     <div class="modal-buttons">
       <button class="btn btn-secondary" onclick="closeModal()">Periksa Lagi</button>
-      <button class="btn btn-danger" onclick="submitExam(false)">Ya, Kirim & Selesai</button>
+      <button class="btn btn-danger" onclick="submitExam(false)">Ya, Kirim Jawaban</button>
     </div>
   `);
 }
@@ -2042,7 +2085,15 @@ async function submitExam(autoSubmit) {
   // NOTE: pollInterval TIDAK di-clear agar siswa tetap menerima
   // validasi guru saat sesi pembahasan (real-time marker Rossi #46).
 
-  // Final submit to backend
+  // Tampilkan modal "Mengirim..."
+  showModal(`
+    <h3>Mengirim Jawaban...</h3>
+    <p>Sedang mengirim <strong>${Object.keys(state.answers).length}</strong> jawaban ke server.<br>
+       Mohon tunggu, jangan tutup halaman.</p>
+    <div style="margin: 20px auto; width: 50px;"><div class="spinner" style="width:50px;height:50px;border-width:5px;"></div></div>
+  `);
+
+  // Final bulk submit ke backend (1 POST request untuk semua jawaban)
   const payload = {
     action: 'submitExam',
     studentId: state.student.id,
@@ -2053,17 +2104,56 @@ async function submitExam(autoSubmit) {
     autoSubmit: autoSubmit,
     finishedAt: new Date().toISOString()
   };
-  const resp = await gasPost(payload);
 
-  goToLayer('layer-done');
-  if (autoSubmit) {
-    document.getElementById('doneStatus').textContent = 'WAKTU HABIS';
-    document.getElementById('doneSummary').textContent = 'Waktu ujian telah berakhir. Jawaban otomatis terkirim.';
+  // Retry logic - coba 3 kali jika gagal
+  let resp = null;
+  let lastError = '';
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      resp = await gasPost(payload);
+      if (resp && resp.ok) {
+        break;  // sukses
+      }
+      lastError = resp ? (resp.error || 'Unknown error') : 'No response';
+      console.warn(`Submit attempt ${attempt} failed:`, lastError);
+      if (attempt < 3) {
+        await new Promise(r => setTimeout(r, 1500 * attempt));  // exponential backoff
+      }
+    } catch (e) {
+      lastError = String(e);
+      console.error(`Submit attempt ${attempt} exception:`, e);
+      if (attempt < 3) {
+        await new Promise(r => setTimeout(r, 1500 * attempt));
+      }
+    }
   }
-  // Show score from backend if available
-  if (resp && resp.ok && resp.data && typeof resp.data.score !== 'undefined') {
-    document.getElementById('doneStatus').textContent = String(resp.data.score);
-    document.querySelector('.done-card .score-display .label').textContent = 'Skor Anda';
+
+  closeModal();
+  goToLayer('layer-done');
+
+  if (resp && resp.ok) {
+    // Sukses - simpan state submitted ke localStorage
+    saveSession();
+    if (autoSubmit) {
+      document.getElementById('doneStatus').textContent = 'WAKTU HABIS';
+      document.getElementById('doneSummary').textContent = 'Waktu ujian telah berakhir. Jawaban otomatis terkirim.';
+    }
+    // Tampilkan skor dari backend jika ada
+    if (resp.data && typeof resp.data.score !== 'undefined') {
+      document.getElementById('doneStatus').textContent = String(resp.data.score);
+      document.querySelector('.done-card .score-display .label').textContent = 'Skor Anda';
+    }
+    showToast('success', 'Jawaban berhasil terkirim ke server!');
+  } else {
+    // Gagal setelah 3x retry - jawaban tetap di localStorage
+    document.getElementById('doneStatus').textContent = 'GAGAL KIRIM';
+    document.getElementById('doneSummary').textContent = 
+      `Gagal mengirim ke server setelah 3x percobaan. Error: ${lastError}. ` +
+      `Jawaban Anda TETAP TERSIMPAN di browser. Mohon hubungi guru untuk pengumpulan manual.`;
+    showToast('danger', 'Gagal kirim ke server. Jawaban tersimpan di browser. Hubungi guru.');
+    // Reset submitted supaya siswa bisa coba lagi
+    state.submitted = false;
+    saveSession();
   }
 }
 
