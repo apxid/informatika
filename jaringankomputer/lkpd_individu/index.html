@@ -467,7 +467,7 @@
     /* =====================================================
      *  KONFIGURASI - WAJIB ISI DENGAN URL EXEC GAS
      * ===================================================== */
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoZFqDV2NCNZlfSakoqWvMaix1H6W8AIDxxZ1kN6ggaxPG1tnbQp1Bu0BYotv4N8U/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz86IDVs2h60cYq74Zp4RudJKlaNNuVDjvmMVBRI-eVkvg7FWMJkHGm3LuRy_a-xj2Eqw/exec';
 
     // State
     let currentSiswa = null;
@@ -855,8 +855,12 @@
       const ex = existing || {};
       const linkVal = ex.linkGDocs ? ' value="' + escapeHtml(ex.linkGDocs) + '"' : '';
       const tglVal = ex.tanggalPresentasi ? ' value="' + escapeHtml(ex.tanggalPresentasi) + '"' : '';
-      const statusSelesai = ex.status === 'Selesai' ? 'checked' : '';
-      const statusBelum = (ex.status === 'Belum' || !ex.status) ? 'checked' : '';
+      // Status ditentukan oleh guru saja — siswa tidak bisa mengubahnya.
+      // Tampilkan sebagai badge read-only agar siswa tahu posisi-nya.
+      const statusVal = String(ex.status || 'Belum');
+      const statusBadge = statusVal === 'Selesai'
+        ? '<span style="display:inline-flex;align-items:center;gap:6px;background:#dcfce7;color:#15803d;padding:8px 14px;border-radius:99px;font-weight:800;font-size:13px;">✅ Selesai</span>'
+        : '<span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;padding:8px 14px;border-radius:99px;font-weight:800;font-size:13px;">⏳ Belum</span>';
 
       document.getElementById('submissionForm').innerHTML =
         '\u003cdiv class="card"\u003e' +
@@ -877,10 +881,9 @@
         '\u003cinput type="date" id="tglPres" required' + tglVal + '\u003e' +
         '\u003c/div\u003e' +
         '\u003cdiv class="form-field"\u003e' +
-        '\u003clabel\u003eStatus Pengerjaan \u003cspan class="req"\u003e*\u003c/span\u003e\u003c/label\u003e' +
-        '\u003cdiv class="radio-group"\u003e' +
-        '\u003clabel\u003e\u003cinput type="radio" name="status" value="Selesai" ' + statusSelesai + ' required\u003e ✅ Selesai\u003c/label\u003e' +
-        '\u003clabel\u003e\u003cinput type="radio" name="status" value="Belum" ' + statusBelum + ' required\u003e ⏳ Belum\u003c/label\u003e' +
+        '\u003clabel\u003eStatus Presentasi\u003c/label\u003e' +
+        '\u003cdiv style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 0;"\u003e' + statusBadge +
+        '\u003cspan style="font-size:12px;color:var(--muted);font-weight:600;"\u003eDitentukan oleh guru setelah presentasi.\u003c/span\u003e' +
         '\u003c/div\u003e' +
         '\u003c/div\u003e' +
         '\u003c/div\u003e' +
@@ -896,7 +899,7 @@
         '\u003cli\u003eKlik "Buat Google Docs Baru" di atas.\u003c/li\u003e' +
         '\u003cli\u003eBagi link ke "Anyone with the link → Commenter/Viewer".\u003c/li\u003e' +
         '\u003cli\u003eSalin link, tempel di kolom Link Google Docs.\u003c/li\u003e' +
-        '\u003cli\u003ePilih tanggal presentasi & status.\u003c/li\u003e' +
+        '\u003cli\u003ePilih tanggal presentasi.\u003c/li\u003e' +
         '\u003cli\u003eKlik "Kirim Tugas".\u003c/li\u003e' +
         '\u003c/ol\u003e' +
         '\u003c/div\u003e' +
@@ -905,17 +908,16 @@
     }
 
     /* ============ SAVE SUBMISSION ============ */
+    // Catatan: status TIDAK dikirim oleh siswa. Hanya guru (via guru.html) yang bisa
+    // mengubah status (Belum ↔ Selesai). saveSubmission hanya menyimpan link + tanggal.
     async function saveSubmission() {
       const link = document.getElementById('linkDocs').value.trim();
       const tgl = document.getElementById('tglPres').value;
-      const statusEl = document.querySelector('input[name="status"]:checked');
-      if (!statusEl) { showAlert('alertLayer2', 'error', '⚠️ Pilih status dulu.'); return; }
 
       const data = {
         rowNum: currentRowNum,
         linkGoogleDocs: link,
         tanggalPresentasi: tgl,
-        status: statusEl.value,
         verifyNama: currentSiswa ? currentSiswa.nama : '',
         verifyKelas: currentSiswa ? currentSiswa.kelas : ''
       };
