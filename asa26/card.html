@@ -398,6 +398,130 @@ input,select{font-family:inherit;outline:none}
   }
 }
 
+/* ===== COVER PRINT CSS (F4 portrait, 1 ruang per halaman) ===== */
+.cover-print-only{display:none}
+@media print{
+  body.printing-cover #app,
+  body.printing-cover .app-header,
+  body.printing-cover .app-main,
+  body.printing-cover .app-footer,
+  body.printing-cover #loginScreen,
+  body.printing-cover #alertContainer,
+  body.printing-cover #loadingOverlay,
+  body.printing-cover #settingsModal,
+  body.printing-cover #aboutModal,
+  body.printing-cover #printArea,
+  body.printing-cover #labelPrintArea,
+  body.printing-cover #mejaPrintArea{display:none!important}
+  body.printing-cover #coverPrintArea{display:block!important}
+  body.printing-cover .cover-print-only{display:block}
+
+  body.printing-cover .cover-page{
+    width:210mm;height:330mm;
+    page-break-after:always;page-break-inside:avoid;
+    display:flex;flex-direction:column;align-items:center;
+    padding:20mm 25mm;box-sizing:border-box;
+    text-align:center;color:#000;
+    font-family:"Times New Roman",Times,serif;
+    border:2pt solid #000;
+  }
+  body.printing-cover .cover-page:last-child{page-break-after:auto}
+
+  /* Logo sekolah di atas tengah */
+  body.printing-cover .cover-logo{
+    width:35mm;height:35mm;object-fit:contain;
+    margin-bottom:8mm;
+  }
+
+  /* Judul utama */
+  body.printing-cover .cover-main-title{
+    font-family:"Arial Black",Arial,sans-serif;
+    font-weight:900;
+    font-size:28pt;color:#000;
+    margin-bottom:3mm;
+    letter-spacing:1pt;
+    line-height:1.2;
+  }
+  body.printing-cover .cover-main-subtitle{
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+    font-size:14pt;color:#000;
+    margin-bottom:10mm;
+    letter-spacing:.5pt;
+  }
+
+  /* Badge "RUANG X" — rounded corner hitam, text putih */
+  body.printing-cover .cover-badge{
+    background:#000;
+    color:#fff;
+    border-radius:8mm;
+    padding:6mm 20mm;
+    margin-bottom:8mm;
+    font-family:"Arial Black",Arial,sans-serif;
+    font-weight:900;
+    font-size:36pt;
+    letter-spacing:2pt;
+    line-height:1.1;
+    display:inline-block;
+  }
+
+  /* Subtitle di bawah badge */
+  body.printing-cover .cover-subtitle{
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+    font-size:13pt;color:#000;
+    margin-bottom:12mm;
+    letter-spacing:.5pt;
+  }
+
+  /* Info ruang — kelas & rentang nomor ujian */
+  body.printing-cover .cover-info-box{
+    border:1.5pt solid #000;
+    border-radius:3mm;
+    padding:6mm 10mm;
+    margin-bottom:6mm;
+    width:75%;
+  }
+  body.printing-cover .cover-info-row{
+    font-family:Arial,sans-serif;
+    font-weight:bold;
+    font-size:15pt;
+    line-height:1.8;
+    color:#000;
+    text-align:center;
+  }
+  body.printing-cover .cover-info-row .label{
+    font-weight:bold;
+    display:inline-block;
+    min-width:45mm;
+    text-align:left;
+  }
+  body.printing-cover .cover-info-row .value{
+    font-weight:bold;
+    color:#000;
+  }
+
+  /* Footer */
+  body.printing-cover .cover-footer{
+    margin-top:auto;
+    font-family:Arial,sans-serif;
+    color:#000;
+    text-align:center;
+    padding-top:6mm;
+    border-top:1pt solid #000;
+    width:80%;
+  }
+  body.printing-cover .cover-footer .school-name{
+    font-weight:bold;
+    font-size:12pt;
+    margin-bottom:2mm;
+  }
+  body.printing-cover .cover-footer .year{
+    font-weight:bold;
+    font-size:11pt;
+  }
+}
+
 /* ===== MODAL ===== */
 .modal-backdrop{position:fixed;inset:0;background:rgba(15,37,87,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;animation:fadeIn .25s}
 .modal-box{background:#fff;border-radius:18px;padding:0;width:100%;max-width:480px;box-shadow:var(--shadow-lg);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);max-height:92vh;display:flex;flex-direction:column}
@@ -578,6 +702,10 @@ input,select{font-family:inherit;outline:none}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Cetak No Meja
         </button>
+        <button class="btn-ghost" id="btnCover" title="Cetak Cover Panduan Ruang ASAS (F4 Portrait, 1 ruang/halaman)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Cetak Cover Panduan
+        </button>
       </div>
     </div>
 
@@ -744,6 +872,9 @@ input,select{font-family:inherit;outline:none}
 
 <!-- ============ MEJA LABEL PRINT AREA ============ -->
 <div id="mejaPrintArea" class="meja-print-only"></div>
+
+<!-- ============ COVER PRINT AREA ============ -->
+<div id="coverPrintArea" class="cover-print-only"></div>
 
 <script>
 /* =========================================================
@@ -1351,6 +1482,80 @@ async function printLabels(){
 }
 
 /* =========================================================
+   PRINT COVER PANDUAN RUANG (F4 portrait, 1 ruang per halaman)
+   ========================================================= */
+async function printCovers(){
+  if(!getExecUrl() || getExecUrl().startsWith('GANTI_')){
+    showAlert({type:'error', title:'URL Exec Belum Diisi', message:'Buka Pengaturan dan isi URL Exec GAS terlebih dahulu.'});
+    return;
+  }
+  showLoading('Memuat data ruang untuk cover...');
+  try{
+    const res = await callGas('getRuangLabels');
+    if(!res.success) throw new Error(res.error||'Gagal memuat data label');
+    const labels = res.labels || [];
+    if(labels.length === 0){
+      showAlert({type:'warning', title:'Tidak Ada Data', message:'Data ruang ujian tidak ditemukan di sheet RUANG_UJIAN.'});
+      return;
+    }
+    const school = STATE.settings.school || CONFIG.DEFAULT_SCHOOL;
+    const year = STATE.settings.year || CONFIG.DEFAULT_YEAR;
+    const logoUrl = 'https://yanuar-moga.github.io/guruwali/assets/logo.png';
+
+    let html = '';
+    labels.forEach(lbl=>{
+      // Build info rows for each group (kelas A + kelas B)
+      let infoRows = '';
+      if(lbl.kelasA){
+        infoRows += `<div class="cover-info-row"><span class="label">Kelas ${escapeHtml(lbl.kelasA)}</span> : <span class="value">${escapeHtml(lbl.rangeA||'-')}</span></div>`;
+      }
+      if(lbl.kelasB){
+        infoRows += `<div class="cover-info-row"><span class="label">Kelas ${escapeHtml(lbl.kelasB)}</span> : <span class="value">${escapeHtml(lbl.rangeB||'-')}</span></div>`;
+      }
+
+      html += `
+        <div class="cover-page">
+          <img class="cover-logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
+          <div class="cover-main-title">PANDUAN UJIAN ASAS</div>
+          <div class="cover-main-subtitle">ASESMEN SUMATIF AKHIR SEMESTER</div>
+          <div class="cover-badge">RUANG ${escapeHtml(String(lbl.id))}</div>
+          <div class="cover-subtitle">NAMA RUANG: ${escapeHtml(lbl.namaRuang||'')}</div>
+          <div class="cover-info-box">
+            ${infoRows}
+          </div>
+          <div class="cover-footer">
+            <div class="school-name">${escapeHtml(school)}</div>
+            <div class="year">TAHUN PELAJARAN ${escapeHtml(year)}</div>
+          </div>
+        </div>`;
+    });
+
+    const coverArea = document.getElementById('coverPrintArea');
+    coverArea.innerHTML = html;
+
+    showAlert({
+      type:'info', title:'Siap Cetak Cover',
+      message:`${labels.length} cover ruang akan dicetak dalam ${labels.length} halaman F4 Portrait (210×330 mm), 1 ruang per halaman. Pilih "Save as PDF", orientation PORTRAIT, ukuran Folio/F4, margin None.`,
+      confirmText:'Buka Dialog Cetak',
+      cancelText:'Batal'
+    }).then(ok=>{
+      if(ok){
+        document.body.classList.add('printing-cover');
+        const style = document.createElement('style');
+        style.id = 'cover-portrait-style';
+        style.textContent = '@media print { @page { size: 210mm 330mm; margin: 0; } }';
+        document.head.appendChild(style);
+        setTimeout(()=>window.print(), 300);
+      }
+    });
+  }catch(e){
+    showAlert({type:'error', title:'Gagal Memuat Data', message:e.message});
+  }finally{
+    hideLoading();
+  }
+}
+
+/* =========================================================
    PRINT NO PESERTA MEJA (1 F4 per ruang, 2 kolom × 16 baris)
    ========================================================= */
 async function printMejaLabels(){
@@ -1615,6 +1820,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('btnPrint').addEventListener('click', printCards);
   document.getElementById('btnLabels').addEventListener('click', printLabels);
   document.getElementById('btnMeja').addEventListener('click', printMejaLabels);
+  document.getElementById('btnCover').addEventListener('click', printCovers);
   document.getElementById('ruangFilter').addEventListener('change', applyFilters);
   document.getElementById('searchInput').addEventListener('input', applyFilters);
 
@@ -1645,12 +1851,16 @@ window.addEventListener('afterprint', ()=>{
   document.getElementById('printArea').innerHTML = '';
   document.getElementById('labelPrintArea').innerHTML = '';
   document.getElementById('mejaPrintArea').innerHTML = '';
+  document.getElementById('coverPrintArea').innerHTML = '';
   document.body.classList.remove('printing-labels');
   document.body.classList.remove('printing-meja');
+  document.body.classList.remove('printing-cover');
   const ls = document.getElementById('label-landscape-style');
   if(ls) ls.remove();
   const ms = document.getElementById('meja-portrait-style');
   if(ms) ms.remove();
+  const cs = document.getElementById('cover-portrait-style');
+  if(cs) cs.remove();
 });
 </script>
 </body>
