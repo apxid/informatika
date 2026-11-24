@@ -398,7 +398,7 @@ input,select{font-family:inherit;outline:none}
   }
 }
 
-/* ===== COVER PRINT CSS (F4 portrait, 1 ruang per halaman) ===== */
+/* ===== COVER PRINT CSS (F4 portrait, 1 ruang per halaman) — artistik & elegan ===== */
 .cover-print-only{display:none}
 @media print{
   body.printing-cover #app,
@@ -416,78 +416,159 @@ input,select{font-family:inherit;outline:none}
   body.printing-cover #coverPrintArea{display:block!important}
   body.printing-cover .cover-print-only{display:block}
 
+  /* Halaman cover dengan dekorasi geometric line art */
   body.printing-cover .cover-page{
     width:210mm;height:330mm;
     page-break-after:always;page-break-inside:avoid;
     display:flex;flex-direction:column;align-items:center;
-    padding:20mm 25mm;box-sizing:border-box;
+    padding:25mm 25mm 15mm;box-sizing:border-box;
     text-align:center;color:#000;
     font-family:"Times New Roman",Times,serif;
-    border:2pt solid #000;
+    position:relative;overflow:hidden;
+    /* Background: gradasi lembut biru → putih → kuning */
+    background:linear-gradient(160deg,#dbeafe 0%,#ffffff 45%,#fef3c7 100%);
+    /* Border ganda: luar biru, dalam kuning */
+    border:3pt solid #1e3a8a;
   }
   body.printing-cover .cover-page:last-child{page-break-after:auto}
 
+  /* Garis dekoratif di atas (line art — 3 garis paralel biru/kuning/abu) */
+  body.printing-cover .cover-page::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:15mm;
+    background:linear-gradient(90deg,#1e3a8a 0%,#1d4ed8 33%,#f59e0b 66%,#fbbf24 100%);
+    clip-path:polygon(0 0,100% 0,100% 60%,0 100%);
+  }
+
+  /* Garis dekoratif di bawah (line art — cermin dari atas) */
+  body.printing-cover .cover-page::after{
+    content:"";position:absolute;bottom:0;left:0;right:0;height:12mm;
+    background:linear-gradient(90deg,#fbbf24 0%,#f59e0b 33%,#1d4ed8 66%,#1e3a8a 100%);
+    clip-path:polygon(0 40%,100% 0,100% 100%,0 100%);
+  }
+
+  /* Lingkaran dekoratif abu-abu (line art circles di sudut) */
+  body.printing-cover .cover-deco-circle-tl{
+    position:absolute;top:18mm;left:8mm;
+    width:20mm;height:20mm;
+    border:1.5pt solid #6b7280;border-radius:50%;
+    opacity:.3;
+  }
+  body.printing-cover .cover-deco-circle-br{
+    position:absolute;bottom:16mm;right:8mm;
+    width:25mm;height:25mm;
+    border:1.5pt solid #6b7280;border-radius:50%;
+    opacity:.3;
+  }
+  body.printing-cover .cover-deco-diamond{
+    position:absolute;top:22mm;right:10mm;
+    width:12mm;height:12mm;
+    border:1.5pt solid #f59e0b;transform:rotate(45deg);
+    opacity:.4;
+  }
+  body.printing-cover .cover-deco-line-left{
+    position:absolute;top:50%;left:5mm;bottom:30mm;
+    width:1.5pt;
+    background:linear-gradient(180deg,transparent,#1e3a8a 30%,#1e3a8a 70%,transparent);
+    opacity:.3;
+  }
+  body.printing-cover .cover-deco-line-right{
+    position:absolute;top:30mm;right:5mm;bottom:50%;
+    width:1.5pt;
+    background:linear-gradient(180deg,transparent,#f59e0b 30%,#f59e0b 70%,transparent);
+    opacity:.3;
+  }
+
   /* Logo sekolah di atas tengah */
   body.printing-cover .cover-logo{
-    width:35mm;height:35mm;object-fit:contain;
-    margin-bottom:8mm;
+    width:32mm;height:32mm;object-fit:contain;
+    margin-bottom:6mm;
+    position:relative;z-index:2;
+    /* Drop shadow halus */
+    filter:drop-shadow(0 2mm 4mm rgba(30,58,138,.15));
   }
 
   /* Judul utama */
   body.printing-cover .cover-main-title{
     font-family:"Arial Black",Arial,sans-serif;
     font-weight:900;
-    font-size:28pt;color:#000;
-    margin-bottom:3mm;
+    font-size:26pt;color:#1e3a8a;
+    margin-bottom:2mm;
     letter-spacing:1pt;
     line-height:1.2;
+    position:relative;z-index:2;
   }
   body.printing-cover .cover-main-subtitle{
     font-family:Arial,sans-serif;
     font-weight:bold;
-    font-size:14pt;color:#000;
-    margin-bottom:10mm;
+    font-size:13pt;color:#374151;
+    margin-bottom:8mm;
     letter-spacing:.5pt;
+    position:relative;z-index:2;
   }
 
-  /* Badge "RUANG X" — rounded corner hitam, text putih */
-  body.printing-cover .cover-badge{
-    background:#000;
-    color:#fff;
-    border-radius:8mm;
-    padding:6mm 20mm;
+  /* Garis pemisah dekoratif (biru → kuning → abu) */
+  body.printing-cover .cover-divider{
+    width:60%;height:2pt;
+    background:linear-gradient(90deg,transparent 0%,#1e3a8a 20%,#f59e0b 50%,#1e3a8a 80%,transparent 100%);
     margin-bottom:8mm;
+    position:relative;z-index:2;
+  }
+
+  /* Badge "RUANG X" — rounded corner hitam pekat, text putih */
+  body.printing-cover .cover-badge{
+    background:#000 !important;
+    color:#fff !important;
+    border-radius:10mm;
+    padding:8mm 24mm;
+    margin-bottom:6mm;
     font-family:"Arial Black",Arial,sans-serif;
     font-weight:900;
-    font-size:36pt;
-    letter-spacing:2pt;
+    font-size:40pt;
+    letter-spacing:3pt;
     line-height:1.1;
     display:inline-block;
+    /* Shadow halus untuk depth */
+    box-shadow:0 3mm 6mm rgba(0,0,0,.2);
+    /* Border tipis kuning di dalam */
+    border:1.5pt solid #f59e0b;
+    position:relative;z-index:2;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
   }
 
   /* Subtitle di bawah badge */
   body.printing-cover .cover-subtitle{
     font-family:Arial,sans-serif;
     font-weight:bold;
-    font-size:13pt;color:#000;
-    margin-bottom:12mm;
+    font-size:13pt;color:#374151;
+    margin-bottom:10mm;
     letter-spacing:.5pt;
+    position:relative;z-index:2;
   }
 
   /* Info ruang — kelas & rentang nomor ujian */
   body.printing-cover .cover-info-box{
-    border:1.5pt solid #000;
-    border-radius:3mm;
-    padding:6mm 10mm;
+    border:2pt solid #1e3a8a;
+    border-radius:4mm;
+    padding:8mm 12mm;
     margin-bottom:6mm;
     width:75%;
+    background:#fff;
+    position:relative;z-index:2;
+    /* Shadow halus */
+    box-shadow:0 2mm 4mm rgba(30,58,138,.1);
+  }
+  body.printing-cover .cover-info-box::before{
+    content:"";position:absolute;top:-1pt;left:10%;right:10%;height:3pt;
+    background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b);
+    border-radius:2pt;
   }
   body.printing-cover .cover-info-row{
     font-family:Arial,sans-serif;
     font-weight:bold;
     font-size:15pt;
     line-height:1.8;
-    color:#000;
+    color:#1e3a8a;
     text-align:center;
   }
   body.printing-cover .cover-info-row .label{
@@ -505,20 +586,23 @@ input,select{font-family:inherit;outline:none}
   body.printing-cover .cover-footer{
     margin-top:auto;
     font-family:Arial,sans-serif;
-    color:#000;
+    color:#374151;
     text-align:center;
-    padding-top:6mm;
-    border-top:1pt solid #000;
-    width:80%;
+    padding-top:5mm;
+    border-top:1.5pt solid #1e3a8a;
+    width:70%;
+    position:relative;z-index:2;
   }
   body.printing-cover .cover-footer .school-name{
     font-weight:bold;
     font-size:12pt;
+    color:#1e3a8a;
     margin-bottom:2mm;
   }
   body.printing-cover .cover-footer .year{
     font-weight:bold;
     font-size:11pt;
+    color:#f59e0b;
   }
 }
 
@@ -1515,9 +1599,15 @@ async function printCovers(){
 
       html += `
         <div class="cover-page">
+          <div class="cover-deco-circle-tl"></div>
+          <div class="cover-deco-circle-br"></div>
+          <div class="cover-deco-diamond"></div>
+          <div class="cover-deco-line-left"></div>
+          <div class="cover-deco-line-right"></div>
           <img class="cover-logo" src="${escapeHtml(logoUrl)}" alt="Logo" onerror="this.src='${CONFIG.LOGO_FALLBACK}';"/>
           <div class="cover-main-title">PANDUAN UJIAN ASAS</div>
           <div class="cover-main-subtitle">ASESMEN SUMATIF AKHIR SEMESTER</div>
+          <div class="cover-divider"></div>
           <div class="cover-badge">RUANG ${escapeHtml(String(lbl.id))}</div>
           <div class="cover-subtitle">NAMA RUANG: ${escapeHtml(lbl.namaRuang||'')}</div>
           <div class="cover-info-box">
