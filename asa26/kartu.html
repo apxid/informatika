@@ -751,6 +751,22 @@ input,select{font-family:inherit;outline:none}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           Cetak Cover Panduan
         </button>
+        <button class="btn-ghost" id="btnStatistik" title="Statistik Kelas (L/P, total, wali kelas)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Statistik Kelas
+        </button>
+        <button class="btn-ghost" id="btnPeserta" title="Daftar Peserta per Ruang">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Daftar Peserta
+        </button>
+        <button class="btn-ghost" id="btnPiket" title="Daftar Piket ASAS per Ruang">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Piket ASAS
+        </button>
+        <button class="btn-ghost" id="btnDenah" title="Denah Tempat Duduk per Ruang">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Denah Duduk
+        </button>
       </div>
     </div>
 
@@ -1875,6 +1891,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('btnLabels').addEventListener('click', printLabels);
   document.getElementById('btnMeja').addEventListener('click', printMejaLabels);
   document.getElementById('btnCover').addEventListener('click', printCovers);
+  document.getElementById('btnStatistik').addEventListener('click', showStatistik);
+  document.getElementById('btnPeserta').addEventListener('click', showPesertaList);
+  document.getElementById('btnPiket').addEventListener('click', showPiketList);
+  document.getElementById('btnDenah').addEventListener('click', showDenah);
   document.getElementById('ruangFilter').addEventListener('change', applyFilters);
   document.getElementById('searchInput').addEventListener('input', applyFilters);
 
@@ -1900,6 +1920,150 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('pinInput').focus();
   }
 });
+
+/* =========================================================
+   MENU: STATISTIK KELAS
+   ========================================================= */
+async function showStatistik(){
+  showLoading('Memuat statistik kelas...');
+  try{
+    const res = await callGas('getkelasstats');
+    if(!res.success) throw new Error(res.error||'Gagal');
+    let html = '<div style="text-align:left">';
+    ['7','8','9'].forEach(k=>{
+      const arr = res.stats[k]||[];
+      if(!arr.length) return;
+      let tL=0,tP=0,tT=0;
+      html += `<h4 style="margin:16px 0 8px;color:var(--biru-700)">Kelas ${k}</h4>`;
+      html += '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:var(--biru-100)"><th style="padding:8px;border:1px solid var(--abu-300)">KELAS</th><th style="padding:8px;border:1px solid var(--abu-300)">WALI KELAS</th><th style="padding:8px;border:1px solid var(--abu-300)">L</th><th style="padding:8px;border:1px solid var(--abu-300)">P</th><th style="padding:8px;border:1px solid var(--abu-300)">TOTAL</th></tr></thead><tbody>';
+      arr.forEach(s=>{
+        html += `<tr><td style="padding:6px 8px;border:1px solid var(--abu-300);font-weight:700">${s.kelas}</td><td style="padding:6px 8px;border:1px solid var(--abu-300)">${s.wali}</td><td style="padding:6px 8px;border:1px solid var(--abu-300);text-align:center">${s.laki}</td><td style="padding:6px 8px;border:1px solid var(--abu-300);text-align:center">${s.perempuan}</td><td style="padding:6px 8px;border:1px solid var(--abu-300);text-align:center;font-weight:700">${s.total}</td></tr>`;
+        tL+=s.laki;tP+=s.perempuan;tT+=s.total;
+      });
+      html += `<tr style="background:#fef3c7;font-weight:700"><td colspan="2" style="padding:6px 8px;border:1px solid var(--abu-300)">TOTAL KELAS ${k}</td><td style="padding:6px 8px;border:1px solid var(--abu-300);text-align:center">${tL}</td><td style="padding:6px 8px;border:1px solid var(--abu-300);text-align:center">${tP}</td><td style="padding:6px 8px;border:1px solid var(--abu-300);text-align:center">${tT}</td></tr>`;
+      html += '</tbody></table>';
+    });
+    html += '</div>';
+    hideLoading();
+    showAlert({type:'info', title:'Statistik Kelas', message:'_', confirmText:'Tutup'}).then(()=>{});
+    document.querySelector('.alert-content p').innerHTML = html;
+    document.querySelector('.alert-box').style.maxWidth = '700px';
+    document.querySelector('.alert-box').style.maxHeight = '85vh';
+    document.querySelector('.alert-content').style.maxHeight = '60vh';
+    document.querySelector('.alert-content').style.overflowY = 'auto';
+    document.querySelector('.alert-content').style.textAlign = 'left';
+  }catch(e){ hideLoading(); showAlert({type:'error',title:'Gagal',message:e.message}); }
+}
+
+/* =========================================================
+   MENU: DAFTAR PESERTA PER RUANG
+   ========================================================= */
+async function showPesertaList(){
+  showLoading('Memuat daftar peserta...');
+  try{
+    const res = await callGas('getpesertalist');
+    if(!res.success) throw new Error(res.error||'Gagal');
+    let html = `<div style="text-align:left"><p style="margin-bottom:10px">Total: ${res.total} peserta di ${res.rooms.length} ruang</p>`;
+    res.rooms.forEach(room=>{
+      html += `<h4 style="margin:14px 0 6px;color:var(--biru-700)">${room.nama} (${room.peserta.length} peserta)</h4>`;
+      html += '<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:var(--biru-100)"><th style="padding:5px 8px;border:1px solid var(--abu-300)">NO</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">NO PESERTA</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">NAMA</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">KELAS</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">L/P</th></tr></thead><tbody>';
+      room.peserta.forEach(p=>{
+        html += `<tr><td style="padding:4px 8px;border:1px solid var(--abu-300)">${p.no}</td><td style="padding:4px 8px;border:1px solid var(--abu-300);font-weight:700">${p.noPeserta}</td><td style="padding:4px 8px;border:1px solid var(--abu-300)">${p.nama}</td><td style="padding:4px 8px;border:1px solid var(--abu-300)">${p.kelas}</td><td style="padding:4px 8px;border:1px solid var(--abu-300);text-align:center">${p.lp}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    });
+    html += '</div>';
+    hideLoading();
+    showAlert({type:'info', title:'Daftar Peserta per Ruang', message:'_', confirmText:'Tutup'}).then(()=>{});
+    document.querySelector('.alert-content p').innerHTML = html;
+    document.querySelector('.alert-box').style.maxWidth = '700px';
+    document.querySelector('.alert-box').style.maxHeight = '85vh';
+    document.querySelector('.alert-content').style.maxHeight = '60vh';
+    document.querySelector('.alert-content').style.overflowY = 'auto';
+    document.querySelector('.alert-content').style.textAlign = 'left';
+  }catch(e){ hideLoading(); showAlert({type:'error',title:'Gagal',message:e.message}); }
+}
+
+/* =========================================================
+   MENU: PIKET ASAS
+   ========================================================= */
+async function showPiketList(){
+  showLoading('Memuat daftar piket...');
+  try{
+    const res = await callGas('getpiketlist');
+    if(!res.success) throw new Error(res.error||'Gagal');
+    let html = `<div style="text-align:left"><p style="margin-bottom:10px">${res.totalRuang} ruang × ${res.totalHari} hari (${res.periodeMulai} - ${res.periodeSelesai})</p>`;
+    res.rooms.forEach(room=>{
+      html += `<h4 style="margin:14px 0 6px;color:var(--biru-700)">Ruang ${room.id} - ${room.nama}</h4>`;
+      room.jadwal.forEach(hari=>{
+        html += `<div style="margin:8px 0;padding:8px;background:var(--abu-50);border-radius:8px;border-left:4px solid var(--kuning-400)"><div style="font-weight:700;font-size:13px">${hari.hariTanggal}</div><div style="font-size:11px;color:var(--abu-500)">Piket A: ${hari.pesertaA.length} | Piket B: ${hari.pesertaB.length}</div>`;
+        if(hari.pesertaA.length || hari.pesertaB.length){
+          html += '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:4px"><thead><tr style="background:var(--biru-100)"><th style="padding:3px 6px">No</th><th style="padding:3px 6px">No Peserta A</th><th style="padding:3px 6px">Nama A</th><th style="padding:3px 6px">No Peserta B</th><th style="padding:3px 6px">Nama B</th></tr></thead><tbody>';
+          const max = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
+          for(let i=0;i<max;i++){
+            const a = hari.pesertaA[i]||{}; const b = hari.pesertaB[i]||{};
+            html += `<tr><td style="padding:3px 6px">${i+1}</td><td style="padding:3px 6px">${a.noPeserta||'-'}</td><td style="padding:3px 6px">${a.nama||'-'}</td><td style="padding:3px 6px">${b.noPeserta||'-'}</td><td style="padding:3px 6px">${b.nama||'-'}</td></tr>`;
+          }
+          html += '</tbody></table>';
+        }
+        html += '</div>';
+      });
+    });
+    html += '</div>';
+    hideLoading();
+    showAlert({type:'info', title:'Daftar Piket ASAS', message:'_', confirmText:'Tutup'}).then(()=>{});
+    document.querySelector('.alert-content p').innerHTML = html;
+    document.querySelector('.alert-box').style.maxWidth = '700px';
+    document.querySelector('.alert-box').style.maxHeight = '85vh';
+    document.querySelector('.alert-content').style.maxHeight = '60vh';
+    document.querySelector('.alert-content').style.overflowY = 'auto';
+    document.querySelector('.alert-content').style.textAlign = 'left';
+  }catch(e){ hideLoading(); showAlert({type:'error',title:'Gagal',message:e.message}); }
+}
+
+/* =========================================================
+   MENU: DENAH TEMPAT DUDUK
+   ========================================================= */
+async function showDenah(){
+  showLoading('Memuat denah tempat duduk...');
+  try{
+    const res = await callGas('getdenah');
+    if(!res.success) throw new Error(res.error||'Gagal');
+    let html = `<div style="text-align:left"><p style="margin-bottom:10px">${res.totalRuang} ruang, grid ${res.gridCols}×${res.gridRows}</p>`;
+    res.ruangs.forEach(ruang=>{
+      html += `<h4 style="margin:14px 0 6px;color:var(--biru-700)">Denah Ruang ${ruang.id} - ${ruang.nama}</h4>`;
+      html += `<div style="font-size:11px;color:var(--abu-500);margin-bottom:6px">Kelas ${ruang.kelasA}: ${ruang.pesertaACount} | Kelas ${ruang.kelasB}: ${ruang.pesertaBCount} | Total: ${ruang.pesertaACount+ruang.pesertaBCount}</div>`;
+      html += '<table style="border-collapse:collapse;width:100%;font-size:11px"><thead><tr><th style="border:1px solid #eee;padding:3px"></th>';
+      ruang.gridInfo.colLabels.forEach(label=>{
+        const isLorong = (label==='G'||label==='J');
+        html += `<th style="border:1px solid #eee;padding:3px;background:${isLorong?'#fef3c7':'var(--biru-100)'};font-weight:700">${label}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+      for(let r=res.gridRows-1;r>=0;r--){
+        html += `<tr><td style="border:1px solid #eee;padding:3px;font-weight:700;text-align:center">${r+1}</td>`;
+        ruang.grid[r].forEach(cell=>{
+          if(cell.type==='lorong'||cell.type==='empty'){ html += '<td style="border:1px solid #eee;padding:3px">&nbsp;</td>'; }
+          else if(cell.peserta&&cell.peserta.noPeserta){
+            const color = cell.type==='A'?'var(--biru-600)':'var(--kuning-500)';
+            html += `<td style="border:1px solid #ccc;padding:3px;text-align:center;font-weight:700;color:${color}">${cell.peserta.noPeserta}</td>`;
+          } else { html += '<td style="border:1px solid #eee;padding:3px">&nbsp;</td>'; }
+        });
+        html += '</tr>';
+      }
+      html += '</tbody></table>';
+      html += '<div style="text-align:center;margin:6px 0"><span style="display:inline-block;padding:6px 30px;background:var(--biru-600);color:#fff;font-weight:700;border-radius:6px">PENGAWAS</span></div>';
+    });
+    html += '</div>';
+    hideLoading();
+    showAlert({type:'info', title:'Denah Tempat Duduk', message:'_', confirmText:'Tutup'}).then(()=>{});
+    document.querySelector('.alert-content p').innerHTML = html;
+    document.querySelector('.alert-box').style.maxWidth = '700px';
+    document.querySelector('.alert-box').style.maxHeight = '85vh';
+    document.querySelector('.alert-content').style.maxHeight = '60vh';
+    document.querySelector('.alert-content').style.overflowY = 'auto';
+    document.querySelector('.alert-content').style.textAlign = 'left';
+  }catch(e){ hideLoading(); showAlert({type:'error',title:'Gagal',message:e.message}); }
+}
 
 window.addEventListener('afterprint', ()=>{
   document.getElementById('printArea').innerHTML = '';
