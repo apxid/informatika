@@ -2020,17 +2020,25 @@ async function showPiketList(){
 }
 function downloadPiketExcel(){
   if(!PIKET_DATA){ showAlert({type:'warning',title:'Belum Ada Data',message:'Muat data piket dulu.'}); return; }
-  let csv = 'NO,HARI,TANGGAL,NO PESERTA KELAS A,NAMA PESERTA KELAS A,NO PESERTA KELAS B,NAMA PESERTA KELAS B\n';
+  // Export sebagai HTML table (xls format) — bukan CSV
+  let html = '<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body>';
   PIKET_DATA.rooms.forEach(room=>{
-    csv += `\n,,,RUANG ${room.id} - ${room.nama},,,\n`;
+    html += `<h3>RUANG ${room.id} - ${room.nama}</h3>`;
+    html += `<p>Kelas ${room.kelasA}: ${room.pesertaACount} siswa | Kelas ${room.kelasB}: ${room.pesertaBCount} siswa</p>`;
+    html += '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse:collapse;font-family:Arial;font-size:11pt">';
+    html += '<tr style="background:#1e3a8a;color:#fff;font-weight:bold">';
+    html += '<td>NO</td><td>HARI</td><td>TANGGAL</td><td>NO PESERTA KELAS A</td><td>NAMA PESERTA KELAS A</td><td>NO PESERTA KELAS B</td><td>NAMA PESERTA KELAS B</td>';
+    html += '</tr>';
     room.rows.forEach(row=>{
-      csv += `${row.no},${row.hari},${row.tanggal},${row.noPesertaA||''},${row.namaA||''},${row.noPesertaB||''},${row.namaB||''}\n`;
+      html += `<tr><td>${row.no}</td><td>${row.hari}</td><td>${row.tanggal}</td><td>${row.noPesertaA||''}</td><td>${row.namaA||''}</td><td>${row.noPesertaB||''}</td><td>${row.namaB||''}</td></tr>`;
     });
+    html += '</table><br><br>';
   });
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  html += '</body></html>';
+  const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'Daftar_Piket_Asas.csv';
+  link.download = 'Daftar_Piket_Asas.xls';
   link.click();
 }
 
@@ -2081,31 +2089,34 @@ async function showDenah(){
 }
 function downloadDenahExcel(){
   if(!DENAH_DATA){ showAlert({type:'warning',title:'Belum Ada Data',message:'Muat data denah dulu.'}); return; }
-  let csv = '';
+  // Export sebagai HTML table (xls format)
+  let html = '<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body>';
   DENAH_DATA.ruangs.forEach(ruang=>{
-    csv += `DENAH RUANG ${ruang.id} - ${ruang.nama}\n`;
-    csv += `Kelas ${ruang.kelasA} (kanan): ${ruang.pesertaACount} | Kelas ${ruang.kelasB} (kiri): ${ruang.pesertaBCount} | Total: ${ruang.pesertaACount+ruang.pesertaBCount}\n\n`;
-    csv += ',Kolom 1,Kolom 2,Kolom 3,Kolom 4\n';
+    html += `<h3>DENAH RUANG ${ruang.id} - ${ruang.nama}</h3>`;
+    html += `<p>Kelas ${ruang.kelasA} (kanan): ${ruang.pesertaACount} | Kelas ${ruang.kelasB} (kiri): ${ruang.pesertaBCount} | Total: ${ruang.pesertaACount+ruang.pesertaBCount}</p>`;
+    html += '<table border="2" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-family:Arial;font-size:12pt;text-align:center">';
     for(let r=DENAH_DATA.gridRows-1;r>=0;r--){
-      csv += `Baris ${r+1}`;
+      html += '<tr>';
       for(let c=0;c<DENAH_DATA.gridCols;c++){
         const cell = ruang.grid[r][c];
-        const kiri = cell.kiri ? cell.kiri.noPeserta : '';
-        const kanan = cell.kanan ? cell.kanan.noPeserta : '';
         if(cell.type==='empty'){
-          csv += ',-/-';
+          html += '<td style="background:#f0f0f0;color:#ccc">- / -</td>';
         } else {
-          csv += `,${kiri||'-'}/${kanan||'-'}`;
+          const kiri = cell.kiri ? cell.kiri.noPeserta : '-';
+          const kanan = cell.kanan ? cell.kanan.noPeserta : '-';
+          html += `<td><b style="color:#f59e0b">${kiri}</b> / <b style="color:#1e3a8a">${kanan}</b></td>`;
         }
       }
-      csv += '\n';
+      html += '</tr>';
     }
-    csv += '\nPENGAWAS\n\n';
+    html += '</table>';
+    html += '<p style="text-align:center;font-weight:bold;margin:10px 0">PENGAWAS</p><br><br>';
   });
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  html += '</body></html>';
+  const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'Denah_Tempat_Duduk.csv';
+  link.download = 'Denah_Tempat_Duduk.xls';
   link.click();
 }
 
