@@ -1985,7 +1985,8 @@ async function showPesertaList(){
 }
 
 /* =========================================================
-   MENU: PIKET ASAS — per ruang, 6 hari, download Excel
+/* =========================================================
+   MENU: PIKET ASAS — satu tabel per ruang, 6 hari, download Excel
    ========================================================= */
 let PIKET_DATA = null;
 async function showPiketList(){
@@ -1998,20 +1999,13 @@ async function showPiketList(){
     html += `<p style="margin-bottom:10px">${res.totalRuang} ruang × ${res.totalHari} hari (${res.periodeMulai} - ${res.periodeSelesai})</p>`;
     res.rooms.forEach(room=>{
       html += `<h4 style="margin:14px 0 6px;color:var(--biru-700)">Ruang ${room.id} - ${room.nama}</h4>`;
-      html += `<div style="font-size:11px;color:var(--abu-500);margin-bottom:6px">Kelas ${room.kelasA}: ${room.pesertaA.length} siswa | Kelas ${room.kelasB}: ${room.pesertaB.length} siswa</div>`;
-      room.jadwal.forEach(hari=>{
-        html += `<div style="margin:8px 0;padding:8px;background:var(--abu-50);border-radius:8px;border-left:4px solid var(--kuning-400)"><div style="font-weight:700;font-size:13px">${hari.hariTanggal}</div><div style="font-size:11px;color:var(--abu-500)">Piket A: ${hari.pesertaA.length} | Piket B: ${hari.pesertaB.length}</div>`;
-        if(hari.pesertaA.length || hari.pesertaB.length){
-          html += '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:4px"><thead><tr style="background:var(--biru-100)"><th style="padding:3px 6px;border:1px solid var(--abu-300)">No</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">No Peserta A</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">Nama A</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">No Peserta B</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">Nama B</th></tr></thead><tbody>';
-          const max = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
-          for(let i=0;i<max;i++){
-            const a = hari.pesertaA[i]||{}; const b = hari.pesertaB[i]||{};
-            html += `<tr><td style="padding:3px 6px;border:1px solid var(--abu-300)">${i+1}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${a.noPeserta||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${a.nama||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${b.noPeserta||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${b.nama||'-'}</td></tr>`;
-          }
-          html += '</tbody></table>';
-        }
-        html += '</div>';
+      html += `<div style="font-size:11px;color:var(--abu-500);margin-bottom:6px">Kelas ${room.kelasA}: ${room.pesertaACount} siswa | Kelas ${room.kelasB}: ${room.pesertaBCount} siswa</div>`;
+      // Satu tabel per ruang dengan semua hari
+      html += '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px"><thead><tr style="background:var(--biru-100)"><th style="padding:5px 8px;border:1px solid var(--abu-300)">NO</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">HARI</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">TANGGAL</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">NO PESERTA KELAS A</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">NAMA PESERTA KELAS A</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">NO PESERTA KELAS B</th><th style="padding:5px 8px;border:1px solid var(--abu-300)">NAMA PESERTA KELAS B</th></tr></thead><tbody>';
+      room.rows.forEach(row=>{
+        html += `<tr><td style="padding:3px 6px;border:1px solid var(--abu-300);text-align:center">${row.no}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${row.hari}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${row.tanggal}</td><td style="padding:3px 6px;border:1px solid var(--abu-300);font-weight:700">${row.noPesertaA||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${row.namaA||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300);font-weight:700">${row.noPesertaB||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${row.namaB||'-'}</td></tr>`;
       });
+      html += '</tbody></table>';
     });
     html += '</div>';
     hideLoading();
@@ -2026,15 +2020,11 @@ async function showPiketList(){
 }
 function downloadPiketExcel(){
   if(!PIKET_DATA){ showAlert({type:'warning',title:'Belum Ada Data',message:'Muat data piket dulu.'}); return; }
-  let csv = 'NO,RUANG,HARI & TANGGAL,NO PESERTA (A),NAMA (A),NO PESERTA (B),NAMA (B)\n';
-  let no = 1;
+  let csv = 'NO,HARI,TANGGAL,NO PESERTA KELAS A,NAMA PESERTA KELAS A,NO PESERTA KELAS B,NAMA PESERTA KELAS B\n';
   PIKET_DATA.rooms.forEach(room=>{
-    room.jadwal.forEach(hari=>{
-      const max = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
-      for(let i=0;i<max;i++){
-        const a = hari.pesertaA[i]||{}; const b = hari.pesertaB[i]||{};
-        csv += `${no++},Ruang ${room.id},${hari.hariTanggal},${a.noPeserta||''},${a.nama||''},${b.noPeserta||''},${b.nama||''}\n`;
-      }
+    csv += `\n,,,RUANG ${room.id} - ${room.nama},,,\n`;
+    room.rows.forEach(row=>{
+      csv += `${row.no},${row.hari},${row.tanggal},${row.noPesertaA||''},${row.namaA||''},${row.noPesertaB||''},${row.namaB||''}\n`;
     });
   });
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
@@ -2045,7 +2035,7 @@ function downloadPiketExcel(){
 }
 
 /* =========================================================
-   MENU: DENAH TEMPAT DUDUK — 4×4 grid, kiri/kanan per meja, download Excel
+   MENU: DENAH TEMPAT DUDUK — 4×4 grid, kanan bawah mulai, download Excel
    ========================================================= */
 let DENAH_DATA = null;
 async function showDenah(){
@@ -2065,9 +2055,13 @@ async function showDenah(){
         html += '<tr>';
         for(let c=0;c<res.gridCols;c++){
           const cell = ruang.grid[r][c];
-          const kiri = cell.kiri ? cell.kiri.noPeserta : '-';
-          const kanan = cell.kanan ? cell.kanan.noPeserta : '-';
-          html += `<td style="border:2px solid #000;padding:6px;text-align:center;background:#fff"><div style="display:flex;gap:8px;justify-content:center"><span style="color:var(--kuning-500);font-weight:700;min-width:35px">${kiri}</span><span style="color:var(--biru-600);font-weight:700;min-width:35px">${kanan}</span></div></td>`;
+          if(cell.type==='empty'){
+            html += '<td style="border:2px solid #000;padding:6px;text-align:center;background:#f9fafb"><div style="display:flex;gap:8px;justify-content:center"><span style="color:var(--abu-300);min-width:35px">-</span><span style="color:var(--abu-300);min-width:35px">-</span></div></td>';
+          } else {
+            const kiri = cell.kiri ? cell.kiri.noPeserta : '-';
+            const kanan = cell.kanan ? cell.kanan.noPeserta : '-';
+            html += `<td style="border:2px solid #000;padding:6px;text-align:center;background:#fff"><div style="display:flex;gap:8px;justify-content:center"><span style="color:var(--kuning-500);font-weight:700;min-width:35px">${kiri}</span><span style="color:var(--biru-600);font-weight:700;min-width:35px">${kanan}</span></div></td>`;
+          }
         }
         html += '</tr>';
       }
@@ -2091,16 +2085,18 @@ function downloadDenahExcel(){
   DENAH_DATA.ruangs.forEach(ruang=>{
     csv += `DENAH RUANG ${ruang.id} - ${ruang.nama}\n`;
     csv += `Kelas ${ruang.kelasA} (kanan): ${ruang.pesertaACount} | Kelas ${ruang.kelasB} (kiri): ${ruang.pesertaBCount} | Total: ${ruang.pesertaACount+ruang.pesertaBCount}\n\n`;
-    // Header: Kolom 1-4
     csv += ',Kolom 1,Kolom 2,Kolom 3,Kolom 4\n';
-    // Rows from back to front (4 to 1)
     for(let r=DENAH_DATA.gridRows-1;r>=0;r--){
       csv += `Baris ${r+1}`;
       for(let c=0;c<DENAH_DATA.gridCols;c++){
         const cell = ruang.grid[r][c];
         const kiri = cell.kiri ? cell.kiri.noPeserta : '';
         const kanan = cell.kanan ? cell.kanan.noPeserta : '';
-        csv += `,${kiri}/${kanan}`;
+        if(cell.type==='empty'){
+          csv += ',-/-';
+        } else {
+          csv += `,${kiri||'-'}/${kanan||'-'}`;
+        }
       }
       csv += '\n';
     }
