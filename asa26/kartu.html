@@ -1985,24 +1985,28 @@ async function showPesertaList(){
 }
 
 /* =========================================================
-   MENU: PIKET ASAS
+   MENU: PIKET ASAS — per ruang, 6 hari, download Excel
    ========================================================= */
+let PIKET_DATA = null;
 async function showPiketList(){
   showLoading('Memuat daftar piket...');
   try{
     const res = await callGas('getpiketlist');
     if(!res.success) throw new Error(res.error||'Gagal');
-    let html = `<div style="text-align:left"><p style="margin-bottom:10px">${res.totalRuang} ruang × ${res.totalHari} hari (${res.periodeMulai} - ${res.periodeSelesai})</p>`;
+    PIKET_DATA = res;
+    let html = `<div style="text-align:left"><div style="display:flex;gap:10px;margin-bottom:12px"><button onclick="downloadPiketExcel()" style="padding:8px 16px;background:var(--hijau);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Download Excel</button></div>`;
+    html += `<p style="margin-bottom:10px">${res.totalRuang} ruang × ${res.totalHari} hari (${res.periodeMulai} - ${res.periodeSelesai})</p>`;
     res.rooms.forEach(room=>{
       html += `<h4 style="margin:14px 0 6px;color:var(--biru-700)">Ruang ${room.id} - ${room.nama}</h4>`;
+      html += `<div style="font-size:11px;color:var(--abu-500);margin-bottom:6px">Kelas ${room.kelasA}: ${room.pesertaA.length} siswa | Kelas ${room.kelasB}: ${room.pesertaB.length} siswa</div>`;
       room.jadwal.forEach(hari=>{
         html += `<div style="margin:8px 0;padding:8px;background:var(--abu-50);border-radius:8px;border-left:4px solid var(--kuning-400)"><div style="font-weight:700;font-size:13px">${hari.hariTanggal}</div><div style="font-size:11px;color:var(--abu-500)">Piket A: ${hari.pesertaA.length} | Piket B: ${hari.pesertaB.length}</div>`;
         if(hari.pesertaA.length || hari.pesertaB.length){
-          html += '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:4px"><thead><tr style="background:var(--biru-100)"><th style="padding:3px 6px">No</th><th style="padding:3px 6px">No Peserta A</th><th style="padding:3px 6px">Nama A</th><th style="padding:3px 6px">No Peserta B</th><th style="padding:3px 6px">Nama B</th></tr></thead><tbody>';
+          html += '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:4px"><thead><tr style="background:var(--biru-100)"><th style="padding:3px 6px;border:1px solid var(--abu-300)">No</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">No Peserta A</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">Nama A</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">No Peserta B</th><th style="padding:3px 6px;border:1px solid var(--abu-300)">Nama B</th></tr></thead><tbody>';
           const max = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
           for(let i=0;i<max;i++){
             const a = hari.pesertaA[i]||{}; const b = hari.pesertaB[i]||{};
-            html += `<tr><td style="padding:3px 6px">${i+1}</td><td style="padding:3px 6px">${a.noPeserta||'-'}</td><td style="padding:3px 6px">${a.nama||'-'}</td><td style="padding:3px 6px">${b.noPeserta||'-'}</td><td style="padding:3px 6px">${b.nama||'-'}</td></tr>`;
+            html += `<tr><td style="padding:3px 6px;border:1px solid var(--abu-300)">${i+1}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${a.noPeserta||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${a.nama||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${b.noPeserta||'-'}</td><td style="padding:3px 6px;border:1px solid var(--abu-300)">${b.nama||'-'}</td></tr>`;
           }
           html += '</tbody></table>';
         }
@@ -2020,38 +2024,55 @@ async function showPiketList(){
     document.querySelector('.alert-content').style.textAlign = 'left';
   }catch(e){ hideLoading(); showAlert({type:'error',title:'Gagal',message:e.message}); }
 }
+function downloadPiketExcel(){
+  if(!PIKET_DATA){ showAlert({type:'warning',title:'Belum Ada Data',message:'Muat data piket dulu.'}); return; }
+  let csv = 'NO,RUANG,HARI & TANGGAL,NO PESERTA (A),NAMA (A),NO PESERTA (B),NAMA (B)\n';
+  let no = 1;
+  PIKET_DATA.rooms.forEach(room=>{
+    room.jadwal.forEach(hari=>{
+      const max = Math.max(hari.pesertaA.length, hari.pesertaB.length, 1);
+      for(let i=0;i<max;i++){
+        const a = hari.pesertaA[i]||{}; const b = hari.pesertaB[i]||{};
+        csv += `${no++},Ruang ${room.id},${hari.hariTanggal},${a.noPeserta||''},${a.nama||''},${b.noPeserta||''},${b.nama||''}\n`;
+      }
+    });
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'Daftar_Piket_Asas.csv';
+  link.click();
+}
 
 /* =========================================================
-   MENU: DENAH TEMPAT DUDUK
+   MENU: DENAH TEMPAT DUDUK — 4×4 grid, kiri/kanan per meja, download Excel
    ========================================================= */
+let DENAH_DATA = null;
 async function showDenah(){
   showLoading('Memuat denah tempat duduk...');
   try{
     const res = await callGas('getdenah');
     if(!res.success) throw new Error(res.error||'Gagal');
-    let html = `<div style="text-align:left"><p style="margin-bottom:10px">${res.totalRuang} ruang, grid ${res.gridCols}×${res.gridRows}</p>`;
+    DENAH_DATA = res;
+    let html = `<div style="text-align:left"><div style="display:flex;gap:10px;margin-bottom:12px"><button onclick="downloadDenahExcel()" style="padding:8px 16px;background:var(--hijau);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Download Excel</button></div>`;
+    html += `<p style="margin-bottom:10px">${res.totalRuang} ruang, grid ${res.gridCols}×${res.gridRows} (16 meja × 2 siswa = 32 peserta)</p>`;
     res.ruangs.forEach(ruang=>{
       html += `<h4 style="margin:14px 0 6px;color:var(--biru-700)">Denah Ruang ${ruang.id} - ${ruang.nama}</h4>`;
-      html += `<div style="font-size:11px;color:var(--abu-500);margin-bottom:6px">Kelas ${ruang.kelasA}: ${ruang.pesertaACount} | Kelas ${ruang.kelasB}: ${ruang.pesertaBCount} | Total: ${ruang.pesertaACount+ruang.pesertaBCount}</div>`;
-      html += '<table style="border-collapse:collapse;width:100%;font-size:11px"><thead><tr><th style="border:1px solid #eee;padding:3px"></th>';
-      ruang.gridInfo.colLabels.forEach(label=>{
-        const isLorong = (label==='G'||label==='J');
-        html += `<th style="border:1px solid #eee;padding:3px;background:${isLorong?'#fef3c7':'var(--biru-100)'};font-weight:700">${label}</th>`;
-      });
-      html += '</tr></thead><tbody>';
+      html += `<div style="font-size:11px;color:var(--abu-500);margin-bottom:8px">Kelas ${ruang.kelasA} (kanan): ${ruang.pesertaACount} | Kelas ${ruang.kelasB} (kiri): ${ruang.pesertaBCount} | Total: ${ruang.pesertaACount+ruang.pesertaBCount}</div>`;
+      // Grid: render dari belakang (baris 4) ke depan (baris 1)
+      html += '<table style="border-collapse:collapse;width:100%;font-size:12px;margin-bottom:6px"><tbody>';
       for(let r=res.gridRows-1;r>=0;r--){
-        html += `<tr><td style="border:1px solid #eee;padding:3px;font-weight:700;text-align:center">${r+1}</td>`;
-        ruang.grid[r].forEach(cell=>{
-          if(cell.type==='lorong'||cell.type==='empty'){ html += '<td style="border:1px solid #eee;padding:3px">&nbsp;</td>'; }
-          else if(cell.peserta&&cell.peserta.noPeserta){
-            const color = cell.type==='A'?'var(--biru-600)':'var(--kuning-500)';
-            html += `<td style="border:1px solid #ccc;padding:3px;text-align:center;font-weight:700;color:${color}">${cell.peserta.noPeserta}</td>`;
-          } else { html += '<td style="border:1px solid #eee;padding:3px">&nbsp;</td>'; }
-        });
+        html += '<tr>';
+        for(let c=0;c<res.gridCols;c++){
+          const cell = ruang.grid[r][c];
+          const kiri = cell.kiri ? cell.kiri.noPeserta : '-';
+          const kanan = cell.kanan ? cell.kanan.noPeserta : '-';
+          html += `<td style="border:2px solid #000;padding:6px;text-align:center;background:#fff"><div style="display:flex;gap:8px;justify-content:center"><span style="color:var(--kuning-500);font-weight:700;min-width:35px">${kiri}</span><span style="color:var(--biru-600);font-weight:700;min-width:35px">${kanan}</span></div></td>`;
+        }
         html += '</tr>';
       }
       html += '</tbody></table>';
-      html += '<div style="text-align:center;margin:6px 0"><span style="display:inline-block;padding:6px 30px;background:var(--biru-600);color:#fff;font-weight:700;border-radius:6px">PENGAWAS</span></div>';
+      html += '<div style="text-align:center;margin:6px 0 14px"><span style="display:inline-block;padding:6px 30px;background:var(--biru-600);color:#fff;font-weight:700;border-radius:6px">PENGAWAS</span></div>';
     });
     html += '</div>';
     hideLoading();
@@ -2063,6 +2084,33 @@ async function showDenah(){
     document.querySelector('.alert-content').style.overflowY = 'auto';
     document.querySelector('.alert-content').style.textAlign = 'left';
   }catch(e){ hideLoading(); showAlert({type:'error',title:'Gagal',message:e.message}); }
+}
+function downloadDenahExcel(){
+  if(!DENAH_DATA){ showAlert({type:'warning',title:'Belum Ada Data',message:'Muat data denah dulu.'}); return; }
+  let csv = '';
+  DENAH_DATA.ruangs.forEach(ruang=>{
+    csv += `DENAH RUANG ${ruang.id} - ${ruang.nama}\n`;
+    csv += `Kelas ${ruang.kelasA} (kanan): ${ruang.pesertaACount} | Kelas ${ruang.kelasB} (kiri): ${ruang.pesertaBCount} | Total: ${ruang.pesertaACount+ruang.pesertaBCount}\n\n`;
+    // Header: Kolom 1-4
+    csv += ',Kolom 1,Kolom 2,Kolom 3,Kolom 4\n';
+    // Rows from back to front (4 to 1)
+    for(let r=DENAH_DATA.gridRows-1;r>=0;r--){
+      csv += `Baris ${r+1}`;
+      for(let c=0;c<DENAH_DATA.gridCols;c++){
+        const cell = ruang.grid[r][c];
+        const kiri = cell.kiri ? cell.kiri.noPeserta : '';
+        const kanan = cell.kanan ? cell.kanan.noPeserta : '';
+        csv += `,${kiri}/${kanan}`;
+      }
+      csv += '\n';
+    }
+    csv += '\nPENGAWAS\n\n';
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'Denah_Tempat_Duduk.csv';
+  link.click();
 }
 
 window.addEventListener('afterprint', ()=>{
